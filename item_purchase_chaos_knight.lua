@@ -16,12 +16,10 @@ local ItemsToBuy =
 	"item_gloves",					--假腿
 	"item_circlet",
 	"item_magic_stick",				--大魔棒
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
-	"item_wind_lace",
-	"item_sobi_mask",
-	"item_recipe_ancient_janggo",	--战鼓
+	"item_helm_of_iron_will", 
+	"item_gloves", 
+	"item_blades_of_attack",
+	"item_recipe_armlet",			--臂章
 	"item_quarterstaff",
 	"item_robe",
 	"item_sobi_mask",

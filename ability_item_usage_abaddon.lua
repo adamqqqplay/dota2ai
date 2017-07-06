@@ -12,7 +12,7 @@ require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 --------------------------------------
 local npcBot = GetBot()
 local ComboMana = 0
-local debugmode=false
+local debugmode=utility.debug_mode
 
 local Talents ={}
 local Abilities ={}
@@ -103,25 +103,17 @@ local castType = {}
 function CanCast1( npcEnemy )
 	if utility.IsEnemy(npcEnemy)== true
 	then
-		return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable();
+		return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable() and not utility.HasImmuneDebuff(npcEnemy)
 	else
 		return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable();
 	end
 end
 
 function CanCast2( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable();
+	return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable() and not npcEnemy:HasModifier("modifier_abaddon_aphotic_shield");
 end
 
-function CanCast3( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable();
-end
-
-function CanCast4( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable();
-end
-
-local CanCast={CanCast1,CanCast2,CanCast3,CanCast4}
+local CanCast={CanCast1,CanCast2}
 
 function enemyDisabled(npcEnemy)
 	if npcEnemy:IsRooted( ) or npcEnemy:IsStunned( ) or npcEnemy:IsHexed( ) then
@@ -406,7 +398,7 @@ function Consider2()
 	
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT) 
 	then
-		if(#enemys>=1 and not npcBot:HasModifier("modifier_abaddon_aphotic_shield"))
+		if(#enemys>=1 and CanCast[abilityNumber]( npcBot ))
 		then
 			return BOT_ACTION_DESIRE_HIGH,npcBot; 	
 		end
@@ -423,7 +415,10 @@ function Consider2()
 		then
 			if(AllyHealth/WeakestAlly:GetMaxHealth()<0.3+0.4*ManaPercentage)
 			then
-				return BOT_ACTION_DESIRE_MODERATE,WeakestAlly
+				if(CanCast[abilityNumber]( WeakestAlly ))
+				then
+					return BOT_ACTION_DESIRE_MODERATE,WeakestAlly
+				end
 			end
 		end
 			
@@ -453,12 +448,9 @@ function Consider2()
 			then
 				for _,npcTarget in pairs( allys )
 				do
-					if(	npcTarget:HasModifier("modifier_abaddon_aphotic_shield")==false)
+					if ( CanCast[abilityNumber]( npcTarget ) )
 					then
-						if ( CanCast[abilityNumber]( npcTarget ) )
-						then
-							return BOT_ACTION_DESIRE_MODERATE, npcTarget
-						end
+						return BOT_ACTION_DESIRE_MODERATE, npcTarget
 					end
 				end
 			end
@@ -488,7 +480,7 @@ function Consider2()
 	-- If my mana is enough,use it
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING) 
 	then
-		if(#enemys>=1 and not npcBot:HasModifier("modifier_abaddon_aphotic_shield"))
+		if(#enemys>=1 and CanCast[abilityNumber]( npcBot ))
 		then
 			if(ManaPercentage>0.5)
 			then
@@ -501,7 +493,7 @@ function Consider2()
 	-- If we're farming
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
-		if ( #creeps >= 2 ) 
+		if ( #creeps >= 2 and CanCast[abilityNumber]( npcBot )) 
 		then
 			if(ManaPercentage>0.5)
 			then

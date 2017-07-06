@@ -100,23 +100,7 @@ local castLocation = {}
 local castType = {}
 
 --Target Judement
-function CanCast1( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable();
-end
-
-function CanCast2( npcEnemy )
-	return true
-end
-
-function CanCast3( npcEnemy )
-	return true
-end
-
-function CanCast4( npcEnemy )
-	return true
-end
-
-local CanCast={CanCast1,CanCast2,CanCast3,CanCast4}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
 
 function enemyDisabled(npcEnemy)
 	if npcEnemy:IsRooted( ) or npcEnemy:IsStunned( ) or npcEnemy:IsHexed( ) then

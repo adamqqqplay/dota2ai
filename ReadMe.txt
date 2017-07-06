@@ -74,6 +74,17 @@ V1.1f (2017.5.21)
 10. Improved use of all blink ability.
 11. AI's hero selection time will be delayed by 10 seconds.
 12. A slight increase in script performance.
+v1.1g(2017.6.27)
+1. Improved AI to be more cautious when they into the side shop.
+2. Improved the purchase of anti-invisible item.
+3. Huskar, chaos knight now will build armlet.
+4. AI will buy gems in the later game.
+5. Most heroes will not waste skills when enemy has immune buff such as abaddon's borrowed time, winter wyvern's winters curse, Linken's Sphere.
+6. Improved dazzle's ability 1 to save magic.
+7. Improved qop's ability 1 to reduce the tower diving.
+8. Improved winter wyvern's ability 3 to avoid interference with teammates to kill, and in more cases to help teammates in the non-combat state to restore life.
+9. Temporarily removed the signal when using shrine.
+Now the program uses the GPLv3 open source protocol license, the use of the source code should follow the agreement.
 
 天梯匹配模拟器 AI v1.1
 
@@ -151,4 +162,14 @@ v1.1f(2017.5.21)
 10.改进了所有闪烁技能的使用。
 11.ai选择英雄的时间将会推迟10秒。
 12.略微提高了脚本性能
-
+v1.1g(2017.6.27)
+1.改进了AI因为进入边路商店而忽视敌方英雄的情况
+2.改进反隐道具的购买，以解决不买反隐道具的问题
+3.神灵武士、混沌骑士现在会出臂章
+4.电脑会在游戏后期购买宝石
+5.大部分英雄现在不会对回光返照、林肯、寒冬诅咒等无敌状态的英雄浪费技能
+6.改进了戴泽对线期1技能，以节约魔法
+7.改进了女王对线期1技能，以减少冲塔
+8.改进了寒冬飞龙3技能的使用，以避免干扰队友追杀，并在更多情况下帮助队友在非战斗状态恢复生命。
+9.暂时移除了使用神泉时发出的信号。
+现在本程序使用GPLv3开源协议授权，使用本程序源码须遵循该协议。

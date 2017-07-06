@@ -15,7 +15,7 @@ function GetDesire()
 		d=npcBot:DistanceFromSideShop()
 		if d<2000
 		then
-			desire = (2000-d)/d*0.5+0.3;
+			desire = (2000-d)/d*0.3+0.3;
 			--utility.DebugTalk("npc:"..npcBot:GetUnitName().."goto sideShop,distance:".. d)
 		end
 	else

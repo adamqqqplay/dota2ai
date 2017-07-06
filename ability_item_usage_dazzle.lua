@@ -12,7 +12,7 @@ require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 --------------------------------------
 local npcBot = GetBot()
 local ComboMana = 0
-local debugmode=false
+local debugmode=utility.debug_mode
 
 local Talents ={}
 local Abilities ={}
@@ -34,10 +34,10 @@ end
 
 local AbilityToLevelUp=
 {
-	Abilities[1],
 	Abilities[3],
-	Abilities[2],
 	Abilities[1],
+	Abilities[1],
+	Abilities[2],
 	Abilities[1],
 	Abilities[4],
 	Abilities[1],
@@ -314,7 +314,7 @@ function Consider1()
 	-- If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if(ManaPercentage>0.5 or npcBot:GetMana()>ComboMana)
+		if(ManaPercentage>0.6 or npcBot:GetMana()>ComboMana)
 		then
 			if (WeakestEnemy~=nil)
 			then
@@ -372,6 +372,15 @@ function Consider2()
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
+	-- If we're seriously retreating
+	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+	then
+		if(HealthPercentage<=0.3)
+		then
+			return BOT_ACTION_DESIRE_HIGH+0.15, npcBot
+		end
+	end
+	
 	--protect teammate,save allys from control
 	for _,npcTarget in pairs( allys )
 	do
@@ -383,7 +392,7 @@ function Consider2()
 			do
 				Damage2 =Damage2 + npcEnemy:GetEstimatedDamageToTarget( true, npcBot, 2.0, DAMAGE_TYPE_ALL );
 			end
-			if(npcTarget:GetHealth()<Damage2*1.25 or npcTarget:GetHealth()/npcTarget:GetMaxHealth()<=0.25)
+			if(npcTarget:GetHealth()<Damage2*1.25 or npcTarget:GetHealth()/npcTarget:GetMaxHealth()<=0.3)
 			then
 				return BOT_ACTION_DESIRE_HIGH+0.15, npcTarget
 			end

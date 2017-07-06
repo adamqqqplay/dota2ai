@@ -267,7 +267,7 @@ Consider[4]=function()
 	
 	local CastRange = ability:GetCastRange();
 	local Damage = 0
-	local Radius = ability:GetAOERadius()
+	local Radius = ability:GetAOERadius()-50;
 	local CastPoint = ability:GetCastPoint()
 	
 	local HeroHealth=10000

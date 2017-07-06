@@ -101,21 +101,14 @@ local cast3Desire = 0;
 local cast5Desire = 0;
 ----------------------------------------------------------------------------------------------------
 
-function CanCast1( npcTarget )
-	return npcTarget:CanBeSeen() and not npcTarget:IsMagicImmune() and not npcTarget:IsInvulnerable();
-end
-
-function CanCast2( npcTarget )
-	return npcTarget:CanBeSeen() and not npcTarget:IsMagicImmune() and not npcTarget:IsInvulnerable();
-end
-
 function CanCast3( npcTarget )
 	return not npcTarget:IsInvulnerable();
 end
 
-function CanCast5( npcTarget )
-	return npcTarget:CanBeSeen() and not npcTarget:IsMagicImmune() and not npcTarget:IsInvulnerable();
-end
+local CanCast1=utility.NCanCast
+local CanCast2=utility.NCanCast
+local CanCast4=utility.NCanCast
+local CanCast5=utility.NCanCast
 
 function enemyDisabled(npcTarget)
 	if npcTarget:IsRooted( ) or npcTarget:IsStunned( ) or npcTarget:IsHexed( ) then

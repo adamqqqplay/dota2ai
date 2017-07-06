@@ -102,19 +102,7 @@ function CanCast1( npcEnemy )
 	return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable();
 end
 
-function CanCast2( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable();
-end
-
-function CanCast3( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable();
-end
-
-function CanCast4( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable();
-end
-
-local CanCast={CanCast1,CanCast2,CanCast3,CanCast4}
+local CanCast={CanCast1,utility.NCanCast,utility.NCanCast,utility.UCanCast}
 
 function enemyDisabled(npcEnemy)
 	if npcEnemy:IsRooted( ) or npcEnemy:IsStunned( ) or npcEnemy:IsHexed( ) then
@@ -309,7 +297,7 @@ function Consider2()
 		then
 			if (WeakestEnemy~=nil)
 			then
-				if ( CanCast2( WeakestEnemy ) )
+				if ( CanCast[abilityNumber]( WeakestEnemy ) )
 				then
 					return BOT_ACTION_DESIRE_LOW,WeakestEnemy,"target";
 				end

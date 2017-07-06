@@ -9,7 +9,7 @@ require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 --------------------------------------
 local npcBot = GetBot()
 local ComboMana = 0
-local debugmode=false
+local debugmode=utility.debug_mode
 
 local Talents ={}
 local Abilities ={}
@@ -101,18 +101,11 @@ local cast2Desire = 0;
 local cast4Desire = 0;
 local cast5Desire = 0;
 ----------------------------------------------------------------------------------------------------
-
-function CanCast1( npcTarget )
-	return npcTarget:CanBeSeen() and not npcTarget:IsMagicImmune() and not npcTarget:IsInvulnerable();
-end
-
-function CanCast2( npcTarget )
-	return not npcTarget:IsMagicImmune() and not npcTarget:IsInvulnerable();
-end
-
-function CanCast4( npcTarget )
-	return npcTarget:IsHero() and not npcTarget:IsMagicImmune() and not npcTarget:IsInvulnerable();
-end
+local CanCast1=utility.NCanCast
+local CanCast2=utility.NCanCast
+local CanCast3=utility.NCanCast
+local CanCast4=utility.UCanCast
+local CanCast5=utility.UCanCast
 
 ----------------------------------------------------------------------------------------------------
 local function GetComboDamage()

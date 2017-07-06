@@ -8,7 +8,7 @@
 require(GetScriptDirectory() ..  "/utility")
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 
-local debugmode=false
+local debugmode=utility.debug_mode
 local npcBot = GetBot()
 local Talents ={}
 local Abilities ={}

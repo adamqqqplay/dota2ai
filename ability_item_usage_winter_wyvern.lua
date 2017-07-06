@@ -398,7 +398,14 @@ Consider[3]=function()
 			
 		for _,npcTarget in pairs( allys )
 		do
-			if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<(0.2+#enemys*0.05+0.2*ManaPercentage) and npcTarget:WasRecentlyDamagedByAnyHero(2.0) or enemyDisabled(npcTarget) )
+			local enemys2 = npcTarget:GetNearbyHeroes(600,true,BOT_MODE_NONE)
+			local healingFactor=0.2+#enemys2*0.05+0.2*ManaPercentage
+			if(enemyDisabled(npcTarget))
+			then
+				healingFactor=healingFactor+0.1
+			end
+			
+			if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<healingFactor and npcTarget:WasRecentlyDamagedByAnyHero(2.0) and npcTarget:GetActiveMode() ~= BOT_MODE_ATTACK)
 			then
 				if ( CanCast[abilityNumber]( npcTarget ) )
 				then
@@ -409,7 +416,13 @@ Consider[3]=function()
 	end
 	
 	-- If we're going after someone
-	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+	if ( npcBot:GetActiveMode() == BOT_MODE_LANING or
+		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
+		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT) 
 	then
 		for _,npcTarget in pairs( allys )
 		do

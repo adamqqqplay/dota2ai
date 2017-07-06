@@ -12,7 +12,7 @@ require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 --------------------------------------
 local npcBot = GetBot()
 local ComboMana = 0
-local debugmode=false
+local debugmode=utility.debug_mode
 
 local Talents ={}
 local Abilities ={}

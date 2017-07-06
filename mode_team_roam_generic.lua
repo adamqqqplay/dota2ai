@@ -119,7 +119,7 @@ function ConsiderShrine()
 			npcBot.GoingToShrine=true
 			npcBot.ShrineTime=DotaTime()+max_distance
 			npcBot:ActionImmediate_Chat("I want to use Shrine,let's enjoy together! 我想要使用神泉，快来一起享用",false)	
-			npcBot:ActionImmediate_Ping(shrineLocation.x,shrineLocation.y,true)
+			--npcBot:ActionImmediate_Ping(shrineLocation.x,shrineLocation.y,true)
 		
 		end
 	end

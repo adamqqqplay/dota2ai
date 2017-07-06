@@ -16,7 +16,7 @@ end
 
 function Think()
 	local npcBot = GetBot();
-	if(npcBot:HasModifier("modifier_spirit_breaker_charge_of_darkness")==false or (npcBot.SBTarget:DistanceFromFountain()<=4000 and DotaTime()<=30*60))
+	if(npcBot:HasModifier("modifier_spirit_breaker_charge_of_darkness")==false or (npcBot.SBTarget~=nil and npcBot.SBTarget:DistanceFromFountain()<=4000 and DotaTime()<=30*60))
 	then
 		npcBot.SBTarget=nil
 	end

@@ -7,12 +7,19 @@ module("utility", package.seeall)
 ---------------------------------------------------------------------------------------------------
 ------This is global utility library,include some useful function.------
 ---------------------------------------------------------------------------------------------------
+function HasImmuneDebuff(npcEnemy)
+	return npcEnemy:HasModifier("modifier_abaddon_borrowed_time") or 
+		npcEnemy:HasModifier("modifier_winter_wyvern_winters_curse") or 
+		npcEnemy:HasModifier("modifier_winter_wyvern_winters_curse_aura")
+end
+
+
 function NCanCast( npcEnemy )--normal judgement
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable();
+	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable() and not HasImmuneDebuff(npcEnemy)
 end
 
 function MiCanCast( npcEnemy )--magic immune
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable();
+	return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable() and not HasImmuneDebuff(npcEnemy) and not npcEnemy:HasModifier("modifier_item_sphere") and not npcEnemy:HasModifier("modifier_item_sphere_target")
 end
 
 UCanCast=MiCanCast
@@ -665,17 +672,33 @@ function BuySupportItem()
 	then
 		local item_ward_observer = GetItemIncludeBackpack( "item_ward_observer" );
 		local item_ward_sentry2 = GetItemIncludeBackpack( "item_ward_dispenser" )
-		if ( DotaTime() >= 0 and hasInvisibleEnemy == true ) then
+		local item_gem = GetItemIncludeBackpack( "item_gem" )
+		if ( DotaTime() >= 0 and hasInvisibleEnemy == true ) 
+		then
 			local item_dust = GetItemIncludeBackpack( "item_dust" );
 			local item_ward_sentry = GetItemIncludeBackpack( "item_ward_sentry" )
-			if ( item_dust==nil and item_ward_sentry==nil and item_ward_sentry2==nil and npcBot:GetGold() >= 2*GetItemCost("item_dust") ) then
-				npcBot:ActionImmediate_PurchaseItem( "item_dust" );
-			end
-			if ( item_ward_observer==nil and item_dust==nil and item_ward_sentry==nil and item_ward_sentry2==nil and IsItemSlotsFull()==false and npcBot:GetGold() >= 2*GetItemCost("item_ward_sentry") ) then
-				npcBot:ActionImmediate_PurchaseItem( "item_ward_sentry" );
+			if(item_gem==nil)
+			then
+				if (item_dust==nil and item_ward_sentry==nil and item_ward_sentry2==nil and npcBot:GetGold() >= 2*GetItemCost("item_dust") ) then
+					npcBot:ActionImmediate_PurchaseItem( "item_dust" );
+				end
+				
+				if(DotaTime()>=25*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1)
+				then
+					npcBot:ActionImmediate_PurchaseItem( "item_gem" );
+				end
+				
+				-- if ( item_ward_observer==nil and item_dust==nil and item_ward_sentry==nil and item_ward_sentry2==nil and IsItemSlotsFull()==false and npcBot:GetGold() >= 2*GetItemCost("item_ward_sentry") ) then
+					-- npcBot:ActionImmediate_PurchaseItem( "item_ward_sentry" );
+				-- end
 			end
 		end
-
+		
+		if(DotaTime()>=40*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1)
+		then
+			npcBot:ActionImmediate_PurchaseItem( "item_gem" );
+		end
+				
 		if ( item_ward_observer==nil and item_ward_sentry2==nil and GetItemStockCount("item_ward_observer") > 1 and npcBot:GetGold() >= GetItemCost("item_ward_observer") and DotaTime()<30*60) then
 			npcBot:ActionImmediate_PurchaseItem( "item_ward_observer" );
 		end

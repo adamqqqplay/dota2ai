@@ -28,7 +28,7 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[1],
 	"talent",
-	Abilities[1],
+	Abilities[2],
 	Abilities[4],
 	Abilities[2],
 	Abilities[2],

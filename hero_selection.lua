@@ -158,47 +158,47 @@ hero_pool_test={
         "npc_dota_hero_zuus"
 }
 hero_pool_my={
-		--[["npc_dota_hero_zuus",
-		"npc_dota_hero_skywrath_mage",
-		"npc_dota_hero_ogre_magi",
-		"npc_dota_hero_chaos_knight",
-		"npc_dota_hero_viper",
+		-- "npc_dota_hero_zuus",
+		-- "npc_dota_hero_skywrath_mage",
+		-- "npc_dota_hero_ogre_magi",
+		-- "npc_dota_hero_chaos_knight",
+		-- "npc_dota_hero_viper",
 		
-		"npc_dota_hero_lina",
-		"npc_dota_hero_abaddon",
-		"npc_dota_hero_huskar",
-		"npc_dota_hero_phantom_assassin",
-		"npc_dota_hero_crystal_maiden",
-		"npc_dota_hero_shadow_shaman",
+		 "npc_dota_hero_lina",
+		-- "npc_dota_hero_abaddon",
+		-- "npc_dota_hero_huskar",
+		-- "npc_dota_hero_phantom_assassin",
+		-- "npc_dota_hero_crystal_maiden",
+		-- "npc_dota_hero_shadow_shaman",
 		
-		--"npc_dota_hero_ember_spirit",
-		"npc_dota_hero_centaur",
-		"npc_dota_hero_venomancer",
-		"npc_dota_hero_doom_bringer",
-		"npc_dota_hero_slardar",]]--
+		-- "npc_dota_hero_ember_spirit",
+		-- "npc_dota_hero_centaur",
+		-- "npc_dota_hero_venomancer",
+		 "npc_dota_hero_doom_bringer",
+		-- "npc_dota_hero_slardar",
 		
 		-- "npc_dota_hero_silencer",
 		-- "npc_dota_hero_skeleton_king",
-		 "npc_dota_hero_lion",
+		--"npc_dota_hero_lion",
 		-- "npc_dota_hero_legion_commander",
 		-- "npc_dota_hero_ursa",
 		
-		-- "npc_dota_hero_luna",
-		-- "npc_dota_hero_necrolyte",
+		 "npc_dota_hero_luna",
+		 "npc_dota_hero_necrolyte",
 		-- "npc_dota_hero_undying",
 		-- "npc_dota_hero_treant",
 		-- "npc_dota_hero_tidehunter",
 		
 		-- "npc_dota_hero_slark",
-		-- "npc_dota_hero_riki",
+		 "npc_dota_hero_riki",
 		 "npc_dota_hero_spirit_breaker",
-		-- "npc_dota_hero_vengefulspirit",
+		 "npc_dota_hero_vengefulspirit",
 		-- "npc_dota_hero_clinkz",
 		
 
 		 "npc_dota_hero_jakiro",
 		-- "npc_dota_hero_leshrac",
-			"npc_dota_hero_queenofpain",
+		--	"npc_dota_hero_queenofpain",
 		-- "npc_dota_hero_dazzle",
 		-- "npc_dota_hero_drow_ranger",
 		
@@ -232,13 +232,13 @@ hero_pool_my={
 		-- "npc_dota_hero_kunkka",
 		-- "npc_dota_hero_death_prophet",
 		
-			"npc_dota_hero_sven",
+		--	"npc_dota_hero_sven",
 			
-			"npc_dota_hero_winter_wyvern",
-			"npc_dota_hero_pugna",
-			"npc_dota_hero_spectre",
-			"npc_dota_hero_antimage",
-			"npc_dota_hero_faceless_void",
+		--	"npc_dota_hero_winter_wyvern",
+		--	"npc_dota_hero_pugna",
+		--	"npc_dota_hero_spectre",
+		--	"npc_dota_hero_antimage",
+		--	"npc_dota_hero_faceless_void",
 }
 hero_pool_1={
 	"npc_dota_hero_chaos_knight",
@@ -314,7 +314,7 @@ local debug_mode=false
 function Think()
 	if(debug_mode==false)
 	then
-		if(GameTime()<45 and IsHumanPlayerReady()==false or GameTime()<10)
+		if(GameTime()<50 and IsHumanPlayerReady()==false or GameTime()<20)
 		then
 			return
 		end

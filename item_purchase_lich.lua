@@ -33,7 +33,7 @@ local ItemsToBuy =
 	"item_ring_of_health",
 	"item_void_stone",				
 	"item_platemail",
-	"item_energy_booster"			--清莲宝珠
+	"item_energy_booster",			--清莲宝珠
 	
 	"item_mystic_staff",
 	"item_ultimate_orb",

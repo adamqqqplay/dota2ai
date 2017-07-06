@@ -114,19 +114,7 @@ function CanCast1( npcEnemy )
 	end
 end
 
-function CanCast2( npcEnemy )
-	return true
-end
-
-function CanCast3( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable();
-end
-
-function CanCast4( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable();
-end
-
-local CanCast={CanCast1,CanCast2,CanCast3,CanCast4}
+local CanCast={CanCast1,utility.NCanCast,utility.NCanCast,utility.UCanCast}
 
 function enemyDisabled(npcEnemy)
 	if npcEnemy:IsRooted( ) or npcEnemy:IsStunned( ) or npcEnemy:IsHexed( ) then
@@ -296,12 +284,9 @@ function Consider2()		--Target AOE Ability Example
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) )
+			if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
-				then
-					return BOT_ACTION_DESIRE_HIGH 
-				end
+				return BOT_ACTION_DESIRE_HIGH 
 			end
 		end
 	end
@@ -326,7 +311,7 @@ function Consider2()		--Target AOE Ability Example
 		then
 			if ( npcEnemy ~= nil ) 
 			then
-				if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< Radius + 300+75*#allys)
+				if ( GetUnitToUnitDistance(npcBot,npcEnemy)< Radius + 300+75*#allys)
 				then
 					return BOT_ACTION_DESIRE_MODERATE;
 				end
