@@ -138,9 +138,9 @@ Consider[1]=function()
 		return BOT_ACTION_DESIRE_HIGH, GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
 	end
 	
-	if(npcBot:GetActiveMode() == BOT_MODE_ATTACK and ManaPercentage>ComboMana and AbilitiesReal[4]:IsFullyCastable()) 
+	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT and ManaPercentage>ComboMana and AbilitiesReal[4]:IsFullyCastable()) 
 	then
-		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, 425, 0, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange+400, 425, 0, 0 );
 		if ( locationAoE.count >= 2) 
 		then
 			return BOT_ACTION_DESIRE_HIGH+0.05, locationAoE.targetloc;
@@ -307,15 +307,25 @@ Consider[4]=function()
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
-		for _,npcEnemy in pairs( enemys )
-		do
-			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) 
-			then
-				if ( CanCast[abilityNumber]( npcEnemy ) ) 
-				then
-					return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetExtrapolatedLocation(CastPoint);
-				end
-			end
+		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
+		if ( locationAoE.count >= 1 ) 
+		then
+			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+		end
+	end
+	
+	-- If we're pushing or defending a lane and can hit 4+ creeps, go for it
+	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
+		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
+	then
+		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
+		if ( locationAoE.count >= 3 ) 
+		then
+			return BOT_ACTION_DESIRE_MODERATE, locationAoE.targetloc;
 		end
 	end
 	
@@ -323,7 +333,7 @@ Consider[4]=function()
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK  ) 
 	then
 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
 		if ( locationAoE.count >= 2 ) then

@@ -106,6 +106,10 @@ local castType = {}
 
 --Target Judement
 function CanCast1( npcEnemy )
+	if(npcEnemy==nil)
+	then
+		return false
+	end
 	if(npcBot:HasScepter())
 	then
 		return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable();
@@ -222,7 +226,7 @@ function AbilityUsageThink()
 
 end
 
-function Consider1()	--Target Ability Example
+function Consider1()
 	local abilityNumber=1
 	--------------------------------------
 	-- Generic Variable Setting
@@ -241,9 +245,15 @@ function Consider1()	--Target Ability Example
 
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+	local StrongstCreep,CreepHealth=utility.GetStrongestUnit(creeps)
 	
 	if ( not npcBot:HasModifier("modifier_doom_bringer_devour") ) 
 	then
+		if(CanCast[abilityNumber]( StrongstCreep ))
+		then
+			return BOT_ACTION_DESIRE_HIGH, StrongstCreep;
+		end
+		
 		for _,npcEnemy in pairs( creeps )
 		do
 			if ( CanCast[abilityNumber]( npcEnemy ) ) 
@@ -257,7 +267,7 @@ function Consider1()	--Target Ability Example
 	
 end
 
-function Consider2()		--Target AOE Ability Example
+function Consider2()
 	local abilityNumber=2
 	--------------------------------------
 	-- Generic Variable Setting

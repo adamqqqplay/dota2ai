@@ -37,19 +37,6 @@ local ItemsToBuy =
 	"item_platemail",
 	"item_chainmail",
 	"item_recipe_assault",			--强袭
-	
-	"item_quarterstaff",
-	"item_robe",
-	"item_sobi_mask",
-	"item_quarterstaff",
-	"item_robe",
-	"item_sobi_mask",
-	"item_recipe_orchid",			--紫苑
-	
-	"item_broadsword",
-	"item_blades_of_attack",
-	"item_recipe_lesser_crit" ,
-	"item_recipe_bloodthorn",		--血棘
 }
 
 utility.checkItemBuild(ItemsToBuy)

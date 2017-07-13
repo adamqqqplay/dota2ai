@@ -13,8 +13,8 @@ local ItemsToBuy =
 	"item_boots",	
 	"item_circlet",
 	"item_magic_stick",				--大魔棒
-	"item_wind_lace",
-	"item_ring_of_regen",			--绿鞋
+	"item_blades_of_attack",
+	"item_blades_of_attack",		--相位
 	
 	"item_slippers",
 	"item_circlet",

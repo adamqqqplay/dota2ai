@@ -353,13 +353,22 @@ function Consider2()
 			end
 		end
 	end
+	
+	-- Check for a channeling enemy
+	for _,npcEnemy in pairs( enemys )
+	do
+		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy ) and not npcEnemy:HasModifier("modifier_teleporting") and not npcEnemy:HasModifier("modifier_boots_of_travel_incoming")) 
+		then
+			return BOT_ACTION_DESIRE_HIGH, npcEnemy
+		end
+	end
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) or (npcBot:WasRecentlyDamagedByAnyHero(2.0) and #enemys>=1) ) 
 	then
-		local locationAoE = npcBot:FindAoELocation( false, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
 		if ( locationAoE.count >= 2 ) 
 		then
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
@@ -380,7 +389,7 @@ function Consider2()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local locationAoE = npcBot:FindAoELocation( false, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
 		if ( locationAoE.count >= 2 ) 
 		then
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc

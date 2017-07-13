@@ -234,7 +234,7 @@ Consider[2]=function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
-	local CastRange = 0
+	local CastRange = ability:GetCastRange();
 	local Damage = 0
 	local Radius = AbilitiesReal[3]:GetAOERadius()-50
 	local CastPoint = ability:GetCastPoint()
@@ -249,57 +249,108 @@ Consider[2]=function()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-	--protect myself
-	if((npcBot:WasRecentlyDamagedByAnyHero(2) and #enemys>=1) or #enemys >=2)
+	if(npcBot:HasScepter() or npcBot:HasModifier("modifier_item_ultimate_scepter"))
 	then
-		for _,npcEnemy in pairs( enemys )
-		do
-			if ( CanCast[abilityNumber]( npcEnemy ) )
+		-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+		if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+		then
+			if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) ) 
 			then
-				return BOT_ACTION_DESIRE_HIGH
+				return BOT_ACTION_DESIRE_HIGH, npcBot:GetXUnitsInFront(CastRange);
+			end
+		end
+	
+		--protect myself
+		if((npcBot:WasRecentlyDamagedByAnyHero(2) and #enemys>=1) or #enemys >=2)
+		then
+			for _,npcEnemy in pairs( enemys )
+			do
+				if ( CanCast[abilityNumber]( npcEnemy ) )
+				then
+					return BOT_ACTION_DESIRE_HIGH,npcBot:GetLocation();
+				end
+			end
+		end
+		
+		-- If we're farming and can hit 2+ creeps
+		if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
+		then
+			if ( #creeps >= 2 and ManaPercentage>0.4 or npcBot:GetMana()>ComboMana) 
+			then
+				return BOT_ACTION_DESIRE_LOW,npcBot:GetXUnitsTowardsLocation(WeakestCreep,CastRange)
+			end
+		end
+
+		
+		-- If we're going after someone
+		if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+			 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+			 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+			 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+		then
+			local npcEnemy = npcBot:GetTarget();
+
+			if ( npcEnemy ~= nil ) 
+			then
+				if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)<=Radius)
+				then
+					return BOT_ACTION_DESIRE_MODERATE,npcBot:GetXUnitsTowardsLocation(npcEnemy,CastRange)
+				end
+			end
+		end
+	else
+		--protect myself
+		if((npcBot:WasRecentlyDamagedByAnyHero(2) and #enemys>=1) or #enemys >=2)
+		then
+			for _,npcEnemy in pairs( enemys )
+			do
+				if ( CanCast[abilityNumber]( npcEnemy ) )
+				then
+					return BOT_ACTION_DESIRE_HIGH
+				end
+			end
+		end
+		
+		-- If my mana is enough
+		if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+		then
+			if(WeakestCreep~=nil and ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
+			then
+				if(CreepHealth<=3*npcBot:GetAttackDamage() and GetUnitToUnitDistance(npcBot,WeakestCreep)<=300)
+				then
+					return BOT_ACTION_DESIRE_LOW,WeakestEnemy
+				end
+			end
+		end
+		
+		-- If we're farming and can hit 2+ creeps
+		if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
+		then
+			if ( #creeps >= 2 and ManaPercentage>0.4 or npcBot:GetMana()>ComboMana) 
+			then
+				return BOT_ACTION_DESIRE_LOW,WeakestCreep
+			end
+		end
+
+		
+		-- If we're going after someone
+		if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+			 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+			 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+			 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+		then
+			local npcEnemy = npcBot:GetTarget();
+
+			if ( npcEnemy ~= nil ) 
+			then
+				if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)<=Radius)
+				then
+					return BOT_ACTION_DESIRE_MODERATE,npcEnemy
+				end
 			end
 		end
 	end
 	
-	-- If my mana is enough
-	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
-	then
-		if(WeakestCreep~=nil and ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
-		then
-			if(CreepHealth<=3*npcBot:GetAttackDamage() and GetUnitToUnitDistance(npcBot,WeakestCreep)<=300)
-			then
-				return BOT_ACTION_DESIRE_LOW,WeakestEnemy
-			end
-		end
-	end
-	
-	-- If we're farming and can hit 2+ creeps
-	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
-	then
-		if ( #creeps >= 2 and ManaPercentage>0.4 or npcBot:GetMana()>ComboMana) 
-		then
-			return BOT_ACTION_DESIRE_LOW,WeakestCreep
-		end
-	end
-
-	
-	-- If we're going after someone
-	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
-	then
-		local npcEnemy = npcBot:GetTarget();
-
-		if ( npcEnemy ~= nil ) 
-		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)<=Radius)
-			then
-				return BOT_ACTION_DESIRE_MODERATE,npcEnemy
-			end
-		end
-	end
-
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
 end

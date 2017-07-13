@@ -11,7 +11,7 @@ require( GetScriptDirectory().."/utility" )
 function CourierUsageThink()
 	ConsiderGlyph()
 	UnImplementedItemUsage()
-	
+
 	local npcBot=GetBot()
 	local courier=GetCourier(0)
 	local state=GetCourierState(courier)
@@ -30,9 +30,14 @@ function CourierUsageThink()
 		return
 	end
 
-	if(state ~= COURIER_STATE_DELIVERING_ITEMS and courier:DistanceFromFountain()<=1000 and npcBot:GetCourierValue()>0)
+	if((state==COURIER_STATE_IDLE or state==COURIER_STATE_RETURNING_TO_BASE)  and npcBot:GetCourierValue()>0)
 	then
 		npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TRANSFER_ITEMS)
+		DebugTalk(npcBot:GetUnitName()..": courier is COURIER_ACTION_TRANSFER_ITEMS")
+		if(courier:GetMaxHealth()==150)
+		then
+			npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_BURST)
+		end
 		return
 	end
     if (state == COURIER_STATE_AT_BASE and npcBot:GetStashValue() >= 400 and courier:DistanceFromSecretShop()>=100) 
@@ -49,21 +54,23 @@ function CourierUsageThink()
 		if(courier.time+1<DotaTime())
 		then
 			npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TAKE_AND_TRANSFER_ITEMS)
+			DebugTalk(npcBot:GetUnitName()..": courier is TAKE_AND_TRANSFER")
 			courier.time=nil
 		end
         return
     end
 	if(state == COURIER_STATE_AT_BASE and npcBot.secretShopMode == true and npcBot:GetActiveMode() ~= BOT_MODE_SECRET_SHOP)
 	then
+		DebugTalk(npcBot:GetUnitName()..": courier is go to secret_shop")
 		npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_SECRET_SHOP)
         return
 	end
 
-	if(state == COURIER_STATE_DELIVERING_ITEMS and npcBot:GetCourierValue()==0 and GetUnitToUnitDistance(npcBot,courier)<=300)
-	then
-		npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_RETURN)
-		return
-	end
+	-- if(state == COURIER_STATE_DELIVERING_ITEMS and npcBot:GetCourierValue()==0 and GetUnitToUnitDistance(npcBot,courier)<=300)
+	-- then
+		-- npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_RETURN)
+		-- return
+	-- end
 	
 	if(state==COURIER_STATE_IDLE)
 	then
@@ -71,6 +78,7 @@ function CourierUsageThink()
 		then
 			courier.idletime=GameTime()
 		else
+			DebugTalk(GameTime()-courier.idletime.." :idletime")
 			if(GameTime()-courier.idletime>10)
 			then
 				npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_RETURN)
@@ -351,6 +359,35 @@ function UseAbility(AbilitiesReal,cast)
 	end
 end
 
+function GiveToMidLaner()
+	local teamPlayers = GetTeamPlayers(GetTeam())
+	local target = nil;
+	for k,v in pairs(teamPlayers)
+	do
+		local member = GetTeamMember(k);
+		if member ~= nil and not member:IsIllusion() and member:IsAlive() then
+			local num_stg = GetItemCount(member, "item_tango_single"); 
+			local num_ff = GetItemCount(member, "item_faerie_fire"); 
+			if num_ff > 0 and num_stg < 1 then
+				return member;
+			end
+		end
+	end
+	return nil;
+end
+
+function GetItemCount(unit, item_name)
+	local count = 0;
+	for i = 0, 8 
+	do
+		local item = unit:GetItemInSlot(i)
+		if item ~= nil and item:GetName() == item_name then
+			count = count + 1;
+		end
+	end
+	return count;
+end
+
 --BOT EXPER's code
 function UnImplementedItemUsage()
 	local npcBot=GetBot()
@@ -361,13 +398,48 @@ function UnImplementedItemUsage()
 	
 	local npcTarget = npcBot:GetTarget();
 	
-	local arm=IsItemAvailable("item_armlet");
-	if arm~=nil and arm:IsFullyCastable() then
-		if #tableNearbyEnemyHeroes == 0 and arm:GetToggleState( ) then
-			npcBot:Action_UseAbility(arm);
-			return;
+	local itg=IsItemAvailable("item_tango");
+	if(giveTime==nil)
+	then
+		giveTime=DotaTime()
+	end
+	if itg~=nil and itg:IsFullyCastable() then
+		local tCharge = itg:GetCurrentCharges()
+		if DotaTime() > -80 and DotaTime() < 0 and npcBot:DistanceFromFountain() == 0 
+		   and npcBot:GetAssignedLane() ~= LANE_MID and tCharge > 3 and DotaTime() > giveTime + 2.0 then
+			local target = GiveToMidLaner()
+			if target ~= nil then
+				npcBot:ActionImmediate_Chat(string.gsub(npcBot:GetUnitName(),"npc_dota_hero_","")..
+						" giving tango to "..
+						string.gsub(target:GetUnitName(),"npc_dota_hero_","")
+						, false);
+				npcBot:Action_UseAbilityOnEntity(itg, target);
+				giveTime = DotaTime();
+				return;
+			end
+		elseif npcBot:GetActiveMode() == BOT_MODE_LANING  and tCharge > 1 and DotaTime() > giveTime + 2.0 then
+			local allies = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+			for _,ally in pairs(allies)
+			do
+				local tangoSlot = ally:FindItemSlot('item_tango');
+				if ally:GetUnitName() ~= npcBot:GetUnitName() and not ally:IsIllusion() 
+				   and tangoSlot == -1 and GetItemCount(ally, "item_tango_single") == 0 
+				then
+					npcBot:Action_UseAbilityOnEntity(itg, ally);
+					giveTime = DotaTime();
+					return
+				end
+			end
 		end
 	end
+	
+	-- local arm=IsItemAvailable("item_armlet");
+	-- if arm~=nil and arm:IsFullyCastable() then
+		-- if #tableNearbyEnemyHeroes == 0 and arm:GetToggleState( ) then
+			-- npcBot:Action_UseAbility(arm);
+			-- return;
+		-- end
+	-- end
 	
 	local mg=IsItemAvailable("item_enchanted_mango");
 	if mg~=nil and mg:IsFullyCastable() then

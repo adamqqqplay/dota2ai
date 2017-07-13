@@ -177,7 +177,7 @@ Consider[1]=function()
 	-- If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if((ManaPercentage>0.6 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )
+		if((ManaPercentage>0.7 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )
 		then
 			if (WeakestEnemy~=nil)
 			then
@@ -210,7 +210,7 @@ Consider[1]=function()
 	then
 		if ( #enemys>=1) 
 		then
-			if (ManaPercentage>0.5 or npcBot:GetMana()>ComboMana and AbilitiesReal[abilityNumber]:GetLevel()>=1)
+			if (ManaPercentage>0.7 or npcBot:GetMana()>ComboMana )
 			then
 				if (WeakestEnemy~=nil)
 				then
@@ -222,9 +222,9 @@ Consider[1]=function()
 			end
 		end
 		
-		if (#creeps >= 3 ) 
+		if (#creeps >= 3 and #enemys<=1) 
 		then
-			if (ManaPercentage>0.5 or npcBot:GetMana()>ComboMana and AbilitiesReal[abilityNumber]:GetLevel()>=1)
+			if (ManaPercentage>0.7 or npcBot:GetMana()>ComboMana )
 			then
 					if ( CanCast[abilityNumber]( creeps[1] )and GetUnitToUnitDistance(npcBot,creeps[1])< CastRange + 75*#allys )
 					then

@@ -279,22 +279,24 @@ function ItemPurchase(ItemsToBuy)
 			SellSpecifiedItem("item_magic_wand")
 			SellSpecifiedItem("item_magic_stick")
 			SellSpecifiedItem("item_urn_of_shadows")
-			SellSpecifiedItem("item_wind_lace")
-			SellSpecifiedItem("item_ring_of_aquila")
-			SellSpecifiedItem("item_ring_of_basilius")
+			SellSpecifiedItem("item_drums_of_endurance")
 		end
-		if(GameTime()>40*60 and npcBot:GetGold()>2200 and (GetItemIncludeBackpack("item_travel_boots")==nil and GetItemIncludeBackpack("item_travel_boots_2")==nil) and npcBot.HaveTravelBoots~=true )
+		if(GameTime()>40*60 and npcBot:GetGold()>2200 and (item_travel_boots[1]==nil and item_travel_boots[2]==nil) and npcBot.HaveTravelBoots~=true )
 		then
-			SellSpecifiedItem("item_arcane_boots")
-			SellSpecifiedItem("item_phase_boots")
-			SellSpecifiedItem("item_power_treads_agi")
-			SellSpecifiedItem("item_power_treads_int")
-			SellSpecifiedItem("item_power_treads_str")
-			SellSpecifiedItem("item_tranquil_boots")
 			table.insert(ItemsToBuy,"item_boots")
 			table.insert(ItemsToBuy,"item_recipe_travel_boots")
 			npcBot.HaveTravelBoots=true
 		end
+	end
+	
+	if(item_travel_boots[1]~=nil or item_travel_boots[2]~=nil)
+	then
+		SellSpecifiedItem("item_arcane_boots")
+		SellSpecifiedItem("item_phase_boots")
+		SellSpecifiedItem("item_power_treads_agi")
+		SellSpecifiedItem("item_power_treads_int")
+		SellSpecifiedItem("item_power_treads_str")
+		SellSpecifiedItem("item_tranquil_boots")
 	end
 	
 	if(npcBot:DistanceFromFountain()<=1000 or npcBot:GetHealth()/npcBot:GetMaxHealth()<=0.4)
@@ -305,55 +307,19 @@ function ItemPurchase(ItemsToBuy)
 	
 	if ( npcBot:GetGold() >= GetItemCost( sNextItem ) )
 	then
-		local DeterminationShop="HomeShop"
-		
 		if(npcBot.secretShopMode~=true and npcBot.sideShopMode ~=true)
 		then
-			if(IsItemPurchasedFromSecretShop( sNextItem ) and IsItemPurchasedFromSideShop( sNextItem ))
+			if (IsItemPurchasedFromSideShop( sNextItem )) 
 			then
-				if(npcBot:DistanceFromSecretShop() >= npcBot:DistanceFromSideShop())
-				then
-					DeterminationShop="SideShop"
-				else
-					DeterminationShop="SecretShop"
-				end
-			else
-				if (IsItemPurchasedFromSideShop( sNextItem ) and npcBot:DistanceFromSideShop() <=3000) then
-					DeterminationShop="SideShop"
-				elseif (IsItemPurchasedFromSecretShop( sNextItem )) then
-					DeterminationShop="SecretShop"
-				end
-			end
-			
-			if ( DeterminationShop=="SecretShop" ) then
-				--DebugTalk("secretShopMode = true "..sNextItem)
-				npcBot.secretShopMode = true;
-				npcBot.sideShopMode = false;
-			elseif ( DeterminationShop=="SideShop" ) then
-				--DebugTalk("npcBot.sideShopMode = true "..sNextItem)
-				npcBot.secretShopMode = false;
 				npcBot.sideShopMode = true;
-				
+			end
+			if (IsItemPurchasedFromSecretShop( sNextItem )) 
+			then
+				npcBot.secretShopMode = true;
 			end
 		end
 		
-	
-		
 		local PurchaseResult
-		--[[if ( npcBot.secretShopMode and  npcBot:DistanceFromSecretShop() > 0
-			and ( npcBot:GetActiveMode() == BOT_MODE_ROAM
-			or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM
-			or npcBot:GetActiveMode() == BOT_MODE_ATTACK
-			or npcBot:GetActiveMode() == BOT_MODE_RETREAT
-			or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY
-			or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP
-			or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID
-			or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT
-			or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP 
-			or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID 
-			or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) ) then
-			return;
-		end]]--
 		if(npcBot.sideShopMode == true)
 		then
 			if(npcBot:DistanceFromSideShop() <= 200)
@@ -375,10 +341,6 @@ function ItemPurchase(ItemsToBuy)
 				if(courier:DistanceFromSecretShop() <= 200)
 				then
 					PurchaseResult=GetCourier(0):ActionImmediate_PurchaseItem( sNextItem )
-					if(PurchaseResult==PURCHASE_ITEM_SUCCESS)
-					then
-						npcBot:ActionImmediate_Courier(GetCourier(0), COURIER_ACTION_TRANSFER_ITEMS)
-					end
 				end
 			end
 		else
@@ -401,11 +363,18 @@ function ItemPurchase(ItemsToBuy)
 		then
 			table.remove( ItemsToBuy, 1 )
 		end
+		if(PurchaseResult==PURCHASE_ITEM_INSUFFICIENT_GOLD )
+		then
+			npcBot.secretShopMode = false;
+			npcBot.sideShopMode = false;
+		end
 		if(PurchaseResult==PURCHASE_ITEM_NOT_AT_SECRET_SHOP)
 		then
-			npcBot.secretShopMode = true
+			npcBot.secretShopMode = false
 		end
-		
+	else
+		npcBot.secretShopMode = false;
+		npcBot.sideShopMode = false;
 	end
 
 end
@@ -683,7 +652,7 @@ function BuySupportItem()
 					npcBot:ActionImmediate_PurchaseItem( "item_dust" );
 				end
 				
-				if(DotaTime()>=25*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1)
+				if(DotaTime()>=28*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1)
 				then
 					npcBot:ActionImmediate_PurchaseItem( "item_gem" );
 				end

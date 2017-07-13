@@ -7,38 +7,41 @@ require( GetScriptDirectory().."/utility" )
 local ItemsToBuy = 
 { 
 	"item_tango",
-	"item_clarity",
+	"item_flask",
 	"item_branches",
 	"item_branches",
-	"item_faerie_fire",
-	"item_bottle",
-	"item_boots",
-	"item_energy_booster",			--秘法鞋
-	
-	"item_gauntlets",
 	"item_circlet",
-	"item_recipe_bracer",
-	"item_wind_lace",
-	"item_sobi_mask",
-	"item_recipe_ancient_janggo",	--战鼓
-
-	"item_void_stone",
-	"item_energy_booster",
-	"item_recipe_aether_lens",		--以太之镜7.06
+		
+	"item_boots",
+	"item_blades_of_attack",
+	"item_blades_of_attack",		--相位
+	"item_magic_stick",				--大魔棒
 	
+	"item_ring_of_health",
 	"item_staff_of_wizardry",
+	"item_recipe_force_staff",		--推推7.06
+	
+	"item_ring_of_health",
 	"item_void_stone",
-	"item_recipe_cyclone",
-	"item_wind_lace",				--风杖
+	"item_ultimate_orb",
+	"item_recipe_sphere",			--林肯
+	
+	"item_gloves",
+	"item_mithril_hammer",
+	"item_recipe_maelstrom",		--电锤
 	
 	"item_point_booster",
 	"item_staff_of_wizardry",
 	"item_ogre_axe",
 	"item_blade_of_alacrity",		--蓝杖
 	
-	"item_mystic_staff",
-	"item_ultimate_orb",
-	"item_void_stone",				--羊刀
+	"item_hyperstone",
+	"item_recipe_mjollnir",			--大雷锤
+	
+	"item_demon_edge",
+	"item_javelin",
+	"item_javelin",					--金箍棒
+	
 }
 
 utility.checkItemBuild(ItemsToBuy)

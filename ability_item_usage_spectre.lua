@@ -83,7 +83,7 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
-Consider[1]=function()	--Target Ability Example
+Consider[1]=function()
 	local abilityNumber=1
 	--------------------------------------
 	-- Generic Variable Setting
@@ -175,7 +175,7 @@ Consider[1]=function()	--Target Ability Example
 			then
 				if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
 				then					
-					return BOT_ACTION_DESIRE_LOW,WeakestCreep,"Target";
+					return BOT_ACTION_DESIRE_LOW,WeakestCreep:GetLocation(),"Location";
 				end
 			end		
 		end
@@ -188,7 +188,7 @@ Consider[1]=function()	--Target Ability Example
 		then
 			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 			then
-				return BOT_ACTION_DESIRE_LOW, WeakestCreep,"Target";
+				return BOT_ACTION_DESIRE_LOW,WeakestCreep:GetLocation(),"Location";
 			end
 		end
 	end
@@ -221,7 +221,7 @@ Consider[1]=function()	--Target Ability Example
 			then
 					if ( CanCast[abilityNumber]( creeps[1] ) )
 					then
-						return BOT_ACTION_DESIRE_LOW, creeps[1],"Target";
+						return BOT_ACTION_DESIRE_LOW, creeps[1]:GetLocation(),"Location";
 					end
 			end
 		end

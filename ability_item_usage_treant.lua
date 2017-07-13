@@ -104,7 +104,7 @@ local castLocation = {}
 local castType = {}
 
 --Target Judement
-local CanCast={utility.NCanCast,utility.NCanCast,CanCast3,utility.UCanCast,CanCast5}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.NCanCast}
 
 function enemyDisabled(npcEnemy)
 	if npcEnemy:IsRooted( ) or npcEnemy:IsStunned( ) or npcEnemy:IsHexed( ) then
@@ -160,7 +160,7 @@ function AbilityUsageThink()
 	castDesire[2], castTarget[2] = Consider2();
 	castDesire[3], castTarget[3] = Consider3();
 	castDesire[4] = Consider4();
-	castDesire[5], castTarget[5] = Consider4();
+	castDesire[5], castTarget[5] = Consider5();
 	---------------------------------debug--------------------------------------------
 	if(debugmode==true) then
 		if(npcBot.LastSpeaktime==nil)

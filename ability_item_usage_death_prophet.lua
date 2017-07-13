@@ -1,50 +1,34 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.1
+--	Ranked Matchmaking AI v1.1 NewStructure
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
 --------------------------------------
--- Load Utility Function Library
+-- General Initialization
 --------------------------------------
 require(GetScriptDirectory() ..  "/utility")
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
---------------------------------------
--- Hero Area Local Variable Setting
---------------------------------------
-local npcBot = GetBot()
-local ComboMana = 0
-local debugmode=false
 
+local debugmode=false
+local npcBot = GetBot()
 local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
 
-for i=0,23,1 do
-	local ability=npcBot:GetAbilityInSlot(i)
-	if(ability~=nil)
-	then
-		if(ability:IsTalent()==true)
-		then
-			table.insert(Talents,ability:GetName())
-		else
-			table.insert(Abilities,ability:GetName())
-			table.insert(AbilitiesReal,ability)
-		end
-	end
-end
+ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
 local AbilityToLevelUp=
 {
 	Abilities[3],
 	Abilities[1],
-	Abilities[2],
 	Abilities[3],
 	Abilities[1],
+	Abilities[3],
 	Abilities[4],
-	Abilities[1],
-	Abilities[1],
 	Abilities[3],
+	Abilities[1],
+	Abilities[1],
 	"talent",
-	Abilities[3],
+	Abilities[2],
 	Abilities[4],
 	Abilities[2],
 	Abilities[2],
@@ -63,7 +47,7 @@ local AbilityToLevelUp=
 
 local TalentTree={
 	function()
-		return Talents[2]
+		return Talents[1]
 	end,
 	function()
 		return Talents[4]
@@ -72,12 +56,9 @@ local TalentTree={
 		return Talents[6]
 	end,
 	function()
-		return Talents[7]
+		return Talents[8]
 	end
 }
---------------------------------------
--- Level Ability and Talent
---------------------------------------
 
 -- check skill build vs current level
 utility.CheckAbilityBuild(AbilityToLevelUp)
@@ -89,128 +70,20 @@ end
 --------------------------------------
 -- Ability Usage Thinking
 --------------------------------------
-local castDesire = {}
-local castTarget = {}
-local castType = {}
-
---Target Judement
-function CanCast1( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable();
-end
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast}
+local cast={} cast.Desire={} cast.Target={} cast.Type={}
+local Consider ={}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
---Combo Variable Getting
-local function GetComboDamage()
-	return npcBot:GetOffensivePower()
+function GetComboDamage()
+	return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
 end
 
-local function GetComboMana()
-	
-	local tempComboMana=0
-	if AbilitiesReal[1]:IsFullyCastable()
-	then
-		tempComboMana=tempComboMana+AbilitiesReal[1]:GetManaCost()
-	end
-	if AbilitiesReal[2]:IsFullyCastable()
-	then
-		tempComboMana=tempComboMana+AbilitiesReal[2]:GetManaCost()
-	end
-	if AbilitiesReal[4]:IsFullyCastable() or AbilitiesReal[4]:GetCooldownTimeRemaining()<=30
-	then
-		tempComboMana=tempComboMana+AbilitiesReal[4]:GetManaCost()
-	end
-	
-	if AbilitiesReal[1]:GetLevel()<1 or AbilitiesReal[2]:GetLevel()<1 or AbilitiesReal[4]:GetLevel()<1
-	then
-		tempComboMana=300;
-	end
-	
-	ComboMana=tempComboMana
-	return
+function GetComboMana()
+	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
-function AbilityUsageThink()
-
-	-- Check if we're already using an ability
-	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
-	then 
-		return
-	end
-	
-	GetComboMana()
-	AttackRange=npcBot:GetAttackRange()
-	ManaPercentage=npcBot:GetMana()/npcBot:GetMaxMana()
-	HealthPercentage=npcBot:GetHealth()/npcBot:GetMaxHealth()
-	
-	-- Consider using each ability
-	castDesire[1], castTarget[1], castType[1] = Consider1();
-	castDesire[2], castTarget[2], castType[2] = Consider2();
-	castDesire[3], castTarget[3], castType[3] = 0
-	castDesire[4], castTarget[4], castType[4] = Consider4();
-	---------------------------------debug--------------------------------------------
-	if(debugmode==true) then
-			for i=1,#AbilitiesReal
-			do					
-				if ( castDesire[i] > 0 ) 
-				then
-					if (castType[i]==nil or castType[i]=="target") and castTarget[i]~=nil
-					then
-						utility.DebugTalk("try to use skill "..i.." at "..castTarget[i]:GetUnitName().." Desire= "..castDesire[i])
-					else
-						utility.DebugTalk("try to use skill "..i.." Desire= "..castDesire[i])
-					end
-				end
-			end
-	end
-	---------------------------------debug--------------------------------------------
-	local HighestDesire=0
-	local HighestDesireAbility=0
-	local HighestDesireAbilityBumber=0
-	for i,ability in pairs(AbilitiesReal)
-	do
-		if (castDesire[i]>HighestDesire)
-		then
-			HighestDesire=castDesire[i]
-			HighestDesireAbilityBumber=i
-		end
-	end
-	if( HighestDesire>0)
-	then
-		local j=HighestDesireAbilityBumber
-		local ability=AbilitiesReal[j]
-		if(castType[j]==nil)
-		then
-			if(utility.CheckFlag(ability:GetBehavior(),ABILITY_BEHAVIOR_NO_TARGET))
-			then
-				npcBot:Action_UseAbility( ability )
-				return
-			elseif(utility.CheckFlag(ability:GetBehavior(),ABILITY_BEHAVIOR_POINT))
-			then
-				npcBot:Action_UseAbilityOnLocation( ability , castTarget[j])
-				return
-			else
-				npcBot:Action_UseAbilityOnEntity( ability , castTarget[j])
-				return
-			end
-		else
-			if(castType[j]=="Target")
-			then
-				npcBot:Action_UseAbilityOnEntity( ability , castTarget[j])
-				return
-			elseif(castType[j]=="Location")
-			then
-				npcBot:Action_UseAbilityOnLocation( ability , castTarget[j])
-				return
-			else
-				npcBot:Action_UseAbility( ability )
-				return
-			end
-		end
-	end
-end
-
-function Consider1()
+Consider[1]=function()
 
 	local abilityNumber=1
 	--------------------------------------
@@ -323,10 +196,8 @@ function Consider1()
 
 end
 
-
-function Consider2()
-
-	local abilityNumber=2
+Consider[2]=function()
+local abilityNumber=2
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -338,6 +209,8 @@ function Consider2()
 	
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
+	local Radius = ability:GetAOERadius()
+	local CastPoint=ability:GetCastPoint()
 	
 	local HeroHealth=10000
 	local CreepHealth=10000
@@ -347,43 +220,101 @@ function Consider2()
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	
-	-- Check for a channeling enemy
-	for _,enemy in pairs( enemys )
-	do
-		if ( enemy:IsChanneling() and CanCast[abilityNumber]( enemy )) 
-		then
-			return BOT_ACTION_DESIRE_HIGH, enemy
-		end
-	end
-	
-	-- If we're in a teamfight, use it on the scariest enemy
-	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
-	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 
+	--try to kill enemy hero
+	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
 	then
-
-		local npcMostDangerousEnemy = nil;
-		local nMostDangerousDamage = 0;
-
-		for _,npcEnemy in pairs( enemys )
-		do
-			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy))
+		if (WeakestEnemy~=nil)
+		then
+			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				local Damage2 = npcEnemy:GetEstimatedDamageToTarget( false, npcBot, 3.0, DAMAGE_TYPE_ALL );
-				if ( Damage2 > nMostDangerousDamage )
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
-					nMostDangerousDamage = Damage2;
-					npcMostDangerousEnemy = npcEnemy;
+					return BOT_ACTION_DESIRE_HIGH,utility.GetUnitsTowardsLocation(npcBot,WeakestEnemy,GetUnitToUnitDistance(npcBot,WeakestEnemy)+100); 
 				end
 			end
 		end
-
-		if ( npcMostDangerousEnemy ~= nil )
+	end
+	
+	-- Check for a channeling enemy
+	for _,npcEnemy in pairs( enemys )
+	do
+		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy ) and not npcEnemy:HasModifier("modifier_teleporting") and not npcEnemy:HasModifier("modifier_boots_of_travel_incoming")) 
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy;
+			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation( CastPoint ) 
+		end
+	end
+	--------------------------------------
+	-- Mode based usage
+	--------------------------------------
+	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	if ( (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) or (npcBot:WasRecentlyDamagedByAnyHero(2.0) and #enemys>=1) ) 
+	then
+		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
+		if ( locationAoE.count >= 2 ) 
+		then
+			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
+		end
+		
+		for _,npcEnemy in pairs( enemys )
+		do
+			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 3.0 ) and GetUnitToUnitDistance(npcBot,npcEnemy)<= 400) 
+			then
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation( CastPoint ) 
+			end
 		end
 	end
 	
-	--try to kill enemy hero
+	-- If we're going after someone
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+	then
+		local locationAoE = npcBot:FindAoELocation( false, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
+		if ( locationAoE.count >= 2 ) 
+		then
+			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
+		end
+		
+		local npcEnemy = npcBot:GetTarget();
+
+		if ( npcEnemy ~= nil ) 
+		then
+			if (CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)<= CastRange)
+			then
+				return BOT_ACTION_DESIRE_MODERATE, utility.GetUnitsTowardsLocation(npcBot,npcEnemy,GetUnitToUnitDistance(npcBot,npcEnemy)+100)
+			end
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE, 0;
+	
+end
+
+Consider[3]=function()
+	local abilityNumber=3
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber];
+	
+	if not ability:IsFullyCastable() then
+		return BOT_ACTION_DESIRE_NONE, 0;
+	end
+	
+	local CastRange = ability:GetCastRange();
+	local Damage = ability:GetAbilityDamage();
+	local CastPoint = ability:GetCastPoint();
+	
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+	--------------------------------------
+	-- Global high-priorty usage
+	--------------------------------------
+	--Try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
 	then
 		if (WeakestEnemy~=nil)
@@ -401,44 +332,68 @@ function Consider2()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
+	--protect myself
+	local enemys2 = npcBot:GetNearbyHeroes( 300, true, BOT_MODE_NONE );
+	if(npcBot:WasRecentlyDamagedByAnyHero(5))
+	then
+		for _,npcEnemy in pairs( enemys2 )
+		do
+			if ( CanCast[abilityNumber]( npcEnemy ) )
+			then
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy
+			end
+		end
+	end
+	
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
-		local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( CastRange, true, BOT_MODE_NONE );
-		for _,npcEnemy in pairs( tableNearbyEnemyHeroes )
+		for _,npcEnemy in pairs( enemys )
 		do
-			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) 
+			if ( CanCast[abilityNumber]( npcEnemy )) 
 			then
-				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy)) 
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy;
+			end
+		end
+	end
+	
+	-- If my mana is enough,use it at enemy
+	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+	then
+		if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and HealthPercentage<=0.8 )
+		then
+			if (WeakestEnemy~=nil)
+			then
+				if ( CanCast[abilityNumber]( WeakestEnemy ) )
 				then
-					return BOT_ACTION_DESIRE_HIGH, npcEnemy;
+					return BOT_ACTION_DESIRE_LOW,WeakestEnemy;
 				end
 			end
 		end
 	end
-
+	
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcTarget = npcBot:GetTarget();
+		local npcEnemy = npcBot:GetTarget();
 
-		if ( npcTarget ~= nil ) 
+		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcTarget ) and not enemyDisabled(npcTarget) and GetUnitToUnitDistance(npcBot,npcTarget)< CastRange + 75*#allys)
+			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcTarget
+				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0 
+	return BOT_ACTION_DESIRE_NONE, 0;
+	
 end
 
-function Consider4()
-
+Consider[4]=function()
 	local abilityNumber=4
 	--------------------------------------
 	-- Generic Variable Setting
@@ -449,61 +404,92 @@ function Consider4()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
-	local CastRange = 600
-	local Damage = ability:GetAbilityDamage();
+	local CastRange = ability:GetCastRange();
+	local Damage = 0--ability:GetAbilityDamage();
+	local Radius = ability:GetAOERadius()
 	
 	local HeroHealth=10000
 	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local towers = npcBot:GetNearbyTowers(CastRange+300,true)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
-	local towers = npcBot:GetNearbyTowers(CastRange+300,true)
-	local towers2 = npcBot:GetNearbyTowers(CastRange+300,false)
-	
-	--try to kill enemy hero
-	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
-	then
-		if (WeakestEnemy~=nil)
+	--------------------------------------
+	-- Global high-priorty usage
+	--------------------------------------
+	local disabledheronum=0
+	for _,temphero in pairs(enemys)
+	do
+		if (enemyDisabled(temphero) or temphero:GetCurrentMovementSpeed()<=200)
 		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) )
-			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
-				then
-					return BOT_ACTION_DESIRE_HIGH
-				end
-			end
+			disabledheronum=disabledheronum+1
 		end
 	end
-	
-	--------------------------------------
-	-- Mode based usage
-	--------------------------------------
-		-- If we're in a teamfight, use it on the scariest enemy
-	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
-	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 
+			
+	if ( npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		if ( npcMostDangerousEnemy ~= nil )
+		if ( #enemys+disabledheronum >= 3) 
 		then
 			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 	
-	-- If we're pushing or defending a lane and can hit 4+ creeps, go for it
+	-- If we're pushing or defending a lane
 	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
 		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
+		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT  ) 
 	then
-		if ( #towers+#towers2 >= 1 ) 
+		if ( #enemys+#creeps<=2 and #towers>=1) 
 		then
-			return BOT_ACTION_DESIRE_LOW+0.01
+			if (ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
+			then
+				return BOT_ACTION_DESIRE_LOW
+			end
 		end
 	end
-	return BOT_ACTION_DESIRE_NONE, 0 
+	
+	-- If we're going after someone
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+	then
+		local npcEnemy = npcBot:GetTarget();
+
+		if ( npcEnemy ~= nil ) 
+		then
+			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcEnemy,npcBot)<=Radius)
+			then
+				return BOT_ACTION_DESIRE_MODERATE
+			end
+		end
+	end
+	
+	return BOT_ACTION_DESIRE_NONE;
+end
+
+function AbilityUsageThink()
+
+	-- Check if we're already using an ability
+	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
+	then 
+		return
+	end
+	
+	ComboMana=GetComboMana()
+	AttackRange=npcBot:GetAttackRange()
+	ManaPercentage=npcBot:GetMana()/npcBot:GetMaxMana()
+	HealthPercentage=npcBot:GetHealth()/npcBot:GetMaxHealth()
+	
+	cast=ability_item_usage_generic.ConsiderAbility(AbilitiesReal,Consider)
+	---------------------------------debug--------------------------------------------
+	if(debugmode==true)
+	then
+		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
+	end
+	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
 end
 
 function CourierUsageThink() 

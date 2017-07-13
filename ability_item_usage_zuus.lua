@@ -567,7 +567,7 @@ function Consider5()
 	local CastRange = ability:GetCastRange();
 	
 	local CreepHealth=10000;
-	local enemys = npcBot:GetNearbyHeroes( CastRange + 300, true, BOT_MODE_NONE );
+	local enemys = npcBot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE );
 	local WeakestEnemy,CreepHealth=utility.GetWeakestUnit(enemys)
 	
 	local tower=nil

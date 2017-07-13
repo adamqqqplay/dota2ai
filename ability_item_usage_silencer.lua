@@ -316,7 +316,7 @@ function Consider1()
 		then
 			if (WeakestEnemy~=nil)
 			then
-				if ( CanCast2( WeakestEnemy ) )
+				if ( CanCast[abilityNumber]( WeakestEnemy ) )
 				then
 					return BOT_ACTION_DESIRE_LOW,utility.GetUnitsTowardsLocation(WeakestEnemy,npcBot,Radius/2);
 				end
@@ -586,7 +586,7 @@ function Consider4()
 	end
 	
 	local CastRange = ability:GetCastRange();
-	local Damage = ability:GetSpecialValueFloat("duration")*ability:GetSpecialValueInt("damage")
+	local Damage = 0
 	local Radius = ability:GetAOERadius()
 	
 	local HeroHealth=10000
@@ -610,22 +610,18 @@ function Consider4()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		if ( #allys+#enemys >= 4 ) 
+		if ( #allys+#enemys >= 5 ) 
 		then
-
 			local npcMostDangerousEnemy = nil;
 			local nMostDangerousDamage = 0;
 
 			for _,npcEnemy in pairs( enemys )
 			do
-				if ( CanCast4( npcEnemy ) )
+				local Damage = npcEnemy:GetEstimatedDamageToTarget( false, npcBot, 3.0, DAMAGE_TYPE_ALL );
+				if ( Damage > nMostDangerousDamage )
 				then
-					local Damage = npcEnemy:GetEstimatedDamageToTarget( false, npcBot, 3.0, DAMAGE_TYPE_ALL );
-					if ( Damage > nMostDangerousDamage )
-					then
-						nMostDangerousDamage = Damage;
-						npcMostDangerousEnemy = npcEnemy;
-					end
+					nMostDangerousDamage = Damage;
+					npcMostDangerousEnemy = npcEnemy;
 				end
 			end
 

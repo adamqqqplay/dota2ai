@@ -23,12 +23,13 @@ local ItemsToBuy =
 	"item_broadsword",
 	"item_robe",
 	"item_chainmail",				--刃甲
-	"item_ultimate_orb",
-	"item_recipe_silver_edge",		--大隐刀
 	
 	"item_platemail",
 	"item_mystic_staff",
 	"item_recipe_shivas_guard" ,	--希瓦
+	
+	"item_ultimate_orb",
+	"item_recipe_silver_edge",		--大隐刀
 	
 	"item_point_booster",		
 	"item_staff_of_wizardry",

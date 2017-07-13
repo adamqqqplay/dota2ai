@@ -72,7 +72,40 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+
+local function CanCast2(npcTarget)
+	if(utility.NCanCast(npcTarget)==false)
+	then
+		return false
+	end
+	
+	if(npcTarget:GetTeam()==npcBot:GetTeam())
+	then
+		local AttackTarget=npcTarget:GetAttackTarget()
+		if(AttackTarget==nil)
+		then
+			return true
+		else
+			return false
+		end
+	else
+		local allys = npcTarget:GetNearbyHeroes( 600, false, BOT_MODE_ATTACK );
+		local IsAttacked=false
+		for i,ally in pairs(allys)
+		do
+			local AttackTarget=ally:GetAttackTarget()
+			if(AttackTarget~=nil and AttackTarget==npcTarget)
+			then
+				IsAttacked=true
+			end
+		end
+		return IsAttacked
+	end
+	
+	return true
+end
+
+local CanCast={utility.NCanCast,CanCast2,utility.NCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -329,7 +362,9 @@ Consider[2]=function()
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
+			local allys = npcEnemy:GetNearbyHeroes( 600, false, BOT_MODE_ATTACK );
+			
+			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) )
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end

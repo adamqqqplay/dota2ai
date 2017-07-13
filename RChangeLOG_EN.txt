@@ -1,0 +1,87 @@
+Changelog:
+v1.0a(2017.2.3):Release beta
+v1.0b(2017.2.10):Now supported v7.02. 
+v1.0c(2017.2.14):Added huskar, phantom_assassin, crystal_maiden.
+Optimized the operation of picking up the runes.
+v1.0d(2017.2.23):Added centaur,doom,slardar,veno.
+Now the ai team will pick random lineup.
+v1.0e(2017.3.1):Added ursa,silencer,skeleton_king,lion,legion_commander.
+V1.1 (2017.3.19):
+1. Added luna, necrolyte, undying, treant, tidal hunter, slark, riki, spirit_breaker, vengefulspirit, clinkz.
+2. Optimize the decision to buyback, AI only buyback at a critical moment now.
+3. Temporarily enable the default lane assignment system, AI will now leave the lane that player wants.
+4. Added the usage of shrine, AI will take the initiative to use shrine and notify other players now.
+5. Optimize the operation of the courier, the courier will stay in the secret store for 10 seconds, rather than immediately go home. AI will use the courier's burst spped skill now. The messenger will avoid the enemy's attack.
+6. Fix the hero sometimes follow the courier bug.
+7. Delayed AI push time, when their level is low, they will tend to level up at lane.
+8. Improved Chaos Knight and viper's item building.
+9. Improved a number of skills casting details.
+10.AI will purchase support items, including wards and dusts now.
+11. Hero talent upgrade is no longer affected by the dota update.
+12. Added the operation to buy items at the sideshops.
+v1.1b(2017.3.28)
+Added qop,dazzle,leshrac,jakiro,drow ranger.
+Fixed shrines' bug.
+Fixed item building bug when human player bought courier.
+Improved spirit breaker's charge of darkness usage.
+v1.1c(2017.4.15)
+Added dk,stealer,bane,lich,nevermore.
+Fixed the bug of item building.
+Updated Tranquil Boots' recipe.
+Added the use of some items.
+v1.1d(2017.5.7)
+1.Added 10 heroes:night stalker, juggernaut, axe, razor, sand king,oracle, sniper, blood seeker, bristle back and earth shaker
+2.Fixed life stealer attempt to use ult on enemy hero.
+3.Improved the usage of shrine.
+4.Fixed item picking.
+5.Improved spirit breaker's charge usage, he will use it more carefully.
+6.Improved crystal maiden's nova usage.
+7.AI will not pick rune when human player coming.
+8.Improved usage and puchase of Anti-hidden item.
+V1.1e (2017.5.16)
+1. Updated the 7.06 item recipe.
+2. Now all heroes will try to purchase six items.
+3. Optimized the item building of some heroes.
+4. Improved the warding system (thanks to Improved Default Bots)
+5. Fixed the bot will use tower glyph after tower destroyed.
+6. Fixed the Queen of pain stucked in the woods.
+7. Fixed the Axe the probability of stuck after blink.
+V1.1f (2017.5.21)
+1. Added the Spectre, Sven, winter wyvern, pugna, antimage, faceless void.
+2. Fixed Lion can not use ultimate ability.
+3. Fixed some heroes (oracle, drow ranger, earthshaker, silence) items building error.
+4. Fixed some heroes who have blink that may be stuck in the woods.
+5. Fixed the logic of the spirit breaker charge into the crowd, and now he will only charge into crowd with allys' help.
+6. Improved spirit breaker's charge, and now he will never charge into the enemy high ground in the early game. 
+7. Improved necrolyte's ultimate ability, and now he will use the ult move earlier
+8. Fixed treant can not use the tree eyes.
+9. Improved use of riki's ultimate ability, and now he will use ult when the nearby enemy is enough.
+10. Improved use of all blink ability.
+11. AI's hero selection time will be delayed by 10 seconds.
+12. A slight increase in script performance.
+v1.1g(2017.6.27)
+1. Improved AI to be more cautious when they into the side shop.
+2. Improved the purchase of anti-invisible item.
+3. Huskar, chaos knight now will build armlet.
+4. AI will buy gems in the later game.
+5. Most heroes will not waste skills when enemy has immune buff such as abaddon's borrowed time, winter wyvern's winters curse, Linken's Sphere.
+6. Improved dazzle's ability 1 to save magic.
+7. Improved qop's ability 1 to reduce the tower diving.
+8. Improved winter wyvern's ability 3 to avoid interference with teammates to kill, and in more cases to help teammates in the non-combat state to restore life.
+9. Temporarily removed the signal when using shrine.
+Now the program uses the GPLv3 open source protocol license, the use of the source code should follow the agreement.
+v1.1h(2017.7.10)
+1. Added warlock, windrunner, omniknight, tiny, death prophet.
+2. Fixed lich can not level up talents correctly.
+3. Fixed lich can not bulid items correctly.
+4. Fixed skywrathmage,lina,huskar,abaddon can't use ability.
+5. Fixed a bug where the necrolyte would cause the game to crash.
+6. Improved some heroes item building.
+7. Improved pugna's decrepify usage.
+8. Fixed the bug that did not properly sell the other boots after buying the travel boots.
+9. Improved the ability usage of some heroes.
+10. Earthshaker will now buy ahalilius scepter.
+11. Fixed silencer do not use ultimate ability.
+12. Removed debugging information from the release version
+13. Fixed the bug of contending for the courier.
+14. Now AI will share the tango. (Thanks to BOT EXPERIMENT's author)

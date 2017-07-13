@@ -29,10 +29,10 @@ local ItemsToBuy =
 	"item_recipe_cyclone",
 	"item_wind_lace",				--风杖
 	
-	-- "item_point_booster",
-	-- "item_ogre_axe",
-	-- "item_staff_of_wizardry",
-	-- "item_blade_of_alacrity",	--蓝杖
+	"item_point_booster",
+	"item_ogre_axe",
+	"item_staff_of_wizardry",
+	"item_blade_of_alacrity",		--蓝杖
 	
 	"item_broadsword",
 	"item_blades_of_attack",

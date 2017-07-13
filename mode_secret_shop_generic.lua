@@ -10,7 +10,7 @@ function GetDesire()
 
 	local desire = 0.0;
 
-	if ( npcBot.secretShopMode == true and npcBot:GetGold() >= npcBot:GetNextItemPurchaseValue() and npcBot.secretShopMode~=true) then
+	if ( npcBot.secretShopMode == true and npcBot:GetGold() >= npcBot:GetNextItemPurchaseValue() and npcBot.sideShopMode~=true) then
 		d=npcBot:DistanceFromSecretShop()
 		if d<3000
 		then
