@@ -309,7 +309,7 @@ function ItemPurchase(ItemsToBuy)
 	then
 		if(npcBot.secretShopMode~=true and npcBot.sideShopMode ~=true)
 		then
-			if (IsItemPurchasedFromSideShop( sNextItem )) 
+			if (IsItemPurchasedFromSideShop( sNextItem ) and npcBot:DistanceFromSideShop() <= 3000) 
 			then
 				npcBot.sideShopMode = true;
 			end
