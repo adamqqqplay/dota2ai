@@ -250,7 +250,7 @@ Consider[2]=function()
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
 					npcBot:SetTarget(WeakestEnemy)
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
+					return BOT_ACTION_DESIRE_MODERATE,WeakestEnemy; 
 				end
 			end
 		end
@@ -267,7 +267,7 @@ Consider[2]=function()
 			then
 				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy)) 
 				then
-					return BOT_ACTION_DESIRE_HIGH, npcEnemy;
+					return BOT_ACTION_DESIRE_MODERATE, npcEnemy;
 				end
 			end
 		end

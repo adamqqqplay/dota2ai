@@ -23,8 +23,8 @@ local ItemsToBuy =
 	"item_staff_of_wizardry",
 	"item_recipe_force_staff",		--推推7.06
 	"item_staff_of_wizardry",
-	"item_void_stone",
 	"item_recipe_cyclone",
+	"item_void_stone",
 	"item_wind_lace",				--风杖
 	"item_point_booster",
 	"item_staff_of_wizardry",

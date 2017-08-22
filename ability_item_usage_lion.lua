@@ -19,21 +19,21 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 local AbilityToLevelUp=
 {
 	Abilities[1],
+	Abilities[2],
+	Abilities[1],
 	Abilities[3],
-	Abilities[2],
-	Abilities[2],
-	Abilities[2],
-	Abilities[4],
-	Abilities[2],
-	Abilities[1],
-	Abilities[1],
-	"talent",
 	Abilities[1],
 	Abilities[4],
+	Abilities[1],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
+	Abilities[4],
+	Abilities[2],
+	Abilities[2],
+	"talent",
+	Abilities[2],
 	"nil",
 	Abilities[4],
 	"nil",
@@ -50,10 +50,10 @@ local TalentTree={
 		return Talents[1]
 	end,
 	function()
-		return Talents[3]
+		return Talents[4]
 	end,
 	function()
-		return Talents[5]
+		return Talents[6]
 	end,
 	function()
 		return Talents[7]
@@ -173,7 +173,7 @@ Consider[1]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local locationAoE = npcBot:FindAoELocation( false, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
 		if ( locationAoE.count >= 2 ) 
 		then
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc,"Location"

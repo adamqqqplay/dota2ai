@@ -94,9 +94,6 @@ local castTarget = {}
 local castType = {}
 
 --Target Judement
-function CanCast1( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable();
-end
 local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast}
 local enemyDisabled=utility.enemyDisabled
 
@@ -322,7 +319,7 @@ function Consider1()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local locationAoE = npcBot:FindAoELocation( false, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 		if ( locationAoE.count >= 2 ) 
 		then
 			return BOT_ACTION_DESIRE_MODERATE, locationAoE.targetloc,"Location"

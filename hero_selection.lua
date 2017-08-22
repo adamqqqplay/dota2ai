@@ -160,16 +160,16 @@ hero_pool_test={
 hero_pool_my={
 		-- "npc_dota_hero_zuus",
 		-- "npc_dota_hero_skywrath_mage",
-		-- "npc_dota_hero_ogre_magi",
+		 "npc_dota_hero_ogre_magi",
 		-- "npc_dota_hero_chaos_knight",
 		-- "npc_dota_hero_viper",
 		
 		-- "npc_dota_hero_lina",
 		-- "npc_dota_hero_abaddon",
 		-- "npc_dota_hero_huskar",
-		-- "npc_dota_hero_phantom_assassin",
+		 "npc_dota_hero_phantom_assassin",
 		-- "npc_dota_hero_crystal_maiden",
-		-- "npc_dota_hero_shadow_shaman",
+		 "npc_dota_hero_shadow_shaman",
 		
 		-- "npc_dota_hero_ember_spirit",
 		-- "npc_dota_hero_centaur",
@@ -179,14 +179,14 @@ hero_pool_my={
 		
 		-- "npc_dota_hero_silencer",
 		-- "npc_dota_hero_skeleton_king",
-		--"npc_dota_hero_lion",
+		-- "npc_dota_hero_lion",
 		-- "npc_dota_hero_legion_commander",
 		-- "npc_dota_hero_ursa",
 		
 		-- "npc_dota_hero_luna",
 		-- "npc_dota_hero_necrolyte",
 		-- "npc_dota_hero_undying",
-		-- "npc_dota_hero_treant",
+		 "npc_dota_hero_treant",
 		-- "npc_dota_hero_tidehunter",
 		
 		-- "npc_dota_hero_slark",
@@ -207,7 +207,7 @@ hero_pool_my={
 		-- "npc_dota_hero_lich",
 		-- "npc_dota_hero_nevermore",
 		
-		-- "npc_dota_hero_night_stalker",
+		 "npc_dota_hero_night_stalker",
 		-- "npc_dota_hero_juggernaut",
 		-- "npc_dota_hero_axe",
 		-- "npc_dota_hero_razor",
@@ -225,17 +225,17 @@ hero_pool_my={
 		--	"npc_dota_hero_antimage",
 		--	"npc_dota_hero_faceless_void",
 		
-		"npc_dota_hero_warlock",
-		"npc_dota_hero_windrunner",
-		"npc_dota_hero_omniknight",
-		"npc_dota_hero_tiny",
-		"npc_dota_hero_death_prophet",
+		-- "npc_dota_hero_warlock",
+		-- "npc_dota_hero_windrunner",
+		 "npc_dota_hero_omniknight",
+		-- "npc_dota_hero_tiny",
+		-- "npc_dota_hero_death_prophet",
 		 
-		 "npc_dota_hero_sven",
-		 "npc_dota_hero_bounty_hunter",	--!
-		 "npc_dota_hero_pudge",			--!
-		 "npc_dota_hero_witch_doctor",	--!
-		 "npc_dota_hero_kunkka",			--!
+		 -- "npc_dota_hero_sven",
+		 -- "npc_dota_hero_bounty_hunter",	--!
+		 -- "npc_dota_hero_pudge",			--!
+		 -- "npc_dota_hero_witch_doctor",	--!
+		 -- "npc_dota_hero_kunkka",			--!
 }
 hero_pool_1={
 	"npc_dota_hero_chaos_knight",
@@ -251,7 +251,7 @@ hero_pool_1={
 	"npc_dota_hero_sniper",
 	"npc_dota_hero_sven",
 	"npc_dota_hero_spectre",
-	"npc_dota_hero_antimage",
+	--"npc_dota_hero_antimage",
 }
 hero_pool_2={
 	"npc_dota_hero_zuus",
@@ -277,7 +277,7 @@ hero_pool_3={
 	"npc_dota_hero_night_stalker",
 	"npc_dota_hero_axe",
 	"npc_dota_hero_razor",
-	"npc_dota_hero_sand_king",
+	--"npc_dota_hero_sand_king",
 	"npc_dota_hero_bloodseeker",
 	"npc_dota_hero_bristleback",
 	"npc_dota_hero_faceless_void",
@@ -309,7 +309,7 @@ hero_pool_5={
 	"npc_dota_hero_winter_wyvern",
 	"npc_dota_hero_warlock",
 }
-hero_pool_new={hero_pool_2,hero_pool_1,hero_pool_3,hero_pool_5,hero_pool_4}
+hero_pool_new={hero_pool_2,hero_pool_1,hero_pool_4,hero_pool_5,hero_pool_3}
 ----------------------------------------------------------------------------------------------------
 local debug_mode=false
 
@@ -443,3 +443,94 @@ function IsHumanPlayerReady()
 	
 end
 
+----------------------------------------------------------------------------------------------------
+-- BOT EXPERIMENT Author:Arizona Fauzie Link:http://steamcommunity.com/sharedfiles/filedetails/?id=837040016
+----------------------------------------------------------------------------------------------------
+function UpdateLaneAssignments()    
+	if GetGameMode() == GAMEMODE_AP then
+		--print("AP Lane Assignment")
+		return APLaneAssignment()
+	elseif GetGameMode() == GAMEMODE_CM then
+		--print("CM Lane Assignment")
+		return CMLaneAssignment()	
+	end
+   
+end
+
+function APLaneAssignment()
+
+	 local lanecount = {
+        [LANE_NONE] = 5,
+        [LANE_MID] = 1,
+        [LANE_TOP] = 2,
+        [LANE_BOT] = 2,
+    };
+	local lanes={}
+	if ( GetTeam() == TEAM_RADIANT )
+    then 
+		lanes={
+			[1] = LANE_MID,
+			[2] = LANE_BOT,
+			[3] = LANE_TOP,
+			[4] = LANE_BOT,
+			[5] = LANE_TOP,
+		}
+	elseif ( GetTeam() == TEAM_DIRE )
+	then
+		lanes = {
+			[1] = LANE_MID,
+			[2] = LANE_TOP,
+			[3] = LANE_BOT,
+			[4] = LANE_TOP,
+			[5] = LANE_BOT,
+		}
+	end
+	
+    local playercount = 0
+
+	local ids = GetTeamPlayers(GetTeam())
+	for i,v in pairs(ids) do
+		if not IsPlayerBot(v) then
+			playercount = playercount + 1
+		end
+	end
+	if(playercount>0)
+	then
+		for i=1,playercount do
+			local lane = GetLane( GetTeam(),GetTeamMember( i ) )
+			lanecount[lane] = lanecount[lane] - 1
+			lanes[i] = lane 
+		end
+	
+		for i=(playercount + 1), 5 do
+			if lanecount[LANE_MID] > 0 then
+				lanes[i] = LANE_MID
+				lanecount[LANE_MID] = lanecount[LANE_MID] - 1
+			elseif lanecount[LANE_TOP] > 0 then
+				lanes[i] = LANE_TOP
+				lanecount[LANE_TOP] = lanecount[LANE_TOP] - 1
+			else
+				lanes[i] = LANE_BOT
+			end
+		end
+	end
+  
+    return lanes
+end
+
+function GetLane( nTeam ,hHero )
+        local vBot = GetLaneFrontLocation(nTeam, LANE_BOT, 0)
+        local vTop = GetLaneFrontLocation(nTeam, LANE_TOP, 0)
+        local vMid = GetLaneFrontLocation(nTeam, LANE_MID, 0)
+        --print(GetUnitToLocationDistance(hHero, vMid))
+        if GetUnitToLocationDistance(hHero, vBot) < 2500 then
+            return LANE_BOT
+        end
+        if GetUnitToLocationDistance(hHero, vTop) < 2500 then
+            return LANE_TOP
+        end
+        if GetUnitToLocationDistance(hHero, vMid) < 2500 then
+            return LANE_MID
+        end
+        return LANE_NONE
+end

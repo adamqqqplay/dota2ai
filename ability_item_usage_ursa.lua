@@ -251,7 +251,7 @@ function Consider1()
 		CastRange=CastRange+1200
 		if(npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 		then
-			local locationAoE = npcBot:FindAoELocation( false, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 			if ( locationAoE.count >= 2 ) 
 			then
 				return BOT_ACTION_DESIRE_HIGH+0.05, locationAoE.targetloc,"blink";

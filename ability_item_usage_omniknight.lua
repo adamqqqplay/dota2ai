@@ -89,7 +89,7 @@ function GetAbilityTarget(npcTarget)
 	-- then
 		local Radius=AbilitiesReal[1]:GetAOERadius()
 		local tableNearbyEnemyHeroes = npcTarget:GetNearbyHeroes( Radius, true, BOT_MODE_NONE );
-		local tableNearbyEnemyCreeps = npcTarget:GetNearbyLaneCreeps( Radius, true );
+		local tableNearbyEnemyCreeps = npcTarget:GetNearbyCreeps( Radius, true );
 		if(tableNearbyEnemyCreeps~=nil)
 		then
 			for _,c in pairs(tableNearbyEnemyCreeps) 

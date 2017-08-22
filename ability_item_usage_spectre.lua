@@ -133,7 +133,7 @@ Consider[1]=function()
 	-- If we trapped by the trees
 	if(trees~=nil and #trees>=10 or (utility.PointToPointDistance(npcBot:GetLocation(),npcBot.Blink.Point)<=100 and DotaTime()-npcBot.Blink.Timer<10 and DotaTime()-npcBot.Blink.Timer>8))
 	then
-		return BOT_ACTION_DESIRE_HIGH, GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange),"location"
+		return BOT_ACTION_DESIRE_HIGH, npcBot:GetLocation(),"Location"
 	end
 	
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently

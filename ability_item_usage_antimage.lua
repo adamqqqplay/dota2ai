@@ -18,17 +18,17 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 local AbilityToLevelUp=
 {
+	Abilities[2],
 	Abilities[1],
-	Abilities[2],
-	Abilities[2],
+	Abilities[1],
 	Abilities[3],
-	Abilities[2],
+	Abilities[1],
 	Abilities[4],
+	Abilities[1],
 	Abilities[2],
-	Abilities[1],
-	Abilities[1],
+	Abilities[2],
 	"talent",
-	Abilities[1],
+	Abilities[2],
 	Abilities[4],
 	Abilities[3],
 	Abilities[3],
@@ -116,9 +116,9 @@ Consider[2]=function()
 			local enemys2= WeakestEnemy:GetNearbyHeroes(900,true,BOT_MODE_NONE)
 			if ( CanCast[abilityNumber]( WeakestEnemy ) and #enemys2<=2)
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana and GetUnitToUnitDistance(npcBot,WeakestEnemy) > 500)
 				then
-					return BOT_ACTION_DESIRE_HIGH,GetUnitsTowardsLocation(npcBot,WeakestEnemy,200); 
+					return BOT_ACTION_DESIRE_HIGH,GetUnitsTowardsLocation(npcBot,WeakestEnemy,CastRange+200); 
 				end
 			end
 		end
@@ -133,7 +133,7 @@ Consider[2]=function()
 	end
 	
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:DistanceFromFountain()>=2000 and (ManaPercentage>=0.6 or npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)) 
+	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:DistanceFromFountain()>=2000 and (ManaPercentage>=0.6 or npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH or HealthPercentage<=0.6)) 
 	then
 		return BOT_ACTION_DESIRE_HIGH, GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
 	end
@@ -153,9 +153,9 @@ Consider[2]=function()
 				local enemys2= npcEnemy:GetNearbyHeroes(900,false,BOT_MODE_NONE)
 				if (enemys2~=nil and #enemys2<=2)
 				then
-					if ( CanCast[abilityNumber]( npcEnemy )  and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
+					if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys and GetUnitToUnitDistance(npcBot,npcEnemy) > 500)
 					then
-						return BOT_ACTION_DESIRE_MODERATE, GetUnitsTowardsLocation(npcBot,npcEnemy,200);
+						return BOT_ACTION_DESIRE_MODERATE, GetUnitsTowardsLocation(npcBot,npcEnemy,CastRange+200);
 					end
 				end
 			end

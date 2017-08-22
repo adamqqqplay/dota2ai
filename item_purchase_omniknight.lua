@@ -30,10 +30,8 @@ local ItemsToBuy =
 	
 	"item_recipe_guardian_greaves",	--卫士胫甲
 	
-	"item_belt_of_strength", 
-	"item_ogre_axe",
-	"item_recipe_sange",
-	"item_talisman_of_evasion",		--天堂
+	"item_cloak",
+	"item_shadow_amulet",			--微光
 	
 	"item_point_booster",
 	"item_staff_of_wizardry",

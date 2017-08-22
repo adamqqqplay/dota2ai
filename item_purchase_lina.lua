@@ -12,10 +12,10 @@ local ItemsToBuy =
 	"item_branches",
 	"item_wind_lace",
 	"item_bottle",
-	"item_circlet",					--大魔棒
 	"item_boots",
-	"item_energy_booster",			--秘法鞋
+	"item_circlet",					--大魔棒
 	"item_magic_stick",	
+	"item_energy_booster",			--秘法鞋
 	"item_void_stone",
 	"item_energy_booster",
 	"item_recipe_aether_lens",		--以太之镜7.06

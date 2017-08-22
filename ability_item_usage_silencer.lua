@@ -359,6 +359,29 @@ function Consider2()
 	local creeps = npcBot:GetNearbyCreeps(CastRange+150,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	
+	if(ability:GetToggleState()==false)
+	then
+		local t=npcBot:GetAttackTarget()
+		if(t~=nil)
+		then
+			if (t:IsHero() or t:IsTower())
+			then
+				ability:ToggleAutoCast()
+				return BOT_ACTION_DESIRE_NONE, 0;
+			end
+		end
+	else
+		local t=npcBot:GetAttackTarget()
+		if(t~=nil)
+		then
+			if (not(t:IsHero() or t:IsTower()))
+			then
+				ability:ToggleAutoCast()
+				return BOT_ACTION_DESIRE_NONE, 0;
+			end
+		end
+	end
+	
 	--try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT) 
 	then

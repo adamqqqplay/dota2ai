@@ -85,3 +85,42 @@ v1.1h(2017.7.10)
 12. Removed debugging information from the release version
 13. Fixed the bug of contending for the courier.
 14. Now AI will share the tango. (Thanks to BOT EXPERIMENT's author)
+v1.2(2017.8.23)
+1. Added Team Gank system: AI will buy and use the smoke to kill the enemy hero
+2. Improve the Rune system, AI will recognize the type of the rune, and consider whether it is suitable to pick up the rune. AI will leave the rune to the most suitable hero. AI will avoid possible dangers.
+3. Improve the lane assignment system, AI team will first consider the lane of human players, and then select the most suitable route. Thanks BOT EXPERIMENT author: Arizona, I used part of its function.
+4. Improve the item purchase systeam, AI will ensure their own security before going to sideshop.
+5. Improve the Shrine usage, AI will be waiting for the nearby human players before using shrine.  (not tested.)
+6. Improve the use of the courier, the courier will try to escape the danger zone. The courier will pick up the items in advance to save time. The courier may wait more time when the human player uses it.
+7. Improve the use of tower Glyph.
+8. Raise the priority of the line mode.
+9. Slightly lower the priority of the warding.
+10. Fixed When the hero item slot is full, the courier will still try to deliver the item.
+11. Fixed qop, antimage, faceless void, can not correctly use the blink error.
+12. Fixed dazzle can not correctly use the shadow wave (ability 3) in some cases.
+13. Fixed jakiro use ability 1 on the friendly heroes
+14. Fixed lion use ability 1 on the friendly heroes
+15. Fixed death of the prophet use ability 1 on the friendly heroes
+16. Fixed tide hunter blink into the friendly heroes group.
+17. Fixed undying use ability 1 on the friendly heroes
+18. Fixed ursa blink into the friendly heroes group.
+19. Fixed shadow shaman  can not correctly use hex in some cases
+20. Fixed silence Warlock sometimes can not open 2 abilitys ball error
+21. Fixed spectre can not use ability 1 when stuck
+22. Fixed spirit breaker wrongly calculate the enemy power in some cases.
+23. Fixed winter wyvern wrongly calculation damage caused by the use of 4 abilitys
+24. Fixed part of the hero can not use the ability to kill jungle creeps.
+25. Improve Faceless void to use ult ablility better, it will avoid affecting friendly heroes.
+26. Improve Bane to use nightmare better, to avoid interfering friendly heroes.
+27. Improve slark to use ult ablility better, it will be more likely to use this ability when attacking.
+28. Improve venovenomancer to use ability 3 better, it will be more active to damage enemy heroes
+29. Improve sven to use ablility 1 better, it will be less used to clear the lane.
+30. Improve warlock to use ablility 3 better, it will use this ability later
+31. Improve riki to use ability 2 more often, it will be more active consumption of enemy heroes
+32. Improve axe to use ability 2 better, it will not use the abilitys before using the blink.
+33. Improve necrolyte to use ability 2 better, it will use the skills in more cases
+34. Slightly improve doom to use ability 3 better.
+35. Slightly improve pugna to use ability 3 better.
+36. Updated some hero's item building (lina, ursa, zues, jakiro, omniknight, riki, lion, luna, nevermore, facelessvoid, ogre magi, phantom assassin.)
+37. Fixed some heroes stuck in item building.
+38. Improved some hero's ability building.

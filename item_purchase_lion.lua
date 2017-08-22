@@ -8,11 +8,10 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_clarity",
+	"item_branches",
 	"item_wind_lace",
 	"item_branches",
-	"item_branches",
-
-	"item_ward_observer",
+	
 	"item_boots",	
 	"item_circlet",
 	"item_magic_stick",				--大魔棒

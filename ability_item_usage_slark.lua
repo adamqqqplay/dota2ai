@@ -372,7 +372,7 @@ function Consider2()
 	-- Mode based usage
 	--------------------------------------
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and (npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH or HealthPercentage<=0.5)) 
 	then
 		return BOT_ACTION_DESIRE_HIGH
 	end
@@ -441,7 +441,7 @@ function Consider4()
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and HealthPercentage<=0.33+0.05*#enemys and GetUnitToUnitDistance(npcBot,WeakestEnemy)< CastRange)
+			if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and HealthPercentage<=0.40+0.05*#enemys and GetUnitToUnitDistance(npcBot,WeakestEnemy)< CastRange)
 			then
 				return BOT_ACTION_DESIRE_HIGH
 			end
@@ -459,7 +459,20 @@ function Consider4()
 			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
+	
+	-- If we're going after someone
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+	then
+		local npcEnemy = npcBot:GetTarget();
 
+		if ( HealthPercentage<=0.40+0.05*#enemys and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange) 
+		then
+			return BOT_ACTION_DESIRE_MODERATE
+		end
+	end
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
 end

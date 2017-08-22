@@ -118,7 +118,7 @@ Consider[1]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 				then
-					return BOT_ACTION_DESIRE_HIGH,GetUnitsTowardsLocation(npcBot,WeakestEnemyw,200); 
+					return BOT_ACTION_DESIRE_HIGH,GetUnitsTowardsLocation(npcBot,WeakestEnemy,CastRange+200); 
 				end
 			end
 		end
@@ -164,7 +164,7 @@ Consider[1]=function()
 				then
 					if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)>CastRange-200 and GetUnitToUnitDistance(npcBot,npcEnemy)<1200)
 					then
-						return BOT_ACTION_DESIRE_MODERATE, GetUnitsTowardsLocation(npcBot,npcEnemy,200);
+						return BOT_ACTION_DESIRE_MODERATE, GetUnitsTowardsLocation(npcBot,npcEnemy,CastRange+200);
 					end
 				end
 			end
@@ -283,7 +283,12 @@ Consider[4]=function()
 	do
 		if ( npcEnemy:IsChanneling() ) 
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation();
+			local TargetLocation=npcEnemy:GetLocation();
+			local Allies = utility.GetAlliesNearLocation(TargetLocation,Radius)
+			if(#Allies==0)
+			then
+				return BOT_ACTION_DESIRE_HIGH, TargetLocation
+			end
 		end
 	end
 
@@ -296,7 +301,12 @@ Consider[4]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetExtrapolatedLocation(CastPoint); 
+					local TargetLocation=WeakestEnemy:GetExtrapolatedLocation(CastPoint); 
+					local Allies = utility.GetAlliesNearLocation(TargetLocation,Radius)
+					if(#Allies==0)
+					then
+						return BOT_ACTION_DESIRE_HIGH, TargetLocation
+					end
 				end
 			end
 		end
@@ -310,7 +320,12 @@ Consider[4]=function()
 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
 		if ( locationAoE.count >= 1 ) 
 		then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+			local TargetLocation=locationAoE.targetloc;
+			local Allies = utility.GetAlliesNearLocation(TargetLocation,Radius)
+			if(#Allies==0)
+			then
+				return BOT_ACTION_DESIRE_LOW, TargetLocation
+			end
 		end
 	end
 	
@@ -325,7 +340,12 @@ Consider[4]=function()
 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
 		if ( locationAoE.count >= 3 ) 
 		then
-			return BOT_ACTION_DESIRE_MODERATE, locationAoE.targetloc;
+			local TargetLocation=locationAoE.targetloc;
+			local Allies = utility.GetAlliesNearLocation(TargetLocation,Radius)
+			if(#Allies<=1)
+			then
+				return BOT_ACTION_DESIRE_LOW, TargetLocation
+			end
 		end
 	end
 	
@@ -337,7 +357,12 @@ Consider[4]=function()
 	then
 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
 		if ( locationAoE.count >= 2 ) then
-			return BOT_ACTION_DESIRE_MODERATE, locationAoE.targetloc;
+			local TargetLocation=locationAoE.targetloc;
+			local Allies = utility.GetAlliesNearLocation(TargetLocation,Radius)
+			if(#Allies==0)
+			then
+				return BOT_ACTION_DESIRE_LOW, TargetLocation
+			end
 		end
 	end
 

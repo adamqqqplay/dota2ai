@@ -10,11 +10,11 @@ local ItemsToBuy =
 	"item_flask",
 	"item_branches",
 	"item_branches",
+	"item_circlet",
 	"item_boots",
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
 	
-	"item_circlet",
 	"item_magic_stick",				--大魔棒
 	
 	"item_slippers",

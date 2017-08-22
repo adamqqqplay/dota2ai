@@ -79,7 +79,11 @@ function PointToPointDistance(a,b)
 	local y1=a.y
 	local y2=b.y
 	return math.sqrt(math.pow((y2-y1),2)+math.pow((x2-x1),2))
-end 
+end
+
+function GetDistance(a,b)
+	return PointToPointDistance(a,b)
+end
 
 ----------------------------------------------------------------------------------------------------
 --vector
@@ -160,6 +164,42 @@ function GetSafeVector(unit,distance)
 	end
 	return v
 end
+
+function GetEnemiesNearLocation(loc,dist)
+	if loc ==nil then
+		return {};
+	end
+	
+	local Enemies={}
+	
+	for _,enemy in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES)) do
+		if(GetUnitToLocationDistance(enemy,loc)<dist)
+		then
+			table.insert(Enemies,enemy)
+		end
+	end
+	
+	return Enemies;
+end
+
+function GetAlliesNearLocation(loc,dist)
+	if loc ==nil then
+		return {};
+	end
+	
+	local Enemies={};
+	
+	for _,enID in pairs(GetTeamPlayers(GetTeam())) do
+		local enemyInfo=GetHeroLastSeenInfo(enID)[1];
+		if enemyInfo~=nil and enemyInfo['location']~=nil then
+			if IsHeroAlive(enID) and utility.GetDistance(enemyInfo['location'],loc)<=dist and (utility.GetDistance(enemyInfo['location'],Vector(0,0))>10) and enemyInfo['time_since_seen']<10 then
+				table.insert(Enemies,enID);
+			end
+		end
+	end
+	
+	return Enemies;
+end
 ----------------------------------------------------------------------------------------------------
 
 
@@ -227,35 +267,64 @@ function GetStrongestUnit(EnemyUnits)
 	return StrongestUnit,HighestHealth
 end
 
+function GetNearestBuilding(team, location)
+	local buildings = GetAllBuilding( team, location )
+	local minDist = 16000 ^ 2
+	local nearestBuilding = nil
+	for k,v in pairs(buildings) do
+		local dist = PointToPointDistance(location, v:GetLocation())^2
+		if dist < minDist then
+			minDist = dist
+			nearestBuilding = v
+		end
+	end
+	return nearestBuilding
+end
+
+function GetAllBuilding( team,location )
+	local buildings = {}
+	for i=0,10 do
+		local tower = GetTower(team,i)
+		if NotNilOrDead(tower) then
+			table.insert(buildings,tower)
+		end
+	end
+
+	for i=0,5 do
+		local barrack = GetBarracks( team, i )
+		if NotNilOrDead(barrack) then
+			table.insert(buildings,barrack)
+		end
+	end
+
+	for i=0,4 do
+		local shrine = GetShrine(team, i) 
+		if NotNilOrDead(shrine) then
+			table.insert(buildings,shrine)
+		end 
+	end
+
+	local ancient = GetAncient( team )
+	table.insert(buildings,ancient)
+	return buildings
+end
+
+function NotNilOrDead(unit)
+	if unit==nil or unit:IsNull() then
+		return false;
+	end
+	if unit:IsAlive() then
+		return true;
+	end
+	return false;
+end
+
 --------------------------------------------------------------------------	ItemPurchase
-function ItemPurchase(ItemsToBuy)
-
-	local npcBot = GetBot();
-	
-	--------------------------------------------------------------------------	
-	item_travel_boots_1 = nil;
-	item_travel_boots_2 = nil;
-
-	local item_travel_boots = NoNeedTpscrollForTravelBoots();
+function SellExtraItem()
+	local npcBot=GetBot()
+	item_travel_boots = NoNeedTpscrollForTravelBoots();
 	item_travel_boots_1 = item_travel_boots[1];
 	item_travel_boots_2 = item_travel_boots[2];
-
-	-- buy item_tpscroll
-	if(npcBot.secretShopMode~=true and npcBot.sideShopMode ~=true or npcBot:GetGold() >= npcBot:GetNextItemPurchaseValue()+50)
-	then
-		WeNeedTpscroll();
-	end
-
-	--------------------------------------------------------------------------
-	if ( #ItemsToBuy == 0 )
-	then
-		npcBot:SetNextItemPurchaseValue( 0 );
-		return;
-	end
-
-	local sNextItem = ItemsToBuy[1];
-
-	npcBot:SetNextItemPurchaseValue( GetItemCost( sNextItem ) )
 	
 	if(IsItemSlotsFull())
 	then
@@ -280,6 +349,8 @@ function ItemPurchase(ItemsToBuy)
 			SellSpecifiedItem("item_magic_stick")
 			SellSpecifiedItem("item_urn_of_shadows")
 			SellSpecifiedItem("item_drums_of_endurance")
+			SellSpecifiedItem("item_ring_of_basilius")
+			SellSpecifiedItem("item_ring_of_aquila")
 		end
 		if(GameTime()>40*60 and npcBot:GetGold()>2200 and (item_travel_boots[1]==nil and item_travel_boots[2]==nil) and npcBot.HaveTravelBoots~=true )
 		then
@@ -299,7 +370,36 @@ function ItemPurchase(ItemsToBuy)
 		SellSpecifiedItem("item_tranquil_boots")
 	end
 	
+end
+
+function ItemPurchase(ItemsToBuy)
+
+	local npcBot = GetBot();
+	
+	-- buy item_tpscroll
+	if(npcBot.secretShopMode~=true and npcBot.sideShopMode ~=true or npcBot:GetGold() >= npcBot:GetNextItemPurchaseValue()+50)
+	then
+		WeNeedTpscroll();
+	end
+
+	if ( #ItemsToBuy == 0 )
+	then
+		npcBot:SetNextItemPurchaseValue( 0 );
+		return;
+	end
+
+	local sNextItem = ItemsToBuy[1];
+	npcBot:SetNextItemPurchaseValue( GetItemCost( sNextItem ) )
+	
+	SellExtraItem()
+
 	if(npcBot:DistanceFromFountain()<=1000 or npcBot:GetHealth()/npcBot:GetMaxHealth()<=0.4)
+	then
+		npcBot.secretShopMode = false;
+		npcBot.sideShopMode = false;
+	end
+	
+	if (IsItemPurchasedFromSideShop( sNextItem )==false and IsItemPurchasedFromSecretShop( sNextItem )==false)
 	then
 		npcBot.secretShopMode = false;
 		npcBot.sideShopMode = false;
@@ -309,7 +409,7 @@ function ItemPurchase(ItemsToBuy)
 	then
 		if(npcBot.secretShopMode~=true and npcBot.sideShopMode ~=true)
 		then
-			if (IsItemPurchasedFromSideShop( sNextItem ) and npcBot:DistanceFromSideShop() <= 3000) 
+			if (IsItemPurchasedFromSideShop( sNextItem ) and npcBot:DistanceFromSideShop() <= 3000)  --只有在离边路商店较近时才前往边路商店
 			then
 				npcBot.sideShopMode = true;
 			end
@@ -319,16 +419,16 @@ function ItemPurchase(ItemsToBuy)
 			end
 		end
 		
-		local PurchaseResult
-		if(npcBot.sideShopMode == true)
+		local PurchaseResult=-2		--接收购买结果，后文会介绍
+		if(npcBot:GetActiveMode() == BOT_MODE_SIDE_SHOP )
 		then
-			if(npcBot:DistanceFromSideShop() <= 200)
+			if(npcBot:DistanceFromSideShop() <= 250)
 			then
 				PurchaseResult=npcBot:ActionImmediate_PurchaseItem( sNextItem )
 			end
-		elseif(npcBot.secretShopMode == true)
+		elseif(npcBot:GetActiveMode() == BOT_MODE_SECRET_SHOP or npcBot.secretShopMode == true)		--如果目标是神秘商店，则命令信使购买物品
 		then
-			if(npcBot:DistanceFromSecretShop() <= 200)
+			if(npcBot:DistanceFromSecretShop() <= 250)
 			then
 				PurchaseResult=npcBot:ActionImmediate_PurchaseItem( sNextItem )
 			end
@@ -336,9 +436,9 @@ function ItemPurchase(ItemsToBuy)
 			local courier=GetCourier(0)
 			if(courier==nil)
 			then
-				BuyCourier()
+				BuyCourier()		--没有信使的话则会购买，这个函数见下文
 			else
-				if(courier:DistanceFromSecretShop() <= 200)
+				if(courier:DistanceFromSecretShop() <= 250)		--信使已到达商店
 				then
 					PurchaseResult=GetCourier(0):ActionImmediate_PurchaseItem( sNextItem )
 				end
@@ -347,30 +447,45 @@ function ItemPurchase(ItemsToBuy)
 			PurchaseResult=npcBot:ActionImmediate_PurchaseItem( sNextItem )
 		end
 		
-		if(PurchaseResult==PURCHASE_ITEM_SUCCESS)
+		if(PurchaseResult==PURCHASE_ITEM_SUCCESS)		--成功购买便从出装表中移除该物品
 		then
-			--DebugTalk("buy success "..sNextItem)
 			npcBot.secretShopMode = false;
 			npcBot.sideShopMode = false;
 			table.remove( ItemsToBuy, 1 )
 		end
-		if(PurchaseResult==PURCHASE_ITEM_OUT_OF_STOCK)
+		if(PurchaseResult==PURCHASE_ITEM_OUT_OF_STOCK)	--物品栏已满，出售多余的物品
 		then
+			SellExtraItem()
 			SellSpecifiedItem("item_branches")
-			SellSpecifiedItem("item_faerie_fire")
+			SellSpecifiedItem("item_dust")
 		end
-		if(PurchaseResult==PURCHASE_ITEM_INVALID_ITEM_NAME or PurchaseResult==PURCHASE_ITEM_DISALLOWED_ITEM)
+		if(PurchaseResult==PURCHASE_ITEM_INVALID_ITEM_NAME or PurchaseResult==PURCHASE_ITEM_DISALLOWED_ITEM)	--不存在的物品，移除该物品
 		then
 			table.remove( ItemsToBuy, 1 )
 		end
-		if(PurchaseResult==PURCHASE_ITEM_INSUFFICIENT_GOLD )
+		if(PurchaseResult==PURCHASE_ITEM_INSUFFICIENT_GOLD )	--金额不足（其实该情况也较少出现，因为我们已经在上面判断了金钱）
 		then
 			npcBot.secretShopMode = false;
 			npcBot.sideShopMode = false;
 		end
-		if(PurchaseResult==PURCHASE_ITEM_NOT_AT_SECRET_SHOP)
+		if(PurchaseResult==PURCHASE_ITEM_NOT_AT_SECRET_SHOP)	--不在神秘商店，前往神秘商店
 		then
-			npcBot.secretShopMode = false
+			npcBot.secretShopMode = true
+			npcBot.sideShopMode = false;
+		end
+		if(PurchaseResult==PURCHASE_ITEM_NOT_AT_SIDE_SHOP)		--不在边路商店（其实该情况不会出现，因为在边路商店的物品能在其他商店购买）
+		then
+			npcBot.sideShopMode = true
+			npcBot.secretShopMode = false;
+		end
+		if(PurchaseResult==PURCHASE_ITEM_NOT_AT_HOME_SHOP)		--不在基地商店（也不会出现的情况，因为如果英雄不在家中，那么物品会购买于贮藏处）
+		then
+			npcBot.secretShopMode = false;
+			npcBot.sideShopMode = false;
+		end
+		if(PurchaseResult>=-1)
+		then
+			--print(npcBot:GetPlayerID().."[ItemPurchase] purchaseResult is"..PurchaseResult)
 		end
 	else
 		npcBot.secretShopMode = false;
@@ -392,7 +507,7 @@ function BuyCourier()
 			end
 		end
 	else
-		if DotaTime()>60*4 and npcBot:GetGold()>=GetItemCost("item_flying_courier") and (courier:GetMaxHealth()==75) then
+		if DotaTime()>60*3 and npcBot:GetGold()>=GetItemCost("item_flying_courier") and (courier:GetMaxHealth()==75) then
 			local info=npcBot:ActionImmediate_PurchaseItem("item_flying_courier");
 			if info ==PURCHASE_ITEM_SUCCESS then
 				print(npcBot:GetUnitName()..' has upgraded the courier.',info);
@@ -452,11 +567,13 @@ function WeNeedTpscroll()
 	-- If we are at the sideshop or fountain with no TPs, then buy one or two
 	if ( iScrollCount == 0 and item_travel_boots_1 == nil and item_travel_boots_2 == nil ) then
 
-		if ( npcBot:DistanceFromSideShop() == 0 or npcBot:DistanceFromFountain() == 0 ) then
+		if ( npcBot:DistanceFromSideShop() <= 200 or npcBot:DistanceFromFountain() <= 200 ) then
 
 			if ( DotaTime() > 0 and DotaTime() < 20 * 60 ) then
 				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
+				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 			elseif ( DotaTime() >= 20 * 60 ) then
+				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 			end
@@ -555,21 +672,21 @@ function checkItemBuild(ItemsToBuy)
 end
 
 local invisibleHeroes = {
-	--"npc_dota_hero_legion_commander",
+	"npc_dota_hero_legion_commander",
 	"npc_dota_hero_sand_king",
 	"npc_dota_hero_treant",
 	"npc_dota_hero_bounty_hunter",
 	"npc_dota_hero_broodmother",
 	"npc_dota_hero_clinkz",
-	--"npc_dota_hero_drow_ranger",
+	"npc_dota_hero_drow_ranger",
 	"npc_dota_hero_mirana",
 	"npc_dota_hero_nyx_assassin",
 	"npc_dota_hero_riki",
-	--"npc_dota_hero_nevermore",
-	--"npc_dota_hero_slark",
-	--"npc_dota_hero_sniper",
+	"npc_dota_hero_nevermore",
+	"npc_dota_hero_slark",
+	"npc_dota_hero_sniper",
 	"npc_dota_hero_templar_assassin",
-	--"npc_dota_hero_viper",
+	"npc_dota_hero_viper",
 	"npc_dota_hero_invoker"
 };
 
@@ -587,6 +704,20 @@ local invisibleHeroes = {
 function GetItemIncludeBackpack(item_name)
 	local npcBot=GetBot()
     for i = 0, 16 do
+        local item = npcBot:GetItemInSlot(i);
+		if (item~=nil) then
+			if(item:GetName() == item_name) then
+				return item;
+			end
+		end
+    end
+    return nil;
+end
+
+function IsItemAvailable(item_name)
+    local npcBot = GetBot();
+
+    for i = 0, 5, 1 do
         local item = npcBot:GetItemInSlot(i);
 		if (item~=nil) then
 			if(item:GetName() == item_name) then
@@ -642,13 +773,14 @@ function BuySupportItem()
 		local item_ward_observer = GetItemIncludeBackpack( "item_ward_observer" );
 		local item_ward_sentry2 = GetItemIncludeBackpack( "item_ward_dispenser" )
 		local item_gem = GetItemIncludeBackpack( "item_gem" )
+		local item_smoke =  GetItemIncludeBackpack( "item_smoke_of_deceit")
 		if ( DotaTime() >= 0 and hasInvisibleEnemy == true ) 
 		then
 			local item_dust = GetItemIncludeBackpack( "item_dust" );
 			local item_ward_sentry = GetItemIncludeBackpack( "item_ward_sentry" )
 			if(item_gem==nil)
 			then
-				if (item_dust==nil and item_ward_sentry==nil and item_ward_sentry2==nil and npcBot:GetGold() >= 2*GetItemCost("item_dust") ) then
+				if (item_dust==nil and item_ward_sentry==nil and item_ward_sentry2==nil and npcBot:GetGold() >= 2*GetItemCost("item_dust") and GetItemStockCount("item_gem") >= 1) then
 					npcBot:ActionImmediate_PurchaseItem( "item_dust" );
 				end
 				
@@ -668,8 +800,14 @@ function BuySupportItem()
 			npcBot:ActionImmediate_PurchaseItem( "item_gem" );
 		end
 				
-		if ( item_ward_observer==nil and item_ward_sentry2==nil and GetItemStockCount("item_ward_observer") > 1 and npcBot:GetGold() >= GetItemCost("item_ward_observer") and DotaTime()<30*60) then
+		if ( item_ward_observer==nil and item_ward_sentry2==nil and (GetItemStockCount("item_ward_observer") > 1 or DotaTime()<0) and npcBot:GetGold() >= GetItemCost("item_ward_observer")) 
+		then
 			npcBot:ActionImmediate_PurchaseItem( "item_ward_observer" );
+		end
+		
+		if(item_smoke==nil and GetItemStockCount("item_smoke_of_deceit") > 2 and npcBot:GetGold() >= GetItemCost("item_smoke_of_deceit"))
+		then
+			npcBot:ActionImmediate_PurchaseItem("item_smoke_of_deceit");
 		end
 	end
 	

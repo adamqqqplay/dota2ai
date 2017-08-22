@@ -354,7 +354,7 @@ function Consider2()
 	
 	local CastRange = 0
 	local Damage = 0
-	local Radius = ability:GetAOERadius()
+	local Radius = 750
 	
 	local HeroHealth=10000
 	local CreepHealth=10000

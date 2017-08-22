@@ -8,14 +8,12 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_clarity",
+	"item_circlet",
 	"item_branches",
-	"item_branches",
-	"item_faerie_fire",
 	"item_bottle",
 	"item_boots",
 	"item_energy_booster",			--秘法鞋
 	"item_mantle",
-	"item_circlet",
 	"item_recipe_null_talisman",	--无用挂件
 	"item_mantle",
 	"item_circlet",

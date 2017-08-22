@@ -1,3 +1,10 @@
+----------------------------------------------------------------------------------------------------
+--this file is create by Improved Default Bots
+--Author:v33 Link:http://steamcommunity.com/profiles/76561198058234341/
+----------------------------------------------------------------------------------------------------
+-- Author:Arizona Fauzie Link:http://steamcommunity.com/sharedfiles/filedetails/?id=837040016
+----------------------------------------------------------------------------------------------------
+
 local WardUtils = require(GetScriptDirectory() ..  "/WardUtility")
 local MWardSpot = {};
 local MWardSpotTowerFall = {};
@@ -34,7 +41,7 @@ function GetDesire()
 	end
 	
 	if IsPingedByHumanPlayer() then
-		return BOT_MODE_DESIRE_HIGH;
+		return BOT_MODE_DESIRE_MODERATE;
 	end
 	
 	if #AggressiveSpot == 0 then
@@ -43,20 +50,20 @@ function GetDesire()
 	
 	if DotaTime() <= 0  then
 		--print(bot:GetUnitName().."Warding Early Game")
-		return BOT_MODE_DESIRE_HIGH;
+		return BOT_MODE_DESIRE_MODERATE;
 	elseif DotaTime() > 0 then
 		if IsThereAWardSpot()  then
 			--print(bot:GetUnitName().."Warding If There Is a Mandate Spot")
-			return BOT_MODE_DESIRE_HIGH;
+			return BOT_MODE_DESIRE_MODERATE;
 		elseif IsThereAWardSpotForTowerFall() then
 			--print(bot:GetUnitName().."Warding If There Is a Tower Fall Spot")
-			return BOT_MODE_DESIRE_HIGH;
+			return BOT_MODE_DESIRE_MODERATE;
 		else
 			for _,AggSpot in pairs(AggressiveSpot)
 			do
 				if GetUnitToLocationDistance(bot, AggSpot) < nThresholdDist and not IsWardExistInSpot(AggSpot) then
 					--print(bot:GetUnitName().."Warding If Near Aggresive Spot")
-					return BOT_MODE_DESIRE_HIGH;
+					return BOT_MODE_DESIRE_MODERATE;
 				end
 			end
 		end

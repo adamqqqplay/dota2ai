@@ -21,13 +21,13 @@ local ItemsToBuy =
 	"item_vitality_booster",		--先锋
 	"item_mithril_hammer",
 	"item_mithril_hammer",			--暗灭
-	"item_ogre_axe", 
-	"item_mithril_hammer",
-	"item_recipe_black_king_bar",	--bkb
 	"item_javelin",
 	"item_belt_of_strength",
 	"item_recipe_basher" ,
 	"item_recipe_abyssal_blade",	--大晕锤
+	"item_ogre_axe", 
+	"item_mithril_hammer",
+	"item_recipe_black_king_bar",	--bkb
 	"item_lifesteal",
 	"item_reaver", 
 	"item_mithril_hammer",			--撒旦

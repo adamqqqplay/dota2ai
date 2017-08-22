@@ -94,9 +94,6 @@ local castTarget = {}
 local castType = {}
 
 --Target Judement
-function CanCast1( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable();
-end
 local CanCast={utility.NCanCast,utility.MiCanCast,utility.MiCanCast,utility.MiCanCast}
 local enemyDisabled=utility.enemyDisabled
 
@@ -428,7 +425,7 @@ function Consider3()
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+200,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+	local creeps = npcBot:GetNearbyCreeps(CastRange+300,false)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	
 	for _,npcEnemy in pairs(enemys)

@@ -13,72 +13,33 @@ function CourierUsageThink()
 	UnImplementedItemUsage()
 
 	local npcBot=GetBot()
-	local courier=GetCourier(0)
-	local state=GetCourierState(courier)
-	if(npcBot:IsAlive()==false or npcBot:GetHealth()<=100 or courier==nil or npcBot:IsHero()==false)
+	local courier=GetCourier(0)		--获取信使句柄
+	if(npcBot:IsAlive()==false or courier==nil or npcBot:IsHero()==false or npcBot:HasModifier("modifier_arc_warden_tempest_double"))	--判断使用者是不是真正的英雄
 	then
 		return
 	end
 	
-	if(courier:WasRecentlyDamagedByAnyHero(2) or courier:WasRecentlyDamagedByTower(2))
+	local state=GetCourierState(courier)		--获取信使状态
+	local burst=courier:GetAbilityByName("courier_burst")
+	local CanCastBurst=burst~=nil and burst:IsFullyCastable()		--检查信使加速能否使用
+	local IsFly=false
+	
+	if(courier:GetMaxHealth()==150)
 	then
-		if(courier:GetMaxHealth()==150)
-		then
-			npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_BURST)
-		end
-		npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_RETURN)
+		IsFly=true
+	end
+	
+	if(state == COURIER_STATE_DEAD)		--信使已死亡
+	then
 		return
 	end
-
-	if((state==COURIER_STATE_IDLE or state==COURIER_STATE_RETURNING_TO_BASE)  and npcBot:GetCourierValue()>0)
-	then
-		npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TRANSFER_ITEMS)
-		DebugTalk(npcBot:GetUnitName()..": courier is COURIER_ACTION_TRANSFER_ITEMS")
-		if(courier:GetMaxHealth()==150)
-		then
-			npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_BURST)
-		end
-		return
-	end
-    if (state == COURIER_STATE_AT_BASE and npcBot:GetStashValue() >= 400 and courier:DistanceFromSecretShop()>=100) 
-	then
-		if(courier:GetMaxHealth()==150)
-		then
-			npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_BURST)
-		end
 	
-		if(courier.time==nil)
-		then
-			courier.time=DotaTime()
-		end
-		if(courier.time+1<DotaTime())
-		then
-			npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TAKE_AND_TRANSFER_ITEMS)
-			DebugTalk(npcBot:GetUnitName()..": courier is TAKE_AND_TRANSFER")
-			courier.time=nil
-		end
-        return
-    end
-	if(state == COURIER_STATE_AT_BASE and npcBot.secretShopMode == true and npcBot:GetActiveMode() ~= BOT_MODE_SECRET_SHOP)
+	if(state == COURIER_STATE_IDLE)		--信使处于空闲状态10秒以上则回家
 	then
-		DebugTalk(npcBot:GetUnitName()..": courier is go to secret_shop")
-		npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_SECRET_SHOP)
-        return
-	end
-
-	-- if(state == COURIER_STATE_DELIVERING_ITEMS and npcBot:GetCourierValue()==0 and GetUnitToUnitDistance(npcBot,courier)<=300)
-	-- then
-		-- npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_RETURN)
-		-- return
-	-- end
-	
-	if(state==COURIER_STATE_IDLE)
-	then
-		if(courier.idletime==nil)
+		if(courier.idletime==nil or GameTime()-courier.idletime>11)
 		then
 			courier.idletime=GameTime()
 		else
-			DebugTalk(GameTime()-courier.idletime.." :idletime")
 			if(GameTime()-courier.idletime>10)
 			then
 				npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_RETURN)
@@ -88,6 +49,62 @@ function CourierUsageThink()
 		end
 	end
 	
+	if(state ~= COURIER_STATE_RETURNING_TO_BASE and courier:GetHealth()/courier:GetMaxHealth()<=0.9)		--信使受到攻击，立刻回家
+	then
+		npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_RETURN)
+		if(CanCastBurst)
+		then
+			npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_BURST)
+		end
+		return
+	end
+
+	if(state == COURIER_STATE_RETURNING_TO_BASE and npcBot:GetCourierValue()>0 and not utility.IsItemSlotsFull() and IsFly==true)		--如果信使上有我的装备，则运送物品
+	then
+		npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TRANSFER_ITEMS)
+		return
+	end
+	
+	if(state == COURIER_STATE_AT_BASE and npcBot:GetStashValue() >= 400 and not utility.IsItemSlotsFull())
+	then
+		npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TAKE_STASH_ITEMS)
+		return
+	end
+	
+    if (state == COURIER_STATE_AT_BASE ) 		--从基地运送
+	then
+		if( npcBot:GetStashValue() >= 400 or npcBot:GetCourierValue()>=400)		--装备价值大于400，避免只运送一根树枝
+		then
+			if(courier.time==nil)
+			then
+				courier.time=DotaTime()
+			end
+			if(courier.time+1<DotaTime())
+			then
+				npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TAKE_AND_TRANSFER_ITEMS)
+				courier.time=nil
+			end
+			return
+		end
+    end
+	
+	if(state == COURIER_STATE_AT_BASE or state == COURIER_STATE_RETURNING_TO_BASE)		--前往神秘商店
+	then
+		if(npcBot.secretShopMode == true and npcBot:GetActiveMode() ~= BOT_MODE_SECRET_SHOP)
+		then
+			npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_SECRET_SHOP)
+			return
+		end
+	end
+	
+	if(state == COURIER_STATE_DELIVERING_ITEMS)		--当信使正在运送物品时加速
+	then
+		if(CanCastBurst)
+		then
+			npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_BURST)
+			return
+		end
+	end
 end
 
 function AbilityLevelUpThink2(AbilityToLevelUp,TalentTree)
@@ -143,29 +160,20 @@ Towers={
 }
 
 function ConsiderGlyph()
-    for i, building_id in pairs(Towers) do
-        local tower = GetTower(GetTeam(), building_id)
+	if GetGlyphCooldown() > 0  
+	then
+		return false
+	end
+	
+    for i, BuildingID in pairs(Towers) do
+        local tower = GetTower(GetTeam(), BuildingID)
 		if tower~=nil
 		then
-			-- local AttackByEnemy=false
-			-- local enemysIDs=GetTeamPlayers(utility.GetOtherTeam())
-			-- for _,i in pairs(enemysIDs)
-			-- do
-				-- if(tower:WasRecentlyDamagedByPlayer(i,2.5)==true)
-				-- then
-					-- AttackByEnemy=true
-					-- break
-				-- end
-			-- end
-			
-				
-			if tower:GetHealth() <=500 and tower:GetHealth() >=200 and tower:TimeSinceDamagedByAnyHero()+tower:TimeSinceDamagedByCreep() <= 5 --and AttackByEnemy
+			local tableNearbyEnemyHeroes = utility.GetEnemiesNearLocation(tower:GetLocation(),700)
+			if tower:GetHealth() >=200 and tower:GetHealth() <=1000 and #tableNearbyEnemyHeroes>=2
 			then
-				if GetGlyphCooldown() == 0  
-				then
-					GetBot():ActionImmediate_Glyph()
-					break
-				end
+				GetBot():ActionImmediate_Glyph()
+				break
 			end
 		end
     end

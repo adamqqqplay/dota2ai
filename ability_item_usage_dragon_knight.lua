@@ -94,9 +94,6 @@ local castTarget = {}
 local castType = {}
 
 --Target Judement
-function CanCast1( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable();
-end
 local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast}
 local enemyDisabled=utility.enemyDisabled
 

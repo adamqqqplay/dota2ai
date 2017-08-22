@@ -356,13 +356,14 @@ function Consider3() --Location AOE Example
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	local towers =npcBot:GetNearbyTowers(CastRange+300,true)
 	local towers2 =npcBot:GetNearbyTowers(CastRange+300,false)
+	local RandomRange=400
 	
 	-- If we're seriously retreating
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT ) 
 	then
 		if(npcBot:WasRecentlyDamagedByAnyHero(5))
 		then
-			return BOT_ACTION_DESIRE_MODERATE, npcBot:GetLocation()+RandomVector(RandomInt(0,300));
+			return BOT_ACTION_DESIRE_MODERATE, npcBot:GetLocation()+RandomVector(RandomInt(0,RandomRange));
 		end
 	end
 	--------------------------------------
@@ -380,7 +381,22 @@ function Consider3() --Location AOE Example
 		then
 			if ( npcEnemy ~= nil ) 
 			then
-				return BOT_ACTION_DESIRE_MODERATE, utility.RandomInCastRangePoint(npcBot,npcEnemy,CastRange,300);
+				return BOT_ACTION_DESIRE_MODERATE, utility.RandomInCastRangePoint(npcBot,npcEnemy,CastRange,RandomRange);
+			end
+		end
+	end
+	
+	-- If my mana is enough,use it at enemy
+	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+	then
+		if((ManaPercentage>0.4 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )
+		then
+			if (WeakestEnemy~=nil)
+			then
+				if ( CanCast[abilityNumber]( WeakestEnemy ) )
+				then
+					return BOT_ACTION_DESIRE_LOW,utility.RandomInCastRangePoint(npcBot,WeakestEnemy,CastRange,RandomRange);
+				end
 			end
 		end
 	end
@@ -390,7 +406,7 @@ function Consider3() --Location AOE Example
 	then
 		if ( #creeps >= 2 and (ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)) 
 		then
-			return BOT_ACTION_DESIRE_LOW, utility.RandomInCastRangePoint(npcBot,npcEnemy,CastRange,300);
+			return BOT_ACTION_DESIRE_LOW, utility.RandomInCastRangePoint(npcBot,npcEnemy,CastRange,RandomRange);
 		end
 	end
 
@@ -406,14 +422,14 @@ function Consider3() --Location AOE Example
 		then
 			if (ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
 			then
-				return BOT_ACTION_DESIRE_LOW, utility.RandomInCastRangePoint(npcBot,towers[1],CastRange,300);
+				return BOT_ACTION_DESIRE_LOW, utility.RandomInCastRangePoint(npcBot,towers[1],CastRange,RandomRange);
 			end
 		end
 		if ( #towers2 >= 1 ) 
 		then
 			if (ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
 			then
-				return BOT_ACTION_DESIRE_LOW, utility.RandomInCastRangePoint(npcBot,towers2[1],CastRange,300);
+				return BOT_ACTION_DESIRE_LOW, utility.RandomInCastRangePoint(npcBot,towers2[1],CastRange,RandomRange);
 			end
 		end
 	end

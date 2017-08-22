@@ -37,8 +37,9 @@ local ItemsToBuy =
 	"item_boots_of_elves",
 	"item_blade_of_alacrity",
 	"item_recipe_yasha",			
-	"item_ultimate_orb",
-	"item_recipe_manta",			--分身
+	"item_ogre_axe",
+	"item_belt_of_strength",
+	"item_recipe_sange",			--双刀
 	
 	"item_point_booster",
 	"item_ultimate_orb",

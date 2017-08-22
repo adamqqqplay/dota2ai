@@ -411,7 +411,7 @@ Consider[3]=function()
 	-- Mode based usage
 	--------------------------------------		
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH and #enemys>=1) 
 	then
 		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) ) 
 		then

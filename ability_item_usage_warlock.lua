@@ -129,7 +129,7 @@ Consider[1]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
+					return BOT_ACTION_DESIRE_MODERATE,WeakestEnemy; 
 				end
 			end
 		end
@@ -399,30 +399,13 @@ Consider[3]=function()
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	
-	local enemys2 = npcBot:GetNearbyHeroes(400,true,BOT_MODE_NONE)
+	local enemys2 = npcBot:GetNearbyHeroes(500,true,BOT_MODE_NONE)
 	--ensure safety
 	if(#enemys2>0)
 	then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 
-	--------------------------------------
-	-- Global high-priorty usage
-	--------------------------------------
-	--try to kill enemy hero
-	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
-	then
-		if (WeakestEnemy~=nil)
-		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) )
-			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
-				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetExtrapolatedLocation(CastPoint); 
-				end
-			end
-		end
-	end
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
@@ -532,7 +515,7 @@ Consider[4]=function()
 
 		if ( locationAoE.count >= 3 ) 
 		then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc;
 		end
 	end
 
@@ -545,7 +528,7 @@ Consider[4]=function()
 	then
 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 		if ( locationAoE.count >= 2 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc;
 		end
 	end
 

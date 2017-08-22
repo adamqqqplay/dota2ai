@@ -411,7 +411,7 @@ function Consider2()
 	do
 		if ( npcEnemy:IsChanneling() ) 
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation();
+			return BOT_ACTION_DESIRE_HIGH, npcEnemy
 		end
 	end
 	
@@ -452,7 +452,7 @@ function Consider2()
 		do
 			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) 
 			then
-				if ( CanCast2( npcEnemy ) and not enemyDisabled(npcEnemy)) 
+				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy)) 
 				then
 					return BOT_ACTION_DESIRE_HIGH, npcEnemy;
 				end

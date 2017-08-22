@@ -5,39 +5,39 @@
 ----------------------------------------------------------------------------------------------------
 require(GetScriptDirectory() ..  "/utility")
 function GetDesire()
-	
+
 	local npcBot = GetBot();
-
+	
 	local desire = 0.0;
-
-	if ( npcBot.sideShopMode == true and npcBot:GetGold() >= npcBot:GetNextItemPurchaseValue()) then
-		--utility.DebugTalk(npcBot:GetUnitName().." sideShop true")
-		d=npcBot:DistanceFromSideShop()
-		if d<2000
-		then
-			desire = (2000-d)/d*0.3+0.3;
-			--utility.DebugTalk("npc:"..npcBot:GetUnitName().."goto sideShop,distance:".. d)
-		end
-	else
-		npcBot.sideShopMode = false
+	
+	local enemys = npcBot:GetNearbyHeroes(600,true,BOT_MODE_NONE)
+	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:WasRecentlyDamagedByAnyHero(5.0) or #enemys>=1)		--不应打断持续施法
+	then
 		return 0
 	end
 	
-	--utility.DebugTalk(d..".."..desire)
+	if ( npcBot.sideShopMode == true and npcBot:GetGold() >= npcBot:GetNextItemPurchaseValue()) then
+		local d=npcBot:DistanceFromSideShop()
+		if d<2000
+		then
+			desire = (2000-d)/2000*0.3+0.3;					--根据离边路商店的距离返回欲望值
+		end
+	else
+		npcBot.sideShopMode = false
+	end
+
 	return desire
 
 end
 
 function Think()
+	
 	local npcBot = GetBot();
-	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
-	then 
-		return
-	end
+	
 	local shopLoc1 = GetShopLocation( GetTeam(), SHOP_SIDE );
 	local shopLoc2 = GetShopLocation( GetTeam(), SHOP_SIDE2 );
 
-	if ( GetUnitToLocationDistance(npcBot, shopLoc1) <= GetUnitToLocationDistance(npcBot, shopLoc2) ) then
+	if ( GetUnitToLocationDistance(npcBot, shopLoc1) <= GetUnitToLocationDistance(npcBot, shopLoc2) ) then	--选择前往距离自己更近的商店
 		npcBot:Action_MoveToLocation( shopLoc1 );
 	else
 		npcBot:Action_MoveToLocation( shopLoc2 );

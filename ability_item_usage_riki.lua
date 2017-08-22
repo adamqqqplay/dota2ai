@@ -366,6 +366,21 @@ function Consider2()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
+	-- If my mana is enough,use it at enemy
+	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+	then
+		if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
+		then
+			if (WeakestEnemy~=nil)
+			then
+				if ( CanCast[abilityNumber]( WeakestEnemy ) )
+				then
+					return BOT_ACTION_DESIRE_LOW,WeakestEnemy;
+				end
+			end
+		end
+	end
+	
 	--protect myself
 	if((npcBot:WasRecentlyDamagedByAnyHero(5) and npcBot:GetActiveMode() == BOT_MODE_RETREAT))
 	then

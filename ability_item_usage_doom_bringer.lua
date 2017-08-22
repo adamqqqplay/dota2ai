@@ -342,7 +342,7 @@ function Consider2()
 	
 end
 
-function Consider3() --Location AOE Example
+function Consider3()
 	
 	local abilityNumber=3
 	--------------------------------------
@@ -391,7 +391,7 @@ function Consider3() --Location AOE Example
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
+			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end

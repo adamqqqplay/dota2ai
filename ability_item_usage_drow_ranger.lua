@@ -224,8 +224,8 @@ function Consider1()
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+100,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyLaneCreeps(CastRange+100,true)
-	local creeps2 = npcBot:GetNearbyLaneCreeps(300,true)
+	local creeps = npcBot:GetNearbyCreeps(CastRange+100,true)
+	local creeps2 = npcBot:GetNearbyCreeps(300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	
 	if(ability:GetToggleState()==false)

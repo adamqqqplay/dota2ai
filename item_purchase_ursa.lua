@@ -12,6 +12,7 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	"item_boots",
+	"item_orb_of_venom",
 	"item_blades_of_attack",
 	"item_blades_of_attack",		--相位
 	"item_circlet",
@@ -26,6 +27,10 @@ local ItemsToBuy =
 	
 	"item_blink"	,				--跳刀
 	
+	"item_javelin",
+	"item_belt_of_strength",
+	"item_recipe_basher" ,			--晕锤
+	
 	"item_point_booster",		
 	"item_staff_of_wizardry",
 	"item_ogre_axe",
@@ -34,10 +39,6 @@ local ItemsToBuy =
 	"item_mithril_hammer",
 	"item_ogre_axe",
 	"item_recipe_black_king_bar",	--bkb
-	
-	"item_javelin",
-	"item_belt_of_strength",
-	"item_recipe_basher" ,
 	
 	"item_ring_of_health",
 	"item_vitality_booster",		

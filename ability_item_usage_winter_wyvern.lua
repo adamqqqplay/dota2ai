@@ -165,7 +165,7 @@ end
 function GetAbilityTarget(npcTarget)
 	local Radius=500
 	local tableNearbyEnemyHeroes = npcTarget:GetNearbyHeroes( Radius, false, BOT_MODE_NONE );
-	local tableNearbyEnemyCreeps = npcTarget:GetNearbyLaneCreeps( Radius, false );
+	local tableNearbyEnemyCreeps = npcTarget:GetNearbyCreeps( Radius, false );
 	if(tableNearbyEnemyCreeps~=nil)
 	then
 		for _,c in pairs(tableNearbyEnemyCreeps) 
@@ -469,7 +469,7 @@ Consider[4]=function()
 	-- Check for a channeling enemy
 	for _,npcEnemy in pairs( enemys )
 	do
-		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy )) 
+		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy ) and #allys<#enemys) 
 		then
 			return BOT_ACTION_DESIRE_HIGH, npcEnemy
 		end
@@ -487,7 +487,10 @@ Consider[4]=function()
 			local creeps2 = npcEnemy:GetNearbyCreeps(Radius,true)
 			for j,npcEnemyAttacker in pairs(enemys2)
 			do
-				sumdamage=sumdamage+npcEnemyAttacker:GetEstimatedDamageToTarget(true,npcEnemy,Duration,DAMAGE_TYPE_PHYSICAL)
+				if(npcEnemy~=npcEnemyAttacker)
+				then
+					sumdamage=sumdamage+npcEnemyAttacker:GetEstimatedDamageToTarget(true,npcEnemy,Duration,DAMAGE_TYPE_PHYSICAL)
+				end
 			end
 			for j,npcEnemyAttacker in pairs(creeps2)
 			do
@@ -516,7 +519,7 @@ Consider[4]=function()
 		do
 			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) 
 			then
-				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy)) 
+				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and #allys<#enemys) 
 				then
 					return BOT_ACTION_DESIRE_HIGH, npcEnemy;
 				end

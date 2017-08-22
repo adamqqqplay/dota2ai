@@ -297,8 +297,8 @@ function Consider1()
 		--search target
 		for _,npcEnemy in pairs(enemys2)
 		do
-			local allys3=npcEnemy:GetNearbyHeroes(1600,false,BOT_MODE_NONE)
-			local enemys3=npcEnemy:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
+			local allys3=npcEnemy:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
+			local enemys3=npcEnemy:GetNearbyHeroes(1600,false,BOT_MODE_NONE)
 			local sumdamage=npcBot:GetEstimatedDamageToTarget(true,npcEnemy,4.0,DAMAGE_TYPE_ALL)
 			
 			if(#enemys3<=2)

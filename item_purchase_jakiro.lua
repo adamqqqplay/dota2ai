@@ -8,8 +8,8 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_clarity",
-	"item_wind_lace",
 	"item_branches",
+	"item_wind_lace",
 	"item_branches",
 	"item_boots",	
 	"item_circlet",
@@ -25,18 +25,18 @@ local ItemsToBuy =
 	"item_helm_of_iron_will",
 	"item_recipe_veil_of_discord",	--纷争
 	
-	"item_ring_of_regen",
-	"item_recipe_headdress",
-	"item_branches",
-	"item_chainmail",
-	"item_recipe_buckler" ,
-	"item_branches",
-    "item_recipe_mekansm",			--梅肯
 	"item_ring_of_health",
 	"item_staff_of_wizardry",
 	"item_recipe_force_staff",		--推推7.06
-	
-	"item_recipe_guardian_greaves",	--卫士胫甲
+
+	"item_gauntlets",
+	"item_circlet",
+	"item_recipe_bracer",
+	"item_gauntlets",
+	"item_circlet",
+	"item_recipe_bracer",
+	"item_staff_of_wizardry",
+	"item_recipe_rod_of_atos",		--阿托斯7.06
 	
 	"item_staff_of_wizardry",
 	"item_void_stone",

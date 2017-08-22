@@ -1,3 +1,6 @@
+----------------------------------------------------------------------------------------------------
+-- BOT EXPERIMENT Author:Arizona Fauzie Link:http://steamcommunity.com/sharedfiles/filedetails/?id=837040016
+----------------------------------------------------------------------------------------------------
 local X = {}
 
 ---RADIANT WARDING SPOT

@@ -7,6 +7,7 @@
 --------------------------------------
 require(GetScriptDirectory() ..  "/utility")
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+local role = require(GetScriptDirectory() ..  "/RoleUtility")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -76,7 +77,10 @@ local Consider ={}
 function CanCast1( npcEnemy )
 	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable() and not npcEnemy:HasModifier( "modifier_bane_enfeeble" ) 
 end
-local CanCast={CanCast1,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+function CanCast2( npcEnemy )
+	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable() and not npcEnemy:WasRecentlyDamagedByAnyHero(2.0)
+end
+local CanCast={CanCast1,CanCast2,utility.NCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -159,7 +163,7 @@ Consider[1]=function()
 		then
 			if (WeakestEnemy~=nil)
 			then
-				if ( CanCast[abilityNumber]( WeakestEnemy ) )
+				if ( CanCast[abilityNumber]( WeakestEnemy ) and (role.IsCarry(WeakestEnemy:GetUnitName()) or #enemys==1))
 				then
 					return BOT_ACTION_DESIRE_LOW,WeakestEnemy;
 				end
