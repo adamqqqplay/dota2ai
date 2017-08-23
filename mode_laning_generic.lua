@@ -7,14 +7,11 @@ function GetDesire()
 	
 	local npcBot = GetBot();
 	
-	if(DotaTime()<=8*60)
+	if(DotaTime()<=8*60 and npcBot:GetLevel()<7)
 	then
-		return 0.3
-	elseif(npcBot:GetLevel()<7)
-	then
-		return 0.4
+		return 0.35
 	else
-		return 0.3
+		return 0.27
 	end
 
 end

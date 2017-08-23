@@ -340,6 +340,7 @@ function SellExtraItem()
 		then
 			SellSpecifiedItem("item_stout_shield")
 			SellSpecifiedItem("item_orb_of_venom")
+			SellSpecifiedItem("item_poor_mans_shield")
 		end
 		if(GameTime()>30*60)
 		then
@@ -348,7 +349,7 @@ function SellExtraItem()
 			SellSpecifiedItem("item_magic_wand")
 			SellSpecifiedItem("item_magic_stick")
 			SellSpecifiedItem("item_urn_of_shadows")
-			SellSpecifiedItem("item_drums_of_endurance")
+			SellSpecifiedItem("item_ancient_janggo")
 			SellSpecifiedItem("item_ring_of_basilius")
 			SellSpecifiedItem("item_ring_of_aquila")
 		end

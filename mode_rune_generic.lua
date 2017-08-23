@@ -282,14 +282,13 @@ function GetDesire()
 	then
 		for _,r in pairs(TargetRunes) do
 			local d=GetUnitToLocationDistance(npcBot,GetRuneSpawnLocation(r))
-			local factor=(6000-d)/6000*0.2+0.3;
-			if(d<500)
-			then
-				factor=0.9
-			end
-			
+			local factor=(6000-d)/6000*0.2+0.3;			
 			if d<6000 and GetRuneStatus(r)~=RUNE_STATUS_MISSING
 			then
+				if(d<500)
+				then
+					factor=0.9
+				end
 				local BestHero=GetTheBestHero(r)
 				if(factor>HighestFactor and npcBot==BestHero)
 				then

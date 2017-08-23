@@ -39,6 +39,7 @@ function CourierUsageThink()
 		if(courier.idletime==nil or GameTime()-courier.idletime>11)
 		then
 			courier.idletime=GameTime()
+			return
 		else
 			if(GameTime()-courier.idletime>10)
 			then
@@ -59,7 +60,7 @@ function CourierUsageThink()
 		return
 	end
 
-	if(state == COURIER_STATE_RETURNING_TO_BASE and npcBot:GetCourierValue()>0 and not utility.IsItemSlotsFull() and IsFly==true)		--如果信使上有我的装备，则运送物品
+	if(state == COURIER_STATE_RETURNING_TO_BASE and npcBot:GetCourierValue()>0 and not utility.IsItemSlotsFull() and IsFly==true and courier:GetHealth()/courier:GetMaxHealth()>=0.9)		--如果信使上有我的装备，则运送物品
 	then
 		npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TRANSFER_ITEMS)
 		return
@@ -441,14 +442,48 @@ function UnImplementedItemUsage()
 		end
 	end
 	
-	-- local arm=IsItemAvailable("item_armlet");
-	-- if arm~=nil and arm:IsFullyCastable() then
-		-- if #tableNearbyEnemyHeroes == 0 and arm:GetToggleState( ) then
-			-- npcBot:Action_UseAbility(arm);
-			-- return;
-		-- end
-	-- end
+	local its=IsItemAvailable("item_tango_single");
+	if its~=nil and its:IsFullyCastable() and its:GetCooldownTimeRemaining() == 0 then
+		if DotaTime() > 10*60 and npcBot:DistanceFromFountain() > 1300
+		then
+			local trees = npcBot:GetNearbyTrees(1300);
+			if trees[1] ~= nil then
+				npcBot:Action_UseAbilityOnTree(its, trees[1]);
+				return;
+			end
+		end
+	end
 	
+	local irt=IsItemAvailable("item_iron_talon");
+	if irt~=nil and irt:IsFullyCastable() then
+		if npcBot:GetActiveMode() == BOT_MODE_FARM 
+		then
+			local neutrals = npcBot:GetNearbyNeutralCreeps(500);
+			local maxHP = 0;
+			local target = nil;
+			for _,c in pairs(neutrals) do
+				local cHP = c:GetHealth();
+				if cHP > maxHP and not c:IsAncientCreep() then
+					maxHP = cHP;
+					target = c;
+				end
+			end
+			if target ~= nil then
+				npcBot:Action_UseAbilityOnEntity(irt, target);
+				return;
+			end
+		end
+	end
+	
+	local msh=IsItemAvailable("item_moon_shard");
+	if msh~=nil and msh:IsFullyCastable() then
+		if not npcBot:HasModifier("modifier_item_moon_shard_consumed")
+		then
+			print("use Moon")
+			npcBot:Action_UseAbilityOnEntity(msh, npcBot);
+			return;
+		end
+	end
 	local mg=IsItemAvailable("item_enchanted_mango");
 	if mg~=nil and mg:IsFullyCastable() then
 		if npcBot:GetMana() < 100 
@@ -691,20 +726,6 @@ function UnImplementedItemUsage()
 			return;
 		end
 	end
-	
-	-- local tango=IsItemAvailable("item_tango");
-	-- if tango~=nil and tango:IsFullyCastable() then
-		-- local allys = npcBot:GetNearbyHeroes( 1600, false, BOT_MODE_NONE );
-		-- for _,ally in pairs(allys)
-		-- do
-			-- if((tango:GetCurrentCharges()==4 and DotaTime()>-30 and DotaTime()<0 or ally:GetHealth()-ally:GetMaxHealth()>200)  )
-			-- then
-				-- print("give")
-				-- npcBot:Action_UseAbilityOnEntity(tango,Ally);
-			-- end
-		-- end
-		
-	-- end
 	
 	local WardList=GetUnitList(UNIT_LIST_ALLIED_WARDS)
 	local HaveWard=false
