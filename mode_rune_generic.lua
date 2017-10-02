@@ -232,7 +232,7 @@ function GetDesire()
 
 	if DotaTime()>=-40 and DotaTime()<=0.5
 	then
-		if(DotaTime()>=-5 and (npcBot:GetAssignedLane()~=LANE_MID or IsMidNearby()==true))
+		if(DotaTime()>=-5 and IsMidNearby()==true)
 		then
 			return 0
 		else

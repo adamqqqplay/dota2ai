@@ -18,12 +18,10 @@ function GetDesire()
 	
 	if ( npcBot.sideShopMode == true and npcBot:GetGold() >= npcBot:GetNextItemPurchaseValue()) then
 		local d=npcBot:DistanceFromSideShop()
-		if d<2000
+		if d<2500
 		then
-			desire = (2000-d)/2000*0.3+0.3;					--根据离边路商店的距离返回欲望值
+			desire = (2500-d)/2500*0.3+0.3;					--根据离边路商店的距离返回欲望值
 		end
-	else
-		npcBot.sideShopMode = false
 	end
 
 	return desire

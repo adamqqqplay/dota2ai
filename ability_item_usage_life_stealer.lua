@@ -398,6 +398,16 @@ function Consider3()
 	
 end
 
+function RemoveMyself(allys)
+	for _,hero in pairs (allys)
+	do
+		if (hero==npcBot)
+		then
+			table.remove(allys,_)
+		end
+	end
+end
+
 function Consider6()
 
 	local abilityNumber=6
@@ -418,6 +428,7 @@ function Consider6()
 	local HeroHealth=10000
 	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	RemoveMyself(allys)
 	local StrongestAlly,AllyHealth=utility.GetStrongestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -426,13 +437,6 @@ function Consider6()
 	local StrongestCreep,CreepHealthEnemy=utility.GetStrongestUnit(creeps)
 	local creepsAlly = npcBot:GetNearbyCreeps(CastRange+300,false)
 	local StrongestCreepAlly,CreepHealthAlly=utility.GetStrongestUnit(creepsAlly)
-	for _,hero in pairs (allys)
-	do
-		if (hero==npcBot)
-		then
-			table.remove(allys,_)
-		end
-	end
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
@@ -444,7 +448,8 @@ function Consider6()
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
 				local allys2 = WeakestEnemy:GetNearbyHeroes( Radius-50, true, BOT_MODE_NONE );
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
+				RemoveMyself(allys2)
+				if(allys2~=nil and HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 				then
 					return BOT_ACTION_DESIRE_HIGH,allys2[#allys2]; 
 				end
@@ -535,7 +540,7 @@ function Consider8()
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT ) 
 	then
-		if ( #enemys == 0 or AbilitiesReal[1]:IsFullyCastable() ) 
+		if ( #enemys == 0 or AbilitiesReal[1]:IsFullyCastable() and npcBot:DistanceFromFountain()>=1000) 
 		then
 			return BOT_ACTION_DESIRE_HIGH;
 		end

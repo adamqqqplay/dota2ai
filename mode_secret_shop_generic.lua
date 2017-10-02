@@ -21,8 +21,6 @@ function GetDesire()
 		then
 			desire = (3000-d)/3000*0.3+0.3;				--根据离边路商店的距离返回欲望值
 		end
-	else
-		npcBot.secretShopMode = false
 	end
   
 	return desire

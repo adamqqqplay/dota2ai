@@ -320,7 +320,7 @@ function NotNilOrDead(unit)
 end
 
 --------------------------------------------------------------------------	ItemPurchase
-function SellExtraItem()
+function SellExtraItem(ItemsToBuy)
 	local npcBot=GetBot()
 	item_travel_boots = NoNeedTpscrollForTravelBoots();
 	item_travel_boots_1 = item_travel_boots[1];
@@ -341,6 +341,8 @@ function SellExtraItem()
 			SellSpecifiedItem("item_stout_shield")
 			SellSpecifiedItem("item_orb_of_venom")
 			SellSpecifiedItem("item_poor_mans_shield")
+			SellSpecifiedItem("item_quelling_blade")
+			SellSpecifiedItem("item_soul_ring")
 		end
 		if(GameTime()>30*60)
 		then
@@ -352,6 +354,15 @@ function SellExtraItem()
 			SellSpecifiedItem("item_ancient_janggo")
 			SellSpecifiedItem("item_ring_of_basilius")
 			SellSpecifiedItem("item_ring_of_aquila")
+			SellSpecifiedItem("item_vladmir")
+		end
+		if(GameTime()>35*60)
+		then
+			SellSpecifiedItem("item_hand_of_midas")
+			if(GetItemSlotsCount()<6)
+			then
+				SellSpecifiedItem("item_dust")
+			end
 		end
 		if(GameTime()>40*60 and npcBot:GetGold()>2200 and (item_travel_boots[1]==nil and item_travel_boots[2]==nil) and npcBot.HaveTravelBoots~=true )
 		then
@@ -359,7 +370,7 @@ function SellExtraItem()
 			table.insert(ItemsToBuy,"item_recipe_travel_boots")
 			npcBot.HaveTravelBoots=true
 		end
-	end
+	end	
 	
 	if(item_travel_boots[1]~=nil or item_travel_boots[2]~=nil)
 	then
@@ -369,6 +380,7 @@ function SellExtraItem()
 		SellSpecifiedItem("item_power_treads_int")
 		SellSpecifiedItem("item_power_treads_str")
 		SellSpecifiedItem("item_tranquil_boots")
+		SellSpecifiedItem("item_tpscroll")
 	end
 	
 end
@@ -378,7 +390,7 @@ function ItemPurchase(ItemsToBuy)
 	local npcBot = GetBot();
 	
 	-- buy item_tpscroll
-	if(npcBot.secretShopMode~=true and npcBot.sideShopMode ~=true or npcBot:GetGold() >= npcBot:GetNextItemPurchaseValue()+50)
+	if(npcBot.secretShopMode~=true or npcBot:GetGold() >= 100)
 	then
 		WeNeedTpscroll();
 	end
@@ -392,7 +404,7 @@ function ItemPurchase(ItemsToBuy)
 	local sNextItem = ItemsToBuy[1];
 	npcBot:SetNextItemPurchaseValue( GetItemCost( sNextItem ) )
 	
-	SellExtraItem()
+	SellExtraItem(ItemsToBuy)
 
 	if(npcBot:DistanceFromFountain()<=1000 or npcBot:GetHealth()/npcBot:GetMaxHealth()<=0.4)
 	then
@@ -410,24 +422,26 @@ function ItemPurchase(ItemsToBuy)
 	then
 		if(npcBot.secretShopMode~=true and npcBot.sideShopMode ~=true)
 		then
-			if (IsItemPurchasedFromSideShop( sNextItem ) and npcBot:DistanceFromSideShop() <= 3000)  --只有在离边路商店较近时才前往边路商店
+			if (IsItemPurchasedFromSideShop( sNextItem ) and npcBot:DistanceFromSideShop() <= 4000)  --只有在离边路商店较近时才前往边路商店
 			then
 				npcBot.sideShopMode = true;
+				npcBot.secretShopMode = false;
 			end
 			if (IsItemPurchasedFromSecretShop( sNextItem )) 
 			then
 				npcBot.secretShopMode = true;
+				npcBot.sideShopMode = false;
 			end
 		end
 		
 		local PurchaseResult=-2		--接收购买结果，后文会介绍
-		if(npcBot:GetActiveMode() == BOT_MODE_SIDE_SHOP )
+		if(npcBot.sideShopMode == true)
 		then
 			if(npcBot:DistanceFromSideShop() <= 250)
 			then
 				PurchaseResult=npcBot:ActionImmediate_PurchaseItem( sNextItem )
 			end
-		elseif(npcBot:GetActiveMode() == BOT_MODE_SECRET_SHOP or npcBot.secretShopMode == true)		--如果目标是神秘商店，则命令信使购买物品
+		elseif(npcBot.secretShopMode == true)		--如果目标是神秘商店，则命令信使购买物品
 		then
 			if(npcBot:DistanceFromSecretShop() <= 250)
 			then
@@ -456,7 +470,6 @@ function ItemPurchase(ItemsToBuy)
 		end
 		if(PurchaseResult==PURCHASE_ITEM_OUT_OF_STOCK)	--物品栏已满，出售多余的物品
 		then
-			SellExtraItem()
 			SellSpecifiedItem("item_branches")
 			SellSpecifiedItem("item_dust")
 		end
@@ -555,28 +568,38 @@ end
 function WeNeedTpscroll()
 
 	local npcBot = GetBot();
+	
 
+	
 	-- Count current number of TP scrolls
 	local iScrollCount = 0;
 	for i = 0, 14 do
 		local sCurItem = npcBot:GetItemInSlot(i);
 		if ( sCurItem ~= nil and sCurItem:GetName() == "item_tpscroll" ) then
-			iScrollCount = iScrollCount + 1;
+			iScrollCount = iScrollCount+sCurItem:GetCurrentCharges()
 		end
 	end
 
 	-- If we are at the sideshop or fountain with no TPs, then buy one or two
-	if ( iScrollCount == 0 and item_travel_boots_1 == nil and item_travel_boots_2 == nil ) then
-
+	if ( iScrollCount <=1 and item_travel_boots_1 == nil and item_travel_boots_2 == nil ) then
+	
 		if ( npcBot:DistanceFromSideShop() <= 200 or npcBot:DistanceFromFountain() <= 200 ) then
 
 			if ( DotaTime() > 0 and DotaTime() < 20 * 60 ) then
 				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
-				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 			elseif ( DotaTime() >= 20 * 60 ) then
 				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
+			end
+		else
+			if(npcBot.WeNeedTpscrollTimer==nil)
+			then
+				npcBot.WeNeedTpscrollTimer=DotaTime()
+			end
+			if(DotaTime()-npcBot.WeNeedTpscrollTimer>120)
+			then
 				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
+				npcBot.WeNeedTpscrollTimer=DotaTime()
 			end
 		end
 	end
@@ -779,7 +802,7 @@ function BuySupportItem()
 		then
 			local item_dust = GetItemIncludeBackpack( "item_dust" );
 			local item_ward_sentry = GetItemIncludeBackpack( "item_ward_sentry" )
-			if(item_gem==nil)
+			if(item_gem==nil and HaveGem()==false)
 			then
 				if (item_dust==nil and item_ward_sentry==nil and item_ward_sentry2==nil and npcBot:GetGold() >= 2*GetItemCost("item_dust") and GetItemStockCount("item_gem") >= 1) then
 					npcBot:ActionImmediate_PurchaseItem( "item_dust" );
@@ -796,7 +819,7 @@ function BuySupportItem()
 			end
 		end
 		
-		if(DotaTime()>=40*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1)
+		if(DotaTime()>=40*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1 and item_gem==nil and HaveGem()==false)
 		then
 			npcBot:ActionImmediate_PurchaseItem( "item_gem" );
 		end
@@ -814,6 +837,18 @@ function BuySupportItem()
 	
 end
 
+function HaveGem()
+	for k,hero in pairs(GetUnitList( UNIT_LIST_ALLIED_HEROES ) )
+	do
+		local gem=hero:FindItemSlot( "item_gem" )
+		if(gem>0)
+		then
+			return true
+		end
+	end
+	return false
+end
+
 function CheckAbilityBuild(AbilityToLevelUp)
 	local npcBot=GetBot()
 	if #AbilityToLevelUp > 26-npcBot:GetLevel() then
@@ -824,7 +859,7 @@ function CheckAbilityBuild(AbilityToLevelUp)
 	end
 end
 
-local debug_mode = false
+local debug_mode = true
 function DebugTalk(message)
 	if(debug_mode==true)
 	then

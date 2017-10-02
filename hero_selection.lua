@@ -3,6 +3,7 @@
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
 hero_pool={"npc_dota_hero_abaddon",
+		"npc_dota_hero_abyssal_underlord",
 		"npc_dota_hero_alchemist",
 		"npc_dota_hero_antimage",
 		"npc_dota_hero_ancient_apparition",
@@ -101,7 +102,6 @@ hero_pool={"npc_dota_hero_abaddon",
 		"npc_dota_hero_treant",
 		"npc_dota_hero_troll_warlord",
 		"npc_dota_hero_tusk",
-		"npc_dota_hero_abyssal_underlord",
 		"npc_dota_hero_undying",
 		"npc_dota_hero_ursa",
 		"npc_dota_hero_vengefulspirit",
@@ -160,16 +160,16 @@ hero_pool_test={
 hero_pool_my={
 		-- "npc_dota_hero_zuus",
 		-- "npc_dota_hero_skywrath_mage",
-		 "npc_dota_hero_ogre_magi",
+		-- "npc_dota_hero_ogre_magi",
 		-- "npc_dota_hero_chaos_knight",
 		-- "npc_dota_hero_viper",
 		
 		-- "npc_dota_hero_lina",
 		-- "npc_dota_hero_abaddon",
 		-- "npc_dota_hero_huskar",
-		 "npc_dota_hero_phantom_assassin",
+		-- "npc_dota_hero_phantom_assassin",
 		-- "npc_dota_hero_crystal_maiden",
-		 "npc_dota_hero_shadow_shaman",
+		-- "npc_dota_hero_shadow_shaman",
 		
 		-- "npc_dota_hero_ember_spirit",
 		-- "npc_dota_hero_centaur",
@@ -186,7 +186,7 @@ hero_pool_my={
 		-- "npc_dota_hero_luna",
 		-- "npc_dota_hero_necrolyte",
 		-- "npc_dota_hero_undying",
-		 "npc_dota_hero_treant",
+		-- "npc_dota_hero_treant",
 		-- "npc_dota_hero_tidehunter",
 		
 		-- "npc_dota_hero_slark",
@@ -207,7 +207,7 @@ hero_pool_my={
 		-- "npc_dota_hero_lich",
 		-- "npc_dota_hero_nevermore",
 		
-		 "npc_dota_hero_night_stalker",
+		-- "npc_dota_hero_night_stalker",
 		-- "npc_dota_hero_juggernaut",
 		-- "npc_dota_hero_axe",
 		-- "npc_dota_hero_razor",
@@ -225,9 +225,9 @@ hero_pool_my={
 		--	"npc_dota_hero_antimage",
 		--	"npc_dota_hero_faceless_void",
 		
-		-- "npc_dota_hero_warlock",
+		--"npc_dota_hero_warlock",
 		-- "npc_dota_hero_windrunner",
-		 "npc_dota_hero_omniknight",
+		-- "npc_dota_hero_omniknight",
 		-- "npc_dota_hero_tiny",
 		-- "npc_dota_hero_death_prophet",
 		 
@@ -236,6 +236,12 @@ hero_pool_my={
 		 -- "npc_dota_hero_pudge",			--!
 		 -- "npc_dota_hero_witch_doctor",	--!
 		 -- "npc_dota_hero_kunkka",			--!
+		 
+		"npc_dota_hero_alchemist",
+		"npc_dota_hero_abyssal_underlord",
+		"npc_dota_hero_ancient_apparition",
+		"npc_dota_hero_arc_warden",
+		"npc_dota_hero_gyrocopter",
 }
 hero_pool_1={
 	"npc_dota_hero_chaos_knight",
@@ -252,6 +258,7 @@ hero_pool_1={
 	"npc_dota_hero_sven",
 	"npc_dota_hero_spectre",
 	--"npc_dota_hero_antimage",
+	"npc_dota_hero_gyrocopter",
 }
 hero_pool_2={
 	"npc_dota_hero_zuus",
@@ -264,6 +271,8 @@ hero_pool_2={
 	"npc_dota_hero_nevermore",
 	"npc_dota_hero_pugna",
 	"npc_dota_hero_death_prophet",
+	"npc_dota_hero_alchemist",
+	"npc_dota_hero_arc_warden",
 }
 hero_pool_3={
 	"npc_dota_hero_huskar",
@@ -283,6 +292,7 @@ hero_pool_3={
 	"npc_dota_hero_faceless_void",
 	"npc_dota_hero_tiny",
 	"npc_dota_hero_windrunner",
+	"npc_dota_hero_abyssal_underlord",
 }
 hero_pool_4={
 	"npc_dota_hero_skywrath_mage",
@@ -308,6 +318,7 @@ hero_pool_5={
 	"npc_dota_hero_oracle",
 	"npc_dota_hero_winter_wyvern",
 	"npc_dota_hero_warlock",
+	"npc_dota_hero_ancient_apparition",
 }
 hero_pool_new={hero_pool_2,hero_pool_1,hero_pool_4,hero_pool_5,hero_pool_3}
 ----------------------------------------------------------------------------------------------------

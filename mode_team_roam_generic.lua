@@ -101,7 +101,7 @@ function ConsiderShrine()
 		for _,s in pairs(Shrines)
 		do
 			local shrine=GetShrine(GetTeam(),s)
-			if(shrine~=nil)
+			if(shrine~=nil and shrine:IsAlive())
 			then
 				if(GetShrineCooldown(shrine)<10 or IsShrineHealing(shrine)==true)
 				then
@@ -275,10 +275,10 @@ function ConsiderTeamRoam()
 	local npcBot=GetBot()
 	local item_smoke = utility.IsItemAvailable("item_smoke_of_deceit")
 	
-	if(item_smoke~=nil and GetAllyFactor(npcBot)>=0.75)
+	if(item_smoke~=nil and GetAllyFactor(npcBot)>=0.7)
 	then
 		local factor,target,allys=FindTarget()
-		if(factor>0.7)
+		if(factor>0.75)
 		then
 			local nearBuilding = utility.GetNearestBuilding(GetTeam(), npcBot:GetLocation())
 			local location = GetUnitsTowardsLocation(nearBuilding,GetAncient(GetTeam()),600)
@@ -289,14 +289,19 @@ function ConsiderTeamRoam()
 			
 			for _,npcAlly in pairs(allys)
 			do
-				npcAlly.TeamRoam=true
-				npcAlly.TeamRoamState="Assemble"
-				npcAlly.TeamRoamTargetID=target:GetPlayerID()
-				npcAlly.TeamRoamLeader=npcBot
-				npcAlly.TeamRoamTimer=DotaTime()
-				npcAlly:SetTarget(target)
-				npcBot:ActionImmediate_Chat(string.gsub(npcAlly:GetUnitName(),"npc_dota_hero_","").." come to Gank!",false)
-				print(npcBot:GetPlayerID().." @TeamRoam@"..npcAlly:GetUnitName().." want to Gank together!")
+				local factor2=GetAllyFactor(npcAlly)
+				if(factor2>0.7)
+				then
+					npcAlly.TeamRoam=true
+					npcAlly.TeamRoamState="Assemble"
+					npcAlly.TeamRoamTargetID=target:GetPlayerID()
+					npcAlly.TeamRoamLeader=npcBot
+					npcAlly.TeamRoamTimer=DotaTime()
+					npcAlly:SetTarget(target)
+					npcBot:ActionImmediate_Chat(string.gsub(npcAlly:GetUnitName(),"npc_dota_hero_","").." come to Gank! Factor:"..factor2,false)
+					print(npcBot:GetPlayerID().." @TeamRoam@"..npcAlly:GetUnitName().." want to Gank together!Factor:"..factor2)				
+				end
+
 			end
 		end
 	end
@@ -333,21 +338,28 @@ function GetAllyFactor(npcAlly)
 		travel = travel:IsFullyCastable()
 	end
 
-	if distance <= 1000 or travel then
+	if distance <= 1000 then
 		distFactor = 1
-	elseif distance - distBuilding >= 3000 and tp then
-		if distBuilding <= 1000 then
-			distFactor = 0.7
-		elseif distBuilding >= 6000 then
-			distFactor = 0
-		else
-			distFactor = -(distBuilding - 6000) * 0.7 / 5000
-		end
 	elseif distance >= 6000 then
 		distFactor = 0
 	else
 		distFactor = (6000-distance) / 6000
 	end
+	-- if distance <= 1000 or travel then
+		-- distFactor = 1
+	-- elseif distance - distBuilding >= 3000 and tp then
+		-- if distBuilding <= 1000 then
+			-- distFactor = 0.7
+		-- elseif distBuilding >= 6000 then
+			-- distFactor = 0
+		-- else
+			-- distFactor = -(distBuilding - 6000) * 0.7 / 5000
+		-- end
+	-- elseif distance >= 6000 then
+		-- distFactor = 0
+	-- else
+		-- distFactor = (6000-distance) / 6000
+	-- end
 
 	local factor=StateFactor*0.7+distFactor*0.3--+powerFactor*0.4
 	return factor
@@ -355,7 +367,7 @@ end
 
 function GetEnemyFactor(npcEnemy,allys)
 	local npcBot=GetBot()
-	if(GetUnitToUnitDistance(npcBot,npcEnemy)>=2000)
+	if(GetUnitToUnitDistance(npcBot,npcEnemy)>=3000)
 	then
 		local TowersCount=0
 		local AllysCount=#allys
@@ -437,7 +449,7 @@ function FindTarget()
 	for i,npcAlly in pairs(allys2)
 	do
 		local factor=GetAllyFactor(npcAlly)
-		if(factor>=0.8)
+		if(factor>=0.75)
 		then
 			--print(npcBot:GetPlayerID().." [TeamRoam] SearchAlly/ "..npcAlly:GetUnitName().." / Factor:"..factor)
 			table.insert(allys,npcAlly)

@@ -60,7 +60,7 @@ function CourierUsageThink()
 		return
 	end
 
-	if(state == COURIER_STATE_RETURNING_TO_BASE and npcBot:GetCourierValue()>0 and not utility.IsItemSlotsFull() and IsFly==true and courier:GetHealth()/courier:GetMaxHealth()>=0.9)		--如果信使上有我的装备，则运送物品
+	if(state == COURIER_STATE_RETURNING_TO_BASE and npcBot:GetCourierValue()>0 and npcBot:GetCourierValue()~=900 and not utility.IsItemSlotsFull() and IsFly==true and courier:GetHealth()/courier:GetMaxHealth()>0.9)		--如果信使上有我的装备，则运送物品
 	then
 		npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TRANSFER_ITEMS)
 		return
@@ -798,7 +798,7 @@ function IsXItemAvailable(npcBot,item_name)
 end
 
 function CanCastOnTarget( npcTarget )
-	return npcTarget:CanBeSeen() and not npcTarget:IsMagicImmune() and not npcTarget:IsInvulnerable();
+	return npcTarget:CanBeSeen() and not npcTarget:IsMagicImmune() and not npcTarget:IsInvulnerable() and not npcTarget:IsIllusion()
 end
 function CanCastOnMagicImmuneTarget( npcTarget )
 	return npcTarget:CanBeSeen() and not npcTarget:IsInvulnerable();

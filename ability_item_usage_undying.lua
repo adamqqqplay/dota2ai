@@ -227,6 +227,7 @@ function Consider1()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetLevel()*75
 	local Radius = ability:GetAOERadius()
+	local CastPoint = ability:GetCastPoint()
 	
 	local HeroHealth=10000
 	local CreepHealth=10000
@@ -275,7 +276,7 @@ function Consider1()
 	then
 		if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana )
 		then
-			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
 			if ( locationAoE.count >= 2 and GetUnitToLocationDistance(npcBot,locationAoE.targetloc)<=CastRange) 
 			then
 				return BOT_ACTION_DESIRE_MODERATE-0.04, locationAoE.targetloc;
@@ -293,7 +294,7 @@ function Consider1()
 	then
 		if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana )
 		then
-			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
 			if ( locationAoE.count >=2 and GetUnitToLocationDistance(npcBot,locationAoE.targetloc)<=CastRange) 
 			then
 				return BOT_ACTION_DESIRE_MODERATE-0.03, locationAoE.targetloc;
@@ -311,7 +312,7 @@ function Consider1()
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy))
+			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange)
 			then
 				return BOT_ACTION_DESIRE_MODERATE-0.02, utility.GetUnitsTowardsLocation(npcEnemy,npcBot,Radius/2);
 			end
@@ -323,7 +324,7 @@ function Consider1()
 	then
 		if((ManaPercentage>0.4 or npcBot:GetMana()>ComboMana))
 		then
-			local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
+			local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, CastPoint, Damage );
 
 			if ( locationAoE.count >= 1 and GetUnitToLocationDistance(npcBot,locationAoE.targetloc)>=300 and GetUnitToLocationDistance(npcBot,locationAoE.targetloc)<=CastRange)
 			then
@@ -333,7 +334,7 @@ function Consider1()
 		
 		if((ManaPercentage>0.4 or npcBot:GetMana()>ComboMana))
 		then
-			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
 			if ( locationAoE.count >= 2 and GetUnitToLocationDistance(npcBot,locationAoE.targetloc)<=CastRange)
 			then
 				return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
@@ -345,7 +346,7 @@ function Consider1()
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
 		if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana )
 		then
-			local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+			local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
 			if ( locationAoE.count >= 3 and GetUnitToLocationDistance(npcBot,locationAoE.targetloc)<=CastRange) then
 				return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 			end

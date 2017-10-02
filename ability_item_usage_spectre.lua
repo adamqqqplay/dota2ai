@@ -203,7 +203,7 @@ Consider[1]=function()
 	then
 		if ( #enemys>=1) 
 		then
-			if (ManaPercentage>0.5 or npcBot:GetMana()>ComboMana and AbilitiesReal[abilityNumber]:GetLevel()>=1)
+			if (ManaPercentage>0.5 or npcBot:GetMana()>ComboMana)
 			then
 				if (WeakestEnemy~=nil)
 				then
@@ -217,7 +217,7 @@ Consider[1]=function()
 		
 		if (#creeps >= 3 ) 
 		then
-			if (ManaPercentage>0.5 or npcBot:GetMana()>ComboMana and AbilitiesReal[abilityNumber]:GetLevel()>=1)
+			if (ManaPercentage>0.5 or npcBot:GetMana()>ComboMana)
 			then
 					if ( CanCast[abilityNumber]( creeps[1] ) )
 					then

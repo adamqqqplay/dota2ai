@@ -391,9 +391,9 @@ function Consider2()
 	-- Mode based usage
 	--------------------------------------
 	--protect myself
-	if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
+	if( #enemys-#creeps >=1 or (npcBot:GetActiveMode() == BOT_MODE_RETREAT and #enemys>=1))
 	then
-		if(#creeps<=1 and #enemys >=2)
+		if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
 		then
 			for _,npcEnemy in pairs( enemys )
 			do

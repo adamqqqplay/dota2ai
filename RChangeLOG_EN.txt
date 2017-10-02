@@ -124,3 +124,17 @@ v1.2(2017.8.23)
 36. Updated some hero's item building (lina, ursa, zues, jakiro, omniknight, riki, lion, luna, nevermore, facelessvoid, ogre magi, phantom assassin.)
 37. Fixed some heroes stuck in item building.
 38. Improved some hero's ability building.
+V1.2b(2017.10.2)
+1.Added 5 new heroes, alchemist, ancient apparition, arc warden, gyrocopter
+2.Significant improvement in AI defense system.
+3.Slightly improve the courier behavior.
+4.Slightly improve the team smoking roam system.
+5.Fixed some early items that were not sold at the later game
+6.Fixed AI can not correctly carry TP problems.
+7.Fixed can not correctly buy items in secret shops and side shops.
+8.Fixed Life stealer will use ultimate ability to itself, thus solving the stuck problem
+9.Improved Leshrac to use ability 2 better.
+10.Improved Undying to use ablility 1 more accurate
+11.Improved rune pick up in game starting.
+12.Improved the purchase time of gem, and now a team will only buy a gem
+13.Improved ability build of Venomancer.
