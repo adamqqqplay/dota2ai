@@ -59,7 +59,13 @@ function CourierUsageThink()
 		end
 		return
 	end
-
+	
+	if(courier:GetHealth()/courier:GetMaxHealth()<=0.9)
+	then
+		return
+	end
+		
+		
 	if(state == COURIER_STATE_RETURNING_TO_BASE and npcBot:GetCourierValue()>0 and npcBot:GetCourierValue()~=900 and not utility.IsItemSlotsFull() and IsFly==true and courier:GetHealth()/courier:GetMaxHealth()>0.9)		--如果信使上有我的装备，则运送物品
 	then
 		npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TRANSFER_ITEMS)

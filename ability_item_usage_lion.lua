@@ -497,7 +497,23 @@ Consider[4]=function()
 end
 
 function AbilityUsageThink()
-
+	local enemys = npcBot:GetNearbyHeroes(500,true,BOT_MODE_NONE)
+	if(AbilitiesReal[3]:IsCooldownReady==false)
+	then
+		if( LionAbilityTimer==nil)
+		then
+			LionAbilityTimer=DotaTime()
+		else
+			if(npcBot:GetHealth()/npcBot:GetMaxHealth()<=0.75 and (npcBot:WasRecentlyDamagedByAnyHero(2.0) or #enemys>=1))
+			then
+				npcBot:Action_ClearActions(true)
+				LionAbilityTimer=nil
+			end
+		end
+	else
+		LionAbilityTimer=nil
+	end
+	
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then 

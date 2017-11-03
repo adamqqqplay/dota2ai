@@ -430,64 +430,66 @@ function Consider3()
 	
 	for _,npcEnemy in pairs(enemys)
 	do
-		local allyCreeps = npcEnemy:GetNearbyCreeps(Radius,false)
-		local allyHeroes = npcEnemy:GetNearbyHeroes(Radius,false,BOT_MODE_NONE)
-		local RadiusCount = math.min(MaxTarget,#allyCreeps+#allyHeroes)
-		local RealDamage = RadiusCount*Damage
-		local Target
-		if(allyCreeps~=nil)
+		if(npcEnemy:CanBeSeen())
 		then
-			Target=allyCreeps[1]
-		else
-			Target=allyHeroes[1]
-		end
-		
-		--------------------------------------
-		-- Global high-priorty usage
-		--------------------------------------
-		--Try to kill enemy hero
-		if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
-		then
-			if ( CanCast[abilityNumber]( npcEnemy ) )
+			local allyCreeps = npcEnemy:GetNearbyCreeps(Radius,false)
+			local allyHeroes = npcEnemy:GetNearbyHeroes(Radius,false,BOT_MODE_NONE)
+			local RadiusCount = math.min(MaxTarget,#allyCreeps+#allyHeroes)
+			local RealDamage = RadiusCount*Damage
+			local Target
+			if(allyCreeps~=nil)
 			then
-				if(npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(RealDamage,DamageType))
+				Target=allyCreeps[1]
+			else
+				Target=allyHeroes[1]
+			end
+			
+			--------------------------------------
+			-- Global high-priorty usage
+			--------------------------------------
+			--Try to kill enemy hero
+			if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
+			then
+				if ( CanCast[abilityNumber]( npcEnemy ) )
 				then
-					return BOT_ACTION_DESIRE_HIGH,Target;
+					if(npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(RealDamage,DamageType))
+					then
+						return BOT_ACTION_DESIRE_HIGH,Target;
+					end
 				end
 			end
-		end
-		
-		-- If we're going after someone
-		if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
-			 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-			 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-			 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
-		then
-			local npcEnemy2=npcBot:GetTarget()
-			if(npcEnemy ~= nil)
+			
+			-- If we're going after someone
+			if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+				 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+				 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+				 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 			then
-				if ( npcEnemy==npcEnemy2 ) 
+				local npcEnemy2=npcBot:GetTarget()
+				if(npcEnemy ~= nil)
+				then
+					if ( npcEnemy==npcEnemy2 ) 
+					then
+						if ( CanCast[abilityNumber]( npcEnemy ) )
+						then
+							return BOT_ACTION_DESIRE_HIGH,Target
+						end
+					end
+				end
+			end
+			
+			-- If our mana is enough,use it at enemy
+			if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+			then
+				if(ManaPercentage>0.4 and RadiusCount>=3 )
 				then
 					if ( CanCast[abilityNumber]( npcEnemy ) )
 					then
-						return BOT_ACTION_DESIRE_MODERATE,Target
+						return BOT_ACTION_DESIRE_LOW,Target
 					end
 				end
 			end
 		end
-		
-		-- If our mana is enough,use it at enemy
-		if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
-		then
-			if(ManaPercentage>0.4 and RadiusCount>=3 )
-			then
-				if ( CanCast[abilityNumber]( npcEnemy ) )
-				then
-					return BOT_ACTION_DESIRE_LOW,Target
-				end
-			end
-		end
-	
 	end
 		
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
@@ -518,7 +520,7 @@ function Consider3()
 		then
 			if ( CanCast[abilityNumber]( npcTarget ) )
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcTarget
+				return BOT_ACTION_DESIRE_HIGH, npcTarget
 			end
 		end
 		

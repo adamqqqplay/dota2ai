@@ -243,14 +243,16 @@ Consider[4]=function()
 	
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys2 = npcBot:GetNearbyHeroes(1000,true,BOT_MODE_NONE)
-	local enemys = GetUnitList(UNIT_LIST_ENEMY_HEROES)
-	for i,enemy in pairs(enemys)
+	local enemys3 = GetUnitList(UNIT_LIST_ENEMY_HEROES)
+	local enemys={}
+	for i,enemy in pairs(enemys3)
 	do
-		if(GetUnitToUnitDistance(npcBot,enemy)>CastRange)
+		if(GetUnitToUnitDistance(npcBot,enemy)<CastRange)
 		then
-			table.remove(enemys,i)
+			table.insert(enemys,enemy)
 		end
 	end
+	
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(1600,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
@@ -260,7 +262,7 @@ Consider[4]=function()
 	-- Check for a channeling enemy
 	for _,npcEnemy in pairs( enemys )
 	do
-		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy )) 
+		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy ) ) 
 		then
 			return BOT_ACTION_DESIRE_HIGH, npcEnemy
 		end
@@ -315,7 +317,7 @@ Consider[4]=function()
 
 		if ( npcEnemy ~= nil and #enemys2==0) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy )  and GetUnitToUnitDistance(npcBot,npcEnemy)>600)
+			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)>600 and GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end

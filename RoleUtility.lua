@@ -1543,8 +1543,24 @@ function X.CanBeSupport(hero)
 		   )
 end
 
-function X.GetCurrentSuitableRole()
-	local highestCarryValue;
+function X.GetCurrentSuitableRole(bot, hero)
+
+	local lane = bot:GetAssignedLane();
+	if X.CanBeSupport(hero) and lane ~= LANE_MID then
+		return "support";
+	elseif X.CanBeMidlaner(hero) and lane == LANE_MID then
+		return "midlaner";
+	elseif X.CanBeSafeLaneCarry(hero) and ((GetTeam() == TEAM_RADIANT and lane == LANE_BOT) or (GetTeam() == TEAM_DIRE and lane == LANE_TOP) ) then
+		return "carry";
+	elseif X.CanBeOfflaner(hero) and ((GetTeam() == TEAM_RADIANT and lane == LANE_TOP) or (GetTeam() == TEAM_DIRE and lane == LANE_BOT) ) then
+		return "offlaner";
+	elseif hero == "npc_dota_hero_wisp" then
+		return "support";
+	elseif hero == "npc_dota_hero_elder_titan" then
+		return "offlaner";
+	else
+		return "unknown";
+	end
 end
 
 function X.CountValue(hero, role)

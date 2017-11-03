@@ -242,9 +242,12 @@ function Consider1()
 	end
 
 	--protect teammate
-	if(WeakestAlly:GetHealth()/WeakestAlly:GetMaxHealth()<(0.4+#enemys*0.05+0.2*ManaPercentage))
+	if(WeakestAlly~=nil)
 	then
-		return BOT_ACTION_DESIRE_LOW, WeakestAlly;
+		if(WeakestAlly:GetHealth()/WeakestAlly:GetMaxHealth()<(0.4+#enemys*0.05+0.2*ManaPercentage))
+		then
+			return BOT_ACTION_DESIRE_LOW, WeakestAlly;
+		end
 	end
 	
 	return BOT_ACTION_DESIRE_NONE, 0;

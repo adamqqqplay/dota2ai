@@ -538,6 +538,23 @@ end
 
 function AbilityUsageThink()
 
+	local enemys = npcBot:GetNearbyHeroes(500,true,BOT_MODE_NONE)
+	if(AbilitiesReal[3]:IsCooldownReady==false)
+	then
+		if( WarLockAbilityTimer==nil)
+		then
+			WarLockAbilityTimer=DotaTime()
+		else
+			if(npcBot:GetHealth()/npcBot:GetMaxHealth()<=0.75 and (npcBot:WasRecentlyDamagedByAnyHero(2.0) or #enemys>=1))
+			then
+				npcBot:Action_ClearActions(true)
+				WarLockAbilityTimer=nil
+			end
+		end
+	else
+		WarLockAbilityTimer=nil
+	end
+	
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then 

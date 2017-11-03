@@ -282,10 +282,10 @@ function GetDesire()
 	then
 		for _,r in pairs(TargetRunes) do
 			local d=GetUnitToLocationDistance(npcBot,GetRuneSpawnLocation(r))
-			local factor=(6000-d)/6000*0.2+0.3;			
+			local factor=(6000-d)/6000*0.15+0.25;			
 			if d<6000 and GetRuneStatus(r)~=RUNE_STATUS_MISSING
 			then
-				if(d<500)
+				if(d<300)
 				then
 					factor=0.9
 				end

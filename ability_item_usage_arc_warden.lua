@@ -73,7 +73,6 @@ end
 function CanCast1(npcTarget)
 	if(npcTarget==nil or npcTarget:CanBeSeen()==false)
 	then
-		print("[Error] npcTarget is nil or Can not be seen at arc_warden.lua")
 		return utility.NCanCast(npcTarget)
 	end
 	

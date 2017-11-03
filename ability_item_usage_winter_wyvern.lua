@@ -475,6 +475,11 @@ Consider[4]=function()
 		end
 	end
 	
+	if(enemys~=nil and #enemys==1)
+	then
+		return 0,0
+	end
+	
 	--Try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
 	then

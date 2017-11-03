@@ -859,7 +859,7 @@ function CheckAbilityBuild(AbilityToLevelUp)
 	end
 end
 
-local debug_mode = true
+local debug_mode = false
 function DebugTalk(message)
 	if(debug_mode==true)
 	then

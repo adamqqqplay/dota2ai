@@ -278,7 +278,7 @@ function ConsiderTeamRoam()
 	if(item_smoke~=nil and GetAllyFactor(npcBot)>=0.7)
 	then
 		local factor,target,allys=FindTarget()
-		if(factor>0.75)
+		if(factor>0.7)
 		then
 			local nearBuilding = utility.GetNearestBuilding(GetTeam(), npcBot:GetLocation())
 			local location = GetUnitsTowardsLocation(nearBuilding,GetAncient(GetTeam()),600)
@@ -449,7 +449,7 @@ function FindTarget()
 	for i,npcAlly in pairs(allys2)
 	do
 		local factor=GetAllyFactor(npcAlly)
-		if(factor>=0.75)
+		if(factor>=0.70)
 		then
 			--print(npcBot:GetPlayerID().." [TeamRoam] SearchAlly/ "..npcAlly:GetUnitName().." / Factor:"..factor)
 			table.insert(allys,npcAlly)
