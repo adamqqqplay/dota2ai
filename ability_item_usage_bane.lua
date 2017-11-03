@@ -360,8 +360,8 @@ Consider[3]=function()
 
 		for _,npcEnemy in pairs( enemys )
 		do
-			local allys2=npcEnemy:GetNearbyHeroes( 600, false, BOT_MODE_ATTACK );
-			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and #allys2==0)
+			local allys2=npcEnemy:GetNearbyHeroes( 600, true,BOT_MODE_NONE );
+			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and allys2~=nil and #allys2==0)
 			then
 				local Damage2 = npcEnemy:GetEstimatedDamageToTarget( false, npcBot, 3.0, DAMAGE_TYPE_ALL );
 				if ( Damage2 > nMostDangerousDamage )
@@ -385,8 +385,8 @@ Consider[3]=function()
 	then
 		for _,npcEnemy in pairs( enemys )
 		do
-			local allys2=npcEnemy:GetNearbyHeroes( 600, false, BOT_MODE_ATTACK );
-			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) and #allys2==0) 
+			local allys2=npcEnemy:GetNearbyHeroes( 600, true ,BOT_MODE_NONE );
+			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) and allys2~=nil and #allys2==0) 
 			then
 				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy)) 
 				then
@@ -407,8 +407,8 @@ Consider[3]=function()
 		local allys3
 		if ( npcEnemy ~= nil)
 		then
-			allys2=npcEnemy:GetNearbyHeroes( 600, false, BOT_MODE_ATTACK );
-			allys3=npcEnemy:GetNearbyHeroes( 1600, false, BOT_MODE_ATTACK );
+			allys2=npcEnemy:GetNearbyHeroes( 600, true,BOT_MODE_NONE );
+			allys3=npcEnemy:GetNearbyHeroes( 1600, true,BOT_MODE_NONE );
 			if allys2 ==nil then allys2={} end
 			if allys3 ==nil then allys3={} end
 		end

@@ -14,8 +14,8 @@ local ItemsToBuy =
 	"item_boots",
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
-	"item_circlet",
-	"item_magic_stick",				--大魔棒
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 	
 	"item_blink",					--跳刀
 	

@@ -298,7 +298,7 @@ Consider[3]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() and ability:GetCurrentCharges()>0 then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	

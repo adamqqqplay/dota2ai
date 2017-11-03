@@ -12,8 +12,8 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	"item_boots",
-	"item_circlet",
-	"item_magic_stick",				--大魔棒
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 	"item_blight_stone",
 	"item_blades_of_attack",
 	"item_blades_of_attack",		--相位
@@ -30,10 +30,10 @@ local ItemsToBuy =
 	"item_recipe_black_king_bar",	--bkb
 	"item_lifesteal",
 	"item_reaver", 
-	"item_mithril_hammer",			--撒旦
-	"item_demon_edge",
+	"item_claymore",				--撒旦7.07
+	"item_hyperstone",
 	"item_javelin",
-	"item_javelin",					--金箍棒
+	"item_javelin",					--金箍棒7.07
 }
 
 utility.checkItemBuild(ItemsToBuy)

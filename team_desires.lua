@@ -1,6 +1,6 @@
 function GetCommonPushLaneDesires()
 
-	local common = 0.2
+	local common = 0.25
 
 	local mega = IsMega()
 	if mega then
@@ -8,7 +8,11 @@ function GetCommonPushLaneDesires()
 	end
 
 	local time = DotaTime()
-
+	if(time>5*60)
+	then
+		common=common+(time/60-10)*0.01
+	end
+	
 	local itemtable=GetItemCount()
 
 	if itemtable["item_ring_of_basilius"]~=nil or itemtable["item_ring_of_aquila"]~=nil then

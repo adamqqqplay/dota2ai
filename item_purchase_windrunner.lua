@@ -10,12 +10,12 @@ local ItemsToBuy =
 	"item_flask",
 	"item_branches",
 	"item_branches",
-	"item_circlet",
 		
 	"item_boots",
 	"item_blades_of_attack",
 	"item_blades_of_attack",		--相位
-	"item_magic_stick",				--大魔棒
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 	
 	"item_ring_of_health",
 	"item_staff_of_wizardry",

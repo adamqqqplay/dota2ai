@@ -81,12 +81,7 @@ function GetShrineDesire()
 end
 
 function ConsiderShrine()
-	local Shrines={	SHRINE_BASE_1,
-					SHRINE_BASE_2,
-					SHRINE_BASE_3,
-					SHRINE_BASE_4,
-					SHRINE_BASE_5,
-					SHRINE_JUNGLE_1,
+	local Shrines={	SHRINE_JUNGLE_1,
 					SHRINE_JUNGLE_2	}
 
 	local npcBot=GetBot()

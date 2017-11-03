@@ -10,8 +10,8 @@ local ItemsToBuy =
 				"item_stout_shield",
 				"item_branches",
 				"item_branches",
-				"item_magic_stick",
-				"item_circlet",
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 				"item_gauntlets",
 				"item_circlet",
 				"item_recipe_bracer",
@@ -40,9 +40,9 @@ local ItemsToBuy =
 				"item_chainmail",
 				"item_recipe_assault",
 				
-				"item_lifesteal",
-				"item_mithril_hammer",
-				"item_reaver",
+	"item_lifesteal",
+	"item_reaver", 
+	"item_claymore",				--撒旦7.07
 }
 
 utility.checkItemBuild(ItemsToBuy)

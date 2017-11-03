@@ -108,7 +108,8 @@ function GetUnitPushLaneDesire(npcBot,lane)
 		distFactor = -(DistanceToFront - 10000) / 9000
 	end
 	
-	local desire = math.min(( 0.25 + 0.2 * levelFactor + 0.25 * stateFactor + 0.30 * distFactor ) * teamPush , 0.85)
+	local desire = ( 0.2 + 0.2 * levelFactor + 0.25 * stateFactor + 0.35 * distFactor ) * teamPush
+	
 	return desire
 end
 
@@ -158,7 +159,7 @@ function UnitPushLaneThink(npcBot,lane)
 	then
 		if(lane==LANE_MID)
 		then
-			gamma=-25
+			gamma=-15
 		end
 		TargetLocation=GetSafeLocation(npcBot,EnemyTower:GetLocation(),gamma);
 	else
@@ -256,12 +257,12 @@ function UnitPushLaneThink(npcBot,lane)
 	elseif target then
 		local damage = npcBot:GetAttackDamage()
 		local actualDamage = target:GetActualIncomingDamage(damage,DAMAGE_TYPE_PHYSICAL)
-		if actualDamage < targetHealth and actualDamage * 2 > targetHealth and target:WasRecentlyDamagedByCreep(2) then
-			npcBot:Action_ClearActions(true)
-		else
+		-- if actualDamage < targetHealth and actualDamage * 2 > targetHealth and target:WasRecentlyDamagedByCreep(2) then
+			-- npcBot:Action_ClearActions(true)
+		-- else
 			npcBot:Action_AttackUnit( target, true )
 			--npcBot:Action_AttackMove(TargetLocation);
-		end
+		--end
 	elseif TowerDistance <= 1200 then
 		if (IsCreepAttackTower) then
 			npcBot:Action_AttackUnit( EnemyTower, false )
@@ -290,6 +291,14 @@ function GetEnemySpawnLocation()
 	end
 end
 
+function GetAllySpawnLocation()
+	if GetTeam() == TEAM_RADIANT then
+		return Locations.RadiantSpawn
+	else
+		return Locations.DireSpawn
+	end
+end
+
 function GetSafeLocation(npcBot,BasicLocation,gamma)
 	local EnemyTeam = GetOpposingTeam()
 	local Allys = npcBot:GetNearbyHeroes(1600,false,BOT_MODE_NONE)
@@ -315,7 +324,8 @@ function GetSafeLocation(npcBot,BasicLocation,gamma)
 	for k,v in pairs(Allys)
 	do
 		local damage=v:GetAttackDamage()
-		if(damage<MinDamage and role.IsSupport(v:GetUnitName()))
+		local AttackRange=v:GetAttackRange()
+		if(damage<MinDamage and role.IsSupport(v:GetUnitName()) and AttackRange>RangeConstant)
 		then
 			MinDamage=damage
 			MinDamageHeroID=v:GetPlayerID()
@@ -340,8 +350,6 @@ function GetSafeLocation(npcBot,BasicLocation,gamma)
 	then
 		MyAttackRange=800
 	end
-	
-	local spawnloc=GetEnemySpawnLocation()
 
 	local alpha
 	if(npcBot:GetAttackRange()>RangeConstant)
@@ -350,8 +358,17 @@ function GetSafeLocation(npcBot,BasicLocation,gamma)
 	else
 		alpha=300
 	end
+	local spawnloc=GetEnemySpawnLocation()
+	local DistanceToEnemyHome=GetUnitToLocationDistance(npcBot,spawnloc)
+	local DistanceToHome=npcBot:DistanceFromFountain() 
+	local UnitVector
+	if(DistanceToEnemyHome-DistanceToHome<0)
+	then
+		UnitVector=GetUnitVector(spawnloc,BasicLocation)
+	else
+		UnitVector=GetUnitVector(BasicLocation,GetAllySpawnLocation())
+	end
 	
-	local UnitVector=GetUnitVector(spawnloc,BasicLocation)
 	--DebugDrawLine( spawnloc, BasicLocation, 100, 0, 100 ) 
 	local theta=math.deg(math.atan2(UnitVector.y,UnitVector.x))
 	if(theta<0)
@@ -512,14 +529,18 @@ function StepBack( unit )
 	if not NotNilOrDead(unit) then
 		return
 	end
-
+	
 	local team = GetTeam()
-	local spawnloc
-	if team == TEAM_RADIANT then
-		spawnloc = Locations.RadiantSpawn
-	else
-		spawnloc = Locations.DireSpawn
-	end
+	local lane = GetLane(team,unit)
+	local front = GetLaneFrontLocation( team, lane, 0 )
+	local AllyTower = GetNearestBuilding(team, front)
+	local spawnloc = AllyTower:GetLocation();
+	-- local spawnloc
+	-- if team == TEAM_RADIANT then
+		-- spawnloc = Locations.RadiantSpawn
+	-- else
+		-- spawnloc = Locations.DireSpawn
+	-- end
 
 	local targetloc = Normalized(spawnloc - unit:GetLocation()) * 500 + unit:GetLocation()
 	unit:Action_MoveToLocation(targetloc+RandomVector( 100 ) )

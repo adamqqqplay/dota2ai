@@ -15,8 +15,8 @@ local ItemsToBuy =
 	"item_orb_of_venom",
 	"item_blades_of_attack",
 	"item_blades_of_attack",		--相位
-	"item_circlet",
-	"item_magic_stick",				--大魔棒
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 	
 	"item_ring_of_protection",
 	"item_sobi_mask",

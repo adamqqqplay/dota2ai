@@ -10,12 +10,12 @@ local ItemsToBuy =
 	"item_flask",
 	"item_branches",
 	"item_branches",
-	"item_circlet",
 	"item_boots",
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
 	
-	"item_magic_stick",				--大魔棒
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 	
 	"item_slippers",
 	"item_circlet",
@@ -43,7 +43,7 @@ local ItemsToBuy =
 	
 	"item_lifesteal",
 	"item_reaver", 
-	"item_mithril_hammer",			--撒旦
+	"item_claymore",				--撒旦7.07
 }
 
 utility.checkItemBuild(ItemsToBuy)

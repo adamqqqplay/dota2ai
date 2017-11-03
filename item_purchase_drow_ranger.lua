@@ -10,9 +10,9 @@ local ItemsToBuy =
 	"item_flask",
 	"item_branches",
 	"item_branches",
-	"item_circlet",
 	"item_boots",
-	"item_magic_stick",				--大魔棒
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
 	
@@ -48,9 +48,9 @@ local ItemsToBuy =
 	"item_demon_edge",
 	"item_recipe_greater_crit",		--大炮
 	
-	"item_demon_edge",
+	"item_hyperstone",
 	"item_javelin",
-	"item_javelin",					--金箍棒
+	"item_javelin",					--金箍棒7.07
 }
 
 utility.checkItemBuild(ItemsToBuy)

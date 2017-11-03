@@ -10,9 +10,9 @@ local ItemsToBuy =
 	"item_stout_shield",
 	"item_branches",
 	"item_branches",
-	"item_circlet",
 	"item_boots",
-	"item_magic_stick",				--大魔棒
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
 	

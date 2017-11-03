@@ -13,9 +13,8 @@ local ItemsToBuy =
 	"item_branches",
 
 	"item_boots",	
-	"item_circlet",
-	"item_magic_stick",				--大魔棒
-	"item_wind_lace",
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 	"item_ring_of_regen",			--绿鞋
 	
 	"item_circlet",

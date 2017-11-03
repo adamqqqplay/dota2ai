@@ -10,9 +10,9 @@ local ItemsToBuy =
 	"item_tango",
 	"item_branches",
 	"item_branches",
-	"item_circlet",
 	"item_boots",
-	"item_magic_stick",				--大魔棒
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 	"item_energy_booster",			--秘法鞋
 	
 	"item_mantle",
@@ -24,13 +24,11 @@ local ItemsToBuy =
 	"item_helm_of_iron_will",
 	"item_recipe_veil_of_discord",	--纷争
 	
-	"item_ring_of_regen",
-	"item_sobi_mask",
-	"item_enchanted_mango",			--灵魂之戒7.06
 	"item_point_booster", 
 	"item_vitality_booster", 
 	"item_energy_booster",
-	"item_recipe_bloodstone",		--血精石
+	"item_ring_of_health",
+	"item_void_stone",				--血精石7.07
 	
 	"item_staff_of_wizardry",
 	"item_void_stone",

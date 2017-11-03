@@ -12,8 +12,8 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	"item_boots",	
-	"item_circlet",
-	"item_magic_stick",				--大魔棒
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 	
 	"item_gloves",
 	"item_recipe_hand_of_midas",	--点金

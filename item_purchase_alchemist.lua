@@ -8,13 +8,13 @@ local ItemsToBuy =
 { 
 	"item_tango",
     "item_stout_shield",
-	"item_slippers",
-	"item_slippers",
 	"item_quelling_blade",
+	"item_branches",
 
 	"item_ring_of_regen",
-	"item_sobi_mask",
-	"item_enchanted_mango",			--灵魂之戒
+	"item_gauntlets",
+	"item_gauntlets",
+	"item_recipe_soul_ring",			--灵魂之戒7.07
 	
 	"item_boots",
 

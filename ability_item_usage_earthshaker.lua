@@ -213,7 +213,7 @@ Consider[1]=function()
 		local npcTarget = npcBot:GetTarget();
 		if ( npcTarget ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcTarget ) and not enemyDisabled(npcTarget))
+			if ( CanCast[abilityNumber]( npcTarget ) and not enemyDisabled(npcTarget) GetUnitToUnitDistance(npcBot,npcEnemy)<=CastRange)
 				then
 				return BOT_ACTION_DESIRE_MODERATE, npcTarget:GetExtrapolatedLocation(CastPoint);
 			end
@@ -383,7 +383,7 @@ Consider[4]=function()
 	end
 	
 	local CastRange = 0
-	local Radius = ability:GetSpecialValueInt("echo_slam_echo_range")
+	local Radius = ability:GetSpecialValueInt("echo_slam_echo_range")-150
 	local CastPoint = ability:GetCastPoint()
 	
 	local HeroHealth=10000

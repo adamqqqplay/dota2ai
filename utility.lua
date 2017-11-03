@@ -15,11 +15,11 @@ end
 
 
 function NCanCast( npcEnemy )--normal judgement
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable() and not HasImmuneDebuff(npcEnemy)
+	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable() and not HasImmuneDebuff(npcEnemy) and not npcEnemy:IsIllusion()
 end
 
 function MiCanCast( npcEnemy )--magic immune
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable() and not HasImmuneDebuff(npcEnemy) and not npcEnemy:HasModifier("modifier_item_sphere") and not npcEnemy:HasModifier("modifier_item_sphere_target")
+	return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable() and not HasImmuneDebuff(npcEnemy) and not npcEnemy:IsIllusion() and not npcEnemy:HasModifier("modifier_item_sphere") and not npcEnemy:HasModifier("modifier_item_sphere_target")
 end
 
 UCanCast=MiCanCast

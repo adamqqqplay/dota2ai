@@ -138,3 +138,23 @@ V1.2b(2017.10.2)
 11.Improved rune pick up in game starting.
 12.Improved the purchase time of gem, and now a team will only buy a gem
 13.Improved ability build of Venomancer.
+v1.3 (2017.10.30)
+1. New push system, AI will be scattered stations when push, and will choose a more appropriate time to push the tower. AI treatment of the lane also improved. (Thanks to Army Bots author pilaoda, I made improvements on its basis)
+2. Improved warding system.
+3. Supported the captain mode. (Thanks BOT EXPERIMENT author Arizona Fauzie, I used some of his code)
+4. Fixed some heroes trying to buy a observer ward when there was no inventory.
+5. Fixed some of the heroes will send debugging information.
+6. Fixed Dazzle rarely use the shadow wave in the teamfight problem.
+7. Fixed a problem that the courier sometimes stuck after being attacked.
+8. Fixed a small problem with Huskar.
+9. Fixed Sniper always like to use the ultimate ability on the very far enemies.
+10. Lion and Warlock will be interrupted casting in dangerous conditions, to prevent being killed.
+11. Fixed Winter Wyvern sometimes use the ultimate ability only on one hero.
+12. Fixed Riki sometimes dive tower when he use the blink strike.
+13. Slightly lower the desire of rune.
+14. Slightly adjust the team smoke ganking system.
+v1.3b (2017.11.3)
+1. Update item components, ward position to adapt 7.07 version.
+2. Slightly improve the push system, AI station will be more appropriate.
+3. Now heroes will not use their ability on friendly illusions.
+4. Fixed some issues of the Bane, Earth shaker, Lion, Warlock and Death prophet.

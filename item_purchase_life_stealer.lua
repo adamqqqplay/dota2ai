@@ -16,8 +16,8 @@ local ItemsToBuy =
 	"item_blades_of_attack",
 	"item_blades_of_attack",
 	
-	"item_circlet",					--大魔棒
-	"item_magic_stick",	
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 	
 	"item_helm_of_iron_will", 
 	"item_gloves", 

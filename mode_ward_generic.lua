@@ -15,20 +15,8 @@ local targetLoc = nil;
 local wardCastTime = -90;
 local swapTime = -90;
 
-
-local route = {
-	Vector(-50, 2464),
-	Vector(-1300, 4680),
-	Vector(-2820, 4041)
-}
-
-local route2 = {
-	Vector(4300, -1500),
-	Vector(3300, -5300),
-	Vector(1280, -4100)
-}
-
 local chat = false;
+
 
 function GetDesire()
 
@@ -53,7 +41,7 @@ function GetDesire()
 		AvailableSpots = wardUtils.GetAvailableSpot(bot);
 		targetLoc, targetDist = wardUtils.GetClosestSpot(bot, AvailableSpots);
 		if targetLoc ~= nil then
-			return RemapValClamped(targetDist, 6000, 0, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_HIGH);
+			return RemapValClamped(targetDist, 6000, 0, BOT_MODE_DESIRE_MODERATE-0.1, BOT_MODE_DESIRE_HIGH-0.1);
 		end
 	end
 	return BOT_MODE_DESIRE_NONE;
@@ -88,6 +76,7 @@ function OnEnd()
 end
 
 function Think()
+
 
 	if  GetGameState()~=GAME_STATE_PRE_GAME and GetGameState()~= GAME_STATE_GAME_IN_PROGRESS then
 		return;
@@ -127,6 +116,7 @@ function FindLeastItemSlot()
 	end
 	return idx;
 end
+
 
 function FindMostItemSlot()
 	local maxCost = 0;

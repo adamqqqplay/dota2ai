@@ -13,15 +13,14 @@ local ItemsToBuy =
 	"item_branches",
 	"item_quelling_blade",			--补刀斧
 	"item_boots",	
-	"item_circlet",
-	"item_magic_stick",				--大魔棒
+	"item_magic_stick",,
+	"item_enchanted_mango",			--大魔棒7.07
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
 
 	"item_ring_of_health",
 	"item_void_stone",
-	"item_claymore",
-	"item_broadsword",				--狂战
+	"item_demon_edge",				--狂战7.07
 	
 	"item_boots_of_elves",
 	"item_blade_of_alacrity",

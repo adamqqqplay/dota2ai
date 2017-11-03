@@ -338,6 +338,7 @@ function Consider2()
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local towers = npcBot:GetNearbyTowers(1000,true)
 	
 	-- Check for a channeling enemy
 	for _,npcEnemy in pairs( enemys )
@@ -367,7 +368,7 @@ function Consider2()
 	-- Mode based usage
 	--------------------------------------
 	-- If my mana is enough,use it at enemy
-	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+	if ( npcBot:GetActiveMode() == BOT_MODE_LANING and (towers==nil or #towers==0)) 
 	then
 		if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
 		then

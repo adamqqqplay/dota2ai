@@ -10,12 +10,11 @@ local ItemsToBuy =
 	"item_clarity",
 	"item_branches",
 	"item_branches",
-	"item_circlet",
-
 	"item_bottle",
 	"item_boots",
 	"item_energy_booster",			--秘法鞋
-	"item_magic_stick",				--大魔棒
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 	
 	"item_ring_of_regen",
 	"item_recipe_headdress",

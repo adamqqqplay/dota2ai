@@ -14,7 +14,7 @@ local AllRunes={
     RUNE_BOUNTY_1,
     RUNE_BOUNTY_2,
     RUNE_BOUNTY_3,
-    RUNE_BOUNTY_4
+    RUNE_BOUNTY_4,
 }
 local OurRunes={}
 if(GetTeam()==TEAM_RADIANT)
@@ -23,26 +23,26 @@ then
 	RUNE_POWERUP_1,
     RUNE_POWERUP_2,
     RUNE_BOUNTY_1,
-    RUNE_BOUNTY_2
+    RUNE_BOUNTY_3,
 	}
 else
 	OurRunes={
     RUNE_POWERUP_1,
     RUNE_POWERUP_2,
-    RUNE_BOUNTY_3,
-    RUNE_BOUNTY_4
+    RUNE_BOUNTY_2,
+    RUNE_BOUNTY_4,
 	}
 end
 if(GetTeam()==TEAM_RADIANT)
 then
 	OurRunes2={
     RUNE_BOUNTY_1,
-    RUNE_BOUNTY_2
+    RUNE_BOUNTY_3,
 	}
 else
 	OurRunes2={
-    RUNE_BOUNTY_3,
-    RUNE_BOUNTY_4
+    RUNE_BOUNTY_2,
+    RUNE_BOUNTY_4,
 	}
 end
 function IsNearRune()

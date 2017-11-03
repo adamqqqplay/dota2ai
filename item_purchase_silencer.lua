@@ -13,8 +13,8 @@ local ItemsToBuy =
 	"item_wind_lace",
 
 	"item_boots",
-	"item_circlet",
-	"item_magic_stick",				--大魔棒
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
 
@@ -39,8 +39,7 @@ local ItemsToBuy =
 	
 	"item_staff_of_wizardry",
 	"item_void_stone",
-	"item_recipe_cyclone",
-	"item_wind_lace",				--风杖
+	"item_recipe_cyclone",				--风杖
 	"item_point_booster",
 	"item_staff_of_wizardry",
 	"item_ogre_axe",

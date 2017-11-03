@@ -13,16 +13,15 @@ local ItemsToBuy =
 	"item_wind_lace",
 	"item_bottle",
 	"item_boots",
-	"item_circlet",					--大魔棒
-	"item_magic_stick",	
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 	"item_energy_booster",			--秘法鞋
 	"item_void_stone",
 	"item_energy_booster",
 	"item_recipe_aether_lens",		--以太之镜7.06
 	"item_staff_of_wizardry",
 	"item_void_stone",
-	"item_recipe_cyclone",
-	"item_wind_lace",				--风杖
+	"item_recipe_cyclone",				--风杖
 	"item_point_booster",
 	"item_staff_of_wizardry",
 	"item_ogre_axe",

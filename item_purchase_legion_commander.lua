@@ -15,8 +15,8 @@ local ItemsToBuy =
 	"item_boots",
 	"item_blades_of_attack",
 	"item_blades_of_attack",		--相位
-	"item_circlet",
-	"item_magic_stick",				--大魔棒
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 	
 	"item_shadow_amulet",
 	"item_claymore",				--隐刀

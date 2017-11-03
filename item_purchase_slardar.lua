@@ -14,8 +14,8 @@ local ItemsToBuy =
 	"item_boots",
 	"item_wind_lace",
 	"item_ring_of_regen",			--绿鞋
-	"item_circlet",
-	"item_magic_stick",				--大魔棒
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 	"item_blink",					--跳刀
 	"item_ring_of_health",
 	"item_staff_of_wizardry",

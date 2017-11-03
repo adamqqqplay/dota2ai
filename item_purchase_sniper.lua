@@ -10,12 +10,11 @@ local ItemsToBuy =
 	"item_flask",
 	"item_branches",
 	"item_branches",
-	"item_circlet",
-		
 	"item_boots",
 	"item_blades_of_attack",
 	"item_blades_of_attack",		--相位
-	"item_magic_stick",				--大魔棒
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
 	
 	"item_boots_of_elves",
 	"item_boots_of_elves", 
@@ -43,9 +42,9 @@ local ItemsToBuy =
 	"item_ultimate_orb",
 	"item_recipe_manta",			--分身
 	
-	"item_demon_edge",
+	"item_hyperstone",
 	"item_javelin",
-	"item_javelin",					--金箍棒
+	"item_javelin",					--金箍棒7.07
 	
 }
 

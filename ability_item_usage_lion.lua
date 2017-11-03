@@ -498,7 +498,7 @@ end
 
 function AbilityUsageThink()
 	local enemys = npcBot:GetNearbyHeroes(500,true,BOT_MODE_NONE)
-	if(AbilitiesReal[3]:IsCooldownReady==false)
+	if(AbilitiesReal[3]:IsCooldownReady()==false)
 	then
 		if( LionAbilityTimer==nil)
 		then
