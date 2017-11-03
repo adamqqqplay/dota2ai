@@ -245,6 +245,15 @@ function UnitPushLaneThink(npcBot,lane)
 		end
 	end
 	
+	local MinDelta=150
+	local level=npcBot:GetLevel()
+	local health=npcBot:GetHealth()
+	if(level>=11 and health>=1500)
+	then
+		MinDelta=200
+		NoCreeps=false
+	end
+	
 	if Safe==false or NoCreeps==true  then
 		StepBack( npcBot )
 	elseif npcBot:WasRecentlyDamagedByTower(1) then		--if I'm under attck of tower, then try to avoid attack
@@ -252,7 +261,7 @@ function UnitPushLaneThink(npcBot,lane)
 	then
 		StepBack( npcBot )
 	end
-	elseif GetUnitToLocationDistance(npcBot,TargetLocation)>=150 then
+	elseif GetUnitToLocationDistance(npcBot,TargetLocation)>=MinDelta then
 		npcBot:Action_MoveToLocation(TargetLocation);
 	elseif target then
 		local damage = npcBot:GetAttackDamage()

@@ -243,9 +243,12 @@ function UpdatePushLaneDesires()
 	
 	for i,lane in pairs(lanes)
 	do
-		if(lane>0.85)
+		if(lanes[i]>0.85)
 		then
-			lane=0.85
+			lanes[1]=lanes[1]/0.85
+			lanes[2]=lanes[2]/0.85
+			lanes[3]=lanes[3]/0.85
+			break;
 		end
 	end
 	return lanes;

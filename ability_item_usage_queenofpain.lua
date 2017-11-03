@@ -357,7 +357,7 @@ function Consider2()
 	then
 		if (WeakestEnemy~=nil)
 		then
-			local enemys2= WeakestEnemy:GetNearbyHeroes(900,true,BOT_MODE_NONE)
+			local enemys2= WeakestEnemy:GetNearbyHeroes(900,false,BOT_MODE_NONE)
 			if ( CanCast[abilityNumber]( WeakestEnemy ) and #enemys2<=2)
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana and GetUnitToUnitDistance(npcBot,WeakestEnemy) > 500)
@@ -405,7 +405,7 @@ function Consider2()
 			if ( npcEnemy ~= nil ) 
 			then
 				local enemys2= npcEnemy:GetNearbyHeroes(900,false,BOT_MODE_NONE)
-				if (enemys2~=nil and #enemys2<=2)
+				if (enemys2~=nil and #enemys2<=2 and #allys>#enemys)
 				then
 					if ( CanCast[abilityNumber]( npcEnemy )  and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys and GetUnitToUnitDistance(npcBot,npcEnemy) > 500)
 					then

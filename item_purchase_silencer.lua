@@ -25,8 +25,9 @@ local ItemsToBuy =
 	"item_boots_of_elves",
 	"item_boots_of_elves", 
 	"item_ogre_axe",				--魔龙枪
-	
-	"item_recipe_hurricane_pike",	--大推推
+	"item_slippers",
+	"item_circlet",
+	"item_recipe_wraith_band",		--大推推7.07
 	
 	"item_gauntlets",
 	"item_circlet",

@@ -213,7 +213,7 @@ Consider[1]=function()
 		local npcTarget = npcBot:GetTarget();
 		if ( npcTarget ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcTarget ) and not enemyDisabled(npcTarget) GetUnitToUnitDistance(npcBot,npcEnemy)<=CastRange)
+			if ( CanCast[abilityNumber]( npcTarget ) and not enemyDisabled(npcTarget) and GetUnitToUnitDistance(npcBot,npcEnemy)<=CastRange)
 				then
 				return BOT_ACTION_DESIRE_MODERATE, npcTarget:GetExtrapolatedLocation(CastPoint);
 			end
