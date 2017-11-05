@@ -241,16 +241,21 @@ function UpdatePushLaneDesires()
 		end
 	end
 	
+	local Maxdesire=0
 	for i,lane in pairs(lanes)
 	do
-		if(lanes[i]>0.85)
+		if(lane>Maxdesire)
 		then
-			lanes[1]=lanes[1]/0.85
-			lanes[2]=lanes[2]/0.85
-			lanes[3]=lanes[3]/0.85
-			break;
+			Maxdesire=lane
 		end
 	end
+	if(Maxdesire>0.85)
+	then
+		lanes[1]=lanes[1]/Maxdesire*0.85
+		lanes[2]=lanes[2]/Maxdesire*0.85
+		lanes[3]=lanes[3]/Maxdesire*0.85
+	end
+	
 	return lanes;
 end
 

@@ -34,8 +34,6 @@ local ItemsToBuy =
 	"item_ultimate_orb",
 	"item_recipe_manta",			--分身
 	
-	"item_recipe_diffusal_blade",	--2级散失
-	
 	"item_relic",
 	"item_recipe_radiance",			--辉耀
 		

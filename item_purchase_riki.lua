@@ -32,8 +32,6 @@ local ItemsToBuy =
 	"item_sobi_mask",
 	"item_ogre_axe",				--连击刀
 	
-	"item_recipe_diffusal_blade",	--2级散失
-	
 	"item_boots_of_elves",
 	"item_blade_of_alacrity",
 	"item_recipe_yasha",			

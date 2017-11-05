@@ -11,10 +11,9 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	"item_wind_lace",
-
-	"item_boots",
 	"item_magic_stick",
 	"item_enchanted_mango",			--大魔棒7.07
+	"item_boots",
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
 

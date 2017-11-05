@@ -38,8 +38,6 @@ local ItemsToBuy =
 	"item_ultimate_orb",
 	"item_recipe_silver_edge",		--大隐刀
 	
-	"item_recipe_diffusal_blade",	--2级散失
-	
 	"item_quarterstaff",
 	"item_robe",
 	"item_sobi_mask",
