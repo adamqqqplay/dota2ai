@@ -1,46 +1,20 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.0a
+--	Ranked Matchmaking AI v1.3 New Structure
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
 --------------------------------------
--- Load Utility Function Library
+-- General Initialization
 --------------------------------------
 require(GetScriptDirectory() ..  "/utility")
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
---------------------------------------
--- Hero Area Local Variable Setting
---------------------------------------
+
+local debugmode=false
 local npcBot = GetBot()
-local ComboMana = 0
-local debugmode=true
-
 local Talents ={}
+local Abilities ={}
+local AbilitiesReal ={}
 
-for i=0,23,1 do
-	local ability=npcBot:GetAbilityInSlot(i)
-	if(ability~=nil and ability:IsTalent()==true)
-	then
-		table.insert(Talents,ability:GetName())
-	end
-end
-
-local Abilities =
-{
-	"ember_spirit_searing_chains",
-	"ember_spirit_sleight_of_fist",
-	"ember_spirit_flame_guard",
-	"ember_spirit_fire_remnant",
-	"ember_spirit_activate_fire_remnant",
-}
-
-local AbilitiesReal =
-{
-	npcBot:GetAbilityByName(Abilities[1]),
-	npcBot:GetAbilityByName(Abilities[2]),
-	npcBot:GetAbilityByName(Abilities[3]),
-	npcBot:GetAbilityByName(Abilities[4]),
-	npcBot:GetAbilityByName(Abilities[5])
-}
+ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 local AbilityToLevelUp=
 {
@@ -84,10 +58,8 @@ local TalentTree={
 		return Talents[8]
 	end
 }
---------------------------------------
--- Level Ability and Talent
---------------------------------------
 
+-- check skill build vs current level
 utility.CheckAbilityBuild(AbilityToLevelUp)
 
 function AbilityLevelUpThink()
@@ -97,57 +69,24 @@ end
 --------------------------------------
 -- Ability Usage Thinking
 --------------------------------------
-local castDesire = {}
-local castTarget = {}
-local castLocation = {}
-local castType = {}
+local cast={} cast.Desire={} cast.Target={} cast.Type={}
+local Consider ={}
 
---Target Judement
+local enemyDisabled=utility.enemyDisabled
+
+function GetComboDamage()
+	return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
+end
+
+function GetComboMana()
+	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
+end
+
 function CanCast2( npcEnemy )
 	return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable();
 end
 
 local CanCast={utility.NCanCast,CanCast2,utility.NCanCast,utility.UCanCast,utility.UCanCast}
-
-function enemyDisabled(npcEnemy)
-	if npcEnemy:IsRooted( ) or npcEnemy:IsStunned( ) or npcEnemy:IsHexed( ) then
-		return true;
-	end
-	return false;
-end
---Combo Variable Getting
-local function GetComboDamage()
-	return npcBot:GetOffensivePower()
-end
-
-local function GetComboMana()
-	
-	local tempComboMana=0
-	if AbilitiesReal[1]:IsFullyCastable()
-	then
-		tempComboMana=tempComboMana+AbilitiesReal[1]:GetManaCost()
-	end
-	if AbilitiesReal[2]:IsFullyCastable()
-	then
-		tempComboMana=tempComboMana+AbilitiesReal[2]:GetManaCost()
-	end
-	if AbilitiesReal[3]:IsFullyCastable()
-	then
-		tempComboMana=tempComboMana+AbilitiesReal[3]:GetManaCost()
-	end	
-	if AbilitiesReal[5]:IsFullyCastable()
-	then
-		tempComboMana=tempComboMana+AbilitiesReal[5]:GetManaCost()
-	end
-	
-	if AbilitiesReal[1]:GetLevel()<1 or AbilitiesReal[2]:GetLevel()<1 or AbilitiesReal[3]:GetLevel()<1 or AbilitiesReal[5]:GetLevel()<1
-	then
-		tempComboMana=300;
-	end
-	
-	ComboMana=tempComboMana
-	return
-end
 
 function AbilityUsageThink()
 
@@ -240,7 +179,7 @@ function AbilityUsageThink()
 
 end
 
-function Consider1()	--Target Ability Example
+Consider[1]=function()	--Target Ability Example
 	local abilityNumber=1
 	--------------------------------------
 	-- Generic Variable Setting
@@ -363,7 +302,7 @@ function Consider1()	--Target Ability Example
 	
 end
 
-function Consider2()		--Target AOE Ability Example
+Consider[2]=function()		--Target AOE Ability Example
 	local abilityNumber=2
 	--------------------------------------
 	-- Generic Variable Setting
@@ -470,7 +409,7 @@ function Consider2()		--Target AOE Ability Example
 	
 end
 
-function Consider3()
+Consider[3]=function()
 	
 	local abilityNumber=3
 	--------------------------------------
@@ -567,7 +506,7 @@ function Consider3()
 	
 end
 
-function Consider4()
+Consider[4]=function()
 	local abilityNumber=4
 	--------------------------------------
 	-- Generic Variable Setting
@@ -669,7 +608,7 @@ function Consider4()
 	
 end
 
-function Consider5_r()
+Consider[5]=function_r()
 
 	local abilityNumber=5
 	--------------------------------------
@@ -742,7 +681,7 @@ function Consider5_r()
 	
 end
 
-function Consider5()
+Consider[5]=function()
 	if(npcBot:HasModifier("modifier_ember_spirit_fire_remnant_timer")==false and npcBot.ult~=nil)
 	then
 		--print("remove"..DotaTime().." "..#npcBot.ult)

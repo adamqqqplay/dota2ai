@@ -1,47 +1,20 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.0a
+--	Ranked Matchmaking AI v1.3 New Structure
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
+--------------------------------------
+-- General Initialization
+--------------------------------------
 require(GetScriptDirectory() ..  "/utility")
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
---------------------------------------
--- Hero Area Local Variable Setting
---------------------------------------
-local npcBot = GetBot()
-local ComboMana = 0
-local debugmode=utility.debug_mode
 
+local debugmode=false
+local npcBot = GetBot()
 local Talents ={}
 local Abilities ={}
+local AbilitiesReal ={}
 
-for i=0,23,1 do
-	local ability=npcBot:GetAbilityInSlot(i)
-	if(ability~=nil)
-	then
-		if(ability:IsTalent()==true)
-		then
-			table.insert(Talents,ability:GetName())
-		end
-	end
-end
-
-local Abilities =
-{
-	"zuus_arc_lightning",
-	"zuus_lightning_bolt",
-	"zuus_static_field",
-	"zuus_thundergods_wrath",
-	"zuus_cloud"
-}
-
-local AbilitiesReal =
-{
-	npcBot:GetAbilityByName(Abilities[1]),
-	npcBot:GetAbilityByName(Abilities[2]),
-	npcBot:GetAbilityByName(Abilities[3]),
-	npcBot:GetAbilityByName(Abilities[4]),
-	npcBot:GetAbilityByName(Abilities[5])
-}
+ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
 local AbilityToLevelUp=
 {
@@ -50,19 +23,19 @@ local AbilityToLevelUp=
 	Abilities[2],
 	Abilities[2],
 	Abilities[2],
-	Abilities[4],
+	Abilities[5],
 	Abilities[2],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[1],
-	Abilities[4],
+	Abilities[5],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
 	"nil",
-	Abilities[4],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -85,154 +58,31 @@ local TalentTree={
 		return Talents[7]
 	end
 }
---------------------------------------
--- Level Ability and Talent
---------------------------------------
 
+-- check skill build vs current level
 utility.CheckAbilityBuild(AbilityToLevelUp)
 
 function AbilityLevelUpThink()
 	ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp,TalentTree)
 end
 
+--------------------------------------
+-- Ability Usage Thinking
+--------------------------------------
+local cast={} cast.Desire={} cast.Target={} cast.Type={}
+local Consider ={}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast}
+local enemyDisabled=utility.enemyDisabled
 
-local cast1Desire = 0;
-local cast2Desire = 0;
-local cast4Desire = 0;
-local cast5Desire = 0;
-----------------------------------------------------------------------------------------------------
-local CanCast1=utility.NCanCast
-local CanCast2=utility.NCanCast
-local CanCast3=utility.NCanCast
-local CanCast4=utility.UCanCast
-local CanCast5=utility.UCanCast
-
-----------------------------------------------------------------------------------------------------
-local function GetComboDamage()
-
-	local sum=0
-	
-	if AbilitiesReal[1]:IsFullyCastable()
-	then
-		sum=sum+AbilitiesReal[1]:GetAbilityDamage();
-	end
-	if AbilitiesReal[2]:IsFullyCastable()
-	then
-		sum=sum+AbilitiesReal[2]:GetAbilityDamage();
-	end
-	if AbilitiesReal[4]:IsFullyCastable()
-	then
-		sum=sum+125+100*AbilitiesReal[4]:GetLevel();
-	end
-	
-	return sum
+function GetComboDamage()
+	return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
 end
 
-local function GetComboMana()
-	
-	local tempComboMana=0
-	if AbilitiesReal[1]:IsFullyCastable()
-	then
-		tempComboMana=tempComboMana+AbilitiesReal[1]:GetManaCost()
-	end
-	if AbilitiesReal[2]:IsFullyCastable()
-	then
-		tempComboMana=tempComboMana+AbilitiesReal[2]:GetManaCost()
-	end
-	if AbilitiesReal[4]:IsFullyCastable() or AbilitiesReal[4]:GetCooldownTimeRemaining()<=30
-	then
-		tempComboMana=tempComboMana+AbilitiesReal[4]:GetManaCost()
-	end
-	
-	if AbilitiesReal[1]:GetLevel()<1 or AbilitiesReal[2]:GetLevel()<1 or AbilitiesReal[4]:GetLevel()<1
-	then
-		tempComboMana=300;
-	end
-	
-	ComboMana=tempComboMana
-	return
+function GetComboMana()
+	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
-function AbilityUsageThink()
-
-	-- Check if we're already using an ability
-	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
-	then 
-		return
-	end
-	
-	GetComboMana()
-	AttackRange=npcBot:GetAttackRange()
-	ManaPercentage=npcBot:GetMana()/npcBot:GetMaxMana()
-	
-	-- Consider using each ability
-	cast1Desire, cast1Target = Consider1();
-	cast2Desire, cast2Target,cast2TargetType = Consider2();
-	cast4Desire = Consider4();
-	cast5Desire, cast5Location = Consider5();
-	--[[---------------------------------debug--------------------------------------------
-	if(npcBot.LastSpeaktime==nil)
-	then
-		npcBot.LastSpeaktime=0
-	end
-	if(GameTime()-npcBot.LastSpeaktime>1)
-	then
-		if ( cast4Desire > 0 ) 
-		then
-			npcBot:ActionImmediate_Chat("try to use skill 4 Desire= "..cast4Desire,true)
-			npcBot.LastSpeaktime=GameTime()
-		end
-		if ( cast5Desire > 0 ) 
-		then
-			npcBot:ActionImmediate_Chat("try to use skill 5 Desire= "..cast5Desire,true)
-			npcBot.LastSpeaktime=GameTime()
-		end
-		if ( cast2Desire > 0 ) 
-		then
-			npcBot:ActionImmediate_Chat("try to use skill 2 at "..cast2Target:GetUnitName().." Desire= "..cast2Desire,true)
-			npcBot.LastSpeaktime=GameTime()
-		end
-		if ( cast1Desire > 0 ) 
-		then
-			npcBot:ActionImmediate_Chat("try to use skill 1 at "..cast1Target:GetUnitName().." Desire= "..cast1Desire,true)
-			npcBot.LastSpeaktime=GameTime()
-		end
-	end
-	---------------------------------debug--------------------------------------------]]--
-	if ( cast4Desire > 0 ) 
-	then
-		npcBot:Action_UseAbility( AbilitiesReal[4] );
-		return
-	end
-	
-	if ( cast5Desire > 0 ) 
-	then
-		npcBot:Action_UseAbilityOnLocation( AbilitiesReal[5], cast5Location );
-		return
-	end
-	
-	if ( cast2Desire > 0 ) 
-	then
-		if(cast2TargetType=="target")
-		then
-			npcBot:Action_UseAbilityOnEntity( AbilitiesReal[2], cast2Target );
-			return
-		elseif(cast2TargetType=="location")
-		then
-			npcBot:Action_UseAbilityOnLocation( AbilitiesReal[2], cast2Target );
-			return
-		end
-	end
-	
-	if ( cast1Desire > 0 ) 
-	then
-		npcBot:Action_UseAbilityOnEntity(AbilitiesReal[1], cast1Target );
-		return
-	end
-
-end
-
-function Consider1()
+Consider[1]=function()
 
 	local ability=AbilitiesReal[1];
 	
@@ -257,7 +107,7 @@ function Consider1()
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if ( CanCast1( WeakestEnemy ) )
+			if ( CanCast[1]( WeakestEnemy ) )
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL)*3 or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
@@ -283,7 +133,7 @@ function Consider1()
 				end
 				if(WeakestEnemy~=nil)
 				then
-					if ( CanCast1( WeakestEnemy ) )
+					if ( CanCast[1]( WeakestEnemy ) )
 					then
 						return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
 					end
@@ -331,14 +181,14 @@ function Consider1()
 		then
 			if (WeakestEnemy~=nil)
 			then
-				if ( CanCast1( WeakestEnemy )and GetUnitToUnitDistance(npcBot,WeakestEnemy)< CastRange + 75*#allys )
+				if ( CanCast[1]( WeakestEnemy )and GetUnitToUnitDistance(npcBot,WeakestEnemy)< CastRange + 75*#allys )
 				then
 					return BOT_ACTION_DESIRE_LOW, WeakestEnemy;
 				end
 			end
 			if (WeakestCreep~=nil)
 			then
-				if ( CanCast1( WeakestCreep )and GetUnitToUnitDistance(npcBot,WeakestCreep)< CastRange + 75*#allys )
+				if ( CanCast[1]( WeakestCreep )and GetUnitToUnitDistance(npcBot,WeakestCreep)< CastRange + 75*#allys )
 				then
 					return BOT_ACTION_DESIRE_LOW, WeakestCreep;
 				end
@@ -358,7 +208,7 @@ function Consider1()
 		then
 			if ( npcTarget ~= nil ) 
 			then
-				if ( CanCast1( npcTarget )  and GetUnitToUnitDistance(npcBot,npcTarget)< CastRange + 75*#allys)
+				if ( CanCast[1]( npcTarget )  and GetUnitToUnitDistance(npcBot,npcTarget)< CastRange + 75*#allys)
 				then
 					return BOT_ACTION_DESIRE_MODERATE, npcTarget;
 				end
@@ -370,7 +220,7 @@ function Consider1()
 	
 end
 
-function Consider2()
+Consider[2]=function()
 
 	local ability=AbilitiesReal[2];
 	
@@ -395,7 +245,7 @@ function Consider2()
 	-- Check for a channeling enemy
 	for _,enemy in pairs( enemys )
 	do
-		if ( enemy:IsChanneling() and CanCast2( enemy )) 
+		if ( enemy:IsChanneling() and CanCast[2]( enemy )) 
 		then
 			return BOT_ACTION_DESIRE_HIGH, enemy,"target";
 		end
@@ -408,7 +258,7 @@ function Consider2()
 		then
 			if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 			then
-				if ( CanCast2( WeakestEnemy ) )
+				if ( CanCast[2]( WeakestEnemy ) )
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy,"target";
 				end
@@ -422,7 +272,7 @@ function Consider2()
 	then
 		for _,enemy in pairs( enemys2 )
 		do
-			if ( CanCast2( enemy ) )
+			if ( CanCast[2]( enemy ) )
 			then
 				return BOT_ACTION_DESIRE_HIGH, enemy,"target"
 			end
@@ -438,7 +288,7 @@ function Consider2()
 		then
 			if (WeakestEnemy~=nil)
 			then
-				if ( CanCast2( WeakestEnemy ) )
+				if ( CanCast[2]( WeakestEnemy ) )
 				then
 					return BOT_ACTION_DESIRE_LOW,WeakestEnemy,"target";
 				end
@@ -456,7 +306,7 @@ function Consider2()
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if ( CanCast2( WeakestEnemy )and GetUnitToUnitDistance(npcBot,WeakestEnemy)< CastRange + 75*#allys )
+			if ( CanCast[2]( WeakestEnemy )and GetUnitToUnitDistance(npcBot,WeakestEnemy)< CastRange + 75*#allys )
 			then
 				return BOT_ACTION_DESIRE_LOW,WeakestEnemy,"target";
 			end
@@ -473,7 +323,7 @@ function Consider2()
 
 		if ( npcTarget ~= nil ) 
 		then
-			if ( CanCast2( npcTarget ) and GetUnitToUnitDistance(npcBot,npcTarget)< CastRange + 75*#allys)
+			if ( CanCast[2]( npcTarget ) and GetUnitToUnitDistance(npcBot,npcTarget)< CastRange + 75*#allys)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcTarget,"target";
 			end
@@ -483,9 +333,9 @@ function Consider2()
 	return BOT_ACTION_DESIRE_NONE, 0 ,"nil";
 end
 
-function Consider4()
+Consider[5]=function()
 	
-	local ability=AbilitiesReal[4]
+	local ability=AbilitiesReal[5]
 	if not ability:IsFullyCastable() 
 	then
 		return BOT_ACTION_DESIRE_NONE
@@ -501,7 +351,7 @@ function Consider4()
 		then
 			if(GetUnitToUnitDistance(npcBot,Enemy)>AbilitiesReal[2]:GetCastRange() or not AbilitiesReal[2]:IsFullyCastable())
 			then
-				if Enemy:IsAlive() and Enemy:CanBeSeen() and CanCast4(Enemy)
+				if Enemy:IsAlive() and Enemy:CanBeSeen() and CanCast[4](Enemy)
 				then
 					if (LowestHP>Enemy:GetHealth())
 					then
@@ -557,9 +407,9 @@ function Consider4()
 	return BOT_ACTION_DESIRE_NONE
 end
 
-function Consider5()
+Consider[4]=function()
 	
-	local ability=AbilitiesReal[5]
+	local ability=AbilitiesReal[4]
 	if not ability:IsFullyCastable() 
 	then
 		return BOT_ACTION_DESIRE_NONE
@@ -599,14 +449,28 @@ function Consider5()
 	
 	return BOT_ACTION_DESIRE_NONE,0
 end
---[[
-function CourierUsageThink()
-	npcBot=GetBot();
-	if (npcBot:IsAlive() and (npcBot:GetStashValue()>900 or npcBot:GetCourierValue()>0) and IsCourierAvailable()) and (npcBot.CourierTimer==nil or DotaTime()-npcBot.CourierTimer>2) then
-		npcBot:Action_CourierDeliver();
-		npcBot.CourierTimer=DotaTime();
+
+function AbilityUsageThink()
+
+	-- Check if we're already using an ability
+	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
+	then 
+		return
 	end
-end]]--
+	
+	ComboMana=GetComboMana()
+	AttackRange=npcBot:GetAttackRange()
+	ManaPercentage=npcBot:GetMana()/npcBot:GetMaxMana()
+	HealthPercentage=npcBot:GetHealth()/npcBot:GetMaxHealth()
+	
+	cast=ability_item_usage_generic.ConsiderAbility(AbilitiesReal,Consider)
+	---------------------------------debug--------------------------------------------
+	if(debugmode==true)
+	then
+		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
+	end
+	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+end
 
 function CourierUsageThink() 
 	ability_item_usage_generic.CourierUsageThink()

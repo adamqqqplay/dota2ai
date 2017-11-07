@@ -1,48 +1,20 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.0a
+--	Ranked Matchmaking AI v1.3 New Structure
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
 --------------------------------------
--- Load Utility Function Library
+-- General Initialization
 --------------------------------------
 require(GetScriptDirectory() ..  "/utility")
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
---------------------------------------
--- Hero Area Local Variable Setting
---------------------------------------
-local npcBot = GetBot()
-local ComboMana = 0
-local debugmode=false
 
+local debugmode=false
+local npcBot = GetBot()
 local Talents ={}
 local Abilities ={}
+local AbilitiesReal ={}
 
-for i=0,23,1 do
-	local ability=npcBot:GetAbilityInSlot(i)
-	if(ability~=nil)
-	then
-		if(ability:IsTalent()==true)
-		then
-			table.insert(Talents,ability:GetName())
-		end
-	end
-end
-
-local Abilities =
-{
-	"doom_bringer_devour",
-	"doom_bringer_scorched_earth",
-	"doom_bringer_infernal_blade",
-	"doom_bringer_doom"
-}
-
-local AbilitiesReal =
-{
-	npcBot:GetAbilityByName(Abilities[1]),
-	npcBot:GetAbilityByName(Abilities[2]),
-	npcBot:GetAbilityByName(Abilities[3]),
-	npcBot:GetAbilityByName(Abilities[4])
-}
+ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
 local AbilityToLevelUp=
 {
@@ -51,19 +23,19 @@ local AbilityToLevelUp=
 	Abilities[3],
 	Abilities[2],
 	Abilities[2],
-	Abilities[4],
+	Abilities[6],
 	Abilities[2],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
-	Abilities[4],
+	Abilities[6],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[1],
 	"nil",
-	Abilities[4],
+	Abilities[6],
 	"nil",
 	"talent",
 	"nil",
@@ -86,25 +58,14 @@ local TalentTree={
 		return Talents[8]
 	end
 }
---------------------------------------
--- Level Ability and Talent
---------------------------------------
 
+-- check skill build vs current level
 utility.CheckAbilityBuild(AbilityToLevelUp)
 
 function AbilityLevelUpThink()
 	ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp,TalentTree)
 end
 
---------------------------------------
--- Ability Usage Thinking
---------------------------------------
-local castDesire = {}
-local castTarget = {}
-local castLocation = {}
-local castType = {}
-
---Target Judement
 function CanCast1( npcEnemy )
 	if(npcEnemy==nil)
 	then
@@ -118,115 +79,23 @@ function CanCast1( npcEnemy )
 	end
 end
 
-local CanCast={CanCast1,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+--------------------------------------
+-- Ability Usage Thinking
+--------------------------------------
+local cast={} cast.Desire={} cast.Target={} cast.Type={}
+local Consider ={}
+local CanCast={CanCast1,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast,utility.UCanCast}
+local enemyDisabled=utility.enemyDisabled
 
-function enemyDisabled(npcEnemy)
-	if npcEnemy:IsRooted( ) or npcEnemy:IsStunned( ) or npcEnemy:IsHexed( ) then
-		return true;
-	end
-	return false;
-end
---Combo Variable Getting
-local function GetComboDamage()
-	return npcBot:GetOffensivePower()
-end
-
-local function GetComboMana()
-	
-	local tempComboMana=0
-	if AbilitiesReal[2]:IsFullyCastable()
-	then
-		tempComboMana=tempComboMana+AbilitiesReal[2]:GetManaCost()
-	end
-	if AbilitiesReal[3]:IsFullyCastable()
-	then
-		tempComboMana=tempComboMana+AbilitiesReal[3]:GetManaCost()
-	end	
-	if AbilitiesReal[4]:IsFullyCastable() or AbilitiesReal[4]:GetCooldownTimeRemaining()<=30
-	then
-		tempComboMana=tempComboMana+AbilitiesReal[4]:GetManaCost()
-	end
-	
-	if AbilitiesReal[2]:GetLevel()<1 or AbilitiesReal[3]:GetLevel()<1 or AbilitiesReal[4]:GetLevel()<1
-	then
-		tempComboMana=300;
-	end
-	
-	ComboMana=tempComboMana
-	return
+function GetComboDamage()
+	return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
 end
 
-function AbilityUsageThink()
-
-	-- Check if we're already using an ability
-	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
-	then 
-		return
-	end
-	
-	GetComboMana()
-	AttackRange=npcBot:GetAttackRange()
-	ManaPercentage=npcBot:GetMana()/npcBot:GetMaxMana()
-	HealthPercentage=npcBot:GetHealth()/npcBot:GetMaxHealth()
-	
-	-- Consider using each ability
-	castDesire[1], castTarget[1] = Consider1();
-	castDesire[2] = Consider2();
-	castDesire[3], castTarget[3] = Consider3();
-	castDesire[4], castTarget[4] = Consider4();
-	---------------------------------debug--------------------------------------------
-	if(debugmode==true) then
-		if(npcBot.LastSpeaktime==nil)
-		then
-			npcBot.LastSpeaktime=0
-		end
-		if(GameTime()-npcBot.LastSpeaktime>1)
-		then
-			for i=1,4,1
-			do					
-				if ( castDesire[i] > 0 ) 
-				then
-					if (castType[i]==nil or castType[i]=="target") and castTarget[i]~=nil
-					then
-						npcBot:ActionImmediate_Chat("try to use skill "..i.." at "..castTarget[i]:GetUnitName().." Desire= "..castDesire[i],true)
-						print("try to use skill "..i.." at "..castTarget[i]:GetUnitName().." Desire= "..castDesire[i])
-					else
-						npcBot:ActionImmediate_Chat("try to use skill "..i.." Desire= "..castDesire[i],true)
-						print("try to use skill "..i.." Desire= "..castDesire[i])
-					end
-					npcBot.LastSpeaktime=GameTime()
-				end
-			end
-		end
-	end
-	---------------------------------debug--------------------------------------------
-	if ( castDesire[4] > 0 ) 
-	then
-		npcBot:Action_UseAbilityOnEntity( AbilitiesReal[4], castTarget[4] );
-		return
-	end
-
-	if ( castDesire[3] > 0 ) 
-	then
-		npcBot:Action_UseAbilityOnEntity( AbilitiesReal[3], castTarget[3] );
-		return
-	end
-	
-	if ( castDesire[2] > 0 ) 
-	then
-		npcBot:Action_UseAbility( AbilitiesReal[2] );
-		return
-	end
-
-	if ( castDesire[1] > 0 ) 
-	then
-		npcBot:Action_UseAbilityOnEntity( AbilitiesReal[1], castTarget[1] );
-		return
-	end
-
+function GetComboMana()
+	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
-function Consider1()
+Consider[1]=function()
 	local abilityNumber=1
 	--------------------------------------
 	-- Generic Variable Setting
@@ -267,7 +136,7 @@ function Consider1()
 	
 end
 
-function Consider2()
+Consider[2]=function()
 	local abilityNumber=2
 	--------------------------------------
 	-- Generic Variable Setting
@@ -342,7 +211,7 @@ function Consider2()
 	
 end
 
-function Consider3()
+Consider[3]=function()
 	
 	local abilityNumber=3
 	--------------------------------------
@@ -425,8 +294,8 @@ function Consider3()
 	
 end
 
-function Consider4()
-	local abilityNumber=4
+Consider[6]=function()
+	local abilityNumber=6
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -536,6 +405,28 @@ function Consider4()
 	end
 	
 	return BOT_ACTION_DESIRE_NONE, 0;
+end
+
+function AbilityUsageThink()
+
+	-- Check if we're already using an ability
+	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
+	then 
+		return
+	end
+	
+	ComboMana=GetComboMana()
+	AttackRange=npcBot:GetAttackRange()
+	ManaPercentage=npcBot:GetMana()/npcBot:GetMaxMana()
+	HealthPercentage=npcBot:GetHealth()/npcBot:GetMaxHealth()
+	
+	cast=ability_item_usage_generic.ConsiderAbility(AbilitiesReal,Consider)
+	---------------------------------debug--------------------------------------------
+	if(debugmode==true)
+	then
+		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
+	end
+	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
 end
 
 function CourierUsageThink() 

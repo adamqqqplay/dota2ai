@@ -18,11 +18,14 @@ local ItemsToBuy =
 	"item_enchanted_mango",			--大魔棒7.07
 	
 	"item_blink",					--跳刀
+
 	
-	"item_point_booster",		
-	"item_staff_of_wizardry",
+	"item_boots_of_elves",
+	"item_blade_of_alacrity",
+	"item_recipe_yasha",			--夜叉
 	"item_ogre_axe",
-	"item_blade_of_alacrity",		--蓝杖
+	"item_belt_of_strength",
+	"item_recipe_sange",			--双刀
 	
 	"item_ogre_axe", 
 	"item_mithril_hammer",
@@ -33,9 +36,12 @@ local ItemsToBuy =
 	"item_hyperstone",
 	"item_recipe_assault",			--强袭	
 	
-	"item_quarterstaff",
-	"item_eagle",
-	"item_talisman_of_evasion",		--蝴蝶
+	"item_broadsword",
+	"item_blades_of_attack",
+	"item_recipe_lesser_crit",
+	"item_demon_edge",
+	"item_lesser_crit",
+	"item_recipe_greater_crit",		--大炮
 }
 
 utility.checkItemBuild(ItemsToBuy)

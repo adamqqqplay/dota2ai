@@ -322,13 +322,14 @@ end
 --------------------------------------------------------------------------	ItemPurchase
 function SellExtraItem(ItemsToBuy)
 	local npcBot=GetBot()
+	local level=npcBot:GetLevel()
 	item_travel_boots = NoNeedTpscrollForTravelBoots();
 	item_travel_boots_1 = item_travel_boots[1];
 	item_travel_boots_2 = item_travel_boots[2];
 	
 	if(IsItemSlotsFull())
 	then
-		if(GameTime()>15*60)
+		if(GameTime()>15*60 or level>=7)
 		then
 			SellSpecifiedItem("item_faerie_fire")
 			SellSpecifiedItem("item_enchanted_mango")
@@ -336,7 +337,7 @@ function SellExtraItem(ItemsToBuy)
 			SellSpecifiedItem("item_clarity")
 			SellSpecifiedItem("item_flask")
 		end
-		if(GameTime()>20*60)
+		if(GameTime()>20*60 or level>=10)
 		then
 			SellSpecifiedItem("item_stout_shield")
 			SellSpecifiedItem("item_orb_of_venom")
@@ -344,7 +345,7 @@ function SellExtraItem(ItemsToBuy)
 			SellSpecifiedItem("item_quelling_blade")
 			SellSpecifiedItem("item_soul_ring")
 		end
-		if(GameTime()>30*60)
+		if(GameTime()>30*60 or level>=15)
 		then
 			SellSpecifiedItem("item_branches")
 			SellSpecifiedItem("item_bottle")
@@ -356,7 +357,7 @@ function SellExtraItem(ItemsToBuy)
 			SellSpecifiedItem("item_ring_of_aquila")
 			SellSpecifiedItem("item_vladmir")
 		end
-		if(GameTime()>35*60)
+		if(GameTime()>35*60 or level>=20)
 		then
 			SellSpecifiedItem("item_hand_of_midas")
 			if(GetItemSlotsCount()<6)
@@ -453,7 +454,8 @@ function ItemPurchase(ItemsToBuy)
 			then
 				BuyCourier()		--没有信使的话则会购买，这个函数见下文
 			else
-				if(courier:DistanceFromSecretShop() <= 250)		--信使已到达商店
+				local ItemCount=utility.GetItemSlotsCount2(courier)
+				if(courier:DistanceFromSecretShop() <= 250 and ItemCount<9)		--信使已到达商店
 				then
 					PurchaseResult=GetCourier(0):ActionImmediate_PurchaseItem( sNextItem )
 				end
@@ -472,6 +474,11 @@ function ItemPurchase(ItemsToBuy)
 		then
 			SellSpecifiedItem("item_branches")
 			SellSpecifiedItem("item_dust")
+			SellSpecifiedItem("item_faerie_fire")
+			SellSpecifiedItem("item_enchanted_mango")
+			SellSpecifiedItem("item_tango")
+			SellSpecifiedItem("item_clarity")
+			SellSpecifiedItem("item_flask")
 		end
 		if(PurchaseResult==PURCHASE_ITEM_INVALID_ITEM_NAME or PurchaseResult==PURCHASE_ITEM_DISALLOWED_ITEM)	--不存在的物品，移除该物品
 		then
@@ -630,6 +637,23 @@ function SellSpecifiedItem( item_name )
 		npcBot:ActionImmediate_SellItem( item );
 	end
 
+end
+
+function GetItemSlotsCount2(npcBot)
+
+	local itemCount = 0;
+	local item = nil;
+
+	for i = 0, 8
+	do
+		local sCurItem = npcBot:GetItemInSlot(i);
+		if ( sCurItem ~= nil ) 
+		then
+			itemCount = itemCount + 1;
+		end
+	end
+	
+	return itemCount
 end
 
 function GetItemSlotsCount()

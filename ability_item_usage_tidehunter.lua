@@ -1,42 +1,20 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.0
+--	Ranked Matchmaking AI v1.3 New Structure
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
 --------------------------------------
--- Load Utility Function Library
+-- General Initialization
 --------------------------------------
 require(GetScriptDirectory() ..  "/utility")
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
---------------------------------------
--- Hero Area Local Variable Setting
---------------------------------------
-local npcBot = GetBot()
-local ComboMana = 0
-local debugmode=false
 
+local debugmode=false
+local npcBot = GetBot()
 local Talents ={}
 local Abilities ={}
+local AbilitiesReal ={}
 
-for i=0,23,1 do
-	local ability=npcBot:GetAbilityInSlot(i)
-	if(ability~=nil)
-	then
-		if(ability:IsTalent()==true)
-		then
-			table.insert(Talents,ability:GetName())
-		else
-			table.insert(Abilities,ability:GetName())
-		end
-	end
-end
-
-local AbilitiesReal =
-{
-	npcBot:GetAbilityByName(Abilities[1]),
-	npcBot:GetAbilityByName(Abilities[2]),
-	npcBot:GetAbilityByName(Abilities[3]),
-	npcBot:GetAbilityByName(Abilities[4])
-}
+ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
 local AbilityToLevelUp=
 {
@@ -94,10 +72,18 @@ end
 --------------------------------------
 -- Ability Usage Thinking
 --------------------------------------
-local castDesire = {}
-local castTarget = {}
-local castLocation = {}
-local castType = {}
+local cast={} cast.Desire={} cast.Target={} cast.Type={}
+local Consider ={}
+
+local enemyDisabled=utility.enemyDisabled
+
+function GetComboDamage()
+	return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
+end
+
+function GetComboMana()
+	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
+end
 
 --Target Judement
 function CanCast3( npcEnemy )
@@ -105,42 +91,6 @@ function CanCast3( npcEnemy )
 end
 
 local CanCast={utility.NCanCast,utility.NCanCast,CanCast3,utility.UCanCast}
-
-function enemyDisabled(npcEnemy)
-	if npcEnemy:IsRooted( ) or npcEnemy:IsStunned( ) or npcEnemy:IsHexed( ) then
-		return true;
-	end
-	return false;
-end
---Combo Variable Getting
-local function GetComboDamage()
-	return npcBot:GetOffensivePower()
-end
-
-local function GetComboMana()
-	
-	local tempComboMana=0
-	if AbilitiesReal[1]:IsFullyCastable()
-	then
-		tempComboMana=tempComboMana+AbilitiesReal[1]:GetManaCost()
-	end
-	if AbilitiesReal[3]:IsFullyCastable()
-	then
-		tempComboMana=tempComboMana+AbilitiesReal[3]:GetManaCost()
-	end	
-	if AbilitiesReal[4]:IsFullyCastable() or AbilitiesReal[4]:GetCooldownTimeRemaining()<=30
-	then
-		tempComboMana=tempComboMana+AbilitiesReal[4]:GetManaCost()
-	end
-	
-	if AbilitiesReal[1]:GetLevel()<1 or AbilitiesReal[3]:GetLevel()<1 or AbilitiesReal[4]:GetLevel()<1
-	then
-		tempComboMana=300;
-	end
-	
-	ComboMana=tempComboMana
-	return
-end
 
 function AbilityUsageThink()
 
@@ -227,7 +177,7 @@ function AbilityUsageThink()
 
 end
 
-function Consider1()	--Target Ability Example
+Consider[1]=function()	--Target Ability Example
 	local abilityNumber=1
 	--------------------------------------
 	-- Generic Variable Setting
@@ -330,7 +280,7 @@ function Consider1()	--Target Ability Example
 	
 end
 
-function Consider3()
+Consider[3]=function()
 	local abilityNumber=3
 	--------------------------------------
 	-- Generic Variable Setting
@@ -438,7 +388,7 @@ function Consider3()
 end
 
 
-function Consider4()
+Consider[4]=function()
 	local abilityNumber=4
 	--------------------------------------
 	-- Generic Variable Setting
@@ -453,19 +403,6 @@ function Consider4()
 	local Damage = ability:GetAbilityDamage()
 	local Radius = ability:GetAOERadius()
 	local CastPoint = ability:GetCastPoint()
-	
-	if(blink~=nil and blink:IsFullyCastable())
-	then
-		CastRange=CastRange+1200
-		if(npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
-		then
-			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
-			if ( locationAoE.count >= 3 ) 
-			then
-				return BOT_ACTION_DESIRE_HIGH+0.05, locationAoE.targetloc,"blink";
-			end
-		end
-	end
 	
 	local HeroHealth=10000
 	local CreepHealth=10000
@@ -534,6 +471,49 @@ function Consider4()
 
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
+end
+
+function AbilityUsageThink()
+
+	-- Check if we're already using an ability
+	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
+	then 
+		return
+	end
+	
+	ComboMana=GetComboMana()
+	AttackRange=npcBot:GetAttackRange()
+	ManaPercentage=npcBot:GetMana()/npcBot:GetMaxMana()
+	HealthPercentage=npcBot:GetHealth()/npcBot:GetMaxHealth()
+	
+	local i=npcBot:FindItemSlot("item_blink")
+	if(i>=0 and i<=5)
+	then
+		blink=npcBot:GetItemInSlot(i)
+		i=nil
+	end
+	
+	if(AbilitiesReal[4]:IsFullyCastable() and blink~=nil and blink:IsFullyCastable())
+	then
+		CastRange=CastRange+1200
+		if(npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+		then
+			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+			if ( locationAoE.count >= 3 ) 
+			then
+				npcBot:Action_UseAbilityOnLocation( AbilitiesReal[4] , locationAoE.location)
+				return
+			end
+		end
+	end
+	
+	cast=ability_item_usage_generic.ConsiderAbility(AbilitiesReal,Consider)
+	---------------------------------debug--------------------------------------------
+	if(debugmode==true)
+	then
+		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
+	end
+	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
 end
 
 function CourierUsageThink() 

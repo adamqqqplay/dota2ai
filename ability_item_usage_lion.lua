@@ -95,7 +95,7 @@ Consider[1]=function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
-	local CastRange = ability:GetCastRange();
+	local CastRange = math.min(ability:GetCastRange(),1600)
 	local Damage = ability:GetAbilityDamage();
 	local Radius = ability:GetAOERadius()
 	local CastPoint=ability:GetCastPoint()
@@ -103,9 +103,9 @@ Consider[1]=function()
 	local HeroHealth=10000
 	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange + 75*#allys,true,BOT_MODE_NONE)
+	local enemys = npcBot:GetNearbyHeroes(CastRange,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange + 75*#allys,true)
+	local creeps = npcBot:GetNearbyCreeps(CastRange,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	--------------------------------------
 	-- Global high-priorty usage
@@ -429,7 +429,7 @@ Consider[4]=function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
-	local CastRange = ability:GetCastRange();
+	local CastRange = math.min(ability:GetCastRange(),1600)
 	local Damage = ability:GetSpecialValueInt( "damage" );
 	local Radius = ability:GetSpecialValueInt( "light_strike_array_aoe" );
 	
@@ -498,20 +498,12 @@ end
 
 function AbilityUsageThink()
 	local enemys = npcBot:GetNearbyHeroes(500,true,BOT_MODE_NONE)
-	if(AbilitiesReal[3]:IsCooldownReady()==false)
+	if(AbilitiesReal[3]:IsInAbilityPhase()==true)
 	then
-		if( LionAbilityTimer==nil)
+		if(npcBot:GetHealth()/npcBot:GetMaxHealth()<=0.75 and (npcBot:WasRecentlyDamagedByAnyHero(2.0) or #enemys>=1))
 		then
-			LionAbilityTimer=DotaTime()
-		else
-			if(npcBot:GetHealth()/npcBot:GetMaxHealth()<=0.75 and (npcBot:WasRecentlyDamagedByAnyHero(2.0) or #enemys>=1))
-			then
-				npcBot:Action_ClearActions(true)
-				LionAbilityTimer=nil
-			end
+			npcBot:Action_ClearActions(true)
 		end
-	else
-		LionAbilityTimer=nil
 	end
 	
 	-- Check if we're already using an ability

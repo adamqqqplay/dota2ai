@@ -254,7 +254,7 @@ Consider[2]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
+					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy,"Target"
 				end
 			end
 		end
@@ -270,7 +270,7 @@ Consider[2]=function()
 		then
 			if ( CanCast[abilityNumber]( npcBot )) 
 			then
-				return BOT_ACTION_DESIRE_HIGH, npcBot;
+				return BOT_ACTION_DESIRE_HIGH, npcBot,"Target"
 			end
 		end
 	end
@@ -285,7 +285,7 @@ Consider[2]=function()
 		then
 			if(AllyHealth/WeakestAlly:GetMaxHealth()<0.3+0.2*ManaPercentage)
 			then
-				return BOT_ACTION_DESIRE_MODERATE,WeakestAlly
+				return BOT_ACTION_DESIRE_MODERATE,WeakestAlly,"Target"
 			end
 		end
 			
@@ -302,7 +302,7 @@ Consider[2]=function()
 			then
 				if ( CanCast[abilityNumber]( npcTarget ) )
 				then
-					return BOT_ACTION_DESIRE_MODERATE, npcTarget
+					return BOT_ACTION_DESIRE_MODERATE, npcTarget,"Target"
 				end
 			end
 		end
@@ -323,7 +323,7 @@ Consider[2]=function()
 			then
 				if ( CanCast[abilityNumber]( npcTarget ) )
 				then
-					return BOT_ACTION_DESIRE_MODERATE, npcTarget
+					return BOT_ACTION_DESIRE_MODERATE, npcTarget,"Target"
 				end
 			end
 		end
@@ -340,7 +340,7 @@ Consider[2]=function()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
+				return BOT_ACTION_DESIRE_MODERATE, npcEnemy,"Target"
 			end
 		end
 	end
@@ -352,7 +352,7 @@ Consider[2]=function()
 		then
 			if(ManaPercentage>0.5)
 			then
-				return BOT_ACTION_DESIRE_LOW,WeakestCreep; 
+				return BOT_ACTION_DESIRE_LOW,WeakestCreep,"Target"
 			end	
 		end
 	end
@@ -366,7 +366,7 @@ Consider[2]=function()
 			then
 				if ( CanCast[abilityNumber]( WeakestEnemy ) )
 				then
-					return BOT_ACTION_DESIRE_LOW,WeakestEnemy;
+					return BOT_ACTION_DESIRE_LOW,WeakestEnemy,"Target"
 				end
 			end
 		end
@@ -539,20 +539,12 @@ end
 function AbilityUsageThink()
 
 	local enemys = npcBot:GetNearbyHeroes(500,true,BOT_MODE_NONE)
-	if(AbilitiesReal[3]:IsCooldownReady()==false)
+	if(AbilitiesReal[3]:IsInAbilityPhase()==true)
 	then
-		if( WarLockAbilityTimer==nil)
+		if(npcBot:GetHealth()/npcBot:GetMaxHealth()<=0.75 and (npcBot:WasRecentlyDamagedByAnyHero(2.0) or #enemys>=1))
 		then
-			WarLockAbilityTimer=DotaTime()
-		else
-			if(npcBot:GetHealth()/npcBot:GetMaxHealth()<=0.75 and (npcBot:WasRecentlyDamagedByAnyHero(2.0) or #enemys>=1))
-			then
-				npcBot:Action_ClearActions(true)
-				WarLockAbilityTimer=nil
-			end
+			npcBot:Action_ClearActions(true)
 		end
-	else
-		WarLockAbilityTimer=nil
 	end
 	
 	-- Check if we're already using an ability

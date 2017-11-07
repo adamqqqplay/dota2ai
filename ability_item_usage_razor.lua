@@ -421,9 +421,11 @@ function AbilityUsageThink()
 	
 	cast=ability_item_usage_generic.ConsiderAbility(AbilitiesReal,Consider)
 	---------------------------------debug--------------------------------------------
-
+	if(debugmode==true)
+	then
+		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
+	end
 	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
-	ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 end
 
 function CourierUsageThink() 

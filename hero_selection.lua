@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.0a
+--	Ranked Matchmaking AI v1.3 New Structure
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
 local role = require(GetScriptDirectory() ..  "/RoleUtility")
@@ -171,9 +171,10 @@ hero_pool_my={
 		-- "npc_dota_hero_huskar",
 		-- "npc_dota_hero_phantom_assassin",
 		-- "npc_dota_hero_crystal_maiden",
-		-- "npc_dota_hero_shadow_shaman",
 		
 		-- "npc_dota_hero_ember_spirit",
+		
+		-- "npc_dota_hero_shadow_shaman",
 		-- "npc_dota_hero_centaur",
 		-- "npc_dota_hero_venomancer",
 		-- "npc_dota_hero_doom_bringer",
@@ -221,13 +222,13 @@ hero_pool_my={
 		-- "npc_dota_hero_bristleback",
 		-- "npc_dota_hero_earthshaker",
 			
-		--	"npc_dota_hero_winter_wyvern",
-		--	"npc_dota_hero_pugna",
-		--	"npc_dota_hero_spectre",
-		--	"npc_dota_hero_antimage",
-		--	"npc_dota_hero_faceless_void",
+		-- "npc_dota_hero_winter_wyvern",
+		-- "npc_dota_hero_pugna",
+		-- "npc_dota_hero_spectre",
+		-- "npc_dota_hero_antimage",
+		-- "npc_dota_hero_faceless_void",
 		
-		--"npc_dota_hero_warlock",
+		-- "npc_dota_hero_warlock",
 		-- "npc_dota_hero_windrunner",
 		-- "npc_dota_hero_omniknight",
 		-- "npc_dota_hero_tiny",
@@ -239,11 +240,11 @@ hero_pool_my={
 		 -- "npc_dota_hero_witch_doctor",	--!
 		 -- "npc_dota_hero_kunkka",			--!
 		 
-		"npc_dota_hero_alchemist",
-		"npc_dota_hero_abyssal_underlord",
-		"npc_dota_hero_ancient_apparition",
-		"npc_dota_hero_arc_warden",
-		"npc_dota_hero_gyrocopter",
+		-- "npc_dota_hero_alchemist",
+		-- "npc_dota_hero_abyssal_underlord",
+		-- "npc_dota_hero_ancient_apparition",
+		-- "npc_dota_hero_arc_warden",
+		-- "npc_dota_hero_gyrocopter",
 }
 allBotHeroes={
 		"npc_dota_hero_zuus",
@@ -419,7 +420,8 @@ function Think()
 	elseif GetGameMode() == GAMEMODE_CM then
 		CaptainModeLogic();
 		AddToList();
-	else 
+	else
+		AllPickLogic();
 		print("GAME MODE NOT SUPPORTED")
 	end
 end

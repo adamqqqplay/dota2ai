@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.0a
+--	Ranked Matchmaking AI v1.3 New Structure
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
 -------
@@ -250,16 +250,19 @@ end
 
 function InitAbility(Abilities,AbilitiesReal,Talents) 
 	local npcBot=GetBot()
-	for i=0,23,1 do
+	for i=0,25,1 do
 		local ability=npcBot:GetAbilityInSlot(i)
 		if(ability~=nil)
 		then
-			if(ability:IsTalent()==true)
+			if(ability:GetName()~="generic_hidden")
 			then
-				table.insert(Talents,ability:GetName())
-			else
-				table.insert(Abilities,ability:GetName())
-				table.insert(AbilitiesReal,ability)
+				if(ability:IsTalent()==true)
+				then
+					table.insert(Talents,ability:GetName())
+				else
+					table.insert(Abilities,ability:GetName())
+					table.insert(AbilitiesReal,ability)
+				end
 			end
 		end
 	end
