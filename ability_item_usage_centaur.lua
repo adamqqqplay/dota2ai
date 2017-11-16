@@ -82,7 +82,7 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
-function Consider1()
+Consider[1]=function()
 	local abilityNumber=1
 	--------------------------------------
 	-- Generic Variable Setting
@@ -218,7 +218,7 @@ function Consider1()
 	
 end
 
-function Consider2()
+Consider[2]=function()
 	local abilityNumber=2
 	--------------------------------------
 	-- Generic Variable Setting
@@ -307,7 +307,7 @@ function Consider2()
 	
 end
 
-function Consider4()
+Consider[4]=function()
 
 	local abilityNumber=4
 	--------------------------------------

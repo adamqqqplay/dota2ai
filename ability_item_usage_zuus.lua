@@ -247,7 +247,7 @@ Consider[2]=function()
 	do
 		if ( enemy:IsChanneling() and CanCast[2]( enemy )) 
 		then
-			return BOT_ACTION_DESIRE_HIGH, enemy,"target";
+			return BOT_ACTION_DESIRE_HIGH, enemy,"Target";
 		end
 	end
 	
@@ -260,7 +260,7 @@ Consider[2]=function()
 			then
 				if ( CanCast[2]( WeakestEnemy ) )
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy,"target";
+					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy,"Target";
 				end
 			end
 		end
@@ -274,7 +274,7 @@ Consider[2]=function()
 		do
 			if ( CanCast[2]( enemy ) )
 			then
-				return BOT_ACTION_DESIRE_HIGH, enemy,"target"
+				return BOT_ACTION_DESIRE_HIGH, enemy,"Target"
 			end
 		end
 	end
@@ -290,7 +290,7 @@ Consider[2]=function()
 			then
 				if ( CanCast[2]( WeakestEnemy ) )
 				then
-					return BOT_ACTION_DESIRE_LOW,WeakestEnemy,"target";
+					return BOT_ACTION_DESIRE_LOW,WeakestEnemy,"Target";
 				end
 			end
 		end
@@ -308,7 +308,7 @@ Consider[2]=function()
 		then
 			if ( CanCast[2]( WeakestEnemy )and GetUnitToUnitDistance(npcBot,WeakestEnemy)< CastRange + 75*#allys )
 			then
-				return BOT_ACTION_DESIRE_LOW,WeakestEnemy,"target";
+				return BOT_ACTION_DESIRE_LOW,WeakestEnemy,"Target";
 			end
 		end
 	end
@@ -325,7 +325,7 @@ Consider[2]=function()
 		then
 			if ( CanCast[2]( npcTarget ) and GetUnitToUnitDistance(npcBot,npcTarget)< CastRange + 75*#allys)
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcTarget,"target";
+				return BOT_ACTION_DESIRE_MODERATE, npcTarget,"Target";
 			end
 		end
 	end

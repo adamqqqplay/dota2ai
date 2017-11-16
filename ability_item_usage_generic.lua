@@ -305,7 +305,7 @@ function PrintDebugInfo(AbilitiesReal,cast)
 	do	
 		if ( cast.Desire[i]~=nil and cast.Desire[i] > 0 ) 
 		then
-			if (cast.Type[i]==nil or cast.Type[i]=="target") and cast.Target[i]~=nil
+			if (cast.Type[i]==nil or cast.Type[i]=="Target") and cast.Target[i]~=nil
 			then
 				utility.DebugTalk("try to use skill "..i.." at "..cast.Target[i]:GetUnitName().." Desire= "..cast.Desire[i])
 			else

@@ -127,7 +127,7 @@ function UpdatePushLaneDesires()
 	local time = DotaTime()
 	local common =GetCommonPushLaneDesires()
 
-	if(time<=6*60) then
+	if(time<=5*60) then
 		return {0,0,0}
 	end
 
@@ -249,11 +249,11 @@ function UpdatePushLaneDesires()
 			Maxdesire=lane
 		end
 	end
-	if(Maxdesire>0.85)
+	if(Maxdesire>0.8)
 	then
-		lanes[1]=lanes[1]/Maxdesire*0.85
-		lanes[2]=lanes[2]/Maxdesire*0.85
-		lanes[3]=lanes[3]/Maxdesire*0.85
+		lanes[1]=lanes[1]/Maxdesire*0.8
+		lanes[2]=lanes[2]/Maxdesire*0.8
+		lanes[3]=lanes[3]/Maxdesire*0.8
 	end
 	
 	return lanes;

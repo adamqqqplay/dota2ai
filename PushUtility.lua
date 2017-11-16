@@ -108,7 +108,7 @@ function GetUnitPushLaneDesire(npcBot,lane)
 		distFactor = -(DistanceToFront - 10000) / 9000
 	end
 	
-	local desire = ( 0.2 + 0.2 * levelFactor + 0.25 * stateFactor + 0.35 * distFactor ) * teamPush
+	local desire =  math.min(( 0.2 + 0.2 * levelFactor + 0.25 * stateFactor + 0.35 * distFactor ) * teamPush , 0.8)
 	
 	return desire
 end
@@ -254,7 +254,9 @@ function UnitPushLaneThink(npcBot,lane)
 		NoCreeps=false
 	end
 	
-	if Safe==false or NoCreeps==true  then
+	if(IsEnemyTooMany()) then
+		AssmbleWithAlly(npcBot)
+	elseif (Safe==false or NoCreeps==true) and EnemyTower:GetHealth()/EnemyTower:GetMaxHealth()>=0.2  then
 		StepBack( npcBot )
 	elseif npcBot:WasRecentlyDamagedByTower(1) then		--if I'm under attck of tower, then try to avoid attack
 	if((enemys~=nil and #enemys>=1) or not TransferHatred( npcBot ))
@@ -399,7 +401,7 @@ function GetSafeLocation(npcBot,BasicLocation,gamma)
 	local TargetLocation=BasicLocation+MyAttackRange*FinalVector
 	--DebugDrawLine( BasicLocation, TargetLocation, 255, 0, 0 ) 
 	
-	return TargetLocation+ RandomVector( RandomInt ) 
+	return TargetLocation --+ RandomVector( RandomInt ) 
 end
 
 function IsItemAvailable(item_name)
@@ -534,6 +536,13 @@ function TransferHatred( unit )
 	return false
 end
 
+function AssmbleWithAlly(unit)
+	if not NotNilOrDead(unit) then
+		return
+	end
+	StepBack( unit )
+end
+
 function StepBack( unit )
 	if not NotNilOrDead(unit) then
 		return
@@ -560,4 +569,168 @@ function Normalized(vector)
 	return Vector(vector.x / mod, vector.y / mod)
 end
 
+function IsEnemyTooMany()
+	local npcBot=GetBot()
+	local MyLane=GetLane(GetTeam(),npcBot)
+	if (MyLane==LANE_NONE)
+	then
+		return false
+	end
+	
+	local AllyCount=0
+	local EnemyCount=0
+	local allies = GetUnitList(UNIT_LIST_ALLIED_HEROES)
+	local enemies = GetEnemyTeam()
+	for _,ally in pairs(allies) do
+		local Lane=GetLane(GetTeam(),ally)
+		if NotNilOrDead(ally) and GetUnitToUnitDistance(npcBot,ally)<1600 and MyLane==Lane then
+			AllyCount=AllyCount+1
+		end
+	end
+
+	for _,enemy in pairs(enemies) do
+		local Lane=GetLane(GetTeam(),enemy)
+		if NotNilOrDead(enemy) and GetUnitToUnitDistance(npcBot,ally)<3000 and MyLane==Lane then
+			EnemyCount=EnemyCount+1
+		end
+	end
+	
+	if(EnemyCount>AllyCount)
+	then
+		print(npcBot:GetName().." enemy is too much")
+		return true
+	else
+		return false
+	end
+end
+
+
+EnemyHeroListTimer=-1000;
+EnemyHeroList=nil;
+
+function GetRealHero(Candidates)
+	if Candidates==nil or #Candidates==0 then
+		return nil;
+	end
+
+	local q=false;
+	for i,unit in pairs(Candidates) do
+		if unit.isIllusion==nil or (not unit.isIllusion) then
+			q=true;
+		end
+	end
+
+	if not q then
+		for i,unit in pairs(Candidates) do
+			if unit.isRealHero~=nil and unit.isRealHero then
+				return i,unit;
+			end
+		end
+		return nil;
+	end
+
+	for i,unit in pairs(Candidates) do
+		if unit:HasModifier("modifier_bloodseeker_thirst_vision") then
+			return i,unit;
+		end
+	end
+
+	for i,unit in pairs(Candidates) do
+		local int = unit:GetAttributeValue(2);
+		local baseRegen=0.01;
+		if unit:GetUnitName()==npc_dota_hero_techies then
+			baseRegen=0.02;
+		end
+
+		if math.abs(unit:GetManaRegen()-(baseRegen+0.04*int))>0.001 then
+			return i,unit;
+		end
+	end
+
+	local hpRegen=Candidates[1]:GetHealthRegen();
+	local suspectind=1;
+	local suspect=Candidates[1];
+
+	for i,unit in pairs(Candidates) do
+		if hpRegen<unit:GetHealthRegen() then
+			suspect=unit;
+			hpRegen=unit:GetHealthRegen();
+			suspectind=i;
+		end
+	end
+
+	for _,unit in pairs(Candidates) do
+		if hpRegen>unit:GetHealthRegen() then
+			return suspectind,suspect;
+		end
+	end
+
+	for i,unit in pairs(Candidates) do
+		if unit:IsUsingAbility() or unit:IsChanneling() then
+			return i,unit;
+		end
+	end
+
+	if #Candidates==1 and (Candidates[1].isIllusion==nil or (not Candidates[1].isIllusion)) then
+		return 1,Candidates[1];
+	end
+
+	return nil;
+end
+
+function GetEnemyTeam()
+	if EnemyHeroList~=nil and DotaTime()-EnemyHeroListTimer<0.1 then
+		return EnemyHeroList;
+	end
+
+	EnemyHeroListTimer=DotaTime();
+	EnemyHeroList={}
+
+	for _,unit in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES)) do
+		local q=false;
+		for _,unit2 in pairs(EnemyHeroList) do
+			if unit2:GetUnitName()==unit:GetUnitName() then
+				q=true;
+			end
+		end
+
+		if not q then
+			local skip=false;
+			if not NotNilOrDead(unit) then
+				skip=true;
+			end
+--			if unit.isRealHero~=nil and unit.isRealHero then
+--				table.insert(EnemyHeroList,unit);
+--				skip=true;
+--			end
+--			if unit.isIllusion~=nil and unit.isIllusion then
+--				skip=true;
+--			end
+
+			if not skip then
+				local candidates={};
+				for _,unit2 in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES)) do
+					if NotNilOrDead(unit2) and unit2:GetUnitName() == unit:GetUnitName() then
+						table.insert(candidates,unit2);
+					end
+				end
+
+				local ind,hero=GetRealHero(candidates);
+				if hero~=nil and (hero.isIllusion==nil or (not hero.isIllusion)) then
+					for _,can in pairs(candidates) do
+						can.isIllusion=true;
+						can.isRealHero=false;
+					end
+
+					hero.isIllusion=false;
+					hero.isRealHero=true;
+
+					table.insert(EnemyHeroList,hero);
+				end
+			end
+		end
+	end
+
+	return EnemyHeroList;
+end
 for k,v in pairs( PushUtility ) do _G._savedEnv[k] = v end

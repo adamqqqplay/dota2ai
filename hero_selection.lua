@@ -175,7 +175,7 @@ hero_pool_my={
 		-- "npc_dota_hero_ember_spirit",
 		
 		-- "npc_dota_hero_shadow_shaman",
-		-- "npc_dota_hero_centaur",
+		 "npc_dota_hero_centaur",
 		-- "npc_dota_hero_venomancer",
 		-- "npc_dota_hero_doom_bringer",
 		-- "npc_dota_hero_slardar",

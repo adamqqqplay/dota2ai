@@ -71,8 +71,14 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+
 local enemyDisabled=utility.enemyDisabled
+
+function CanCast1( npcEnemy )
+	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable() and not npcEnemy:HasModifier( "modifier_huskar_inner_vitality" ) 
+end
+
+local CanCast={CanCast1,utility.NCanCast,utility.NCanCast,utility.UCanCast}
 
 function GetComboDamage()
 	return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
@@ -209,7 +215,7 @@ Consider[2]=function()
 			then
 				if ( CanCast[abilityNumber]( WeakestEnemy ) )
 				then
-					return BOT_ACTION_DESIRE_LOW,WeakestEnemy,"target";
+					return BOT_ACTION_DESIRE_LOW,WeakestEnemy;
 				end
 			end
 		end
