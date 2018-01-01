@@ -2,11 +2,12 @@
 --	Ranked Matchmaking AI v1.0a
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
-require(GetScriptDirectory() ..  "/utility")
+local utility = require( GetScriptDirectory().."/utility" ) 
 local role = require(GetScriptDirectory() ..  "/RoleUtility")
 local HeroMode
-function CDOTA_Bot_Script:GetFactor()
-	return self:GetHealth()/self:GetMaxHealth()+self:GetMana()/self:GetMaxMana()
+
+function OnStart()
+
 end
 
 function GetDesire()
@@ -276,7 +277,7 @@ function ConsiderTeamRoam()
 		if(factor>0.7)
 		then
 			local nearBuilding = utility.GetNearestBuilding(GetTeam(), npcBot:GetLocation())
-			local location = GetUnitsTowardsLocation(nearBuilding,GetAncient(GetTeam()),600)
+			local location = utility.GetUnitsTowardsLocation(nearBuilding,GetAncient(GetTeam()),600)
 			npcBot.TeamRoamAssemblyPoint=location
 			npcBot:ActionImmediate_Chat("Let's Gank "..string.gsub(target:GetUnitName(),"npc_dota_hero_","").." together! ",false)
 			print(npcBot:GetPlayerID().." @TeamRoam@ Let's Gank together! Factor:"..factor.." target:"..target:GetUnitName())

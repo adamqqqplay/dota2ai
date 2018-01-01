@@ -1,11 +1,11 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.2 New Structure
+--	Ranked Matchmaking AI v1.3 New Structure
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
 --------------------------------------
 -- General Initialization
 --------------------------------------
-require(GetScriptDirectory() ..  "/utility")
+local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 
 local debugmode=false
@@ -192,6 +192,16 @@ Consider[1]=function()	--Target Ability Example
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) or #enemys2>0) 
 	then
+		--[[
+		-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+		if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+		then
+			if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) )
+			then
+				return BOT_ACTION_DESIRE_MODERATE, utility.Fountain(GetTeam());
+			end
+		end]]--
+		
 		for _,npcEnemy in pairs( enemys )
 		do
 			if ( (npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) and CanCast[abilityNumber]( npcEnemy )) or GetUnitToUnitDistance(npcBot,npcEnemy)<400) 

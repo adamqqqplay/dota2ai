@@ -14,7 +14,7 @@ local itemWard = nil;
 local targetLoc = nil;
 local wardCastTime = -90;
 local swapTime = -90;
-
+local targetLoc, targetDist;
 local chat = false;
 
 

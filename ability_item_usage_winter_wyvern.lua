@@ -5,7 +5,7 @@
 --------------------------------------
 -- General Initialization
 --------------------------------------
-require(GetScriptDirectory() ..  "/utility")
+local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 
 local debugmode=false
@@ -50,13 +50,13 @@ local TalentTree={
 		return Talents[1]
 	end,
 	function()
-		return Talents[3]
+		return Talents[4]
 	end,
 	function()
 		return Talents[6]
 	end,
 	function()
-		return Talents[7]
+		return Talents[8]
 	end
 }
 
@@ -524,7 +524,7 @@ Consider[4]=function()
 		do
 			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) 
 			then
-				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and #allys<#enemys) 
+				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and #allys<=1) 
 				then
 					return BOT_ACTION_DESIRE_HIGH, npcEnemy;
 				end

@@ -3,6 +3,7 @@
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
 local role = require(GetScriptDirectory() ..  "/RoleUtility")
+local bnUtil = require(GetScriptDirectory() .. "/BotNameUtility");
 
 hero_pool={"npc_dota_hero_abaddon",
 		"npc_dota_hero_abyssal_underlord",
@@ -175,7 +176,7 @@ hero_pool_my={
 		-- "npc_dota_hero_ember_spirit",
 		
 		-- "npc_dota_hero_shadow_shaman",
-		 "npc_dota_hero_centaur",
+		-- "npc_dota_hero_centaur",
 		-- "npc_dota_hero_venomancer",
 		-- "npc_dota_hero_doom_bringer",
 		-- "npc_dota_hero_slardar",
@@ -245,6 +246,32 @@ hero_pool_my={
 		-- "npc_dota_hero_ancient_apparition",
 		-- "npc_dota_hero_arc_warden",
 		-- "npc_dota_hero_gyrocopter",
+		
+		"npc_dota_hero_batrider",
+		"npc_dota_hero_beastmaster",
+		"npc_dota_hero_bounty_hunter",
+		"npc_dota_hero_brewmaster",
+		"npc_dota_hero_broodmother",
+		
+		"npc_dota_hero_chen",
+		"npc_dota_hero_dark_seer",
+		"npc_dota_hero_disruptor",
+		"npc_dota_hero_earth_spirit",
+		"npc_dota_hero_elder_titan",
+		
+		
+		"npc_dota_hero_enchantress",
+		"npc_dota_hero_enigma",
+		"npc_dota_hero_keeper_of_the_light",
+		"npc_dota_hero_lycan",
+		"npc_dota_hero_magnataur",
+		
+		"npc_dota_hero_medusa",
+		"npc_dota_hero_mirana",
+		"npc_dota_hero_monkey_king",
+		"npc_dota_hero_pudge",
+		"npc_dota_hero_sand_king",
+		
 }
 allBotHeroes={
 		"npc_dota_hero_zuus",
@@ -331,6 +358,30 @@ allBotHeroes={
 		"npc_dota_hero_ancient_apparition",
 		"npc_dota_hero_arc_warden",
 		"npc_dota_hero_gyrocopter",
+		
+		"npc_dota_hero_batrider",
+		"npc_dota_hero_beastmaster",
+		"npc_dota_hero_bounty_hunter",
+		"npc_dota_hero_brewmaster",
+		"npc_dota_hero_broodmother",
+		
+		"npc_dota_hero_chen",
+		"npc_dota_hero_dark_seer",
+		"npc_dota_hero_disruptor",
+		"npc_dota_hero_earth_spirit",
+		"npc_dota_hero_elder_titan",
+		
+		"npc_dota_hero_enchantress",
+		"npc_dota_hero_enigma",
+		"npc_dota_hero_keeper_of_the_light",
+		"npc_dota_hero_lycan",
+		"npc_dota_hero_magnataur",
+		
+		"npc_dota_hero_medusa",
+		"npc_dota_hero_mirana",
+		"npc_dota_hero_monkey_king",
+		"npc_dota_hero_pudge",
+		"npc_dota_hero_sand_king",
 }
 hero_pool_1={
 	"npc_dota_hero_chaos_knight",
@@ -348,6 +399,8 @@ hero_pool_1={
 	"npc_dota_hero_spectre",
 	--"npc_dota_hero_antimage",
 	"npc_dota_hero_gyrocopter",
+	"npc_dota_hero_lycan",
+	"npc_dota_hero_monkey_king",
 }
 hero_pool_2={
 	"npc_dota_hero_zuus",
@@ -362,6 +415,7 @@ hero_pool_2={
 	"npc_dota_hero_death_prophet",
 	"npc_dota_hero_alchemist",
 	"npc_dota_hero_arc_warden",
+	"npc_dota_hero_medusa",
 }
 hero_pool_3={
 	"npc_dota_hero_huskar",
@@ -382,6 +436,14 @@ hero_pool_3={
 	"npc_dota_hero_tiny",
 	"npc_dota_hero_windrunner",
 	"npc_dota_hero_abyssal_underlord",
+	"npc_dota_hero_batrider",
+	"npc_dota_hero_beastmaster",
+	"npc_dota_hero_brewmaster",
+	"npc_dota_hero_broodmother",
+	"npc_dota_hero_dark_seer",
+	"npc_dota_hero_enchantress",
+	"npc_dota_hero_magnataur",
+	"npc_dota_hero_mirana",
 }
 hero_pool_4={
 	"npc_dota_hero_skywrath_mage",
@@ -394,6 +456,11 @@ hero_pool_4={
 	"npc_dota_hero_bane",
 	"npc_dota_hero_earthshaker",
 	"npc_dota_hero_omniknight",
+	"npc_dota_hero_bounty_hunter",
+	--"npc_dota_hero_elder_titan",
+	"npc_dota_hero_enigma",
+	"npc_dota_hero_pudge",
+	"npc_dota_hero_sand_king",
 }
 hero_pool_5={
 	"npc_dota_hero_ogre_magi",
@@ -408,10 +475,18 @@ hero_pool_5={
 	"npc_dota_hero_winter_wyvern",
 	"npc_dota_hero_warlock",
 	"npc_dota_hero_ancient_apparition",
+	"npc_dota_hero_chen",
+	--"npc_dota_hero_disruptor",
+	"npc_dota_hero_earth_spirit",
+	"npc_dota_hero_keeper_of_the_light",
 }
 hero_pool_new={hero_pool_2,hero_pool_1,hero_pool_4,hero_pool_5,hero_pool_3}
 ----------------------------------------------------------------------------------------------------
 local debug_mode=false
+
+function GetBotNames()
+	return bnUtil.GetDota2Team();
+end
 
 function Think()
 

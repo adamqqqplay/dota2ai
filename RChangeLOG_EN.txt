@@ -162,3 +162,8 @@ v1.3c (2017.11.7)
 1. Fixed a lot of bugs made by the Valve updated the internal structure of the game API. Now the hero can correctly upgrade abilities.
 2. Fixed a few items building bugs.
 3. Optimize the script program structure.
+v1.4 (2018.1.1)
+1. Added 20 new heroes: batrider, beastmaster, bounty hunter, brewmaster, broodmother, chen, dark seer, disruptor, earth spirit, elder titan, enchantress, enigma, keeper of the light, lycan, magnataur, medusa, mirana, monkey king, pudge, sand king.
+2. Update all heroes talents and abilities building to fit the latest version.
+3. To commemorate the famous professional player, the AI will now use professional player name of TI's history.
+4. Several bug fixes.

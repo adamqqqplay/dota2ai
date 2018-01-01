@@ -5,7 +5,7 @@
 --------------------------------------
 -- General Initialization
 --------------------------------------
-require(GetScriptDirectory() ..  "/utility")
+local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 
 local debugmode=false
@@ -27,16 +27,16 @@ local AbilitiesReal =
 local AbilityToLevelUp=
 {
 	Abilities[1],
+	Abilities[3],
 	Abilities[2],
-	Abilities[1],
 	Abilities[3],
-	Abilities[1],
+	Abilities[3],
 	Abilities[4],
+	Abilities[3],
 	Abilities[1],
-	Abilities[3],
-	Abilities[3],
+	Abilities[1],
 	"talent",
-	Abilities[3],
+	Abilities[1],
 	Abilities[4],
 	Abilities[2],
 	Abilities[2],
@@ -54,13 +54,13 @@ local AbilityToLevelUp=
 }
 local TalentTree={
 	function()
-		return Talents[1]
+		return Talents[2]
 	end,
 	function()
-		return Talents[3]
+		return Talents[4]
 	end,
 	function()
-		return Talents[5]
+		return Talents[6]
 	end,
 	function()
 		return Talents[7]

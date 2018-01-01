@@ -5,7 +5,7 @@
 -------
 _G._savedEnv = getfenv()
 module( "ability_item_usage_generic", package.seeall )
-require( GetScriptDirectory().."/utility" ) 
+local utility = require( GetScriptDirectory().."/utility" ) 
 ----------
 
 function CourierUsageThink()
@@ -355,6 +355,10 @@ function UseAbility(AbilitiesReal,cast)
 			elseif(utility.CheckFlag(ability:GetBehavior(),ABILITY_BEHAVIOR_POINT))
 			then
 				npcBot:Action_UseAbilityOnLocation( ability , cast.Target[j])
+				return
+			elseif(utility.CheckFlag(ability:GetTargetType(),ABILITY_TARGET_TYPE_TREE))
+			then
+				npcBot:Action_UseAbilityOnTree( ability , cast.Target[j])
 				return
 			else
 				npcBot:Action_UseAbilityOnEntity( ability , cast.Target[j])

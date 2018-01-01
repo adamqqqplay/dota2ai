@@ -2,7 +2,7 @@
 --	Ranked Matchmaking AI v1.0a
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
-require( GetScriptDirectory().."/utility" ) 
+local utility = require( GetScriptDirectory().."/utility" ) 
 
 local ItemsToBuy = 
 { 
@@ -36,9 +36,10 @@ local ItemsToBuy =
 	"item_ogre_axe",
 	"item_blade_of_alacrity",		--蓝杖
 	
-	"item_vitality_booster",
-	"item_vitality_booster",		
-	"item_reaver",					--龙心7.06
+	"item_hyperstone",
+	"item_platemail",
+	"item_chainmail",
+	"item_recipe_assault",			--强袭
 }
 
 utility.checkItemBuild(ItemsToBuy)

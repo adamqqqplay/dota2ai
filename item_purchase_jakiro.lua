@@ -2,7 +2,7 @@
 --	Ranked Matchmaking AI v1.0a
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
-require( GetScriptDirectory().."/utility" ) 
+local utility = require( GetScriptDirectory().."/utility" ) 
 
 local ItemsToBuy = 
 { 

@@ -5,7 +5,7 @@
 -------
 _G._savedEnv = getfenv()
 module( "mode_generic_rune", package.seeall )
-require(GetScriptDirectory() ..  "/utility")
+local utility = require( GetScriptDirectory().."/utility" ) 
 local role = require(GetScriptDirectory() ..  "/RoleUtility")
 ----------
 local AllRunes={

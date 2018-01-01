@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.0a
+--	Ranked Matchmaking AI v1.3
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
-require( GetScriptDirectory().."/utility" ) 
+local utility = require( GetScriptDirectory().."/utility" ) 		--导入通用函数库
 
 local ItemsToBuy = 
 { 
@@ -45,10 +45,10 @@ local ItemsToBuy =
 
 }
 
-utility.checkItemBuild(ItemsToBuy)
+utility.checkItemBuild(ItemsToBuy)		--检查装备列表
 
 function ItemPurchaseThink()
-	utility.BuySupportItem()
-	utility.BuyCourier()
-	utility.ItemPurchase(ItemsToBuy)
+	utility.BuySupportItem()			--购买辅助物品	对于辅助英雄保留这一行
+	utility.BuyCourier()				--购买信使		对于5号位保留这一行
+	utility.ItemPurchase(ItemsToBuy)	--购买装备
 end

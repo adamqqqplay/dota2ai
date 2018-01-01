@@ -487,7 +487,7 @@ end
 
 function GetWeakestCreep(r)
 	local npcBot = GetBot();
-	
+	r=math.min(1600,r)
 	local EnemyCreeps = npcBot:GetNearbyLaneCreeps(r,true);
 	
 	if EnemyCreeps==nil or #EnemyCreeps==0 then
@@ -597,12 +597,27 @@ function IsEnemyTooMany()
 	
 	if(EnemyCount>AllyCount)
 	then
-		print(npcBot:GetName().." enemy is too much")
+		print(getCurrentFileName().." "..npcBot:GetUnitName().."'s enemy is too much, fall back")
 		return true
 	else
 		return false
 	end
 end
+
+function getCurrentFileName()
+	return strippath(debug.getinfo(1,'S').source:sub(2))
+end
+
+function strippath(filename)
+	if filename:match(".-/.-") then  
+		return string.match(filename, ".+/([^/]*%.%w+)$")
+	elseif filename:match(".-\\.-") then  
+		return string.match(filename, ".+\\([^\\]*%.%w+)$")
+	else  
+		return ''  
+	end  
+ 
+end  
 
 
 EnemyHeroListTimer=-1000;

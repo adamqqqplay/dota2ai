@@ -5,7 +5,7 @@
 --------------------------------------
 -- Load Utility Function Library
 --------------------------------------
-require(GetScriptDirectory() ..  "/utility")
+local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 --------------------------------------
 -- Hero Area Local Variable Setting
