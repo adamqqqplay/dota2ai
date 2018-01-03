@@ -134,7 +134,10 @@ Consider[1]=function()
 	if(npcBot:GetHealth()/npcBot:GetMaxHealth()<(0.5+#enemys*0.05+0.2*ManaPercentage) or 
 		(npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_MODERATE))
 	then
-		return BOT_ACTION_DESIRE_HIGH, npcBot;
+		if(CanCast[abilityNumber]( npcBot ))
+		then
+			return BOT_ACTION_DESIRE_HIGH, npcBot;
+		end
 	end
 	
 	-- If we're going after someone
@@ -147,7 +150,7 @@ Consider[1]=function()
 
 		if ( npcEnemy ~= nil) 
 		then
-			if(GetUnitToUnitDistance( npcBot, npcEnemy ) <= 500)
+			if(GetUnitToUnitDistance( npcBot, npcEnemy ) <= 500 and CanCast[abilityNumber]( npcBot ))
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcBot;
 			end
@@ -157,7 +160,7 @@ Consider[1]=function()
 	--protect teammate
 	if(WeakestAlly~=nil)
 	then
-		if(WeakestAlly:GetHealth()/WeakestAlly:GetMaxHealth()<(0.4+#enemys*0.05+0.2*ManaPercentage))
+		if(WeakestAlly:GetHealth()/WeakestAlly:GetMaxHealth()<(0.4+#enemys*0.05+0.2*ManaPercentage) and CanCast[abilityNumber]( WeakestAlly ))
 		then
 			return BOT_ACTION_DESIRE_LOW, WeakestAlly;
 		end

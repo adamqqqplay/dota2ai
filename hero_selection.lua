@@ -247,17 +247,17 @@ hero_pool_my={
 		-- "npc_dota_hero_arc_warden",
 		-- "npc_dota_hero_gyrocopter",
 		
-		"npc_dota_hero_batrider",
-		"npc_dota_hero_beastmaster",
-		"npc_dota_hero_bounty_hunter",
-		"npc_dota_hero_brewmaster",
-		"npc_dota_hero_broodmother",
+		-- "npc_dota_hero_batrider",
+		-- "npc_dota_hero_beastmaster",
+		-- "npc_dota_hero_bounty_hunter",
+		-- "npc_dota_hero_brewmaster",
+		-- "npc_dota_hero_broodmother",
 		
-		"npc_dota_hero_chen",
-		"npc_dota_hero_dark_seer",
-		"npc_dota_hero_disruptor",
-		"npc_dota_hero_earth_spirit",
-		"npc_dota_hero_elder_titan",
+		-- "npc_dota_hero_chen",
+		-- "npc_dota_hero_dark_seer",
+		-- "npc_dota_hero_disruptor",
+		-- "npc_dota_hero_earth_spirit",
+		-- "npc_dota_hero_elder_titan",
 		
 		
 		"npc_dota_hero_enchantress",

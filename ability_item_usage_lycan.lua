@@ -95,9 +95,15 @@ Consider[1]=function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
-	local CastRange = 300;
+	local CastRange = 500;
 	local CastPoint = ability:GetCastPoint();
 
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+	
 	local wolves = 0;
 	local units = GetUnitList(UNIT_LIST_ALLIES);
 	for _,unit in pairs(units)
@@ -163,11 +169,11 @@ Consider[1]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcTarget = npcBot:GetTarget();
+		local npcEnemy = npcBot:GetTarget();
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys and wolves < 1)
+			if ( GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys and wolves < 1)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end
@@ -192,6 +198,12 @@ Consider[2]=function()
 	
 	local CastRange = ability:GetCastRange();
 	local CastPoint = ability:GetCastPoint();
+	
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
@@ -229,7 +241,7 @@ Consider[2]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcTarget = npcBot:GetTarget();
+		local npcEnemy = npcBot:GetTarget();
 
 		if ( npcEnemy ~= nil ) 
 		then
@@ -258,6 +270,12 @@ Consider[4]=function()
 	
 	local CastRange = ability:GetCastRange();
 	local CastPoint = ability:GetCastPoint();
+	
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
@@ -276,11 +294,11 @@ Consider[4]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcTarget = npcBot:GetTarget();
+		local npcEnemy = npcBot:GetTarget();
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< 300 + 75*#allys )
+			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< 1000 + 75*#allys )
 			then
 				return BOT_ACTION_DESIRE_MODERATE
 			end

@@ -552,7 +552,7 @@ Consider[4]=function()
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
 					local d=GetUnitToUnitDistance(npcBot,WeakestEnemy)
-					return BOT_ACTION_DESIRE_HIGH,GetUnitsTowardsLocation(npcBot,WeakestEnemy,d+300) 
+					return BOT_ACTION_DESIRE_HIGH,utility.GetUnitsTowardsLocation(npcBot,WeakestEnemy,d+300) 
 				end
 			end
 		end
@@ -566,7 +566,7 @@ Consider[4]=function()
 	then
 		if ( npcBot:WasRecentlyDamagedByAnyHero(2) or #enemys >=1) 
 		then
-			return BOT_ACTION_DESIRE_HIGH, GetUnitsTowardsLocation(enemys[1],npcBot,CastRange);
+			return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(enemys[1],npcBot,CastRange);
 		end
 	end
 
@@ -599,7 +599,7 @@ Consider[4]=function()
 			local d=GetUnitToUnitDistance(npcBot,npcEnemy)
 			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and d< CastRange + 75*#allys)
 			then
-				return BOT_ACTION_DESIRE_MODERATE, GetUnitsTowardsLocation(npcBot,npcEnemy,d+300)
+				return BOT_ACTION_DESIRE_MODERATE, utility.GetUnitsTowardsLocation(npcBot,npcEnemy,d+300)
 			end
 		end
 	end
@@ -672,7 +672,7 @@ Consider[5]=function_r()
 			local d=GetUnitToUnitDistance(npcBot,npcEnemy)
 			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and d< CastRange + 75*#allys)
 			then
-				return BOT_ACTION_DESIRE_MODERATE, GetUnitsTowardsLocation(npcBot,npcEnemy,d+300)
+				return BOT_ACTION_DESIRE_MODERATE, utility.GetUnitsTowardsLocation(npcBot,npcEnemy,d+300)
 			end
 		end
 	end

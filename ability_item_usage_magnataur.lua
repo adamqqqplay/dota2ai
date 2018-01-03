@@ -226,19 +226,22 @@ Consider[2]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOTTOM) 
 	then
-		for _,myFriend in pairs(allys) do
-			if ( GetUnitToUnitDistance( myFriend, npcBot  ) < CastRange and not myFriend:HasModifier(modifierName) ) 
-			then
-				return BOT_ACTION_DESIRE_MODERATE, myFriend;
+		if(ManaPercentage>0.6)
+		then
+			for _,myFriend in pairs(allys) do
+				if ( GetUnitToUnitDistance( myFriend, npcBot  ) < CastRange and not myFriend:HasModifier(modifierName) ) 
+				then
+					return BOT_ACTION_DESIRE_MODERATE, myFriend;
+				end
+			end	
+			if not npcBot:HasModifier(modifierName) then
+				return BOT_ACTION_DESIRE_MODERATE, npcBot;
 			end
-		end	
-		if not npcBot:HasModifier(modifierName) then
-			return BOT_ACTION_DESIRE_MODERATE, npcBot;
 		end
 	end
 	
 	-- If my mana is enough,buff myfriend.
-	if(ManaPercentage>0.5 and npcBot:GetMana()>ComboMana)
+	if(ManaPercentage>0.6 and npcBot:GetMana()>ComboMana)
 	then
 		for _,ally in pairs(allys)
 		do

@@ -118,7 +118,7 @@ Consider[2]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana and GetUnitToUnitDistance(npcBot,WeakestEnemy) > 500)
 				then
-					return BOT_ACTION_DESIRE_HIGH,GetUnitsTowardsLocation(npcBot,WeakestEnemy,CastRange+200); 
+					return BOT_ACTION_DESIRE_HIGH,utility.GetUnitsTowardsLocation(npcBot,WeakestEnemy,CastRange+200); 
 				end
 			end
 		end
@@ -129,13 +129,13 @@ Consider[2]=function()
 	-- If we trapped by the trees
 	if(trees~=nil and #trees>=10 or (utility.PointToPointDistance(npcBot:GetLocation(),npcBot.Blink.Point)<=100 and DotaTime()-npcBot.Blink.Timer<10 and DotaTime()-npcBot.Blink.Timer>8))
 	then
-		return BOT_ACTION_DESIRE_HIGH, GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
+		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
 	end
 	
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:DistanceFromFountain()>=2000 and (ManaPercentage>=0.6 or npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH or HealthPercentage<=0.6)) 
 	then
-		return BOT_ACTION_DESIRE_HIGH, GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
+		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
 	end
 	
 	-- If we're going after someone
@@ -155,7 +155,7 @@ Consider[2]=function()
 				then
 					if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys and GetUnitToUnitDistance(npcBot,npcEnemy) > 500)
 					then
-						return BOT_ACTION_DESIRE_MODERATE, GetUnitsTowardsLocation(npcBot,npcEnemy,CastRange+200);
+						return BOT_ACTION_DESIRE_MODERATE, utility.GetUnitsTowardsLocation(npcBot,npcEnemy,CastRange+200);
 					end
 				end
 			end

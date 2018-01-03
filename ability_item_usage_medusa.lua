@@ -260,6 +260,8 @@ Consider[4]=function()
 
 	local enemys = npcBot:GetNearbyHeroes(CastRange-300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
@@ -279,7 +281,7 @@ Consider[4]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcTarget = npcBot:GetTarget();
+		local npcEnemy = npcBot:GetTarget();
 
 		if ( npcEnemy ~= nil ) 
 		then

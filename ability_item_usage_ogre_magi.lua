@@ -356,6 +356,8 @@ Consider[3]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOTTOM) 
 	then
+		if(ManaPercentage>0.6 and npcBot:GetMana()>ComboMana)
+		then
 		    local tableNearbyFriendlyTowers = npcBot:GetNearbyTowers( CastRange+300, false );
 			for _,myTower in pairs(tableNearbyFriendlyTowers) do
 				if ( GetUnitToUnitDistance( myTower, npcBot  ) < CastRange and not myTower:HasModifier("modifier_ogre_magi_bloodlust") ) 
@@ -373,10 +375,11 @@ Consider[3]=function()
 			if not npcBot:HasModifier("modifier_ogre_magi_bloodlust") then
 				return BOT_ACTION_DESIRE_MODERATE, npcBot;
 			end
+		end
 	end
 	
 	-- If my mana is enough,buff myfriend.
-	if(ManaPercentage>0.5 and npcBot:GetMana()>ComboMana)
+	if(ManaPercentage>0.6 and npcBot:GetMana()>ComboMana)
 	then
 		for _,ally in pairs(allys)
 		do

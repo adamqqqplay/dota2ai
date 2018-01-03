@@ -358,7 +358,7 @@ Consider[2]=function()
 	then
 		local npcEnemy = npcBot:GetTarget();
 		
-		if(ManaPercentage>0.4)
+		if(ManaPercentage>0.4 and HealthPercentage<=0.66)
 		then
 			if ( npcEnemy ~= nil ) 
 			then

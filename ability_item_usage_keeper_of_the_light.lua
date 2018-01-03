@@ -72,7 +72,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.NCanCast,utility.NCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -92,7 +92,128 @@ Consider[1]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if npcBot:HasScepter() or npcBot:HasModifier("modifier_keeper_of_the_light_spirit_form") or not ability:IsFullyCastable()  then
+	if ( npcBot:HasScepter() or npcBot:HasModifier("modifier_keeper_of_the_light_spirit_form") or not ability:IsFullyCastable() ) then 
+		return BOT_ACTION_DESIRE_NONE, 0;
+	end
+	
+	local CastRange = ability:GetCastRange();
+	local Damage = ability:GetSpecialValueFloat("damage_per_second")*ability:GetSpecialValueFloat("max_channel_time")
+	local Radius = ability:GetAOERadius()
+	local CastPoint = ability:GetCastPoint();
+	
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local creeps = npcBot:GetNearbyCreeps(1600,true)
+	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+
+	--------------------------------------
+	-- Global high-priorty usage
+	--------------------------------------
+	--try to kill enemy hero
+	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
+	then
+		if (WeakestEnemy~=nil)
+		then
+			if ( CanCast[abilityNumber]( WeakestEnemy ) )
+			then
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+				then
+					return BOT_ACTION_DESIRE_HIGH,npcBot:GetXUnitsTowardsLocation(WeakestEnemy:GetExtrapolatedLocation(CastPoint),300) ; 
+				end
+			end
+		end
+	end
+	--------------------------------------
+	-- Mode based usage
+	--------------------------------------
+	-- If we're farming and can kill 3+ creeps with LSA
+	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
+		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+
+		if ( locationAoE.count >= 3 ) then
+			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+		end
+	end
+
+	--Last hit
+	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+	then
+		if(WeakestCreep~=nil)
+		then
+			if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and GetUnitToUnitDistance(npcBot,WeakestCreep)>=300)
+			then
+				local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
+				if ( locationAoE.count >= 1 ) then
+					return BOT_ACTION_DESIRE_LOW-0.02, locationAoE.targetloc;
+				end
+			end		
+		end
+	end
+	
+	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+	then
+		if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )
+		then
+			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+			if ( locationAoE.count >= 2 ) then
+				return BOT_ACTION_DESIRE_LOW-0.01, locationAoE.targetloc;
+			end
+		end
+	end
+
+	-- If we're pushing or defending a lane and can hit 4+ creeps, go for it
+	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
+		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
+	then
+		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+
+		if ( locationAoE.count >= 4 ) 
+		then
+			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+		end
+	end
+
+	-- If we're going after someone
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK) 
+	then
+		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+		if ( locationAoE.count >= 2 ) then
+			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+		end
+	
+		local npcEnemy = npcBot:GetTarget();
+
+		if ( npcEnemy ~= nil ) 
+		then
+			if ( CanCast[abilityNumber]( npcEnemy ) )
+			then
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation(CastPoint);
+			end
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE, 0;
+	
+end
+
+--keeper_of_the_light_spirit_form_illuminate
+Consider[8]=function()
+	
+	local abilityNumber=8
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber];
+	
+	if ( not ability:IsFullyCastable() or ability:IsHidden() ) then 
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -204,8 +325,9 @@ Consider[1]=function()
 	
 end
 
---keeper_of_the_light_spirit_form_illuminate
-Consider[8]=Consider[1]
+Consider[7]=function()
+	return BOT_ACTION_DESIRE_NONE, 0;
+end
 
 Consider[2]=function()
 	local abilityNumber=2
@@ -363,18 +485,23 @@ Consider[3]=function()
 	local CastPoint = ability:GetCastPoint();
 	
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-
-	if  npcBot:GetMana() / npcBot:GetMaxMana() < 0.75 then
-		return BOT_ACTION_DESIRE_MODERATE, npcBot;
-	else
-		for _,myFriend in pairs(allys) do
-			if ( CanCast[abilityNumber](myFriend) and myFriend:GetMana() / myFriend:GetMaxMana() < 0.65  ) 
-			then
-				return BOT_ACTION_DESIRE_MODERATE, myFriend;
-			end
-		end	
-	end
+	local bestTarget = npcBot;
+	local minMana = ManaPercentage;
 	
+	for _,myFriend in pairs(allys) do
+		tempMana=myFriend:GetMana() / myFriend:GetMaxMana()
+		if ( CanCast[abilityNumber](myFriend) and tempMana < ManaPercentage  ) 
+		then
+			bestTarget=myFriend
+			minMana=tempMana;
+		end
+	end	
+
+	if(bestTarget~=nil and minMana<=0.8)
+	then
+		return BOT_ACTION_DESIRE_MODERATE, bestTarget; 
+	end
+
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
 
@@ -386,7 +513,8 @@ Consider[4]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable()  then
+	if ( not npcBot:HasModifier("modifier_keeper_of_the_light_spirit_form") or ability:IsHidden() or not ability:IsFullyCastable() ) 
+	then 
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -505,7 +633,8 @@ Consider[5]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if ( not npcBot:HasModifier("modifier_keeper_of_the_light_spirit_form") or ability:IsHidden() or not ability:IsFullyCastable() ) 
+	then 
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -570,7 +699,7 @@ Consider[6]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if npcBot:HasScepter() or npcBot:HasModifier("modifier_keeper_of_the_light_spirit_form") or not ability:IsFullyCastable() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	

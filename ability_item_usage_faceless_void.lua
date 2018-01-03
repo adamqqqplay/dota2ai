@@ -118,7 +118,7 @@ Consider[1]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 				then
-					return BOT_ACTION_DESIRE_HIGH,GetUnitsTowardsLocation(npcBot,WeakestEnemy,CastRange+200); 
+					return BOT_ACTION_DESIRE_HIGH,utility.GetUnitsTowardsLocation(npcBot,WeakestEnemy,CastRange+200); 
 				end
 			end
 		end
@@ -129,13 +129,13 @@ Consider[1]=function()
 	-- If we trapped by the trees
 	if(trees~=nil and #trees>=10)
 	then
-		return BOT_ACTION_DESIRE_HIGH, GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
+		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
 	end
 	
 	-- If we're seriously retreating
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT or npcBot.FacelessVoidSkill1.Hp-HealthPercentage>=0.15+0.03*#enemys) 
 	then
-		return BOT_ACTION_DESIRE_HIGH, GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
+		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
 	end
 	
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT and ManaPercentage>ComboMana and AbilitiesReal[4]:IsFullyCastable()) 
@@ -164,7 +164,7 @@ Consider[1]=function()
 				then
 					if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)>CastRange-200 and GetUnitToUnitDistance(npcBot,npcEnemy)<1200)
 					then
-						return BOT_ACTION_DESIRE_MODERATE, GetUnitsTowardsLocation(npcBot,npcEnemy,CastRange+200);
+						return BOT_ACTION_DESIRE_MODERATE, utility.GetUnitsTowardsLocation(npcBot,npcEnemy,CastRange+200);
 					end
 				end
 			end

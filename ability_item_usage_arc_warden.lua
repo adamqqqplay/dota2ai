@@ -290,7 +290,7 @@ Consider[2]=function()
 		do
 			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) and CanCast[abilityNumber]( npcEnemy ) or GetUnitToUnitDistance(npcBot,npcEnemy)<400) 
 			then
-				return BOT_ACTION_DESIRE_HIGH, GetUnitsTowardsLocation(npcEnemy,npcBot,Radius);
+				return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcEnemy,npcBot,Radius);
 			end
 		end
 	end
@@ -312,7 +312,7 @@ Consider[2]=function()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) )
 			then
-				return BOT_ACTION_DESIRE_HIGH, GetUnitsTowardsLocation(npcBot,npcEnemy,Radius);
+				return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,npcEnemy,Radius);
 			end
 		end
 	end
@@ -386,7 +386,7 @@ Consider[3]=function()
 			then
 				if ( CanCast[abilityNumber]( WeakestEnemy ) )
 				then
-					return BOT_ACTION_DESIRE_LOW,GetUnitsTowardsLocation(npcBot,WeakestEnemy,GetUnitToUnitDistance(npcBot,WeakestEnemy)+300)
+					return BOT_ACTION_DESIRE_LOW,utility.GetUnitsTowardsLocation(npcBot,WeakestEnemy,GetUnitToUnitDistance(npcBot,WeakestEnemy)+300)
 				end
 			end
 		end

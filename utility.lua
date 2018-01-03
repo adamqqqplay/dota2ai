@@ -364,7 +364,6 @@ function utilityModule.SellExtraItem(ItemsToBuy)
 			utilityModule.SellSpecifiedItem("item_bottle")
 			utilityModule.SellSpecifiedItem("item_magic_wand")
 			utilityModule.SellSpecifiedItem("item_magic_stick")
-			utilityModule.SellSpecifiedItem("item_urn_of_shadows")
 			utilityModule.SellSpecifiedItem("item_ancient_janggo")
 			utilityModule.SellSpecifiedItem("item_ring_of_basilius")
 			utilityModule.SellSpecifiedItem("item_ring_of_aquila")
@@ -372,6 +371,7 @@ function utilityModule.SellExtraItem(ItemsToBuy)
 		end
 		if(GameTime()>35*60 or level>=20)
 		then
+			utilityModule.SellSpecifiedItem("item_urn_of_shadows")
 			utilityModule.SellSpecifiedItem("item_hand_of_midas")
 			if(utilityModule.GetItemSlotsCount()<6)
 			then
