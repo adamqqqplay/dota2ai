@@ -35,6 +35,10 @@ local ItemsToBuy =
 				"item_mithril_hammer",
 				"item_recipe_black_king_bar",
 				
+				"item_vitality_booster",
+	"item_vitality_booster",		
+	"item_reaver",					--龙心7.06
+	
 				"item_hyperstone",
 				"item_platemail",
 				"item_chainmail",

@@ -22,7 +22,8 @@ local ItemsToBuy =
 	"item_blight_stone",			--勋章
 	"item_talisman_of_evasion",		--大勋章
 	
-	"item_staff_of_wizardry",
+	"item_sobi_mask",
+	"item_sobi_mask",
 	"item_belt_of_strength",
 	"item_recipe_necronomicon",
 	"item_recipe_necronomicon", 

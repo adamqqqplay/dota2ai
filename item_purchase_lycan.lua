@@ -24,7 +24,8 @@ local ItemsToBuy =
 	"item_sobi_mask",
 	"item_lifesteal",				--祭品
 
-	"item_staff_of_wizardry",
+	"item_sobi_mask",
+	"item_sobi_mask",
 	"item_belt_of_strength",
 	"item_recipe_necronomicon",
 	"item_recipe_necronomicon", 

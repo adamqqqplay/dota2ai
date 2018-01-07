@@ -372,6 +372,7 @@ function utilityModule.SellExtraItem(ItemsToBuy)
 		if(GameTime()>35*60 or level>=20)
 		then
 			utilityModule.SellSpecifiedItem("item_urn_of_shadows")
+			utilityModule.SellSpecifiedItem("item_drums_of_endurance")
 			utilityModule.SellSpecifiedItem("item_hand_of_midas")
 			if(utilityModule.GetItemSlotsCount()<6)
 			then

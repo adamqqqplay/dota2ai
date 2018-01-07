@@ -39,6 +39,10 @@ local ItemsToBuy =
 	"item_mystic_staff",
 	"item_ultimate_orb",
 	"item_void_stone",				--羊刀
+	
+	"item_platemail",
+	"item_mystic_staff",
+	"item_recipe_shivas_guard" ,	--希瓦
 }
 
 utility.checkItemBuild(ItemsToBuy)
