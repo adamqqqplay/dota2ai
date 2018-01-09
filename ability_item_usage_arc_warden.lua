@@ -79,12 +79,12 @@ function CanCast1(npcTarget)
 	local enemys = npcTarget:GetNearbyCreeps(150,false)
 	local enemys2 = npcTarget:GetNearbyHeroes(150,false, BOT_MODE_NONE)
 	
-	if(#enemys==0 and #enemys2==0)
+	if(enemys~=nil and enemys2~=nil and #enemys==0 and #enemys2==0)
 	then
 		return utility.NCanCast(npcTarget)
 	end
 	
-	return false
+	return utility.NCanCast(npcTarget)
 end
 
 local cast={} cast.Desire={} cast.Target={} cast.Type={}

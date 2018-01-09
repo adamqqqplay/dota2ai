@@ -91,7 +91,7 @@ Consider[1]=function()
 	end
 	
 	local CastRange = ability:GetCastRange();
-	local Damage = ability:GetAbilityDamage();
+	local Damage = ability:GetSpecialValueInt("arc_damage");
 	
 	local HeroHealth=10000
 	local CreepHealth=10000
@@ -151,6 +151,7 @@ Consider[1]=function()
 			then
 				if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
 				then					
+				
 					return BOT_ACTION_DESIRE_LOW,WeakestCreep; 
 				end
 			end		
@@ -281,7 +282,7 @@ Consider[2]=function()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-	--ÏûºÄ
+	--ï¿½ï¿½ï¿½ï¿½
 	--if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	--then
 		if((ManaPercentage>0.4 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )

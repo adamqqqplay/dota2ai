@@ -382,7 +382,7 @@ function Consider4()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or ability:IsHidden() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	

@@ -490,21 +490,24 @@ Consider[4]=function()
 			local sumdamage=0
 			local enemys2 = npcEnemy:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
 			local creeps2 = npcEnemy:GetNearbyCreeps(Radius,true)
-			for j,npcEnemyAttacker in pairs(enemys2)
-			do
-				if(npcEnemy~=npcEnemyAttacker)
-				then
+			if(npcEnemy~=nil)
+			then
+				for j,npcEnemyAttacker in pairs(enemys2)
+				do
+					if(npcEnemy~=npcEnemyAttacker)
+					then
+						sumdamage=sumdamage+npcEnemyAttacker:GetEstimatedDamageToTarget(true,npcEnemy,Duration,DAMAGE_TYPE_PHYSICAL)
+					end
+				end
+				for j,npcEnemyAttacker in pairs(creeps2)
+				do
 					sumdamage=sumdamage+npcEnemyAttacker:GetEstimatedDamageToTarget(true,npcEnemy,Duration,DAMAGE_TYPE_PHYSICAL)
 				end
-			end
-			for j,npcEnemyAttacker in pairs(creeps2)
-			do
-				sumdamage=sumdamage+npcEnemyAttacker:GetEstimatedDamageToTarget(true,npcEnemy,Duration,DAMAGE_TYPE_PHYSICAL)
-			end
-			if(sumdamage/npcEnemy:GetHealth()>BestTargetScore)
-			then
-				BestTargetScore=sumdamage/npcEnemy:GetHealth()
-				BestTarget=npcEnemy
+				if(sumdamage/npcEnemy:GetHealth()>BestTargetScore)
+				then
+					BestTargetScore=sumdamage/npcEnemy:GetHealth()
+					BestTarget=npcEnemy
+				end
 			end
 		end
 		

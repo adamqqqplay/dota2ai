@@ -10,7 +10,7 @@ function GetCommonPushLaneDesires()
 	local time = DotaTime()
 	if(time>5*60)
 	then
-		common=common+(time/60-10)*0.01
+		common=common+(time/60-12)*0.01
 	end
 	
 	local itemtable=GetItemCount()
@@ -127,7 +127,7 @@ function UpdatePushLaneDesires()
 	local time = DotaTime()
 	local common =GetCommonPushLaneDesires()
 
-	if(time<=5*60) then
+	if(time<=6*60) then
 		return {0,0,0}
 	end
 

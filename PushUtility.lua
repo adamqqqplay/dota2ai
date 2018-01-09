@@ -78,7 +78,20 @@ function GetUnitPushLaneDesire(npcBot,lane)
 	local healthRate = npcBot:GetHealth() / npcBot:GetMaxHealth()
 	local manaRate = npcBot:GetMana() / npcBot:GetMaxMana()
 	local stateFactor = healthRate * 0.7 + manaRate * 0.3
-	
+	local roleFactor =0
+
+	if role.IsCarry(npcBot:GetUnitName())==true then
+		roleFactor=roleFactor-0.2;
+	end
+
+	if role.IsPusher(npcBot:GetUnitName())==true then
+		roleFactor=roleFactor+0.2;
+	end
+
+	if role.IsSupport(npcBot:GetUnitName())==true then
+		roleFactor=roleFactor+0.1;
+	end
+
 	local front = GetLaneFrontLocation( GetTeam(), lane, 0 )
 	local DistanceToFront = GetUnitToLocationDistance( npcBot, front ) 
 	local nearBuilding = GetNearestBuilding(team, front)
@@ -108,105 +121,95 @@ function GetUnitPushLaneDesire(npcBot,lane)
 		distFactor = -(DistanceToFront - 10000) / 9000
 	end
 	
-	local desire =  math.min(( 0.2 + 0.2 * levelFactor + 0.25 * stateFactor + 0.35 * distFactor ) * teamPush , 0.8)
+	local sumFactor=0.2 + 0.2 * levelFactor + 0.25 * stateFactor + 0.35 * distFactor + roleFactor;
+	local desire =  math.min(sumFactor * teamPush , 0.8)
 	
 	return desire
 end
 
-function UnitPushLaneThink(npcBot,lane)
-	if (npcBot:IsChanneling() or npcBot:IsUsingAbility() or npcBot:GetQueuedActionType(0) == BOT_ACTION_TYPE_USE_ABILITY) then
-		return;
+function isNocreeps(npcBot,lane)		--判断兵线位置在不在塔前，不要越塔
+	local front = GetLaneFrontLocation( GetTeam(), lane, 0 )
+	local AllyTower = GetNearestBuilding(GetTeam(), front)
+	local EnemyTower = GetNearestBuilding(GetOpposingTeam(), front)
+	local EnemySpawnLocation=GetEnemySpawnLocation()
+	local MaxDiveLength=500
+	local DistanceTowerToEnemyHome=GetUnitToLocationDistance(EnemyTower,EnemySpawnLocation)
+	local TowerDistance = GetUnitToUnitDistance(npcBot,EnemyTower)
+
+	if(TowerDistance<GetUnitToUnitDistance(EnemyTower,AllyTower) and PointToPointDistance(front,EnemySpawnLocation)<DistanceTowerToEnemyHome-MaxDiveLength) then
+		return true;
 	end
 
-	local team = GetTeam()
+	return false;
+end
+
+function getTargetLocation(npcBot,lane)
 	local front = GetLaneFrontLocation( GetTeam(), lane, 0 )
-	local DistanceToFront = GetUnitToLocationDistance( npcBot, front ) 
-	local nearBuilding = GetNearestBuilding(team, front)
-	local distBuilding = GetUnitToLocationDistance( nearBuilding, front )
-	local Amount=GetAmountAlongLane(lane,npcBot:GetLocation())
-	local DistanceToLane=Amount.distance
-	local tp = IsItemAvailable("item_tpscroll")
-	if not tp or not tp:IsFullyCastable() then 
-		tp = nil
-	end
-	local travel = IsItemAvailable("item_travel_boots")
-	if not travel or not travel:IsFullyCastable() then 
-		travel = nil
-	end
-	if DistanceToFront > 4000 then								--use tp to push quickly
-		if travel then
-			npcBot:Action_UseAbilityOnLocation( travel, front )
-			return true
-		elseif tp and DistanceToFront - distBuilding > 3000 and DistanceToLane >3000 then
-			npcBot:Action_UseAbilityOnLocation( tp, front )
-			return true
-		end
-	end
-	
-	local AllyTower = GetNearestBuilding(GetTeam(), front)
-	local AllyTowerDistance = GetUnitToUnitDistance(npcBot,AllyTower)
 	local EnemyTower = GetNearestBuilding(GetOpposingTeam(), front)
+	local AllyTower = GetNearestBuilding(GetTeam(), front)
 	local TowerDistance = GetUnitToUnitDistance(npcBot,EnemyTower)
-	local TargetLocation		--Scatter station to avoid AOE
-	
-	local EnemySpawnLocation=GetEnemySpawnLocation()	--Do not dive tower
-	local DistanceToEnemyHome=GetUnitToLocationDistance(npcBot,EnemySpawnLocation)
-	local DistanceTowerToEnemyHome=GetUnitToLocationDistance(EnemyTower,EnemySpawnLocation)
+	local EnemySpawnLocation=GetEnemySpawnLocation()
 	local MaxDiveLength=500
-	
-	local gamma=0
+	local DistanceTowerToEnemyHome=GetUnitToLocationDistance(EnemyTower,EnemySpawnLocation)
+	local gamma=0;
+
 	if(TowerDistance<1000)
 	then
-		if(lane==LANE_MID)
-		then
-			gamma=-15
-		end
-		TargetLocation=GetSafeLocation(npcBot,EnemyTower:GetLocation(),gamma);
+		-- if(lane==LANE_MID) then
+		-- 	gamma=-15
+		-- end
+		return GetSafeLocation(npcBot,EnemyTower:GetLocation(),gamma);
 	else
-		if(lane==LANE_MID)
-		then
-			gamma=-5
-		end
+		-- if(lane==LANE_MID) then
+		-- 	gamma=-5
+		-- end
 		if(PointToPointDistance(front,EnemySpawnLocation)<DistanceTowerToEnemyHome-MaxDiveLength)
 		then
-			TargetLocation=GetSafeLocation(npcBot,AllyTower:GetLocation(),gamma) ;
+			return GetSafeLocation(npcBot,AllyTower:GetLocation(),gamma) ;
 		else
-			TargetLocation=GetSafeLocation(npcBot,front,gamma) ;
+			return GetSafeLocation(npcBot,front,gamma) ;
 		end
 	end
 
-	local creeps = npcBot:GetNearbyCreeps(1000,true);
-	local enemys = npcBot:GetNearbyHeroes(1000,true,BOT_MODE_NONE)
-	local CreepMinDistance=3000
+end
+
+function IsCreepAttackTower(creepsNearyTower,EnemyTower)
+	if(creepsNearyTower~=nil and #creepsNearyTower>=1)
+	then
+		for k,v in pairs(creepsNearyTower)
+		do
+			if(v:GetAttackTarget()==EnemyTower)
+			then
+				return true;
+			end
+		end
+	end
+	return false;
+end
+
+function IsSafe(npcBot,lane,creepsNearyTower)
+
+	local front = GetLaneFrontLocation( GetTeam(), lane, 0 )
+	local EnemyTower = GetNearestBuilding(GetOpposingTeam(), front)
+	local AllyTower = GetNearestBuilding(GetTeam(), front)
+	local AllyTowerDistance = GetUnitToUnitDistance(npcBot,AllyTower)
+	local TowerDistance = GetUnitToUnitDistance(npcBot,EnemyTower)
+	local EnemySpawnLocation=GetEnemySpawnLocation()
+	local DistanceToEnemyHome=GetUnitToLocationDistance(npcBot,EnemySpawnLocation)
+	local MaxDiveLength=500
+	local DistanceTowerToEnemyHome=GetUnitToLocationDistance(EnemyTower,EnemySpawnLocation)
+
 	local Safe = false
-	
 
-	
-	local creepst = npcBot:GetNearbyCreeps(1600,false);
-	local creeps2 = {}
-	for k,v in pairs(creepst)
-	do
-		if(GetUnitToUnitDistance(v,EnemyTower)<800)
-		then
-			table.insert(creeps2,v)
-		end
-	end
-	
-
-	local NoCreeps=false
-	
-	if(TowerDistance<GetUnitToUnitDistance(EnemyTower,AllyTower) and PointToPointDistance(front,EnemySpawnLocation)<DistanceTowerToEnemyHome-MaxDiveLength) then
-		NoCreeps=true
-	end
-	
-	if(TowerDistance>1000 or AllyTowerDistance<=700)
+	if(TowerDistance>1500 or AllyTowerDistance<=700)
 	then
 		Safe = true
 	end
-	
-	if(creeps2~=nil and #creeps2>=2)
+
+	local CreepMinDistance=99999
+	if(creepsNearyTower~=nil and #creepsNearyTower>=2)
 	then
-		for k,v in pairs(creeps2)
+		for k,v in pairs(creepsNearyTower)
 		do
 			local tempDistance=GetUnitToUnitDistance(v,EnemyTower)
 			if(tempDistance<CreepMinDistance)
@@ -222,60 +225,127 @@ function UnitPushLaneThink(npcBot,lane)
 		end
 	end
 
-	local IsCreepAttackTower = false
-	if(creeps2~=nil and #creeps2>=1)
-	then
-		for k,v in pairs(creeps2)
-		do
-			if(v:GetAttackTarget()==EnemyTower)
-			then
-				IsCreepAttackTower=true
-			end
+	return Safe;
+end
+
+function tryTP( npcBot,lane )
+	local team = GetTeam()
+	local front = GetLaneFrontLocation( team, lane, 0 )
+	local DistanceToFront = GetUnitToLocationDistance( npcBot, front ) 
+	local nearBuilding = GetNearestBuilding(team, front)
+	local distBuilding = GetUnitToLocationDistance( nearBuilding, front )
+	local Amount=GetAmountAlongLane(lane,npcBot:GetLocation())
+	local DistanceToLane=Amount.distance
+	local tp = IsItemAvailable("item_tpscroll")
+	if not tp or not tp:IsFullyCastable() then 
+		tp = nil
+	end
+	local travel = IsItemAvailable("item_travel_boots")
+	if not travel or not travel:IsFullyCastable() then 
+		travel = nil
+	end
+	if DistanceToFront > 4000 then
+		if travel then
+			npcBot:Action_UseAbilityOnLocation( travel, front )
+			return true
+		elseif tp and DistanceToFront - distBuilding > 3000 and DistanceToLane >3000 then
+			npcBot:Action_UseAbilityOnLocation( tp, front )
+			return true
 		end
 	end
-	
-	local target,targetHealth
+	return false;
+end
+
+function getCreepsNearTower(npcBot,tower)
+	local creeps = {}
+	for k,v in pairs(npcBot:GetNearbyCreeps(1600,false))
+	do
+		if(GetUnitToUnitDistance(v,EnemyTower)<800)
+		then
+			table.insert(creeps,v)
+		end
+	end
+	return creeps
+end
+
+function getMyTarget(npcBot,lane,TargetLocation)
+	local team = GetTeam()
+	local front = GetLaneFrontLocation( team, lane, 0 )
+	local EnemyTower = GetNearestBuilding(GetOpposingTeam(), front)
+	local TowerDistance = GetUnitToUnitDistance(npcBot,EnemyTower)
+
+	local EnemySpawnLocation=GetEnemySpawnLocation()	--Do not dive tower
+	local DistanceTowerToEnemyHome=GetUnitToLocationDistance(EnemyTower,EnemySpawnLocation)
+	local MaxDiveLength=500
+
+	local creeps = npcBot:GetNearbyCreeps(1000,true);
 	if(creeps~=nil and #creeps>=1 and (GetUnitToLocationDistance(npcBot,TargetLocation)<=200 or TowerDistance<=800))
 	then
 		if(GetUnitToLocationDistance(target,EnemySpawnLocation)<DistanceTowerToEnemyHome-MaxDiveLength)	--This location is diving tower, do not make yourself in dangerous.
 		then
-			target = creeps[1]
-			targetHealth=target:GetHealth()
-			TargetLocation=GetSafeLocation(npcBot,target:GetLocation(),0)
+			return creeps[1];
 		end
 	end
-	
-	local MinDelta=150
-	local level=npcBot:GetLevel()
-	local health=npcBot:GetHealth()
-	if(level>=11 and health>=1500)
-	then
-		MinDelta=200
-		NoCreeps=false
+	return nil;
+end
+
+function UnitPushLaneThink(npcBot,lane)
+	if (npcBot:IsChanneling() or npcBot:IsUsingAbility() or npcBot:GetQueuedActionType(0) == BOT_ACTION_TYPE_USE_ABILITY) then
+		return;
 	end
+	
+	tryTP(npcBot,lane);								--use tp to push quickly
+
+	local team = GetTeam()
+	local front = GetLaneFrontLocation( team, lane, 0 )
+	local EnemyTower = GetNearestBuilding(GetOpposingTeam(), front)
+	local TowerDistance = GetUnitToUnitDistance(npcBot,EnemyTower)
+	
+	local creepsNearyTower = getCreepsNearTower(npcBot,EnemyTower);
+	local TargetLocation = getTargetLocation(npcBot,lane)		--Scatter station to avoid AOE
+	local CreepAttackTower = IsCreepAttackTower(creepsNearyTower,EnemyTower)
+	local Safe = IsSafe(npcBot,lane,creepsNearyTower);
+	local Nocreeps=isNocreeps(npcBot,lane)
+
+	
+	--print(getShortName(npcBot).."\tCreepAttackTower: "..tostring(CreepAttackTower).." Safe:"..tostring(Safe).." NoCreeps:"..tostring(Nocreeps))
+
+	local enemys = npcBot:GetNearbyHeroes(1000,true,BOT_MODE_NONE)
+	
+	local target=getMyTarget(npcBot,lane,TargetLocation)
+
+	if target~=nil then
+		TargetLocation=GetSafeLocation(npcBot,target:GetLocation(),0)
+	end
+	
+
+	local goodSituation=true;
+
+	if(npcBot:GetLevel()>=12 and npcBot:GetHealth()>=1500)
+	then
+		goodSituation=true;
+	elseif ((Safe==false or Nocreeps==true) and EnemyTower:GetHealth()/EnemyTower:GetMaxHealth()>=0.2)
+	then
+		goodSituation=false;
+	end
+
+	local MinDelta=200
 	
 	if(IsEnemyTooMany()) then
 		AssmbleWithAlly(npcBot)
-	elseif (Safe==false or NoCreeps==true) and EnemyTower:GetHealth()/EnemyTower:GetMaxHealth()>=0.2  then
+	elseif goodSituation==false then
 		StepBack( npcBot )
 	elseif npcBot:WasRecentlyDamagedByTower(1) then		--if I'm under attck of tower, then try to avoid attack
-	if((enemys~=nil and #enemys>=1) or not TransferHatred( npcBot ))
-	then
-		StepBack( npcBot )
-	end
+		if(not TransferHatred( npcBot ) or (enemys~=nil and #enemys>=1))
+		then
+			StepBack( npcBot )
+		end
 	elseif GetUnitToLocationDistance(npcBot,TargetLocation)>=MinDelta then
 		npcBot:Action_MoveToLocation(TargetLocation);
 	elseif target then
-		local damage = npcBot:GetAttackDamage()
-		local actualDamage = target:GetActualIncomingDamage(damage,DAMAGE_TYPE_PHYSICAL)
-		-- if actualDamage < targetHealth and actualDamage * 2 > targetHealth and target:WasRecentlyDamagedByCreep(2) then
-			-- npcBot:Action_ClearActions(true)
-		-- else
-			npcBot:Action_AttackUnit( target, true )
-			--npcBot:Action_AttackMove(TargetLocation);
-		--end
+		npcBot:Action_AttackUnit( target, true )
 	elseif TowerDistance <= 1200 then
-		if (IsCreepAttackTower) then
+		if (CreepAttackTower) then
 			npcBot:Action_AttackUnit( EnemyTower, false )
 		else
 			StepBack( npcBot )
@@ -313,6 +383,7 @@ end
 function GetSafeLocation(npcBot,BasicLocation,gamma)
 	local EnemyTeam = GetOpposingTeam()
 	local Allys = npcBot:GetNearbyHeroes(1600,false,BOT_MODE_NONE)
+	local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
 	local MyAttackRange=npcBot:GetAttackRange()
 	
 	local RangeConstant=175
@@ -357,7 +428,7 @@ function GetSafeLocation(npcBot,BasicLocation,gamma)
 	end
 	table.sort(ids)
 
-	if(MinDamageHeroID==npcBot:GetPlayerID() and #Allys>=3)
+	if(MinDamageHeroID==npcBot:GetPlayerID() and #Allys>=3 and #enemys~=0)
 	then
 		MyAttackRange=800
 	end
@@ -540,7 +611,29 @@ function AssmbleWithAlly(unit)
 	if not NotNilOrDead(unit) then
 		return
 	end
-	StepBack( unit )
+
+	local team = GetTeam()
+	local lane = GetLane(team,unit)
+	local MaxDesire=0;
+	local MaxDesireLane=lane;
+	local lanes={ LANE_TOP,LANE_MID,LANE_BOT };
+	for k,v in pairs(lanes) do
+		if(v~=lane) then
+			local desire=GetPushLaneDesire( v );
+			if(desire>MaxDesire) then
+				MaxDesire=desire;
+				MaxDesireLane=v;
+			end
+		end
+	end
+
+	local TPresult=tryTP(unit,MaxDesireLane)
+	if(TPresult==false)
+	then
+		StepBack( unit )
+	end
+
+	print(getCurrentFileName().." "..getShortName(unit).."'s enemy is too much, fall back. try tp "..tostring(TPresult) )
 end
 
 function StepBack( unit )
@@ -567,6 +660,10 @@ end
 function Normalized(vector)
 	local mod = ( vector.x ^ 2 + vector.y ^ 2 ) ^ 0.5
 	return Vector(vector.x / mod, vector.y / mod)
+end
+
+function getShortName( npcTarget )
+	return string.sub( string.gsub(npcTarget:GetUnitName(),"npc_dota_hero_",""), 1,8 ) 
 end
 
 function IsEnemyTooMany()
@@ -597,7 +694,6 @@ function IsEnemyTooMany()
 	
 	if(EnemyCount>AllyCount)
 	then
-		print(getCurrentFileName().." "..npcBot:GetUnitName().."'s enemy is too much, fall back")
 		return true
 	else
 		return false

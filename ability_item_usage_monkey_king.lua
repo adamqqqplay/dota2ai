@@ -6,7 +6,7 @@
 -- General Initialization
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
---require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 
 local debugmode=false
 local npcBot = GetBot()

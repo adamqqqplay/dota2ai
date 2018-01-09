@@ -25,9 +25,9 @@ local ItemsToBuy =
 	"item_branches",
 	"item_recipe_crimson_guard",	--赤红甲
 	
-	"item_ring_of_regen",
+	"item_ring_of_health",
 	"item_staff_of_wizardry",
-	"item_recipe_force_staff",		--推推
+	"item_recipe_force_staff",		--推推7.06
 	
 	"item_platemail",
 	"item_mystic_staff",

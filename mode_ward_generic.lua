@@ -41,7 +41,7 @@ function GetDesire()
 		AvailableSpots = wardUtils.GetAvailableSpot(bot);
 		targetLoc, targetDist = wardUtils.GetClosestSpot(bot, AvailableSpots);
 		if targetLoc ~= nil then
-			return RemapValClamped(targetDist, 6000, 0, BOT_MODE_DESIRE_MODERATE-0.1, BOT_MODE_DESIRE_HIGH-0.1);
+			return RemapValClamped(targetDist, 6000, 0, BOT_MODE_DESIRE_MODERATE-0.05, BOT_MODE_DESIRE_HIGH-0.05);
 		end
 	end
 	return BOT_MODE_DESIRE_NONE;

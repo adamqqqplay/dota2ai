@@ -92,7 +92,103 @@ end
 
 local CanCast={utility.NCanCast,utility.NCanCast,CanCast3,utility.UCanCast}
 
-Consider[1]=function()	--Target Ability Example
+function Consider1New()
+
+	local abilityNumber=1
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber];
+	
+	if not ability:IsFullyCastable() then
+		return BOT_ACTION_DESIRE_NONE, 0;
+	end
+	
+	local CastRange = ability:GetCastRange();
+	local Damage = ability:GetAbilityDamage();
+	local Radius = ability:GetAOERadius();
+	
+	local HeroHealth=10000
+	local CreepHealth=10000
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local creeps = npcBot:GetNearbyCreeps(1600,true)
+	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+
+	--try to kill enemy hero
+	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
+	then
+		if (WeakestEnemy~=nil)
+		then
+			if ( CanCast[abilityNumber]( WeakestEnemy ) )
+			then
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+				then
+					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetLocation(); 
+				end
+			end
+		end
+	end
+	--------------------------------------
+	-- Mode based usage
+	--------------------------------------
+	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+	then
+		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
+		if ( locationAoE.count >= 3 ) then
+			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+		end
+	end
+	
+	-- If we're farming and can kill 3+ creeps with LSA
+	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
+		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
+
+		if ( locationAoE.count >= 3 ) then
+			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+		end
+	end
+
+	-- If we're pushing or defending a lane and can hit 4+ creeps, go for it
+	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
+		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
+	then
+		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+
+		if ( locationAoE.count >= 4 ) 
+		then
+			return BOT_ACTION_DESIRE_LOW+0.01, locationAoE.targetloc;
+		end
+	end
+
+	-- If we're going after someone
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+	then
+		local npcTarget = npcBot:GetTarget();
+
+		if ( npcTarget ~= nil ) 
+		then
+			if ( CanCast[abilityNumber]( npcTarget ) )
+			then
+				return BOT_ACTION_DESIRE_MODERATE, npcTarget:GetLocation();
+			end
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE, 0;
+
+end
+
+function Consider1()	--Target Ability Example
 	local abilityNumber=1
 	--------------------------------------
 	-- Generic Variable Setting
@@ -109,9 +205,9 @@ Consider[1]=function()	--Target Ability Example
 	local HeroHealth=10000
 	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local enemys = npcBot:GetNearbyHeroes(math.min(CastRange+300,1600),true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+	local creeps = npcBot:GetNearbyCreeps(math.min(CastRange+300,1600),true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	local StrongestCreep,CreepHealth2=utility.GetStrongestUnit(creeps)
 	--------------------------------------
@@ -408,9 +504,17 @@ function AbilityUsageThink()
 		i=nil
 	end
 	
+	if(npcBot:HasScepter() or npcBot:HasModifier("modifier_item_ultimate_scepter"))
+	then
+		Consider[1]=Consider1New;
+	else
+		Consider[1]=Consider1;
+	end
+	
 	if(AbilitiesReal[4]:IsFullyCastable() and blink~=nil and blink:IsFullyCastable())
 	then
-		CastRange=CastRange+1200
+		local CastRange=1200+1000;
+		local Radius=AbilitiesReal[4]:GetAOERadius()
 		if(npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 		then
 			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
@@ -421,6 +525,7 @@ function AbilityUsageThink()
 			end
 		end
 	end
+	
 	
 	cast=ability_item_usage_generic.ConsiderAbility(AbilitiesReal,Consider)
 	---------------------------------debug--------------------------------------------

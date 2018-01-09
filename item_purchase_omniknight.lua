@@ -26,7 +26,7 @@ local ItemsToBuy =
 	
 	"item_ring_of_health",
 	"item_staff_of_wizardry",
-	"item_recipe_force_staff",		--推推
+	"item_recipe_force_staff",		--推推7.06
 	
 	"item_recipe_guardian_greaves",	--卫士胫甲
 	

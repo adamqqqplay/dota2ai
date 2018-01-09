@@ -8,7 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 
-local debugmode=false
+local debugmode=true
 local npcBot = GetBot()
 local Talents ={}
 local Abilities ={}
@@ -97,7 +97,8 @@ Consider[1]=function()
 	end
 	
 	local CastRange = ability:GetCastRange();
-	local Damage = ability:GetSpecialValueFloat("damage_per_second")*ability:GetSpecialValueFloat("max_channel_time")
+	local ChannelTime = ability:GetChannelTime();
+	local Damage = ability:GetSpecialValueFloat("damage_per_second")*ChannelTime;
 	local Radius = ability:GetAOERadius()
 	local CastPoint = ability:GetCastPoint();
 	
@@ -119,7 +120,7 @@ Consider[1]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
-					return BOT_ACTION_DESIRE_HIGH,npcBot:GetXUnitsTowardsLocation(WeakestEnemy:GetExtrapolatedLocation(CastPoint),300) ; 
+					return BOT_ACTION_DESIRE_HIGH,npcBot:GetXUnitsTowardsLocation(WeakestEnemy:GetExtrapolatedLocation(CastPoint),300); 
 				end
 			end
 		end
@@ -129,10 +130,10 @@ Consider[1]=function()
 	--------------------------------------
 	-- If we're farming and can kill 3+ creeps with LSA
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
-		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, 0 );
 
 		if ( locationAoE.count >= 3 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_LOW, npcBot:GetXUnitsTowardsLocation(locationAoE.targetloc,300);
 		end
 	end
 
@@ -143,9 +144,9 @@ Consider[1]=function()
 		then
 			if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and GetUnitToUnitDistance(npcBot,WeakestCreep)>=300)
 			then
-				local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
+				local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, Damage );
 				if ( locationAoE.count >= 1 ) then
-					return BOT_ACTION_DESIRE_LOW-0.02, locationAoE.targetloc;
+					return BOT_ACTION_DESIRE_LOW-0.02, npcBot:GetXUnitsTowardsLocation(locationAoE.targetloc,300);
 				end
 			end		
 		end
@@ -155,9 +156,9 @@ Consider[1]=function()
 	then
 		if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )
 		then
-			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, 0 );
 			if ( locationAoE.count >= 2 ) then
-				return BOT_ACTION_DESIRE_LOW-0.01, locationAoE.targetloc;
+				return BOT_ACTION_DESIRE_LOW-0.01, npcBot:GetXUnitsTowardsLocation(locationAoE.targetloc,300);
 			end
 		end
 	end
@@ -170,11 +171,11 @@ Consider[1]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
 	then
-		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, 0 );
 
 		if ( locationAoE.count >= 4 ) 
 		then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_LOW, npcBot:GetXUnitsTowardsLocation(locationAoE.targetloc,300);
 		end
 	end
 
@@ -184,9 +185,9 @@ Consider[1]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK) 
 	then
-		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, 0 );
 		if ( locationAoE.count >= 2 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_LOW, npcBot:GetXUnitsTowardsLocation(locationAoE.targetloc,300);
 		end
 	
 		local npcEnemy = npcBot:GetTarget();
@@ -195,7 +196,7 @@ Consider[1]=function()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) )
 			then
-				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation(CastPoint);
+				return BOT_ACTION_DESIRE_HIGH, npcBot:GetXUnitsTowardsLocation(npcEnemy:GetExtrapolatedLocation(CastPoint),300);
 			end
 		end
 	end
@@ -218,7 +219,8 @@ Consider[8]=function()
 	end
 	
 	local CastRange = ability:GetCastRange();
-	local Damage = ability:GetSpecialValueFloat("damage_per_second")*ability:GetSpecialValueFloat("max_channel_time")
+	local ChannelTime = ability:GetChannelTime();
+	local Damage = ability:GetSpecialValueFloat("damage_per_second")*ChannelTime;
 	local Radius = ability:GetAOERadius()
 	local CastPoint = ability:GetCastPoint();
 	
@@ -240,7 +242,7 @@ Consider[8]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetExtrapolatedLocation(CastPoint); 
+					return BOT_ACTION_DESIRE_HIGH,npcBot:GetXUnitsTowardsLocation(WeakestEnemy:GetExtrapolatedLocation(CastPoint),300); 
 				end
 			end
 		end
@@ -250,10 +252,10 @@ Consider[8]=function()
 	--------------------------------------
 	-- If we're farming and can kill 3+ creeps with LSA
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
-		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, 0 );
 
 		if ( locationAoE.count >= 3 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_LOW, npcBot:GetXUnitsTowardsLocation(locationAoE.targetloc,300);
 		end
 	end
 
@@ -264,9 +266,9 @@ Consider[8]=function()
 		then
 			if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and GetUnitToUnitDistance(npcBot,WeakestCreep)>=300)
 			then
-				local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
+				local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, Damage );
 				if ( locationAoE.count >= 1 ) then
-					return BOT_ACTION_DESIRE_LOW-0.02, locationAoE.targetloc;
+					return BOT_ACTION_DESIRE_LOW-0.02, npcBot:GetXUnitsTowardsLocation(locationAoE.targetloc,300);
 				end
 			end		
 		end
@@ -276,9 +278,9 @@ Consider[8]=function()
 	then
 		if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )
 		then
-			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, 0 );
 			if ( locationAoE.count >= 2 ) then
-				return BOT_ACTION_DESIRE_LOW-0.01, locationAoE.targetloc;
+				return BOT_ACTION_DESIRE_LOW-0.01, npcBot:GetXUnitsTowardsLocation(locationAoE.targetloc,300);
 			end
 		end
 	end
@@ -291,11 +293,11 @@ Consider[8]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
 	then
-		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, 0 );
 
 		if ( locationAoE.count >= 4 ) 
 		then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_LOW, npcBot:GetXUnitsTowardsLocation(locationAoE.targetloc,300);
 		end
 	end
 
@@ -305,9 +307,9 @@ Consider[8]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK) 
 	then
-		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, 0 );
 		if ( locationAoE.count >= 2 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_LOW, npcBot:GetXUnitsTowardsLocation(locationAoE.targetloc,300);
 		end
 	
 		local npcEnemy = npcBot:GetTarget();
@@ -316,7 +318,7 @@ Consider[8]=function()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) )
 			then
-				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation(CastPoint);
+				return BOT_ACTION_DESIRE_HIGH, npcBot:GetXUnitsTowardsLocation(npcEnemy:GetExtrapolatedLocation(CastPoint),300);
 			end
 		end
 	end

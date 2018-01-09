@@ -157,9 +157,11 @@ Consider[1]=function()
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROSHAN  ) 
 	then
 		local npcTarget = npcBot:GetAttackTarget();
-		if ( string.find(npcTarget:GetUnitName(), "roshan") and GetUnitToUnitDistance(npcBot,npcTarget)< 600 and wolves < 1)
+		if npcTarget~=nil 
 		then
-			return BOT_ACTION_DESIRE_LOW;
+			if string.find(npcTarget:GetUnitName(), "roshan") and GetUnitToUnitDistance(npcBot,npcTarget)< 600 and wolves < 1 then
+				return BOT_ACTION_DESIRE_LOW;
+			end
 		end
 	end
 	
@@ -229,9 +231,11 @@ Consider[2]=function()
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROSHAN  ) 
 	then
 		local npcTarget = npcBot:GetAttackTarget();
-		if ( string.find(npcTarget:GetUnitName(), "roshan") and GetUnitToUnitDistance(npcBot,npcTarget)< 600 )
+		if npcTarget~=nil 
 		then
-			return BOT_ACTION_DESIRE_LOW;
+			if string.find(npcTarget:GetUnitName(), "roshan") and GetUnitToUnitDistance(npcBot,npcTarget)< 600  then
+				return BOT_ACTION_DESIRE_LOW;
+			end
 		end
 	end
 	

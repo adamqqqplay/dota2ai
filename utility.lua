@@ -342,7 +342,7 @@ function utilityModule.SellExtraItem(ItemsToBuy)
 	
 	if(utilityModule.IsItemSlotsFull())
 	then
-		if(GameTime()>15*60 or level>=7)
+		if(GameTime()>20*60 or level>=7)
 		then
 			utilityModule.SellSpecifiedItem("item_faerie_fire")
 			utilityModule.SellSpecifiedItem("item_enchanted_mango")
@@ -350,7 +350,7 @@ function utilityModule.SellExtraItem(ItemsToBuy)
 			utilityModule.SellSpecifiedItem("item_clarity")
 			utilityModule.SellSpecifiedItem("item_flask")
 		end
-		if(GameTime()>20*60 or level>=10)
+		if(GameTime()>25*60 or level>=10)
 		then
 			utilityModule.SellSpecifiedItem("item_stout_shield")
 			utilityModule.SellSpecifiedItem("item_orb_of_venom")
@@ -358,7 +358,7 @@ function utilityModule.SellExtraItem(ItemsToBuy)
 			utilityModule.SellSpecifiedItem("item_quelling_blade")
 			utilityModule.SellSpecifiedItem("item_soul_ring")
 		end
-		if(GameTime()>30*60 or level>=15)
+		if(GameTime()>35*60 or level>=15)
 		then
 			utilityModule.SellSpecifiedItem("item_branches")
 			utilityModule.SellSpecifiedItem("item_bottle")
@@ -367,17 +367,14 @@ function utilityModule.SellExtraItem(ItemsToBuy)
 			utilityModule.SellSpecifiedItem("item_ancient_janggo")
 			utilityModule.SellSpecifiedItem("item_ring_of_basilius")
 			utilityModule.SellSpecifiedItem("item_ring_of_aquila")
-			utilityModule.SellSpecifiedItem("item_vladmir")
 		end
-		if(GameTime()>35*60 or level>=20)
+		if(GameTime()>40*60 or level>=20)
 		then
+			utilityModule.SellSpecifiedItem("item_vladmir")
 			utilityModule.SellSpecifiedItem("item_urn_of_shadows")
 			utilityModule.SellSpecifiedItem("item_drums_of_endurance")
 			utilityModule.SellSpecifiedItem("item_hand_of_midas")
-			if(utilityModule.GetItemSlotsCount()<6)
-			then
-				utilityModule.SellSpecifiedItem("item_dust")
-			end
+			utilityModule.SellSpecifiedItem("item_dust")
 		end
 		if(GameTime()>40*60 and npcBot:GetGold()>2200 and (item_travel_boots[1]==nil and item_travel_boots[2]==nil) and npcBot.HaveTravelBoots~=true )
 		then
@@ -830,7 +827,7 @@ function utilityModule.BuySupportItem()
 		hasInvisibleEnemy=utilityModule.CheckInvisibleEnemy()
 	end
 	
-	if(utilityModule.GetItemSlotsCount()<6)
+	if(utilityModule.GetItemSlotsCount()<7)
 	then
 		local item_ward_observer = utilityModule.GetItemIncludeBackpack( "item_ward_observer" );
 		local item_ward_sentry2 = utilityModule.GetItemIncludeBackpack( "item_ward_dispenser" )

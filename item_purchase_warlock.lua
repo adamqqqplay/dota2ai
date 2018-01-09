@@ -21,7 +21,7 @@ local ItemsToBuy =
 	
 	"item_ring_of_health",
 	"item_staff_of_wizardry",
-	"item_recipe_force_staff",		--推推
+	"item_recipe_force_staff",		--推推7.06
 	
 	"item_point_booster",
 	"item_staff_of_wizardry",

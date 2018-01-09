@@ -219,16 +219,16 @@ Consider[1]=function()
 			end
 		end
 		
-		if (#creeps >= 3 and #enemys<=1) 
-		then
-			if (ManaPercentage>0.7 or npcBot:GetMana()>ComboMana )
-			then
-					if ( CanCast[abilityNumber]( creeps[1] )and GetUnitToUnitDistance(npcBot,creeps[1])< CastRange + 75*#allys )
-					then
-						return BOT_ACTION_DESIRE_LOW, creeps[1];
-					end
-			end
-		end
+		-- if (#creeps >= 3 and #enemys<=1) 
+		-- then
+			-- if (ManaPercentage>0.7 or npcBot:GetMana()>ComboMana )
+			-- then
+					-- if ( CanCast[abilityNumber]( creeps[1] )and GetUnitToUnitDistance(npcBot,creeps[1])< CastRange + 75*#allys )
+					-- then
+						-- return BOT_ACTION_DESIRE_LOW, creeps[1];
+					-- end
+			-- end
+		-- end
 	end
 	
 	-- If we're going after someone

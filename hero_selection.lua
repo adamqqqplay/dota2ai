@@ -501,19 +501,29 @@ function Think()
 	end
 end
 
-
+local pickTime=GameTime();
+local randomTime=0;
 function AllPickLogic()
 	if(debug_mode==false)
 	then
-		if(GameTime()<50 and IsHumanPlayerReady()==false or GameTime()<20)
+		if(GameTime()<40 and IsHumanPlayerReady()==false or GameTime()<15)
 		then
 			return
 		end
+
 		for i,id in pairs(GetTeamPlayers(GetTeam()))
 		do
 			if(IsPlayerInHeroSelectionControl(id) and IsPlayerBot(id) and (GetSelectedHeroName(id)=="" or GetSelectedHeroName(id)==nil))
 			then
-			
+				if(randomTime==0) then
+					randomTime=RandomInt(3,10);
+				end
+				while (GameTime()-pickTime)<randomTime do
+					return;
+				end
+				pickTime=GameTime();
+				randomTime=0;
+				
 				local picks = GetPicks();
 				local selectedHeroes = {};
 				for slot, hero in pairs(picks) do
@@ -540,6 +550,7 @@ function AllPickLogic()
 				end
 				
 				SelectHero( id,temphero)
+				
 			end
 		end
 	else

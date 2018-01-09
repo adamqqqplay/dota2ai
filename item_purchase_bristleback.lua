@@ -40,10 +40,9 @@ local ItemsToBuy =
 	"item_energy_booster",
 	"item_mystic_staff",			--玲珑心
 	
-	"item_point_booster",		
-	"item_staff_of_wizardry",
-	"item_ogre_axe",
-	"item_blade_of_alacrity",		--蓝杖
+	"item_platemail",
+	"item_mystic_staff",
+	"item_recipe_shivas_guard" ,	--希瓦
 	
 	"item_vitality_booster",
 	"item_vitality_booster",		
