@@ -38,9 +38,9 @@ local ItemsToBuy =
 	"item_hyperstone",
 	"item_recipe_mjollnir",			--大雷锤
 	
-	"item_demon_edge",
+	"item_hyperstone",
 	"item_javelin",
-	"item_javelin",					--金箍棒
+	"item_javelin",					--金箍棒7.07
 	
 }
 

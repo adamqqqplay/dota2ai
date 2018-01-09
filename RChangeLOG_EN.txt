@@ -167,3 +167,18 @@ v1.4 (2018.1.1)
 2. Update all heroes talents and abilities building to fit the latest version.
 3. To commemorate the famous professional player, the AI will now use professional player name of TI's history.
 4. Several bug fixes.
+v1.4b (2018.1.8)
+1.Overall improved push system, the game process will be greatly accelerated. AI will be based on the positioning of the hero to push or farm, but also the push timing has been delayed.
+2.Improve the use of courier, players will now use the courier priority. (Thanks BOT EXPERIMENT author Arizona Fauzie, I used some of his code)
+3.Added 7.07 new item usage.
+4.Adjust the warding desire, there will be more time warding.
+5.Adjust the hero selection phase, now the team will not be able to continuously select five heroes.
+6.Improve the item building system to prevent the equipment synthesis failed.
+7.Improve the use of Sven¡¯s storm bolt, and now he will rarely use a storm_bolt to clean the creeps.
+8.Improve the use of Keep of the light¡¯s illuminate, and now he will predict enemy¡¯s position.
+9.Fixed some heroes who use the wrong recipes of Force Staff and Monkey King Bar.
+10.Fixed Zeus does not use the lightning chain to farm.
+11.Fixed Tide Hunter does not use the ultimate ability.
+12.Fixed Monkey King does not upgrade the skills.
+13.Fixed some ability bugs of Winter Wyvern, Lycan, Ancient Apparition and Arc Warden.
+14.Fixed some heroes will interrupt casting in sometimes.

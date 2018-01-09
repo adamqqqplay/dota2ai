@@ -7,8 +7,9 @@ local IsChanneling=false
 
 function GetDesire()
 	local npcBot = GetBot();
-	local ability = npcBot:GetAbilityByName("keeper_of_the_light_illuminate")
-	if((npcBot:IsUsingAbility() and npcBot:GetActiveMode() ~= BOT_MODE_WARD ) or npcBot:IsChanneling())
+	--local ability = npcBot:GetAbilityByName("keeper_of_the_light_illuminate")
+	local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
+	if((npcBot:IsUsingAbility() and npcBot:GetActiveMode() ~= BOT_MODE_WARD ) or npcBot:IsChanneling()) and enemys~=nil and #enemys>0
 	then
 		IsChanneling=true
 		return 0.99

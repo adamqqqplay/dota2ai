@@ -608,7 +608,7 @@ Consider[4]=function()
 	
 end
 
-Consider[5]=function_r()
+function Consider5_r()
 
 	local abilityNumber=5
 	--------------------------------------

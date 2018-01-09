@@ -148,7 +148,7 @@ local function GetComboDamage()
 	
 	return sum
 	
-	return npcBot:GetOffensivePower()
+	--return npcBot:GetOffensivePower()
 end
 
 local function GetComboMana()
