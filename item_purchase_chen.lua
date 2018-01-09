@@ -20,7 +20,7 @@ local ItemsToBuy =
 	"item_recipe_headdress",
 	"item_branches",
 	"item_gloves",
-	"item_recipe_helm_of_the_dominator",	--支配
+	"item_ring_of_health",			--支配new
 	
 	"item_ring_of_regen",
 	"item_recipe_headdress",

@@ -5,6 +5,10 @@
 --------------------------------------
 -- General Initialization
 --------------------------------------
+if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot():GetUnitName(), "hero") or  GetBot():IsIllusion() then
+	return;
+end
+
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 

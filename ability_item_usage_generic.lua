@@ -6,6 +6,7 @@
 _G._savedEnv = getfenv()
 module( "ability_item_usage_generic", package.seeall )
 local utility = require( GetScriptDirectory().."/utility" ) 
+local role = require(GetScriptDirectory() ..  "/RoleUtility")
 ----------
 function PrintCourierState(state)
 	if state == 0 then
@@ -31,6 +32,9 @@ GetBot().SShopUser = false;
 local returnTime = -90;
 local apiAvailable = false;
 function CourierUsageThink()
+	ConsiderGlyph()
+	UnImplementedItemUsage()
+	
 	local npcBot=GetBot();
 	if GetGameMode() == 23 or npcBot:IsInvulnerable() or not npcBot:IsHero() or npcBot:IsIllusion() or npcBot:HasModifier("modifier_arc_warden_tempest_double") or GetNumCouriers() == 0 then
 		return;
@@ -550,7 +554,19 @@ function GetItemCount(unit, item_name)
 	return count;
 end
 
+function CanSwitchPTStat(pt)
+	if npcBot:GetPrimaryAttribute() == ATTRIBUTE_STRENGTH and pt:GetPowerTreadsStat() ~= ATTRIBUTE_STRENGTH then
+		return true;
+	elseif npcBot:GetPrimaryAttribute() == ATTRIBUTE_AGILITY  and pt:GetPowerTreadsStat() ~= ATTRIBUTE_INTELLECT then
+		return true;
+	elseif npcBot:GetPrimaryAttribute() == ATTRIBUTE_INTELLECT and pt:GetPowerTreadsStat() ~= ATTRIBUTE_AGILITY then
+		return true;
+	end 
+	return false;
+end
+
 --npcBot EXPER's code
+local giveTime = -90;
 function UnImplementedItemUsage()
 	local npcBot=GetBot()
 	if npcBot:IsChanneling() or npcBot:IsUsingAbility() or npcBot:IsInvisible() or npcBot:IsMuted( )  then
@@ -560,14 +576,49 @@ function UnImplementedItemUsage()
 	
 	local npcTarget = npcBot:GetTarget();
 	
-	local itg=IsItemAvailable("item_tango");
-	if(giveTime==nil)
-	then
-		giveTime=DotaTime()
+	local pt = IsItemAvailable("item_power_treads");
+	if pt~=nil and pt:IsFullyCastable() then
+		if mode == BOT_MODE_RETREAT and pt:GetPowerTreadsStat() ~= ATTRIBUTE_STRENGTH and npcBot:WasRecentlyDamagedByAnyHero(5.0) then
+			npcBot:Action_UseAbility(pt);
+			return
+		elseif mode == BOT_MODE_ATTACK and CanSwitchPTStat(pt) then
+			npcBot:Action_UseAbility(pt);
+			return
+		else
+			local enemies = npcBot:GetNearbyHeroes( 1300, true, BOT_MODE_NONE );
+			if #enemies == 0 and  mode ~= BOT_MODE_RETREAT and CanSwitchPTStat(pt)  then
+				npcBot:Action_UseAbility(pt);
+				return
+			end
+		end
 	end
+
+	local bas = IsItemAvailable("item_ring_of_basilius");
+	if bas~=nil and bas:IsFullyCastable() then
+		if mode == BOT_MODE_LANING and not bas:GetToggleState() then
+			npcBot:Action_UseAbility(bas);
+			return
+		elseif mode ~= BOT_MODE_LANING and bas:GetToggleState() then
+			npcBot:Action_UseAbility(bas);
+			return
+		end
+	end
+	
+	local aq = IsItemAvailable("item_ring_of_aquila");
+	if aq~=nil and aq:IsFullyCastable() then
+		if mode == BOT_MODE_LANING and not aq:GetToggleState() then
+			npcBot:Action_UseAbility(aq);
+			return
+		elseif mode ~= BOT_MODE_LANING and aq:GetToggleState() then
+			npcBot:Action_UseAbility(aq);
+			return
+		end
+	end
+
+	local itg=IsItemAvailable("item_tango");
 	if itg~=nil and itg:IsFullyCastable() then
 		local tCharge = itg:GetCurrentCharges()
-		if DotaTime() > -80 and DotaTime() < 0 and npcBot:DistanceFromFountain() == 0 
+		if DotaTime() > -80 and DotaTime() < 0 and npcBot:DistanceFromFountain() <=100 and role.CanBeSupport(npcBot:GetUnitName())
 		   and npcBot:GetAssignedLane() ~= LANE_MID and tCharge > 3 and DotaTime() > giveTime + 2.0 then
 			local target = GiveToMidLaner()
 			if target ~= nil then
@@ -579,7 +630,7 @@ function UnImplementedItemUsage()
 				giveTime = DotaTime();
 				return;
 			end
-		elseif npcBot:GetActiveMode() == BOT_MODE_LANING  and tCharge > 1 and DotaTime() > giveTime + 2.0 then
+		elseif npcBot:GetActiveMode() == BOT_MODE_LANING and role.CanBeSupport(npcBot:GetUnitName()) and tCharge > 1 and DotaTime() > giveTime + 2.0 then
 			local allies = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
 			for _,ally in pairs(allies)
 			do

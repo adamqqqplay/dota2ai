@@ -687,7 +687,6 @@ end
 
 function utilityModule.IsItemSlotsFull()
 	local itemCount = utilityModule.GetItemSlotsCount();
-	
 	if(itemCount>=8)
 	then
 		return true

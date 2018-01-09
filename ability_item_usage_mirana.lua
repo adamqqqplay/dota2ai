@@ -234,9 +234,12 @@ Consider[2]=function()
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROSHAN  ) 
 	then
 		local npcTarget = npcBot:GetAttackTarget();
-		if ( npcTarget:IsRoshan() and CanCast[abilityNumber](npcTarget) and GetUnitToUnitDistance(npcBot,npcTarget)<nCastRange)
+		if(npcTarget~= nil)
 		then
-			return BOT_ACTION_DESIRE_LOW, npcTarget:GetLocation();
+			if ( npcTarget:IsRoshan() and CanCast[abilityNumber](npcTarget) and GetUnitToUnitDistance(npcBot,npcTarget)<nCastRange)
+			then
+				return BOT_ACTION_DESIRE_LOW, npcTarget:GetLocation();
+			end
 		end
 	end
 	
