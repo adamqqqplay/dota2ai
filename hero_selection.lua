@@ -24,7 +24,7 @@ hero_pool={"npc_dota_hero_abaddon",
 		"npc_dota_hero_chaos_knight",
 		"npc_dota_hero_chen",
 		"npc_dota_hero_clinkz",
-		"npc_dota_hero_rattletrap",
+		"npc_dota_hero_rattletrap", -- Clockwerk
 		"npc_dota_hero_crystal_maiden",
 		"npc_dota_hero_dark_seer",
 		"npc_dota_hero_dazzle",
@@ -64,14 +64,14 @@ hero_pool={"npc_dota_hero_abaddon",
 		"npc_dota_hero_morphling",
 		"npc_dota_hero_monkey_king",
 		"npc_dota_hero_naga_siren",
-		"npc_dota_hero_furion",
+		"npc_dota_hero_furion", -- Natures prophet
 		"npc_dota_hero_necrolyte",
 		"npc_dota_hero_night_stalker",
 		"npc_dota_hero_nyx_assassin",
 		"npc_dota_hero_ogre_magi",
 		"npc_dota_hero_omniknight",
 		"npc_dota_hero_oracle",
-		"npc_dota_hero_obsidian_destroyer",
+		"npc_dota_hero_obsidian_destroyer", -- Outworld Devourer
 		"npc_dota_hero_phantom_assassin",
 		"npc_dota_hero_phantom_lancer",
 		"npc_dota_hero_phoenix",
@@ -118,7 +118,7 @@ hero_pool={"npc_dota_hero_abaddon",
 		"npc_dota_hero_witch_doctor",
 		"npc_dota_hero_skeleton_king",
 		"npc_dota_hero_zuus"}                --记录英雄池
-		
+
 hero_pool_test={
         "npc_dota_hero_axe",
         "npc_dota_hero_bane",
@@ -383,7 +383,7 @@ allBotHeroes={
 		"npc_dota_hero_pudge",
 		"npc_dota_hero_sand_king",
 }
-hero_pool_1={
+hero_pool_position_1 ={
 	"npc_dota_hero_chaos_knight",
 	"npc_dota_hero_phantom_assassin",
 	"npc_dota_hero_skeleton_king",
@@ -402,7 +402,7 @@ hero_pool_1={
 	"npc_dota_hero_lycan",
 	"npc_dota_hero_monkey_king",
 }
-hero_pool_2={
+hero_pool_position_2 ={
 	"npc_dota_hero_zuus",
 	"npc_dota_hero_lina",
 	--"npc_dota_hero_ember_spirit",
@@ -417,7 +417,7 @@ hero_pool_2={
 	"npc_dota_hero_arc_warden",
 	"npc_dota_hero_medusa",
 }
-hero_pool_3={
+hero_pool_position_3 ={
 	"npc_dota_hero_huskar",
 	"npc_dota_hero_centaur",
 	"npc_dota_hero_doom_bringer",
@@ -445,7 +445,7 @@ hero_pool_3={
 	"npc_dota_hero_magnataur",
 	"npc_dota_hero_mirana",
 }
-hero_pool_4={
+hero_pool_position_4 ={
 	"npc_dota_hero_skywrath_mage",
 	"npc_dota_hero_shadow_shaman",
 	"npc_dota_hero_venomancer",
@@ -462,7 +462,7 @@ hero_pool_4={
 	"npc_dota_hero_pudge",
 	"npc_dota_hero_sand_king",
 }
-hero_pool_5={
+hero_pool_position_5 ={
 	"npc_dota_hero_ogre_magi",
 	"npc_dota_hero_crystal_maiden",
 	"npc_dota_hero_lion",
@@ -480,16 +480,31 @@ hero_pool_5={
 	"npc_dota_hero_earth_spirit",
 	"npc_dota_hero_keeper_of_the_light",
 }
-hero_pool_new={hero_pool_2,hero_pool_1,hero_pool_4,hero_pool_5,hero_pool_3}
+-- This is the pool of heros from which to choose bots for each position
+hero_pool_new={
+    [1] = hero_pool_position_1,
+    [2] = hero_pool_position_2,
+    [3] = hero_pool_position_3,
+    [4] = hero_pool_position_4,
+    [5] = hero_pool_position_5
+}
+-- This is the pool of other heros in each position, which dont have bots yet. This is so we can tell which positions the players are in.
+other_hero_pool_new={
+    [1] = {"npc_dota_hero_morphling","npc_dota_hero_naga_siren","npc_dota_hero_phantom_lancer","npc_dota_hero_terrorblade","npc_dota_hero_troll_warlord"},
+    [2] = {"npc_dota_hero_invoker","npc_dota_hero_meepo","npc_dota_hero_obsidian_destroyer","npc_dota_hero_puck","npc_dota_hero_storm_spirit","npc_dota_hero_templar_assassin","npc_dota_hero_tinker"},
+    [3] = {"npc_dota_hero_rattletrap","npc_dota_hero_lone_druid","npc_dota_hero_furion","npc_dota_hero_techies","npc_dota_hero_tusk","npc_dota_hero_weaver","npc_dota_hero_pangolier"},
+    [4] = {"npc_dota_hero_nyx_assassin","npc_dota_hero_phoenix"},
+    [5] = {"npc_dota_hero_wisp","npc_dota_hero_rubick","npc_dota_hero_shadow_demon","npc_dota_hero_visage","npc_dota_hero_dark_willow"}
+}
 ----------------------------------------------------------------------------------------------------
 local debug_mode=false
+local use_my_pool = false
 
 function GetBotNames()
 	return bnUtil.GetDota2Team();
 end
 
 function Think()
-
 	if GetGameMode() == GAMEMODE_AP then
 		AllPickLogic();
 	elseif GetGameMode() == GAMEMODE_CM then
@@ -504,14 +519,21 @@ end
 local pickTime=GameTime();
 local randomTime=0;
 function AllPickLogic()
-	if(debug_mode==false)
+    local picks = GetPicks();
+    local selectedHeroes = {};
+    for slot, hero in pairs(picks) do
+        selectedHeroes[hero] = true;
+    end
+
+    local team = GetTeam();
+    if(debug_mode==false)
 	then
-		if(GameTime()<40 and IsHumanPlayerReady()==false or GameTime()<15)
+		if(GameTime()<40 and AreHumanPlayersReady(team)==false or GameTime()<15)
 		then
 			return
 		end
 
-		for i,id in pairs(GetTeamPlayers(GetTeam()))
+		for i,id in pairs(GetTeamPlayers(team))
 		do
 			if(IsPlayerInHeroSelectionControl(id) and IsPlayerBot(id) and (GetSelectedHeroName(id)=="" or GetSelectedHeroName(id)==nil))
 			then
@@ -524,53 +546,38 @@ function AllPickLogic()
 				pickTime=GameTime();
 				randomTime=0;
 				
-				local picks = GetPicks();
-				local selectedHeroes = {};
-				for slot, hero in pairs(picks) do
-					selectedHeroes[hero] = true;
-				end
-				
-				local number
-				local temphero
-				for j=1,#hero_pool_new[i],1
-				do
-					number=RandomInt(1,#hero_pool_new[i])
-					temphero=hero_pool_new[i][number]
-					if(selectedHeroes[temphero] == true)
-					then
-						table.remove(hero_pool_new[i],number)
-					else
-						break
-					end
-				end
-				
-				if(selectedHeroes[temphero] == true)
-				then
-					temphero=GetRandomHero()
-				end
-				
-				SelectHero( id,temphero)
-				
+                local temphero;
+                if(use_my_pool and #hero_pool_my > 0)
+                then
+                    temphero = GetMyPoolHero(selectedHeroes);
+                end
+
+                if(temphero == nil)
+                then
+                    temphero = GetPositionedHero(team, selectedHeroes);
+                end
+
+                SelectHero(id, temphero);
 			end
 		end
 	else
-		if(GameTime()<45 and IsHumanPlayerReady()==false)
+		if(GameTime()<45 and AreHumanPlayersReady(team)==false)
 		then
 			return
 		end
-		for i,id in pairs(GetTeamPlayers(GetTeam()))
+		for i,id in pairs(GetTeamPlayers(team))
 		do
 			if(IsPlayerInHeroSelectionControl(id) and IsPlayerBot(id) and (GetSelectedHeroName(id)=="" or GetSelectedHeroName(id)==nil))
 			then
-				PickHero(id)
+				PickHero(id, selectedHeroes)
 			end
 		end
 	end
 end
 
 ----------------------------------------------------------------------------------------------------
-function PickHero(iPlayerNumber)
-	SelectHero( iPlayerNumber,GetRandomHero())
+function PickHero(iPlayerNumber, selectedHeroes)
+	SelectHero(iPlayerNumber,GetRandomHero(hero_pool_test, selectedHeroes))
 	return
 end
 
@@ -589,38 +596,76 @@ function GetPicks()
     return selectedHeroes;
 end
 
-function GetRandomHero()
-    local hero;
-    local picks = GetPicks();
-	local selectedHeroes = {};
-	for slot, hero in pairs(picks) do
-		selectedHeroes[hero] = true;
-	end
-	
-	if(#hero_pool_my >0 )
-	then
-		hero = hero_pool_my[1]
-		while(selectedHeroes[hero] == true) do
-			table.remove(hero_pool_my,1)
-			hero = hero_pool_my[1]
-		end
-	end
-	
-    if (hero == nil) then
-        hero = hero_pool_test[RandomInt(1, #hero_pool_test)]
+-- Returns a Hero that fills a position that current team does not have filled.
+function GetPositionedHero(team, selectedHeroes)
+    -- The object is to fill positions in this order: 3, 4, 2, 5, 1
+    local order = {3, 4, 2, 5, 1};
+    local positionCounts = GetPositionCounts( team );
+
+    for i,position in ipairs( order ) do
+        if( positionCounts[position] == 0 ) then
+            return GetRandomHero( hero_pool_new[position], selectedHeroes );
+        end
+    end
+end
+
+-- For the given team, returns a table that gives the counts of heros in each position.
+function GetPositionCounts( team )
+    local counts = { [1]=0, [2]=0, [3]=0, [4]=0, [5]=0 };
+    local playerIds=GetTeamPlayers(team);
+
+    for i,id in ipairs(playerIds) do
+        local heroName = GetSelectedHeroName(id)
+        if (heroName ~="") then
+            for position=1,5,1 do
+                if( ListContains( hero_pool_new[position], heroName ) or ListContains( other_hero_pool_new[position], heroName ) ) then
+                    counts[position] = counts[position] + 1;
+                end
+            end
+        end
     end
 
+    return counts
+end
+
+-- A utilitiy function that returns true if the passed list contains the passed value.
+function ListContains( list, value )
+    if list == nil then return false end
+    for i,v in ipairs(list) do
+        if v == value then
+            return true
+        end
+    end
+    return false
+end
+
+-- Returns a hero from the hero_pool_my pool
+function GetMyPoolHero(selectedHeroes)
+    -- Step through the "MyHeros" pool allocating them in order. This function will error if the pool is too small, but it's not for general use.
+    local hero = hero_pool_my[1]
+    while(selectedHeroes[hero] == true) do
+        table.remove(hero_pool_my,1)
+        hero = hero_pool_my[1]
+    end
+    return hero;
+end
+
+-- Returns a random hero from the supplied heroPool that is not in the selectedHeroes list.
+-- Note: this function will enter an infinite loop if all heros in the pool have been selected.
+function GetRandomHero(heroPool, selectedHeroes)
+    local hero = heroPool[RandomInt(1, #heroPool)]
+
     while ( selectedHeroes[hero] == true ) do
-        --print("repicking because " .. hero .. " was taken.")
-        hero = hero_pool_test[RandomInt(1, #hero_pool_test)]
+        hero = heroPool[RandomInt(1, #heroPool)]
     end
 
     return hero;
 end
 
-function IsHumanPlayerReady()
+-- Returns true if, for the specified team, all the Human players have picked a hero.
+function AreHumanPlayersReady(team)
 	local number,playernumber=0,0
-	local IDs=GetTeamPlayers(GetTeam());
+	local IDs=GetTeamPlayers(team);
 	for i,id in pairs(IDs)
 	do
         if(IsPlayerBot(id)==false)
