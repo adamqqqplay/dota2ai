@@ -182,3 +182,6 @@ v1.4b (2018.1.8)
 12.Fixed Monkey King does not upgrade the skills.
 13.Fixed some ability bugs of Winter Wyvern, Lycan, Ancient Apparition and Arc Warden.
 14.Fixed some heroes will interrupt casting in sometimes.
+v1.4c (2018.2.28)
+1.Improve the lineup selection, now AI will consider the player's heroic position to build a team with one hero in each position.  (This change is done by DblTap, thanks for his effort! His Steam link: http://steamcommunity.com/profiles/76561197967823929/ Github link: https://github.com/adamqqqplay/dota2ai/pull/3)
+2.Fixed some bugs.

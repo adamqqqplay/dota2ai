@@ -934,7 +934,7 @@ function UnImplementedItemUsage()
 	local ggr=IsItemAvailable("item_guardian_greaves");
 	if ggr~=nil and ggr:IsFullyCastable() then
 		local allys = npcBot:GetNearbyHeroes( 900, false, BOT_MODE_NONE );
-		local factor
+		local factor=0
 
 		for k,v in pairs(allys) do
 			local allyFactor=(2-v:GetMana()/v:GetMaxMana()-v:GetHealth()/v:GetMaxHealth())*0.5
