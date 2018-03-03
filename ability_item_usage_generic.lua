@@ -555,6 +555,7 @@ function GetItemCount(unit, item_name)
 end
 
 function CanSwitchPTStat(pt)
+	local npcBot=GetBot()
 	if npcBot:GetPrimaryAttribute() == ATTRIBUTE_STRENGTH and pt:GetPowerTreadsStat() ~= ATTRIBUTE_STRENGTH then
 		return true;
 	elseif npcBot:GetPrimaryAttribute() == ATTRIBUTE_AGILITY  and pt:GetPowerTreadsStat() ~= ATTRIBUTE_INTELLECT then

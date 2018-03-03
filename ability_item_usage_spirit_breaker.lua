@@ -71,8 +71,12 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={CanCast1,utility.NCanCast,utility.NCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
+
+function CanCast1( npcEnemy )
+	return utility.NCanCast(npcEnemy) and (npcEnemy:DistanceFromFountain()>=4000 or DotaTime()>=30*60)
+end
 
 function GetComboDamage()
 	return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
@@ -113,7 +117,7 @@ Consider[1]=function()
 	then
 		for _,npcEnemy in pairs( enemys )
 		do
-			if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy )) 
+			if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy ) ) 
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy
 			end
@@ -149,7 +153,7 @@ Consider[1]=function()
 				if(#enemys3==1)
 				then
 					local npcEnemy=enemys3[1]
-					if(npcBot:GetHealth()<npcEnemy:GetEstimatedDamageToTarget(true,npcBot,5.0,DAMAGE_TYPE_ALL))
+					if(npcBot:GetHealth()<npcEnemy:GetEstimatedDamageToTarget(true,npcBot,5.0,DAMAGE_TYPE_ALL) and CanCast[abilityNumber]( npcEnemy ))
 					then
 						return BOT_ACTION_DESIRE_HIGH+0.1,npcEnemy;
 					end
@@ -170,7 +174,7 @@ Consider[1]=function()
 						end
 					end
 
-					if(npcEnemy:GetHealth()<sumdamage*1.25 or npcEnemy:GetHealth()/npcEnemy:GetMaxHealth()<=0.6)
+					if(npcEnemy:GetHealth()<sumdamage*1.25 or npcEnemy:GetHealth()/npcEnemy:GetMaxHealth()<=0.6) and CanCast[abilityNumber]( npcEnemy )
 					then
 						return BOT_ACTION_DESIRE_HIGH+0.1,npcEnemy;
 					end
@@ -194,7 +198,7 @@ Consider[1]=function()
 						sumdamage=sumdamage+npcAlly:GetEstimatedDamageToTarget(true,npcEnemy,4.0,DAMAGE_TYPE_ALL)
 					end
 				end
-				if(npcEnemy:GetHealth()*1.1<=sumdamage)
+				if(npcEnemy:GetHealth()*1.1<=sumdamage and CanCast[abilityNumber]( npcEnemy ))
 				then
 					return BOT_ACTION_DESIRE_HIGH+0.12,npcEnemy;
 				end

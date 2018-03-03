@@ -3,6 +3,8 @@
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
+local utility = require( GetScriptDirectory().."/utility" ) 
+
 function Think()
 	local npcBot = GetBot();
 	if(npcBot:HasModifier("modifier_spirit_breaker_charge_of_darkness")==false)

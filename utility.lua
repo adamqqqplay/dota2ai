@@ -401,6 +401,11 @@ function utilityModule.ItemPurchase(ItemsToBuy)
 
 	local npcBot = GetBot();
 	
+	if(DotaTime()<=-89)
+	then
+		return;
+	end
+
 	-- buy item_tpscroll
 	if(npcBot.secretShopMode~=true or npcBot:GetGold() >= 100)
 	then

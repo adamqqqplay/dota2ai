@@ -25,6 +25,11 @@ function GetDesire()
 		print(tostring(pg.location));
 	end]]--
 
+	if(DotaTime()<=-45)
+	then
+		return BOT_MODE_DESIRE_NONE;
+	end
+
 	if bot:IsChanneling() or bot:IsIllusion() or bot:IsInvulnerable() or not bot:IsHero() or not IsSuitableToWard() 
 	   or bot:GetCurrentActionType() == BOT_ACTION_TYPE_IDLE 
 	then

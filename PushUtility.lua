@@ -163,7 +163,7 @@ function getTargetLocation(npcBot,lane)
 		-- if(lane==LANE_MID) then
 		-- 	gamma=-5
 		-- end
-		if(PointToPointDistance(front,EnemySpawnLocation)<DistanceTowerToEnemyHome-MaxDiveLength)
+		if(PointToPointDistance(front,EnemySpawnLocation)<DistanceTowerToEnemyHome-MaxDiveLength and npcBot:GetLevel()<=12)
 		then
 			return GetSafeLocation(npcBot,AllyTower:GetLocation(),gamma) ;
 		else
@@ -335,10 +335,12 @@ function UnitPushLaneThink(npcBot,lane)
 		AssmbleWithAlly(npcBot)
 	elseif goodSituation==false then
 		StepBack( npcBot )
+		--print(getCurrentFileName().." "..getShortName(npcBot).." situation is not good");
 	elseif npcBot:WasRecentlyDamagedByTower(1) then		--if I'm under attck of tower, then try to avoid attack
 		if(not TransferHatred( npcBot ) or (enemys~=nil and #enemys>=1))
 		then
 			StepBack( npcBot )
+			--print(getCurrentFileName().." "..getShortName(npcBot).." attacked");
 		end
 	elseif GetUnitToLocationDistance(npcBot,TargetLocation)>=MinDelta then
 		npcBot:Action_MoveToLocation(TargetLocation);
@@ -348,6 +350,7 @@ function UnitPushLaneThink(npcBot,lane)
 		if (CreepAttackTower) then
 			npcBot:Action_AttackUnit( EnemyTower, false )
 		else
+			--print(getCurrentFileName().." "..getShortName(npcBot).." tower distance too high");
 			StepBack( npcBot )
 		end
 	else

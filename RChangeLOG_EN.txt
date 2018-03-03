@@ -185,3 +185,13 @@ v1.4b (2018.1.8)
 v1.4c (2018.2.28)
 1.Improve the lineup selection, now AI will consider the player's heroic position to build a team with one hero in each position.  (This change is done by DblTap, thanks for his effort! His Steam link: http://steamcommunity.com/profiles/76561197967823929/ Github link: https://github.com/adamqqqplay/dota2ai/pull/3)
 2.Fixed some bugs.
+v1.4d (2018.3.3)
+1. Improved Lane assaignment, now AI will choose more suitable for their own lane, and where possible, give player the lane.
+2. Fixed AI can not choose all implemented heroes.
+3. Improve: Now support heroes will give priority to ward on their own lanes.
+4. Fixed heroes can not switch power treads.
+5. Fixed Mirana can not level ability after level 12.
+6. Fixed Spirit Breaker sometimes abnormal cancel the charge of darkness.
+7. Fixed some heroes do not purchase ward.
+8. Fixed unused issues after purchase courier.
+9. Fixed heroes may wander in pushing.
