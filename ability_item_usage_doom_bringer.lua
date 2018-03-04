@@ -79,12 +79,15 @@ function CanCast1( npcEnemy )
 	end
 end
 
+function CanCast6( npcEnemy )
+	return utility.UCanCast(npcEnemy) and string.find(npcEnemy:GetUnitName(), "hero");
+end
 --------------------------------------
 -- Ability Usage Thinking
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={CanCast1,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast,utility.UCanCast}
+local CanCast={CanCast1,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast,CanCast6}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()

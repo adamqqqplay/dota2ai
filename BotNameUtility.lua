@@ -7,7 +7,7 @@ local dota2team = {
 		['alias'] = "Na'Vi";
 		['players'] = {
 			'Artstyle.Darer',
-			'Puppeh',
+			'Puppey',
 			'Dendi',
 			'LightToHeaveN',
 			'XBOCT'

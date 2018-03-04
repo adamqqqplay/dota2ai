@@ -401,7 +401,7 @@ function utilityModule.ItemPurchase(ItemsToBuy)
 
 	local npcBot = GetBot();
 	
-	if(DotaTime()<=-89)
+	if(utilityModule.GetItemIncludeBackpack("item_courier"))
 	then
 		return;
 	end
