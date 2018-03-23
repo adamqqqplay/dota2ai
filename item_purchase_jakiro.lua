@@ -15,14 +15,14 @@ local ItemsToBuy =
 	"item_enchanted_mango",			--大魔棒7.07
 	"item_energy_booster",			--秘法鞋
 	
-	"item_mantle",
-	"item_circlet",
-	"item_recipe_null_talisman",	--无用挂件
-	"item_mantle",
-	"item_circlet",
-	"item_recipe_null_talisman",	--无用挂件
-	"item_helm_of_iron_will",
-	"item_recipe_veil_of_discord",	--纷争
+	--"item_mantle",
+	--"item_circlet",
+	--"item_recipe_null_talisman",	--无用挂件
+	--"item_mantle",
+	--"item_circlet",
+	--"item_recipe_null_talisman",	--无用挂件
+	--"item_helm_of_iron_will",
+	--"item_recipe_veil_of_discord",	--纷争
 	
 	"item_ring_of_health",
 	"item_staff_of_wizardry",
@@ -42,9 +42,10 @@ local ItemsToBuy =
 	"item_recipe_cyclone",
 	"item_wind_lace",				--风杖
 	
-	"item_mystic_staff",
-	"item_ultimate_orb",
-	"item_void_stone",				--羊刀
+	"item_point_booster",
+	"item_staff_of_wizardry",
+	"item_ogre_axe",
+	"item_blade_of_alacrity",		--蓝杖
 }
 
 utility.checkItemBuild(ItemsToBuy)

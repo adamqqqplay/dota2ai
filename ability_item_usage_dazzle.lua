@@ -18,10 +18,10 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 local AbilityToLevelUp=
 {
-	Abilities[1],
 	Abilities[3],
 	Abilities[2],
 	Abilities[3],
+	Abilities[1],
 	Abilities[3],
 	Abilities[4],
 	Abilities[3],
@@ -53,10 +53,10 @@ local TalentTree={
 		return Talents[4]
 	end,
 	function()
-		return Talents[5]
+		return Talents[6]
 	end,
 	function()
-		return Talents[7]
+		return Talents[8]
 	end
 }
 
@@ -159,7 +159,7 @@ Consider[1]=function()
 		do
 			if ( CanCast[abilityNumber]( npcEnemy ) )
 			then
-				return BOT_ACTION_DESIRE_HIGH, npcEnemy
+				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end
 		end
 	end
@@ -182,7 +182,7 @@ Consider[1]=function()
 	-- If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if(ManaPercentage>0.6 or npcBot:GetMana()>ComboMana)
+		if(ManaPercentage>0.8 or npcBot:GetMana()>ComboMana)
 		then
 			if (WeakestEnemy~=nil)
 			then

@@ -9,12 +9,10 @@ local ItemsToBuy =
 	"item_tango",
 	"item_flask",
 	"item_stout_shield",
-	"item_branches",
-	"item_branches",
+
 	"item_quelling_blade",			--补刀斧
 	"item_boots",	
-	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
 
@@ -37,14 +35,19 @@ local ItemsToBuy =
 	"item_stout_shield",
 	"item_recipe_abyssal_blade",	--大晕锤
 	
+	"item_eagle",
+	"item_talisman_of_evasion",
+	"item_quarterstaff",			--蝴蝶
+
+
 	"item_point_booster",
 	"item_staff_of_wizardry",
 	"item_ogre_axe",
 	"item_blade_of_alacrity",		--蓝杖
 	
-	"item_vitality_booster",
-	"item_vitality_booster",		
-	"item_reaver",					--龙心7.06
+	--"item_vitality_booster",
+	--"item_vitality_booster",		
+	--"item_reaver",					--龙心7.06
 }
 
 utility.checkItemBuild(ItemsToBuy)
