@@ -18,9 +18,15 @@ local ItemsToBuy =
 	"item_ring_of_regen",			--绿鞋
 	"item_cloak",
 	"item_shadow_amulet",			--微光
+
+	"item_ring_of_health",
 	"item_staff_of_wizardry",
-	"item_void_stone",
-	"item_recipe_cyclone",			--风杖
+	"item_recipe_force_staff",		--推推
+
+	--"item_staff_of_wizardry",
+	--"item_void_stone",
+	--"item_recipe_cyclone",			--风杖
+
 	"item_point_booster",
 	"item_staff_of_wizardry",
 	"item_ogre_axe",

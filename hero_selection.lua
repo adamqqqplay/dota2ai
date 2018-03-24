@@ -96,7 +96,7 @@ hero_pool = {
 	"npc_dota_hero_slark",
 	"npc_dota_hero_sniper",
 	"npc_dota_hero_spectre",
-	"npc_dota_hero_spirit_breaker",
+	--"npc_dota_hero_spirit_breaker",
 	"npc_dota_hero_storm_spirit",
 	"npc_dota_hero_sven",
 	"npc_dota_hero_techies",

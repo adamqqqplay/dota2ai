@@ -352,12 +352,12 @@ Consider[3]=function()
 	-- Mode based usage
 	--------------------------------------
 	-- Find neural creeps
-	if(ManaPercentage>=0.4)
+	if(ManaPercentage>=0.3)
 	then
 		for k,creep in pairs(creepsNeutral) do
 			if(IsGoodNeutralCreeps(creep) or (creep:IsAncientCreep() and npcBot:HasScepter()))
 			then
-				return BOT_ACTION_DESIRE_MODERATE, creep;
+				return BOT_ACTION_DESIRE_HIGH, creep;
 			end
 		end
 	end

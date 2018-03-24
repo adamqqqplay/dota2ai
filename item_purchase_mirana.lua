@@ -22,21 +22,18 @@ local ItemsToBuy =
 	"item_ring_of_protection",
 	"item_sobi_mask",				--天鹰
 	
-	"item_blade_of_alacrity",
-	"item_blade_of_alacrity",
-	"item_robe",
-	"item_recipe_diffusal_blade",	--散失刀
+	"item_point_booster",
+	"item_staff_of_wizardry",
+	"item_ogre_axe",
+	"item_blade_of_alacrity",		--蓝杖
+
+	"item_blink",		-- 跳刀
 	
 	"item_boots_of_elves",
 	"item_blade_of_alacrity",
 	"item_recipe_yasha",			--夜叉
 	"item_ultimate_orb",
 	"item_recipe_manta",			--分身
-	
-	"item_point_booster",
-	"item_staff_of_wizardry",
-	"item_ogre_axe",
-	"item_blade_of_alacrity",		--蓝杖
 	
 	"item_ogre_axe", 
 	"item_mithril_hammer",
