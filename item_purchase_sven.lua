@@ -20,18 +20,29 @@ local ItemsToBuy =
 	"item_lifesteal",
 	"item_quarterstaff",			--疯狂面具7.06
 	
+	"item_quarterstaff",
+	"item_robe",
+	"item_sobi_mask",
+	"item_ogre_axe",				--连击刀
+
+	"item_blink",					--跳刀
+
+	"item_ogre_axe",
+	"item_mithril_hammer",
+	"item_recipe_black_king_bar",	--bkb
+
+	"item_broadsword",
+	"item_blades_of_attack",
+	"item_recipe_lesser_crit" ,
+	"item_demon_edge",
+	"item_recipe_greater_crit",		--大炮
+
 	"item_ogre_axe",
 	"item_belt_of_strength",
 	"item_recipe_sange",			--散华
 	"item_boots_of_elves",
 	"item_blade_of_alacrity",
 	"item_recipe_yasha",			--夜叉
-
-	"item_blink",					--跳刀
-	
-	"item_ogre_axe",
-	"item_mithril_hammer",
-	"item_recipe_black_king_bar",	--bkb
 	
 	"item_hyperstone",
 	"item_platemail",

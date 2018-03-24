@@ -8,38 +8,38 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_flask",
-	"item_stout_shield",
+	"item_quelling_blade",			--补刀斧
 	"item_branches",
 	"item_branches",
 	
 	"item_boots",	
 	"item_magic_stick",
 	"item_enchanted_mango",			--大魔棒7.07
+
+	"item_lifesteal",               --吸血面具
+
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
 	
-	"item_ring_of_regen",
-	"item_recipe_headdress",
-	"item_branches",				
-	"item_ring_of_protection",
-	"item_sobi_mask",
-	"item_lifesteal",				--祭品
+	"item_recipe_mask_of_madness",  -- 疯脸
 
 	"item_ring_of_health",
-	"item_void_stone",	
-	"item_ultimate_orb",
-	"item_recipe_sphere",			--林肯
-	
-	"item_blade_of_alacrity",
-	"item_blade_of_alacrity",
-	"item_robe",
-	"item_recipe_diffusal_blade",	--散失刀
-	
+	"item_void_stone",
+	"item_demon_edge",				--狂战7.07
+
 	"item_boots_of_elves",
 	"item_blade_of_alacrity",
 	"item_recipe_yasha",			--夜叉
 	"item_ultimate_orb",
 	"item_recipe_manta",			--分身
+
+	"item_ogre_axe", 
+	"item_mithril_hammer",
+	"item_recipe_black_king_bar",	--bkb
+
+	"item_hyperstone",
+	"item_javelin",
+	"item_javelin",					--金箍棒7.07
 		
 	"item_quarterstaff",
 	"item_eagle",

@@ -312,7 +312,7 @@ Consider[3]=function()
 	then
 		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) )
 		then
-			return BOT_ACTION_DESIRE_MODERATE, utility.Fountain(GetTeam());
+			return BOT_ACTION_DESIRE_HIGH, utility.Fountain(GetTeam());
 		end
 	end
 
@@ -333,7 +333,7 @@ Consider[3]=function()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) )
 			then
-				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation(CastPoint);
+				return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetExtrapolatedLocation(CastPoint);
 			end
 		end
 	end

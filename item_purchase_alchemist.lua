@@ -9,7 +9,8 @@ local ItemsToBuy =
 	"item_tango",
     "item_stout_shield",
 	"item_quelling_blade",
-	"item_branches",
+	
+	"item_bottle", -- 魔瓶
 
 	"item_ring_of_regen",
 	"item_gauntlets",
@@ -27,10 +28,12 @@ local ItemsToBuy =
 	"item_void_stone",
 	"item_demon_edge",				-- 狂战（舍弃了辉耀，实战中AI太难攒钱了，25分钟的辉耀没有意义）
 
+	"item_belt_of_strength",
+	"item_gloves",					--假腿
 	--"item_relic",
 	--"item_recipe_radiance",			--辉耀
 	
-	"item_recipe_travel_boots",		--飞鞋
+	--"item_recipe_travel_boots",		--飞鞋
 	
 	"item_blade_of_alacrity",
 	"item_boots_of_elves",

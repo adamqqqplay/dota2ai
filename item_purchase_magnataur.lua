@@ -11,28 +11,26 @@ local ItemsToBuy =
 	"item_stout_shield",
 	"item_branches",
 	"item_branches",
+	"item_magic_stick",
+	"item_enchanted_mango",			--大魔棒7.07
+
 	"item_boots",
 	"item_energy_booster",			--秘法鞋
 	
-	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
-	
-	"item_vitality_booster",
-	"item_ring_of_health",			--先锋
 	"item_blink",					--跳刀
-	"item_chainmail",
-	"item_recipe_buckler" ,
-	"item_branches",
-	"item_recipe_crimson_guard",	--赤红甲
+
+	"item_shadow_amulet",
+	"item_claymore",				--隐刀
+
+	"item_ogre_axe", 
+	"item_mithril_hammer",
+	"item_recipe_black_king_bar",	--bkb
 	
-	"item_ring_of_health",
-	"item_staff_of_wizardry",
-	"item_recipe_force_staff",		--推推7.06
-	
-	"item_platemail",
-	"item_mystic_staff",
-	"item_recipe_shivas_guard" ,	--希瓦
-	
+	"item_point_booster",
+	"item_vitality_booster",
+	"item_energy_booster",
+	"item_mystic_staff",			--玲珑心
+
 	"item_ring_of_health",
 	"item_void_stone",		
 	"item_ring_of_health",
