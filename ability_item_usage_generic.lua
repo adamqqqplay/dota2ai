@@ -115,7 +115,7 @@ function CourierUsageThink()
 				if member ~= nil and IsPlayerBot(numPlayer[i]) and member:IsAlive() 
 				then
 					local nMSlot = GetNumStashItem(member);
-					if nMSlot > 0 and nMSlot <= nCSlot and stashValue>=100 then
+					if nMSlot > 0 and nMSlot <= nCSlot and stashValue>=500 then
 						member:ActionImmediate_Courier( npcCourier, COURIER_ACTION_TAKE_STASH_ITEMS );
 						nCSlot = nCSlot - nMSlot ;
 						courierTime = DotaTime();

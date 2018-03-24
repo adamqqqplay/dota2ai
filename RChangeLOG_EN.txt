@@ -195,3 +195,17 @@ v1.4d (2018.3.3)
 7. Fixed some heroes do not purchase ward.
 8. Fixed unused issues after purchase courier.
 9. Fixed heroes may wander in pushing.
+V1.4e (2018.3.23) Commit by zmcmcc
+1. Updated the Alchemist's item and ability building. Now the alchemist will choose Battle Fury instead of Radiance. After the update, the alchemist is expected to increase the speed of farming.
+2. Updated the Phantom Assassin's item building. Now the Phantom Assassin will get the Black King Bar earlier to ensure survival.
+3. Updated the Antimage's item and ability building.
+4. Updated the Crystal Maiden's item and ability building. Now the Crystal Maiden will provide better mana support in the early stage.
+5. Temporarily remove Spirit Breakers from the selection lineup.
+6. Updated the Jakiro's item and ability building.
+7. Updated the death prophet's item and ability building.
+8. Improved Chen's willingness to summon monsters.
+9. Updated Lich's ability building.
+10. Updated Sand King's ability building.
+11. Updated Mirana's item building, now Mirana will have an Aghanim's Scepter earlier.
+12. Updated Dazzle's item and ability building, now Dazzle prefers treatment.
+13. Try to fix some bugs about courier.
