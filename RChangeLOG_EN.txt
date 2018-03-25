@@ -220,3 +220,5 @@ v1.4f(2018.3.24) Commit by zmcmcc
 8. Updated the Sven's item and ability building.
 9. Updated the Treant's item and ability building.
 10. Updated the Medusa's item and ability building.
+v.1.4g(2018.3.25) commit by zmcmcc
+Fixed some bugs casued by former updates.
