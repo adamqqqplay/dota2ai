@@ -209,16 +209,15 @@ V1.4e (2018.3.23) Commit by zmcmcc
 11. Updated Mirana's item building, now Mirana will have an Aghanim's Scepter earlier.
 12. Updated Dazzle's item and ability building, now Dazzle prefers treatment.
 13. Try to fix some bugs about courier.
-v1.4f(2018.3.24) Commit by zmcmcc
+v1.4f(2018.3.25) Commit by zmcmcc
 1. Updated the Juggernaut's item and ability building.
 2. Updated the Shadow Fiend's item and ability building. Fixed a bug that SF cannot learn lv.15 talent correctly.
 3. Removed travel boots from Alchemist's item building, due to bots' poor use of it.
 4. Updated the Centaur's item and ability building.
 5. Updated the Magnus' item and ability building. Now Mag will purchase blink earlier, and will use skewer more likely on retrating rather than chasing enemies.
-6. Updated the void's item and ability building. Now void plays carry rather can offlaner.
+6. Updated the Faceless Void's item and ability building. Now void plays carry rather can offlaner.
 7. Updated the Wraith King's item and ability building.
 8. Updated the Sven's item and ability building.
 9. Updated the Treant's item and ability building.
 10. Updated the Medusa's item and ability building.
-v.1.4g(2018.3.25) commit by zmcmcc
-Fixed some bugs casued by former updates.
+11.Fixed some bugs casued by former updates.
