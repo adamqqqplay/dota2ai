@@ -20,26 +20,26 @@ local ItemsToBuy =
 	"item_slippers",
 	"item_circlet",
 	"item_recipe_wraith_band",
-	"item_ring_of_protection",
-	"item_sobi_mask",				--天鹰
 	
 	"item_lifesteal",
 	"item_quarterstaff",			--疯狂面具7.06
-	
-	"item_ring_of_health",
-	"item_void_stone",
-	"item_ultimate_orb",
-	"item_recipe_sphere",			--林肯
-	
+
 	"item_boots_of_elves",
 	"item_boots_of_elves", 
 	"item_ogre_axe",				--魔龙枪
 	"item_ring_of_health",
 	"item_staff_of_wizardry",
 	"item_recipe_force_staff",		--推推7.06
-	"item_slippers",
-	"item_circlet",
+
 	"item_recipe_wraith_band",		--大推推7.07
+
+
+	--"item_ring_of_health",
+	--"item_void_stone",
+	--"item_ultimate_orb",
+	--"item_recipe_sphere",			--林肯
+
+
 	
 	"item_point_booster",
 	"item_ultimate_orb",
@@ -48,10 +48,12 @@ local ItemsToBuy =
 	"item_hyperstone",
 	"item_javelin",
 	"item_javelin",					--金箍棒7.07
-	
-	"item_quarterstaff",
-	"item_eagle",
-	"item_talisman_of_evasion",		--蝴蝶
+
+	"item_gloves",
+	"item_mithril_hammer",
+	"item_recipe_maelstrom",		--电锤
+	"item_hyperstone",
+	"item_recipe_mjollnir",			--大雷锤
 }
 
 utility.checkItemBuild(ItemsToBuy)		--检查装备列表

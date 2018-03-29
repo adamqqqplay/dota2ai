@@ -16,14 +16,18 @@ local ItemsToBuy =
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
 	
+	"item_quarterstaff",
+	"item_robe",
+	"item_sobi_mask",
+	"item_ogre_axe",				--连击刀
+
 	"item_broadsword",
 	"item_robe",
 	"item_chainmail",				--刃甲
-	
-	"item_belt_of_strength", 
+
 	"item_ogre_axe",
-	"item_recipe_sange",
-	"item_talisman_of_evasion",		--天堂
+	"item_mithril_hammer",
+	"item_recipe_black_king_bar",	--bkb
 	
 	"item_platemail", 
 	"item_chainmail", 
@@ -34,10 +38,6 @@ local ItemsToBuy =
 	"item_staff_of_wizardry",
 	"item_ogre_axe",
 	"item_blade_of_alacrity",		--蓝杖
-	
-	"item_vitality_booster",
-	"item_vitality_booster",		
-	"item_reaver",					--龙心7.06
 	
 }
 

@@ -405,7 +405,7 @@ X["hero_roles"] = {
 
 	["npc_dota_hero_treant"] = {
 		['carry'] = 0,
-		['disabler'] = 1,
+		['disabler'] = 2,
 		['durable'] = 1,
 		['escape'] = 1,
 		['initiator'] = 2,
@@ -560,10 +560,10 @@ X["hero_roles"] = {
 	},
 
 	["npc_dota_hero_faceless_void"] = {
-		['carry'] = 2,
+		['carry'] = 3,
 		['disabler'] = 2,
-		['durable'] = 1,
-		['escape'] = 1,
+		['durable'] = 0,
+		['escape'] = 2,
 		['initiator'] = 3,
 		['jungler'] = 0,
 		['nuker'] = 0,
