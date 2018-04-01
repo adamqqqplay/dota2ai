@@ -7,14 +7,15 @@ local utility = require( GetScriptDirectory().."/utility" )
 local ItemsToBuy = 
 { 
 	"item_tango",
-	"item_flask",
 	"item_stout_shield",
 	"item_branches",
+	"item_orb_of_venom", -- 毒球
 	"item_branches",
-	"item_boots",
-	"item_energy_booster",			--秘法鞋
 	"item_magic_stick",
 	"item_enchanted_mango",			--大魔棒7.07
+
+	"item_boots",
+	"item_energy_booster",			--秘法鞋
 	
 	"item_circlet",
 	"item_ring_of_protection",
@@ -43,10 +44,10 @@ local ItemsToBuy =
 	"item_platemail",
 	"item_energy_booster",			--清莲宝珠
 	
-	"item_platemail", 
-	"item_chainmail", 
-	"item_hyperstone",
-	"item_recipe_assault",			--强袭	
+	"item_chainmail",
+	"item_sobi_mask",
+	"item_blight_stone",			--勋章
+	"item_talisman_of_evasion",		--大勋章
 }
 
 utility.checkItemBuild(ItemsToBuy)

@@ -11,10 +11,10 @@ local ItemsToBuy =
 	"item_quelling_blade",			--补刀斧
 	"item_branches",
 	"item_branches",
-	
-	"item_boots",	
 	"item_magic_stick",
 	"item_enchanted_mango",			--大魔棒7.07
+	
+	"item_boots",	
 
 	"item_lifesteal",               --吸血面具
 

@@ -218,7 +218,7 @@ Consider[2]=function()
 			then
 				if ( CanCast[abilityNumber]( WeakestEnemy ) )
 				then
-					return BOT_ACTION_DESIRE_LOW,WeakestEnemy;
+					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy;
 				end
 			end
 		end

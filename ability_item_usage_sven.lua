@@ -97,6 +97,26 @@ Consider[1]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	local CastPoint = ability:GetCastPoint();
+
+	local i=npcBot:FindItemSlot("item_blink")
+	if(i>=0 and i<=5)
+	then
+		blink=npcBot:GetItemInSlot(i)
+		i=nil
+	end
+	if(blink~=nil and blink:IsFullyCastable())
+	then
+		CastRange=CastRange+850
+		if(npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+		then
+			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+			if ( locationAoE.count >= 2 ) 
+			then
+				npcBot:Action_UseAbilityOnLocation( blink, locationAoE.targetloc );
+				return 0
+			end
+		end
+	end
 	
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)

@@ -20,15 +20,15 @@ local AbilityToLevelUp=
 {
 	Abilities[3],
 	Abilities[2],
+	Abilities[3],
 	Abilities[1],
-	Abilities[2],
-	Abilities[2],
+	Abilities[3],
 	Abilities[4],
+	Abilities[3],
 	Abilities[2],
-	Abilities[3],
-	Abilities[3],
+	Abilities[2],
 	"talent",
-	Abilities[3],
+	Abilities[2],
 	Abilities[4],
 	Abilities[1],
 	Abilities[1],
@@ -46,16 +46,16 @@ local AbilityToLevelUp=
 }
 local TalentTree={
 	function()
-		return Talents[1]
+		return Talents[2]
 	end,
 	function()
 		return Talents[3]
 	end,
 	function()
-		return Talents[6]
+		return Talents[5]
 	end,
 	function()
-		return Talents[7]
+		return Talents[8]
 	end
 }
 
@@ -249,7 +249,7 @@ Consider[2]=function()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-	-- If my mana is enough,use it at enemy
+	--[[]If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING and (towers==nil or #towers==0)) 
 	then
 		if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
@@ -262,7 +262,7 @@ Consider[2]=function()
 				end
 			end
 		end
-	end
+	end]]
 	
 	--protect myself
 	if((npcBot:WasRecentlyDamagedByAnyHero(5) and npcBot:GetActiveMode() == BOT_MODE_RETREAT))

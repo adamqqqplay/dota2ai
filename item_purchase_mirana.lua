@@ -11,16 +11,16 @@ local ItemsToBuy =
 	"item_clarity",
 	"item_branches",
 	"item_branches",
-	"item_boots",	
 	"item_magic_stick",
 	"item_enchanted_mango",			--大魔棒7.07
-	"item_energy_booster",			--秘法鞋
-	
+	"item_boots",	
 	"item_slippers",
 	"item_circlet",
 	"item_recipe_wraith_band",
 	"item_ring_of_protection",
 	"item_sobi_mask",				--天鹰
+	"item_energy_booster",			--秘法鞋
+	
 	
 	"item_point_booster",
 	"item_staff_of_wizardry",

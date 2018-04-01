@@ -21,11 +21,11 @@ local AbilityToLevelUp=
 	Abilities[3],
 	Abilities[1],
 	Abilities[2],
-	Abilities[3],
+	Abilities[1],
 	Abilities[1],
 	Abilities[4],
 	Abilities[1],
-	Abilities[1],
+	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
@@ -129,7 +129,7 @@ Consider[1]=function()
 	then
 		if(WeakestCreep~=nil)
 		then
-			if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and GetUnitToUnitDistance(npcBot,WeakestCreep)>=300)
+			if((ManaPercentage>0.7 or npcBot:GetMana()>ComboMana * 1.5) and GetUnitToUnitDistance(npcBot,WeakestCreep)>=300)
 			then
 				local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 				if ( locationAoE.count >= 1 ) then
@@ -141,7 +141,7 @@ Consider[1]=function()
 	
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )
+		if((ManaPercentage>0.7 or npcBot:GetMana()>ComboMana * 1.5) and ability:GetLevel()>=2 )
 		then
 			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 			if ( locationAoE.count >= 2 ) then
@@ -154,8 +154,8 @@ Consider[1]=function()
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 
-		if ( locationAoE.count >= 3 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+		if ( locationAoE.count >= 4 ) then
+			return BOT_ACTION_DESIRE_MODERATE, locationAoE.targetloc;
 		end
 	end
 
@@ -171,7 +171,7 @@ Consider[1]=function()
 
 		if ( locationAoE.count >= 4 ) 
 		then
-			return BOT_ACTION_DESIRE_LOW+0.01, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_MODERATE, locationAoE.targetloc;
 		end
 	end
 

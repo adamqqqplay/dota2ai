@@ -222,3 +222,12 @@ v1.4f(2018.3.24) Commit by zmcmcc
 10. Updated the Medusa's item and ability building.
 v.1.4g(2018.3.25) commit by zmcmcc
 Fixed some bugs casued by former updates.
+v 1.5(2018.3.31) committed by zmcmcc
+1. Updated the hero selection and role allocation. Bots will try to avoid picking heros with duplicated roles. Also slightly changed the hero selection pace. now ally bots will not wait until you pick a hero, but the duration of two picks was slightly prolonged.
+2. Temporarily remove these heros: Alchemist, Antimage, Spectre, Spirit breaker. 
+3. Get Ember spirit, Kunkka, disruptor, elder titan and Chen back.
+4. Optimized the Captian Mode. Now if you let Bots to ban/pick, they will try to ban/pick with the same hero pool as in AP mode, and will pick in this order: Offlaner, support1, midlaner,support2,safelane carry. I also try to let them have a 311 distribution, like professional game(If the feedback is bad,it's easy to go back to 212).
+Two important things:a.If you are the captain, please follow the Offlaner, support1, midlaner,support2,safelane carry order to pick! The bots will only go to the right place in this case. b.In some extreme cases bots will pick two same heros(I tested 15 games, one occurs). If that happened, just quit and start another game...
+5. Now bots will be laning more peacefully in the first 6-7 minutes without frequent team fight in mid lane.
+6. The following heros are either in item building, ability usage or bug fixed: batrider, centaur, chen, death prophet, disruptor, dragon kignt, faceless void, huskar, jakiro, juggernaut, legion commander, leshrac, lina, luna, mirana, necrolyte, phantom assassin, pudge, riki, sniper, sven, tidehunter, tiny, treant, undying, windrunner, zeus.
+7. fixed some bugs.
