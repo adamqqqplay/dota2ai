@@ -69,14 +69,14 @@ end
 --------------------------------------
 -- Ability Usage Thinking
 --------------------------------------
+function CanCast1( npcEnemy )
+	return utility.NCanCast(npcEnemy) and (npcEnemy:DistanceFromFountain()>=4000 or DotaTime()>=30*60)
+end
+
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
 local CanCast={CanCast1,utility.NCanCast,utility.NCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
-
-function CanCast1( npcEnemy )
-	return utility.NCanCast(npcEnemy) and (npcEnemy:DistanceFromFountain()>=4000 or DotaTime()>=30*60)
-end
 
 function GetComboDamage()
 	return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
