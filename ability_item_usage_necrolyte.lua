@@ -125,15 +125,15 @@ Consider[1]=function()
 	end
 	
 	--protect teammate
-	if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
+	if(ManaPercentage>0.5 or npcBot:GetMana()>ComboMana)
 	then
 		for _,npcTarget in pairs( allys )
 		do
-			if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<(0.5+#enemys*0.05))
+			if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<(0.6+#enemys*0.05))
 			then
 				if ( CanCast[abilityNumber]( npcTarget ) )
 				then
-					return BOT_ACTION_DESIRE_MODERATE
+					return BOT_ACTION_DESIRE_HIGH
 				end
 			end
 		end
@@ -144,7 +144,7 @@ Consider[1]=function()
 	--protect myself
 	if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana or (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) )
 	then
-		if((npcBot:WasRecentlyDamagedByAnyHero(2) and #enemys>=1) or #enemys >=2 or HealthPercentage<=0.3)
+		if((npcBot:WasRecentlyDamagedByAnyHero(2) and #enemys>=1) or #enemys >=2 or HealthPercentage<=0.4)
 		then
 			for _,npcEnemy in pairs( enemys )
 			do
@@ -164,11 +164,11 @@ Consider[1]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
 	then
-		if ( #enemys+#creeps>=3) 
+		if ( #enemys+#creeps>=5) 
 		then
-			if (ManaPercentage>0.5 or npcBot:GetMana()>ComboMana)
+			if (ManaPercentage>0.6 or npcBot:GetMana()>ComboMana * 1.5)
 			then
-				return BOT_ACTION_DESIRE_LOW, WeakestEnemy;
+				return BOT_ACTION_DESIRE_MODERATE, WeakestEnemy;
 			end
 		end
 	end
@@ -176,7 +176,7 @@ Consider[1]=function()
 	-- If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if(ManaPercentage>0.5 or npcBot:GetMana()>ComboMana )
+		if(ManaPercentage>0.75)
 		then
 			if (WeakestEnemy~=nil and WeakestCreep ~=nil )
 			then
@@ -191,11 +191,11 @@ Consider[1]=function()
 	-- If we're farming and can hit 2+ creeps
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
-		if ( #creeps >= 3 ) 
+		if ( #creeps >= 4 ) 
 		then
-			if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
+			if(ManaPercentage>0.5 or npcBot:GetMana()>ComboMana)
 			then
-				return BOT_ACTION_DESIRE_LOW
+				return BOT_ACTION_DESIRE_MODERATE
 			end
 		end
 	end
@@ -251,7 +251,7 @@ Consider[2]=function()
 	-- Mode based usage
 	--------------------------------------
 	--protect myself
-	if(npcBot:WasRecentlyDamagedByAnyHero(2.0) and #enemys>=2 and HealthPercentage<=0.5+0.05*#enemys)
+	if(npcBot:WasRecentlyDamagedByAnyHero(2.0) and #enemys>=2 and HealthPercentage<=0.35+0.05*#enemys)
 	then
 		return BOT_ACTION_DESIRE_HIGH
 	end
@@ -265,7 +265,7 @@ Consider[2]=function()
 		end
 	end
 	
-	-- If we're going after someone
+	--[[ If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
@@ -280,7 +280,7 @@ Consider[2]=function()
 				return BOT_ACTION_DESIRE_MODERATE
 			end
 		end
-	end
+	end ]]
 
 	return BOT_ACTION_DESIRE_NONE, 0;
 	

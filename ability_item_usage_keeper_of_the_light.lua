@@ -137,7 +137,7 @@ Consider[1]=function()
 		end
 	end
 
-	--Last hit
+	--[[Last hit
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
 		if(WeakestCreep~=nil)
@@ -150,14 +150,14 @@ Consider[1]=function()
 				end
 			end		
 		end
-	end
+	end]]
 	
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
 		if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )
 		then
 			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, 0 );
-			if ( locationAoE.count >= 2 ) then
+			if ( locationAoE.count >= 4 ) then
 				return BOT_ACTION_DESIRE_LOW-0.01, npcBot:GetXUnitsTowardsLocation(locationAoE.targetloc,300);
 			end
 		end
@@ -175,7 +175,7 @@ Consider[1]=function()
 
 		if ( locationAoE.count >= 4 ) 
 		then
-			return BOT_ACTION_DESIRE_LOW, npcBot:GetXUnitsTowardsLocation(locationAoE.targetloc,300);
+			return BOT_ACTION_DESIRE_MODERATE+0.05, npcBot:GetXUnitsTowardsLocation(locationAoE.targetloc,300);
 		end
 	end
 

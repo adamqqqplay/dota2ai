@@ -7,7 +7,6 @@ local utility = require( GetScriptDirectory().."/utility" )
 local ItemsToBuy = 
 { 
 	"item_tango",
-	"item_clarity",
 	"item_branches",
 	"item_branches",
 	"item_magic_stick",

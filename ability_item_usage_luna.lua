@@ -155,7 +155,7 @@ Consider[1]=function()	--Target Ability Example
 			then
 				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy)) 
 				then
-					return BOT_ACTION_DESIRE_HIGH, npcEnemy;
+					return BOT_ACTION_DESIRE_LOW, npcEnemy;
 				end
 			end
 		end
@@ -164,7 +164,7 @@ Consider[1]=function()	--Target Ability Example
 	-- If my mana is enough,use it at enemy
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
 	then
-		if((ManaPercentage>0.4 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )
+		if((ManaPercentage>0.65 and npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )
 		then
 			if (WeakestEnemy~=nil)
 			then
@@ -209,7 +209,7 @@ Consider[4]=function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
-	local CastRange = ability:GetCastRange();
+	local CastRange = ability:GetCastRange() - 150;
 	local Damage = 5*AbilitiesReal[1]:GetAbilityDamage()
 	local Radius = ability:GetAOERadius()
 	

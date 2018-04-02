@@ -389,7 +389,7 @@ Consider[3]=function()
 	-- If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
+		if(ManaPercentage>0.6 or npcBot:GetMana()>ComboMana)
 		then
 			if (WeakestEnemy~=nil)
 			then
@@ -404,11 +404,11 @@ Consider[3]=function()
 	-- If we're farming and can hit 2+ creeps and kill 1+ 
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
-		if ( #creeps >= 2 ) 
+		if ( #creeps >= 3 ) 
 		then
 			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 			then
-				return BOT_ACTION_DESIRE_LOW;
+				return BOT_ACTION_DESIRE_MODERATE;
 			end
 		end
 	end
@@ -425,7 +425,7 @@ Consider[3]=function()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys and GetStickyNapalmCount(npcEnemy)>=3)
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy
 			end
 		end
 	end

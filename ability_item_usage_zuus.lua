@@ -147,12 +147,12 @@ Consider[1]=function()
 	then
 		if(WeakestCreep~=nil)
 		then
-			if((ManaPercentage>0.4 or npcBot:GetMana()>ComboMana) and GetUnitToUnitDistance(npcBot,WeakestCreep)>=AttackRange-ManaPercentage)
+			if((ManaPercentage>0.45 or npcBot:GetMana()>ComboMana) and GetUnitToUnitDistance(npcBot,WeakestCreep)>=AttackRange-ManaPercentage)
 			then
 				if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
 				then					
 				
-					return BOT_ACTION_DESIRE_LOW,WeakestCreep; 
+					return BOT_ACTION_DESIRE_MODERATE+0.05,WeakestCreep; 
 				end
 			end		
 		end

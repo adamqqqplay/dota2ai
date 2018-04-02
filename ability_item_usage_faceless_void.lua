@@ -330,7 +330,7 @@ Consider[4]=function()
 	end
 	
 	-- If we're pushing or defending a lane and can hit 4+ creeps, go for it
-	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
+	--[[if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
 		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
@@ -347,7 +347,7 @@ Consider[4]=function()
 				return BOT_ACTION_DESIRE_LOW, TargetLocation
 			end
 		end
-	end
+	end]]
 	
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or

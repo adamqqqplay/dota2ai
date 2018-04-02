@@ -1494,53 +1494,97 @@ function X.GetRoleLevel(hero, role)
 end
 
 function X.IsRemovedFromSupportPoll(hero)
-	return hero == "npc_dota_hero_alchemist" or
-		   hero == "npc_dota_hero_naga_siren" or
-		   hero == "npc_dota_hero_skeleton_king" or
-		   hero == "npc_dota_hero_alchemist" 
+	return hero == "npc_dota_hero_juggernaut" or hero == "npc_dota_hero_chaos_knight" or hero == "npc_dota_hero_spectre" or hero == "npc_dota_hero_skeleton_king"
+	or hero == "npc_dota_hero_slark" or hero == "npc_dota_hero_clinkz" or hero == "npc_dota_hero_sven" or hero == "npc_dota_hero_drow_ranger" 
+	or hero == "npc_dota_hero_faceless_void" or hero == "npc_dota_hero_life_stealer" or hero == "npc_dota_hero_luna" or hero == "npc_dota_hero_monkey_king"
+	or hero == "npc_dota_hero_ursa" or hero == "npc_dota_hero_lycan" or hero == "npc_dota_hero_gyrocopter" or hero == "npc_dota_hero_zuus" or hero == "npc_dota_hero_lina" or hero == "npc_dota_hero_phantom_assassin" or hero == "npc_dota_hero_dragon_knight" 
+	or hero == "npc_dota_hero_viper" or hero == "npc_dota_hero_necrolyte" or hero == "npc_dota_hero_queenofpain" or hero == "npc_dota_hero_razor"  
+	or hero == "npc_dota_hero_leshrac" or hero == "npc_dota_hero_nevermore" or hero == "npc_dota_hero_huskar" or hero == "npc_dota_hero_tiny" 
+	or hero == "npc_dota_hero_bloodseeker" or hero == "npc_dota_hero_pugna" or hero == "npc_dota_hero_death_prophet" or hero == "npc_dota_hero_alchemist"
+	or hero == "npc_dota_hero_arc_warden" or hero == "npc_dota_hero_sniper" or hero == "npc_dota_hero_medusa"  or hero == "npc_dota_hero_kunkka" or hero == "npc_dota_hero_tidehunter" or hero == "npc_dota_hero_nyx_assassin" or hero == "npc_dota_hero_magnataur" or hero == "npc_dota_hero_legion_commander"
+           or hero == "npc_dota_hero_dark_seer" or hero == "npc_dota_hero_axe" or hero == "npc_dota_hero_batrider" or hero == "npc_dota_hero_centaur"
+           or hero == "npc_dota_hero_doom_bringer" or hero == "npc_dota_hero_slardar" or hero == "npc_dota_hero_bristleback" or hero == "npc_dota_hero_windrunner"
+           or hero == "npc_dota_hero_abyssal_underlord" or hero == "npc_dota_hero_beastmaster" or hero == "npc_dota_hero_broodmother"
+           or hero == "npc_dota_hero_brewmaster" or hero == "npc_dota_hero_abaddon" or hero == "npc_dota_hero_enchantress" or hero == "npc_dota_hero_mirana"
 end
 
 function X.CanBeOfflaner(hero)
 	if X["hero_roles"][hero] == nil then return false end;
-	return hero == "npc_dota_hero_bounty_hunter" or hero == "npc_dota_hero_nyx_assassin" or hero == "npc_dota_hero_magnataur" or hero == "npc_dota_hero_sand_king"
-           or hero == "npc_dota_hero_shredder" or hero == "npc_dota_hero_tusk" or hero == "npc_dota_hero_dark_seer" or hero == "npc_dota_hero_techies" or hero == "npc_dota_hero_batrider"
-		   or (  X["hero_roles"][hero]["initiator"] > 0 and
+	return hero == "npc_dota_hero_tidehunter"  or hero == "npc_dota_hero_magnataur" or hero == "npc_dota_hero_legion_commander"
+           or hero == "npc_dota_hero_dark_seer" or hero == "npc_dota_hero_axe" or hero == "npc_dota_hero_batrider" or hero == "npc_dota_hero_centaur"
+           or hero == "npc_dota_hero_doom_bringer" or hero == "npc_dota_hero_slardar" or hero == "npc_dota_hero_bristleback" or hero == "npc_dota_hero_windrunner"
+           or hero == "npc_dota_hero_abyssal_underlord" or hero == "npc_dota_hero_beastmaster" or hero == "npc_dota_hero_broodmother"
+           or hero == "npc_dota_hero_brewmaster" or hero == "npc_dota_hero_abaddon" or hero == "npc_dota_hero_enchantress" or hero == "npc_dota_hero_mirana"
+		   --[[or (  X["hero_roles"][hero]["initiator"] > 0 and
 		         X["hero_roles"][hero]["disabler"] > 0 and
 		         X["hero_roles"][hero]["durable"] > 0 and
-		         X["hero_roles"][hero]["support"] == 0 )
+		         X["hero_roles"][hero]["support"] == 0 )]]
 end
 
 function X.CanBeMidlaner(hero)
 	if X["hero_roles"][hero] == nil then return false end;
-	return hero == "npc_dota_hero_zuus" or hero == "npc_dota_hero_templar_assassin" or hero == "npc_dota_hero_ember_spirit" or hero == "npc_dota_hero_puck" 
-	       or hero == "npc_dota_hero_pugna" 
-		   or ( X["hero_roles"][hero]["carry"] > 0 and
+	return hero == "npc_dota_hero_zuus" or hero == "npc_dota_hero_lina" or hero == "npc_dota_hero_phantom_assassin" or hero == "npc_dota_hero_dragon_knight" 
+	or hero == "npc_dota_hero_viper" or hero == "npc_dota_hero_necrolyte" or hero == "npc_dota_hero_queenofpain" or hero == "npc_dota_hero_razor"  
+	or hero == "npc_dota_hero_leshrac" or hero == "npc_dota_hero_nevermore" or hero == "npc_dota_hero_huskar" or hero == "npc_dota_hero_tiny" 
+	or hero == "npc_dota_hero_bloodseeker" or hero == "npc_dota_hero_pugna" or hero == "npc_dota_hero_death_prophet" or hero == "npc_dota_hero_alchemist"
+	or hero == "npc_dota_hero_arc_warden" or hero == "npc_dota_hero_sniper" or hero == "npc_dota_hero_medusa"  or hero == "npc_dota_hero_kunkka"     
+		   --[[or ( X["hero_roles"][hero]["carry"] > 0 and
 		      ( 
 		        X["hero_roles"][hero]["nuker"] > 0 or
 			    X["hero_roles"][hero]["pusher"] > 0 
 			   ) 
-			)
+			)]]
 end
 
 function X.CanBeSafeLaneCarry(hero)
 	if X["hero_roles"][hero] == nil or hero == "npc_dota_hero_obsidian_destroyer" or hero == "npc_dota_hero_storm_spirit" then return false end;
-	return X["hero_roles"][hero]["carry"] > 1 and
+	return hero == "npc_dota_hero_juggernaut" or hero == "npc_dota_hero_chaos_knight" or hero == "npc_dota_hero_spectre" or hero == "npc_dota_hero_skeleton_king"
+	or hero == "npc_dota_hero_slark" or hero == "npc_dota_hero_clinkz" or hero == "npc_dota_hero_sven" or hero == "npc_dota_hero_drow_ranger" 
+	or hero == "npc_dota_hero_faceless_void" or hero == "npc_dota_hero_life_stealer" or hero == "npc_dota_hero_luna" or hero == "npc_dota_hero_monkey_king"
+	or hero == "npc_dota_hero_ursa" or hero == "npc_dota_hero_lycan" or hero == "npc_dota_hero_gyrocopter"
+	--[[or (X["hero_roles"][hero]["carry"] > 1 and
 		   ( 
 			 ( X["hero_roles"][hero]["nuker"] < 3 and X["hero_roles"][hero]["pusher"] < 3 ) or
 			 ( X["hero_roles"][hero]["escape"] > 0 and X["hero_roles"][hero]["nuker"] < 2 ) or
 			 X["hero_roles"][hero]["nuker"] < 2 or	
 			 X["hero_roles"][hero]["jungler"] == 1 
 			) 
+		   )]]
 end
 
 function X.CanBeSupport(hero)
 	if X["hero_roles"][hero] == nil then return false end;
-	return not X.IsRemovedFromSupportPoll(hero) and X["hero_roles"][hero]["support"] > 0 and
-		  ( 
-			X["hero_roles"][hero]["carry"] < 2 or 
-			X["hero_roles"][hero]["nuker"] > 0 or 
-		    X["hero_roles"][hero]["disabler"] > 0 
-		   )
+	return hero == "npc_dota_hero_skywrath_mage" or hero == "npc_dota_hero_shadow_shaman"
+	or hero == "npc_dota_hero_venomancer"
+	or hero == "npc_dota_hero_slardar"
+	or hero == "npc_dota_hero_undying"
+	or hero == "npc_dota_hero_night_stalker"
+	or hero == "npc_dota_hero_silencer"
+	--or hero == "npc_dota_hero_spirit_breaker",
+	or hero == "npc_dota_hero_riki"
+	or hero == "npc_dota_hero_earthshaker"
+	or hero == "npc_dota_hero_omniknight"
+	or hero == "npc_dota_hero_bounty_hunter"
+	or hero == "npc_dota_hero_elder_titan"
+	or hero == "npc_dota_hero_keeper_of_the_light"
+	--or hero == "npc_dota_hero_chen",
+	or hero == "npc_dota_hero_pudge"
+	or hero == "npc_dota_hero_sand_king"
+	or hero == "npc_dota_hero_ogre_magi"
+	or hero == "npc_dota_hero_crystal_maiden"
+	or hero == "npc_dota_hero_lion"
+	or hero == "npc_dota_hero_treant"
+	or hero == "npc_dota_hero_vengefulspirit"
+	or hero == "npc_dota_hero_jakiro"
+	or hero == "npc_dota_hero_dazzle"
+	or hero == "npc_dota_hero_lich"
+	or hero == "npc_dota_hero_oracle"
+	or hero == "npc_dota_hero_winter_wyvern"
+	or hero == "npc_dota_hero_warlock"
+	or hero == "npc_dota_hero_bane"
+	or hero == "npc_dota_hero_ancient_apparition"
+	or hero == "npc_dota_hero_disruptor"
+	or hero == "npc_dota_hero_earth_spirit"
 end
 
 function X.GetCurrentSuitableRole(bot, hero)
@@ -1554,10 +1598,10 @@ function X.GetCurrentSuitableRole(bot, hero)
 		return "carry";
 	elseif X.CanBeOfflaner(hero) and ((GetTeam() == TEAM_RADIANT and lane == LANE_TOP) or (GetTeam() == TEAM_DIRE and lane == LANE_BOT) ) then
 		return "offlaner";
-	elseif hero == "npc_dota_hero_wisp" then
-		return "support";
-	elseif hero == "npc_dota_hero_elder_titan" then
-		return "offlaner";
+	--elseif hero == "npc_dota_hero_wisp" then
+		--return "support";
+	--elseif hero == "npc_dota_hero_elder_titan" then
+		--return "offlaner";
 	else
 		return "unknown";
 	end
