@@ -20,20 +20,20 @@ local AbilityToLevelUp=
 {
 	Abilities[1],
 	Abilities[3],
-	Abilities[1],
-	Abilities[2],
-	Abilities[1],
-	Abilities[4],
-	Abilities[1],
 	Abilities[2],
 	Abilities[2],
-	"talent",
 	Abilities[2],
 	Abilities[4],
+	Abilities[2],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
+	Abilities[4],
+	Abilities[1],
+	Abilities[1],
+	"talent",
+	Abilities[1],
 	"nil",
 	Abilities[4],
 	"nil",
@@ -47,13 +47,13 @@ local AbilityToLevelUp=
 
 local TalentTree={
 	function()
-		return Talents[2]
+		return Talents[1]
 	end,
 	function()
 		return Talents[3]
 	end,
 	function()
-		return Talents[6]
+		return Talents[5]
 	end,
 	function()
 		return Talents[8]
@@ -140,7 +140,7 @@ Consider[1]=function()
 	end
 	
 	-- If my mana is enough,use it at enemy
-	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+	--[[if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
 		if(ManaPercentage>0.5 or npcBot:GetMana()>ComboMana)
 		then
@@ -152,10 +152,10 @@ Consider[1]=function()
 				end
 			end
 		end
-	end
+	end]]
 	
 	--Last hit
-	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+	--[[if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
 		if(WeakestCreep~=nil)
 		then
@@ -167,10 +167,10 @@ Consider[1]=function()
 				end
 			end		
 		end
-	end
+	end]]
 	
 	-- If we're farming and can hit 2+ creeps and kill 1+ 
-	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
+	--[[if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
 		if ( #creeps >= 2 ) 
 		then
@@ -179,7 +179,7 @@ Consider[1]=function()
 				return BOT_ACTION_DESIRE_LOW, WeakestCreep;
 			end
 		end
-	end
+	end]]
 
 	-- If we're pushing or defending a lane
 	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or

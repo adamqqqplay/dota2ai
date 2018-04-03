@@ -304,15 +304,15 @@ end
 
 local goodNeutral=
 {
-	npc_dota_neutral_alpha_wolf			,-- 头狼
-	npc_dota_neutral_centaur_khan			,-- 半人马征服者
-	npc_dota_neutral_dark_troll_warlord			,-- 黑暗巨魔召唤法师
-	npc_dota_neutral_polar_furbolg_ursa_warrior			,-- 地狱熊怪粉碎者
-	npc_dota_neutral_forest_troll_high_priest			,-- 丘陵巨魔牧师
-	npc_dota_neutral_mud_golem			,-- 泥土傀儡
-	npc_dota_neutral_ogre_magi			,-- 食人魔冰霜法师
-	npc_dota_neutral_satyr_hellcaller			,-- 萨特苦难使者
-	npc_dota_neutral_enraged_wildkin			,-- 枭兽撕裂者
+	"npc_dota_neutral_alpha_wolf",			-- 头狼
+	"npc_dota_neutral_centaur_khan",			-- 半人马征服者
+	"npc_dota_neutral_dark_troll_warlord",			-- 黑暗巨魔召唤法师
+	"npc_dota_neutral_polar_furbolg_ursa_warrior",			-- 地狱熊怪粉碎者
+	"npc_dota_neutral_forest_troll_high_priest",			-- 丘陵巨魔牧师
+	"npc_dota_neutral_mud_golem",			-- 泥土傀儡
+	"npc_dota_neutral_ogre_magi",		-- 食人魔冰霜法师
+	"npc_dota_neutral_satyr_hellcaller", -- 萨特苦难使者
+	"npc_dota_neutral_enraged_wildkin",  -- 枭兽撕裂者
 }
 
 function IsGoodNeutralCreeps(npcCreep)

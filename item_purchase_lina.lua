@@ -10,29 +10,43 @@ local ItemsToBuy =
 	"item_clarity",
 	"item_branches",
 	"item_branches",
-	"item_wind_lace",
-	"item_bottle",
-	"item_boots",
 	"item_magic_stick",
 	"item_enchanted_mango",			--大魔棒7.07
-	"item_energy_booster",			--秘法鞋
-	"item_void_stone",
-	"item_energy_booster",
-	"item_recipe_aether_lens",		--以太之镜7.06
+	--"item_wind_lace",
+	"item_bottle",
+	"item_boots",
+	"item_blades_of_attack",
+	"item_blades_of_attack",		--相位
+	
+	
 	"item_staff_of_wizardry",
 	"item_void_stone",
 	"item_recipe_cyclone",				--风杖
+
+	"item_quarterstaff",
+	"item_robe",
+	"item_sobi_mask",
+	"item_quarterstaff",
+	"item_robe",
+	"item_sobi_mask",
+	"item_recipe_orchid",			--紫苑
+
 	"item_point_booster",
 	"item_staff_of_wizardry",
 	"item_ogre_axe",
 	"item_blade_of_alacrity",		--蓝杖
-	"item_platemail",
-	"item_mystic_staff",
-	"item_recipe_shivas_guard",		--希瓦
+
 	"item_point_booster",
 	"item_vitality_booster",
 	"item_energy_booster",
 	"item_mystic_staff",			--玲珑心
+
+	"item_broadsword",
+	"item_blades_of_attack",
+	"item_recipe_lesser_crit",
+	"item_recipe_bloodthorn",		--血棘
+
+
 }
 
 utility.checkItemBuild(ItemsToBuy)

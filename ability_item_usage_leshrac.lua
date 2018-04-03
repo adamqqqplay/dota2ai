@@ -18,22 +18,22 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 local AbilityToLevelUp=
 {
-	Abilities[1],
-	Abilities[2],
-	Abilities[2],
-	Abilities[1],
+	Abilities[3],
 	Abilities[2],
 	Abilities[1],
+	Abilities[3],
+	Abilities[3],
+	Abilities[2],
+	Abilities[3],
+	Abilities[4],
+	Abilities[2],
+	"talent",
 	Abilities[2],
 	Abilities[4],
 	Abilities[1],
+	Abilities[1],
 	"talent",
-	Abilities[3],
-	Abilities[4],
-	Abilities[3],
-	Abilities[3],
-	"talent",
-	Abilities[3],
+	Abilities[1],
 	"nil",
 	Abilities[4],
 	"nil",
@@ -380,7 +380,7 @@ Consider[3]=function()
 			then
 				if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
 				then					
-					return BOT_ACTION_DESIRE_LOW,WeakestCreep; 
+					return BOT_ACTION_DESIRE_MODERATE-0.1,WeakestCreep; 
 				end
 			end		
 		end

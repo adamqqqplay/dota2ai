@@ -133,7 +133,7 @@ Consider[1]=function()
 			then
 				local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 				if ( locationAoE.count >= 1 ) then
-					return BOT_ACTION_DESIRE_LOW-0.02, locationAoE.targetloc;
+					return BOT_ACTION_DESIRE_LOW+0.05, locationAoE.targetloc;
 				end
 			end		
 		end
@@ -144,8 +144,8 @@ Consider[1]=function()
 		if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )
 		then
 			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
-			if ( locationAoE.count >= 2 ) then
-				return BOT_ACTION_DESIRE_LOW-0.01, locationAoE.targetloc;
+			if ( locationAoE.count >= 3 ) then
+				return BOT_ACTION_DESIRE_LOW+0.05, locationAoE.targetloc;
 			end
 		end
 	end
@@ -155,7 +155,7 @@ Consider[1]=function()
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 
 		if ( locationAoE.count >= 3 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_MODERATE, locationAoE.targetloc;
 		end
 	end
 
@@ -171,7 +171,7 @@ Consider[1]=function()
 
 		if ( locationAoE.count >= 4 ) 
 		then
-			return BOT_ACTION_DESIRE_LOW+0.01, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_MODERATE+0.02, locationAoE.targetloc;
 		end
 	end
 

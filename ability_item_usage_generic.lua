@@ -714,6 +714,22 @@ function UnImplementedItemUsage()
 			return;
 		end
 	end
+
+	local sr=IsItemAvailable("item_soul_ring");
+	if sr~=nil and sr:IsFullyCastable() then
+		if  (npcBot:GetActiveMode() == BOT_MODE_LANING 
+			or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP 
+			or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID
+			or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT
+			or npcBot:GetActiveMode() == BOT_MODE_FARM)
+		then
+			if ( (npcBot:GetHealth() / npcBot:GetMaxHealth()) > 0.5 and (npcBot:GetMana() / npcBot:GetMaxMana()) < 0.3)
+			then
+			npcBot:Action_UseAbility(sr);
+			return;
+			end
+		end
+	end
 	
 	local bst=IsItemAvailable("item_bloodstone");
 	if bst ~= nil and bst:IsFullyCastable() then
