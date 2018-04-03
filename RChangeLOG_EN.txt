@@ -1,4 +1,4 @@
-Changelog:
+﻿Changelog:
 v1.0a(2017.2.3):Release beta
 v1.0b(2017.2.10):Now supported v7.02. 
 v1.0c(2017.2.14):Added huskar, phantom_assassin, crystal_maiden.
@@ -174,8 +174,8 @@ v1.4b (2018.1.8)
 4.Adjust the warding desire, there will be more time warding.
 5.Adjust the hero selection phase, now the team will not be able to continuously select five heroes.
 6.Improve the item building system to prevent the equipment synthesis failed.
-7.Improve the use of Sven¡¯s storm bolt, and now he will rarely use a storm_bolt to clean the creeps.
-8.Improve the use of Keep of the light¡¯s illuminate, and now he will predict enemy¡¯s position.
+7.Improve the use of Sven' storm bolt, and now he will rarely use a storm_bolt to clean the creeps.
+8.Improve the use of Keep of the light' illuminate, and now he will predict enemy?беs position.
 9.Fixed some heroes who use the wrong recipes of Force Staff and Monkey King Bar.
 10.Fixed Zeus does not use the lightning chain to farm.
 11.Fixed Tide Hunter does not use the ultimate ability.
@@ -220,15 +220,14 @@ v1.4f(2018.3.25) Commit by zmcmcc
 8. Updated the Sven's item and ability building.
 9. Updated the Treant's item and ability building.
 10. Updated the Medusa's item and ability building.
-v.1.4g(2018.3.25) commit by zmcmcc
+v1.4g(2018.3.25) commit by zmcmcc
 11.Fixed some bugs casued by former updates.
-v 1.5(2018.3.31) committed by zmcmcc
+v1.4h(2018.3.31) committed by zmcmcc
 1. Updated the hero selection and role allocation. Bots will try to avoid picking heros with duplicated roles. Also slightly changed the hero selection pace. now ally bots will not wait until you pick a hero, but the duration of two picks was slightly prolonged.
-2. Temporarily remove these heros: Alchemist, Antimage, Spectre, Spirit breaker. 
-3. Get Ember spirit, Kunkka, disruptor, elder titan and Chen back.
+2. Temporarily remove these heros: Alchemist, Antimage, Spectre. 
+3. Get Chen back.
 4. Optimized the Captian Mode. Now if you let Bots to ban/pick, they will try to ban/pick with the same hero pool as in AP mode, and will pick in this order: Offlaner, support1, midlaner,support2,safelane carry. I also try to let them have a 311 distribution, like professional game(If the feedback is bad,it's easy to go back to 212).
 Two important things:a.If you are the captain, please follow the Offlaner, support1, midlaner,support2,safelane carry order to pick! The bots will only go to the right place in this case. b.In some extreme cases bots will pick two same heros(I tested 15 games, one occurs). If that happened, just quit and start another game...
 5. Now bots will be laning more peacefully in the first 6-7 minutes without frequent team fight in mid lane.
-6. The following heros are either in item building, ability usage or bug fixed: batrider, centaur, chen, death prophet, disruptor, dragon kignt, faceless void, huskar, jakiro, juggernaut, legion commander, leshrac, lina, luna, mirana, necrolyte, phantom assassin, pudge, riki, sniper, sven, tidehunter, tiny, treant, undying, windrunner, zeus.
-7. fixed some bugs.
-
+6. The following heros are either in item building, ability usage or bug fixed: Batrider, Centaur, Chen, Death prophet, Disruptor, Dragon kignt, Faceless void, Huskar, jakiro, Juggernaut, Legion commander, Leshrac, Lina, Luna, Mirana, Necrolyte, Phantom assassin, Pudge, Riki, Sniper, Sven, Tidehunter, Tiny, Treant, Undying, Windrunner, Zeus.
+7. Fixed some bugs.

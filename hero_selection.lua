@@ -307,7 +307,7 @@ allBotHeroes = {
 	"npc_dota_hero_tidehunter",
 	"npc_dota_hero_slark",
 	"npc_dota_hero_riki",
-	--"npc_dota_hero_spirit_breaker",
+	"npc_dota_hero_spirit_breaker",
 	"npc_dota_hero_vengefulspirit",
 	"npc_dota_hero_clinkz",
 	"npc_dota_hero_jakiro",
@@ -324,6 +324,7 @@ allBotHeroes = {
 	"npc_dota_hero_juggernaut",
 	"npc_dota_hero_axe",
 	"npc_dota_hero_razor",
+	"npc_dota_hero_sand_king",
 	"npc_dota_hero_oracle",
 	"npc_dota_hero_sniper",
 	"npc_dota_hero_bloodseeker",
@@ -367,6 +368,7 @@ allBotHeroes = {
 	"npc_dota_hero_medusa",
 	"npc_dota_hero_mirana",
 	"npc_dota_hero_monkey_king",
+	"npc_dota_hero_pudge",
 	"npc_dota_hero_sand_king"
 }
 hero_pool_position_1 = {
@@ -392,18 +394,15 @@ hero_pool_position_1 = {
 hero_pool_position_2 = {
 	"npc_dota_hero_leshrac",
 	"npc_dota_hero_dragon_knight",
-	"npc_dota_hero_kunkka",
 	"npc_dota_hero_huskar",
 	"npc_dota_hero_zuus",
 	"npc_dota_hero_lina",
 	"npc_dota_hero_medusa",
 	"npc_dota_hero_phantom_assassin",
-	"npc_dota_hero_dragon_knight",
 	"npc_dota_hero_viper",
 	"npc_dota_hero_necrolyte",
 	"npc_dota_hero_queenofpain",
 	"npc_dota_hero_razor",
-	"npc_dota_hero_ember_spirit",
 	"npc_dota_hero_nevermore",
 	"npc_dota_hero_tiny",
 	"npc_dota_hero_bloodseeker",
@@ -441,14 +440,12 @@ hero_pool_position_4 = {
 	"npc_dota_hero_undying",
 	"npc_dota_hero_night_stalker",
 	"npc_dota_hero_silencer",
-
-	--"npc_dota_hero_spirit_breaker",
-
+	"npc_dota_hero_spirit_breaker",
 	"npc_dota_hero_riki",
 	"npc_dota_hero_earthshaker",
 	"npc_dota_hero_omniknight",
 	"npc_dota_hero_bounty_hunter",
-	"npc_dota_hero_elder_titan",
+	--"npc_dota_hero_elder_titan",
 	"npc_dota_hero_keeper_of_the_light",
 
 	"npc_dota_hero_chen",
@@ -512,7 +509,7 @@ local pickTime=GameTime();
 local randomTime=0;
 function AllPickLogic()
 	local team = GetTeam();
-	if(GameTime()<20 and AreHumanPlayersReady(team)==false) 
+	if(GameTime()<45 and AreHumanPlayersReady(team)==false or GameTime()<25)
 	then
 		return
 	end
@@ -530,7 +527,7 @@ function AllPickLogic()
 			if(IsPlayerInHeroSelectionControl(id) and IsPlayerBot(id) and (GetSelectedHeroName(id)=="" or GetSelectedHeroName(id)==nil))
 			then
 				if(randomTime==0) then
-					randomTime=RandomInt(10,15);
+					randomTime=RandomInt(5,15);
 				end
 				while (GameTime()-pickTime)<randomTime do
 					return;

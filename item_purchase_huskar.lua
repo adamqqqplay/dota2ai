@@ -18,7 +18,7 @@ local ItemsToBuy =
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
 
-	--[["item_infused_raindrop",
+	"item_infused_raindrop",
 	"item_ring_of_protection",
 	"item_recipe_urn_of_shadows",	--骨灰盒7.06
 	
@@ -51,7 +51,7 @@ local ItemsToBuy =
 
 	"item_lifesteal",
 	"item_reaver", 
-	"item_claymore",				--撒旦7.07]]
+	"item_claymore",				--撒旦7.07
 }
 
 utility.checkItemBuild(ItemsToBuy)
