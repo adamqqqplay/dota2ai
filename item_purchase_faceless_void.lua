@@ -8,25 +8,18 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_flask",
-	"item_quelling_blade",			--补刀斧
 	"item_branches",
 	"item_branches",
 	"item_magic_stick",
 	"item_enchanted_mango",			--大魔棒7.07
-	
-	"item_boots",	
-
-	"item_lifesteal",               --吸血面具
+	"item_boots",
 
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
+
+	"item_lifesteal",
+	"item_quarterstaff",			--疯狂面具7.06
 	
-	"item_recipe_mask_of_madness",  -- 疯脸
-
-	"item_ring_of_health",
-	"item_void_stone",
-	"item_demon_edge",				--狂战7.07
-
 	"item_boots_of_elves",
 	"item_blade_of_alacrity",
 	"item_recipe_yasha",			--夜叉
