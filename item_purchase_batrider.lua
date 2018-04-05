@@ -15,8 +15,7 @@ local ItemsToBuy =
 	"item_magic_stick",
 	"item_boots",
 	"item_ring_of_regen",			--绿鞋
-	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+
 	"item_gauntlets",
 	"item_circlet",
 	"item_recipe_bracer",

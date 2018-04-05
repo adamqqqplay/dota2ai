@@ -231,3 +231,6 @@ Two important things:a.If you are the captain, please follow the Offlaner, suppo
 5. Now bots will be laning more peacefully in the first 6-7 minutes without frequent team fight in mid lane.
 6. The following heros are either in item building, ability usage or bug fixed: Batrider, Centaur, Chen, Death prophet, Disruptor, Dragon kignt, Faceless void, Huskar, jakiro, Juggernaut, Legion commander, Leshrac, Lina, Luna, Mirana, Necrolyte, Phantom assassin, Pudge, Riki, Sniper, Sven, Tidehunter, Tiny, Treant, Undying, Windrunner, Zeus.
 7. Fixed some bugs.
+v1.4i(2018.3.31) committed by zmcmcc
+1. Fixed bug that void cannot buy items.
+2. Fixed bug that crystal maiden and batrider buy two magic sticks.
