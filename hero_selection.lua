@@ -415,7 +415,7 @@ hero_pool_position_2 = {
 hero_pool_position_3 = {
 	"npc_dota_hero_centaur",
 	"npc_dota_hero_doom_bringer",
-	"npc_dota_hero_legion_commander",
+	--[["npc_dota_hero_legion_commander",
 	"npc_dota_hero_tidehunter",
 	"npc_dota_hero_axe",
 	"npc_dota_hero_bristleback",
@@ -429,7 +429,7 @@ hero_pool_position_3 = {
 	"npc_dota_hero_dark_seer",
 	"npc_dota_hero_enchantress",
 	"npc_dota_hero_magnataur",
-	"npc_dota_hero_mirana"
+	"npc_dota_hero_mirana"]]
 }
 hero_pool_position_4 = {
 	"npc_dota_hero_skywrath_mage",
