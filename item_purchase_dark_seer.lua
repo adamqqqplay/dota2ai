@@ -8,14 +8,24 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_flask",
-	"item_stout_shield",
-	"item_branches",
-	"item_branches",
+	"item_ring_of_regen",
+	"item_clarity",
+
+	"item_gauntlets",
+	"item_gauntlets",
+	"item_recipe_soul_ring",  		--魂戒
+
 	"item_boots",
-	"item_energy_booster",			--秘法鞋	
-	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+
 	
+	"item_magic_stick",
+	"item_branches",
+	"item_branches",
+	"item_enchanted_mango",			--大魔棒7.07
+
+	"item_energy_booster",			--秘法鞋	
+
+	"item_stout_shield",
 	"item_cloak",
 	"item_ring_of_health",
 	"item_ring_of_regen",			--挑战

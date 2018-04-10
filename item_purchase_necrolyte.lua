@@ -6,14 +6,15 @@ local utility = require( GetScriptDirectory().."/utility" )
 
 local ItemsToBuy = 
 { 
+	"item_circlet",
+	"item_mantle",
+	"item_recipe_null_talisman",	--无用挂件
 	"item_tango",
-	"item_clarity",
-	"item_branches",
-	"item_branches",
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
-	"item_bottle",
 	"item_boots",
+	"item_enchanted_mango",			--大魔棒7.07
+	"item_branches",
+	"item_branches",
 	"item_energy_booster",			--秘法鞋
 	
 	"item_ring_of_regen",
@@ -23,6 +24,12 @@ local ItemsToBuy =
 	"item_recipe_buckler" ,
 	"item_branches",
     "item_recipe_mekansm",			--梅肯
+
+    "item_mantle",
+	"item_circlet",
+	"item_recipe_null_talisman",	--无用挂件
+	"item_helm_of_iron_will",
+	"item_recipe_veil_of_discord",	--纷争
 	
 	"item_point_booster",
 	"item_recipe_guardian_greaves",	--卫士胫甲
@@ -38,14 +45,15 @@ local ItemsToBuy =
 	"item_recipe_headdress",
 	"item_branches",
 	"item_recipe_pipe",			--笛子
+
+	"item_point_booster",
+	"item_vitality_booster",
+	"item_energy_booster",
+	"item_mystic_staff",			--玲珑心
 	
 	"item_platemail",
 	"item_mystic_staff",
 	"item_recipe_shivas_guard" ,	--希瓦
-	
-	"item_mystic_staff",
-	"item_ultimate_orb",
-	"item_void_stone",				--羊刀
 	
 }
 

@@ -151,7 +151,7 @@ Consider[1]=function()
 		end
 	end
 
-	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	--[[ If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
 		for _,npcEnemy in pairs( enemys )
@@ -164,7 +164,7 @@ Consider[1]=function()
 				end
 			end
 		end
-	end
+	end]]
 
 	-- If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 

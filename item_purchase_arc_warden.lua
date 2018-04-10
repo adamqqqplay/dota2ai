@@ -6,9 +6,10 @@ local utility = require( GetScriptDirectory().."/utility" )
 
 local ItemsToBuy = 
 { 
+	"item_slippers",
+	"item_circlet",
+	"item_recipe_wraith_band", --系带
 	"item_tango",
-	"item_clarity",
-	"item_wind_lace",
 	"item_branches",
 	"item_branches",
 	"item_boots",	
@@ -17,6 +18,9 @@ local ItemsToBuy =
 	
 	"item_gloves",
 	"item_recipe_hand_of_midas",	--点金
+
+	"item_ring_of_protection",
+	"item_sobi_mask",				--天鹰
 	
 	"item_gloves",
 	"item_mithril_hammer",
@@ -25,15 +29,10 @@ local ItemsToBuy =
 	"item_shadow_amulet",
 	"item_claymore",				--隐刀
 	
-	"item_recipe_travel_boots",		--飞鞋
-	
 	"item_hyperstone",
 	"item_recipe_mjollnir",			--大雷锤
 	
-	"item_blade_of_alacrity",
-	"item_blade_of_alacrity",
-	"item_robe",
-	"item_recipe_diffusal_blade",	--散失刀
+	"item_recipe_travel_boots",		--飞鞋
 	
 	"item_ultimate_orb",
 	"item_recipe_silver_edge",		--大隐刀
@@ -51,9 +50,9 @@ local ItemsToBuy =
 	"item_recipe_lesser_crit" ,
 	"item_recipe_bloodthorn",		--血棘
 	
-	"item_mystic_staff",
-	"item_ultimate_orb",
-	"item_void_stone",				--羊刀
+	"item_quarterstaff",
+	"item_eagle",
+	"item_talisman_of_evasion",		--蝴蝶
 }
 
 utility.checkItemBuild(ItemsToBuy)

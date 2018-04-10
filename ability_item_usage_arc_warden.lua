@@ -18,15 +18,15 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 local AbilityToLevelUp=
 {
-	Abilities[3],
-	Abilities[1],
 	Abilities[1],
 	Abilities[3],
+	Abilities[3],
 	Abilities[1],
+	Abilities[3],
 	Abilities[4],
+	Abilities[3],
 	Abilities[1],
-	Abilities[3],
-	Abilities[3],
+	Abilities[1],
 	"talent",
 	Abilities[2],
 	Abilities[4],
@@ -47,13 +47,13 @@ local AbilityToLevelUp=
 
 local TalentTree={
 	function()
-		return Talents[2]
+		return Talents[1]
 	end,
 	function()
 		return Talents[3]
 	end,
 	function()
-		return Talents[5]
+		return Talents[6]
 	end,
 	function()
 		return Talents[7]
@@ -142,7 +142,7 @@ Consider[1]=function()
 	--------------------------------------
 	--protect myself
 	local enemys2 = npcBot:GetNearbyHeroes( 400, true, BOT_MODE_NONE );
-	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	--[[ If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) or #enemys2>0) 
 	then
 		for _,npcEnemy in pairs( enemys )
@@ -152,7 +152,7 @@ Consider[1]=function()
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy;
 			end
 		end
-	end
+	end]]
 	
 	-- If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
@@ -365,7 +365,7 @@ Consider[3]=function()
 	-- Mode based usage
 	--------------------------------------
 	local enemys2 = npcBot:GetNearbyHeroes( 400, true, BOT_MODE_NONE );
-	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	--[[ If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH or #enemys2>0) 
 	then
 		for _,npcEnemy in pairs( enemys )
@@ -375,7 +375,7 @@ Consider[3]=function()
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation(CastPoint+Delay); 
 			end
 		end
-	end
+	end]]
 	
 	-- If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 

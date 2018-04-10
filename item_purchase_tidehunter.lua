@@ -8,21 +8,20 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_flask",
-	"item_clarity",
+	"item_enchanted_mango",			--大魔棒7.07
 	"item_branches",
 	"item_branches",
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+
 	"item_boots",
 	"item_energy_booster",			--秘法
 			
 	"item_ring_of_regen",
+	"item_branches",
 	"item_recipe_headdress",
-	"item_branches",
-
 	"item_chainmail",
-	"item_recipe_buckler" ,
 	"item_branches",
+	"item_recipe_buckler" ,
     "item_recipe_mekansm",			--梅肯
 	
 	"item_blink",					--跳刀

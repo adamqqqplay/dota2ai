@@ -11,6 +11,7 @@ local ItemsToBuy =
 	"item_stout_shield",
 	"item_branches",
 	"item_branches",
+	"item_orb_of_venom",
 	"item_boots",
 	"item_belt_of_strength",
 	"item_gloves",					--假腿

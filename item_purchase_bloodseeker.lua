@@ -8,13 +8,20 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_stout_shield",
+	"item_orb_of_venom",
 	"item_branches",
 	"item_branches",
 	"item_magic_stick",
 	"item_enchanted_mango",			--大魔棒7.07
 	"item_boots",
-	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
+	"item_belt_of_strength",
+	"item_gloves",					--假腿
+
+	"item_slippers",
+	"item_circlet",
+	"item_recipe_wraith_band", --系带
+	"item_ring_of_protection",
+	"item_sobi_mask",				--天鹰
 	
 	"item_broadsword",
 	"item_robe",

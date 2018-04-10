@@ -152,7 +152,7 @@ function Consider1()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetExtrapolatedLocation(CastPoint); 
+					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetExtrapolatedLocation(CastPoint+150); 
 				end
 			end
 		end
@@ -194,7 +194,7 @@ function Consider1()
 			then
 				if ( CanCast[abilityNumber]( npcEnemy ) ) 
 				then
-					return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetExtrapolatedLocation(CastPoint);
+					return BOT_ACTION_DESIRE_MODERATE-0.1, npcEnemy:GetExtrapolatedLocation(CastPoint);
 				end
 			end
 		end

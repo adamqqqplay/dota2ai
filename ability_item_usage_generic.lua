@@ -534,7 +534,7 @@ function GiveToMidLaner()
 		if member ~= nil and not member:IsIllusion() and member:IsAlive() then
 			local num_stg = GetItemCount(member, "item_tango_single"); 
 			local num_ff = GetItemCount(member, "item_faerie_fire"); 
-			if num_ff > 0 and num_stg < 1 then
+			if  num_stg < 1 then
 				return member;
 			end
 		end
@@ -616,17 +616,29 @@ function UnImplementedItemUsage()
 		end
 	end
 
+
+	if ( DotaTime() > 5*60) then
+		for i = 0, 14 do
+			local sCurItem = npcBot:GetItemInSlot(i);
+			if ( sCurItem ~= nil and sCurItem:GetName() == "item_tango" ) then
+				npcBot:ActionImmediate_DropItemAtPositionImmediate("item_tango",npc:GetLocation());
+			end
+		end
+	end
+
 	local itg=IsItemAvailable("item_tango");
 	if itg~=nil and itg:IsFullyCastable() then
 		local tCharge = itg:GetCurrentCharges()
-		if DotaTime() > -80 and DotaTime() < 0 and npcBot:DistanceFromFountain() <=100 and role.CanBeSupport(npcBot:GetUnitName())
-		   and npcBot:GetAssignedLane() ~= LANE_MID and tCharge > 3 and DotaTime() > giveTime + 2.0 then
+		if DotaTime() > -90 and DotaTime() < 0 and npcBot:DistanceFromFountain() <=100 and role.CanBeSupport(npcBot:GetUnitName())
+		   and npcBot:GetAssignedLane() ~= LANE_MID and tCharge > 2 and DotaTime() > giveTime + 2.0 then
 			local target = GiveToMidLaner()
 			if target ~= nil then
-				npcBot:ActionImmediate_Chat(string.gsub(npcBot:GetUnitName(),"npc_dota_hero_","")..
+				--[[npcBot:ActionImmediate_Chat(string.gsub(npcBot:GetUnitName(),"npc_dota_hero_","")..
 						" giving tango to "..
-						string.gsub(target:GetUnitName(),"npc_dota_hero_","")
-						, false);
+						string.gsub(target:GetUnitName(),"npc_dota_hero_","")..
+						"Don't ask why we only give you one tango. We are poor. 别问我们为什么只给一颗吃树了，我们穷。"
+						, false);]]
+				npcBot:ActionImmediate_Chat("Don't ask why we only give you one tango. We are poor. 别问我们为什么只给一颗吃树了，我们穷。",false);
 				npcBot:Action_UseAbilityOnEntity(itg, target);
 				giveTime = DotaTime();
 				return;
@@ -647,7 +659,7 @@ function UnImplementedItemUsage()
 		end
 	end
 	
-	local its=IsItemAvailable("item_tango_single");
+	--[[local its=IsItemAvailable("item_tango_single");
 	if its~=nil and its:IsFullyCastable() and its:GetCooldownTimeRemaining() == 0 then
 		if DotaTime() > 10*60 and npcBot:DistanceFromFountain() > 1300
 		then
@@ -657,7 +669,67 @@ function UnImplementedItemUsage()
 				return;
 			end
 		end
+	end]]
+
+	if itg~=nil and its:IsFullyCastable() and npcBot:DistanceFromFountain() > 1000 then
+		if DotaTime() > 0 
+		then
+			local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 300, true, BOT_MODE_NONE );
+			local trees = npcBot:GetNearbyTrees(1000);
+			if trees[1] ~= nil  and (npcBot:GetHealth() / npcBot:GetMaxHealth())  < 0.65 
+				and ( IsLocationVisible(GetTreeLocation(trees[1])) or IsLocationPassable(GetTreeLocation(trees[1])) )
+			   and #tableNearbyEnemyHeroes == 0 
+			then
+				npcBot:Action_UseAbilityOnTree(itg, trees[1]);
+				return;
+			end
+		end
 	end
+
+	local its=IsItemAvailable("item_tango_single");
+	if its~=nil and its:IsFullyCastable() and npcBot:DistanceFromFountain() > 1000 then
+		if DotaTime() > 0 
+		then
+			local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 300, true, BOT_MODE_NONE );
+			local trees = npcBot:GetNearbyTrees(1000);
+			if trees[1] ~= nil  and (npcBot:GetHealth() / npcBot:GetMaxHealth())  < 0.65 
+				and ( IsLocationVisible(GetTreeLocation(trees[1])) or IsLocationPassable(GetTreeLocation(trees[1])) )
+			   and #tableNearbyEnemyHeroes == 0 
+			then
+				npcBot:Action_UseAbilityOnTree(its, trees[1]);
+				return;
+			end
+		end
+	end
+
+	local ifl =IsItemAvailable("item_flask");
+	if ifl~=nil and ifl:IsFullyCastable() and npcBot:DistanceFromFountain() > 1000 then
+		if DotaTime() > 0 
+		then
+			local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 650, true, BOT_MODE_NONE );
+			if  (npcBot:GetHealth() / npcBot:GetMaxHealth())  < 0.35 
+				and #tableNearbyEnemyHeroes == 0 
+			then
+				npcBot:Action_UseAbilityOnEntity(ifl, npcBot);
+				return;
+			end
+		end
+	end
+
+	local icl =IsItemAvailable("item_clarity");
+	if icl~=nil and icl:IsFullyCastable() and npcBot:DistanceFromFountain() > 1000 then
+		if DotaTime() > 0 
+		then
+			local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 450, true, BOT_MODE_NONE );
+			if  (npcBot:GetMana() / npcBot:GetMaxMana())  < 0.35 
+				and #tableNearbyEnemyHeroes == 0 
+			then
+				npcBot:Action_UseAbilityOnEntity(icl, npcBot);
+				return;
+			end
+		end
+	end
+
 	
 	local irt=IsItemAvailable("item_iron_talon");
 	if irt~=nil and irt:IsFullyCastable() then

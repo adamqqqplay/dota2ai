@@ -11,9 +11,11 @@ local ItemsToBuy =
 	"item_stout_shield",
 	"item_branches",
 	"item_branches",
-	"item_boots",
 	"item_magic_stick",
 	"item_enchanted_mango",			--大魔棒7.07
+	
+	"item_boots",
+	
 	"item_energy_booster",			--秘法
 			
 	"item_ring_of_regen",

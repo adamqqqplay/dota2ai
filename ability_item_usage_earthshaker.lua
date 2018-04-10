@@ -448,7 +448,7 @@ Consider[4]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
 				then
-					return BOT_ACTION_DESIRE_HIGH
+					return BOT_ACTION_DESIRE_MODERATE-0.15
 				end
 			end
 		end
@@ -469,7 +469,7 @@ Consider[4]=function()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)<=Radius)
 			then
-				return BOT_ACTION_DESIRE_MODERATE
+				return BOT_ACTION_DESIRE_HIGH
 			end
 		end
 	end

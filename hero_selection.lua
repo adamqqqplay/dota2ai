@@ -384,8 +384,8 @@ hero_pool_position_1 = {
 	"npc_dota_hero_ursa",
 	"npc_dota_hero_sven",
 
-	--"npc_dota_hero_spectre",
-	--"npc_dota_hero_antimage",
+	"npc_dota_hero_spectre",
+	"npc_dota_hero_antimage",
 
 	"npc_dota_hero_gyrocopter",
 	"npc_dota_hero_lycan",
@@ -410,7 +410,7 @@ hero_pool_position_2 = {
 	"npc_dota_hero_death_prophet",
 	"npc_dota_hero_arc_warden",
 	"npc_dota_hero_sniper",
-	--"npc_dota_hero_alchemist",
+	"npc_dota_hero_alchemist",
 }
 hero_pool_position_3 = {
 	"npc_dota_hero_centaur",
@@ -425,7 +425,6 @@ hero_pool_position_3 = {
 	"npc_dota_hero_beastmaster",
 	"npc_dota_hero_brewmaster",
 	"npc_dota_hero_enigma",
-	"npc_dota_hero_abaddon",
 	"npc_dota_hero_broodmother",
 	"npc_dota_hero_dark_seer",
 	"npc_dota_hero_enchantress",
@@ -435,17 +434,20 @@ hero_pool_position_3 = {
 hero_pool_position_4 = {
 	"npc_dota_hero_skywrath_mage",
 	"npc_dota_hero_shadow_shaman",
+	"npc_dota_hero_abaddon",
 	"npc_dota_hero_venomancer",
 	"npc_dota_hero_slardar",
 	"npc_dota_hero_undying",
 	"npc_dota_hero_night_stalker",
 	"npc_dota_hero_silencer",
-	"npc_dota_hero_spirit_breaker",
+	--"npc_dota_hero_spirit_breaker",
 	"npc_dota_hero_riki",
 	"npc_dota_hero_earthshaker",
 	"npc_dota_hero_omniknight",
 	"npc_dota_hero_bounty_hunter",
+
 	--"npc_dota_hero_elder_titan",
+
 	"npc_dota_hero_keeper_of_the_light",
 
 	"npc_dota_hero_chen",
@@ -527,7 +529,7 @@ function AllPickLogic()
 			if(IsPlayerInHeroSelectionControl(id) and IsPlayerBot(id) and (GetSelectedHeroName(id)=="" or GetSelectedHeroName(id)==nil))
 			then
 				if(randomTime==0) then
-					randomTime=RandomInt(5,15);
+					randomTime=RandomInt(10,12);
 				end
 				while (GameTime()-pickTime)<randomTime do
 					return;
@@ -892,7 +894,7 @@ function CaptainModeLogic()
 		NeededTime = RandomInt( Min, Max );
 	--end
 	elseif CMTestMode then
-		NeededTime = 28;
+		NeededTime = 25;
 	end	
 	if GetHeroPickState() == HEROPICK_STATE_CM_CAPTAINPICK then	
 		PickCaptain();

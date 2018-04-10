@@ -11,11 +11,22 @@ local ItemsToBuy =
 	"item_stout_shield",
 	"item_branches",
 	"item_branches",
+
 	"item_boots",
-	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
+
 	"item_magic_stick",
 	"item_enchanted_mango",			--大魔棒7.07
+
+	"item_blades_of_attack",
+	"item_blades_of_attack",		--相位
+	
+	"item_gauntlets",
+	"item_circlet",
+	"item_recipe_bracer",
+				
+	"item_wind_lace",
+	"item_sobi_mask",
+	"item_recipe_ancient_janggo",	--战鼓
 	
 	"item_shadow_amulet",
 	"item_claymore",				--隐刀
@@ -30,11 +41,6 @@ local ItemsToBuy =
 	
 	"item_ultimate_orb",
 	"item_recipe_silver_edge",		--大隐刀
-	
-	"item_point_booster",		
-	"item_staff_of_wizardry",
-	"item_ogre_axe",
-	"item_blade_of_alacrity",		--蓝杖
 	
 	"item_hyperstone",
 	"item_platemail",

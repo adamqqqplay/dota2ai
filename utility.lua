@@ -342,10 +342,9 @@ function utilityModule.SellExtraItem(ItemsToBuy)
 	
 	if(utilityModule.IsItemSlotsFull())
 	then
-		if(GameTime()>20*60 or level>=7)
+		if(GameTime()>6*60 or level>=6)
 		then
 			utilityModule.SellSpecifiedItem("item_faerie_fire")
-			utilityModule.SellSpecifiedItem("item_enchanted_mango")
 			utilityModule.SellSpecifiedItem("item_tango")
 			utilityModule.SellSpecifiedItem("item_clarity")
 			utilityModule.SellSpecifiedItem("item_flask")
@@ -354,7 +353,8 @@ function utilityModule.SellExtraItem(ItemsToBuy)
 		then
 			utilityModule.SellSpecifiedItem("item_stout_shield")
 			utilityModule.SellSpecifiedItem("item_orb_of_venom")
-			utilityModule.SellSpecifiedItem("item_poor_mans_shield")
+			utilityModule.SellSpecifiedItem("item_enchanted_mango")
+			--utilityModule.SellSpecifiedItem("item_poor_mans_shield")
 			utilityModule.SellSpecifiedItem("item_quelling_blade")
 			utilityModule.SellSpecifiedItem("item_soul_ring")
 		end
@@ -839,23 +839,23 @@ function utilityModule.BuySupportItem()
 	if(utilityModule.GetItemSlotsCount()<7)
 	then
 		local item_ward_observer = utilityModule.GetItemIncludeBackpack( "item_ward_observer" );
-		local item_ward_sentry2 = utilityModule.GetItemIncludeBackpack( "item_ward_dispenser" )
-		local item_gem = utilityModule.GetItemIncludeBackpack( "item_gem" )
-		local item_smoke =  utilityModule.GetItemIncludeBackpack( "item_smoke_of_deceit")
+		--local item_ward_sentry2 = utilityModule.GetItemIncludeBackpack( "item_ward_dispenser" )
+		--local item_gem = utilityModule.GetItemIncludeBackpack( "item_gem" )
+		--local item_smoke =  utilityModule.GetItemIncludeBackpack( "item_smoke_of_deceit")
 		if ( DotaTime() >= 0 and hasInvisibleEnemy == true ) 
 		then
 			local item_dust = utilityModule.GetItemIncludeBackpack( "item_dust" );
-			local item_ward_sentry = utilityModule.GetItemIncludeBackpack( "item_ward_sentry" )
+			--local item_ward_sentry = utilityModule.GetItemIncludeBackpack( "item_ward_sentry" )
 			if(item_gem==nil and utilityModule.HaveGem()==false)
 			then
 				if (item_dust==nil and item_ward_sentry==nil and item_ward_sentry2==nil and npcBot:GetGold() >= 2*GetItemCost("item_dust") and GetItemStockCount("item_gem") >= 1) then
 					npcBot:ActionImmediate_PurchaseItem( "item_dust" );
 				end
 				
-				if(DotaTime()>=28*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1)
+				--[[if(DotaTime()>=28*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1)
 				then
 					npcBot:ActionImmediate_PurchaseItem( "item_gem" );
-				end
+				end]]
 				
 				-- if ( item_ward_observer==nil and item_dust==nil and item_ward_sentry==nil and item_ward_sentry2==nil and utilityModule.IsItemSlotsFull()==false and npcBot:GetGold() >= 2*GetItemCost("item_ward_sentry") ) then
 					-- npcBot:ActionImmediate_PurchaseItem( "item_ward_sentry" );
@@ -863,20 +863,20 @@ function utilityModule.BuySupportItem()
 			end
 		end
 		
-		if(DotaTime()>=40*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1 and item_gem==nil and utilityModule.HaveGem()==false)
+		--[[if(DotaTime()>=40*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1 and item_gem==nil and utilityModule.HaveGem()==false)
 		then
 			npcBot:ActionImmediate_PurchaseItem( "item_gem" );
-		end
-				
+		end]]
+				--item_ward_observer==nil and
 		if ( item_ward_observer==nil and item_ward_sentry2==nil and (GetItemStockCount("item_ward_observer") > 1 or DotaTime()<0) and npcBot:GetGold() >= GetItemCost("item_ward_observer")) 
 		then
 			npcBot:ActionImmediate_PurchaseItem( "item_ward_observer" );
 		end
 		
-		if(item_smoke==nil and GetItemStockCount("item_smoke_of_deceit") > 2 and npcBot:GetGold() >= GetItemCost("item_smoke_of_deceit"))
+		--[[if(item_smoke==nil and GetItemStockCount("item_smoke_of_deceit") > 2 and npcBot:GetGold() >= GetItemCost("item_smoke_of_deceit"))
 		then
 			npcBot:ActionImmediate_PurchaseItem("item_smoke_of_deceit");
-		end
+		end]]
 	end
 	
 end

@@ -218,7 +218,7 @@ Consider[2]=function()
 	--------------------------------------
 	--protect myself
 	local enemys2 = npcBot:GetNearbyHeroes( 400, true, BOT_MODE_NONE );
-	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	--[[ If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) or #enemys2>0) 
 	then
 		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) or GetUnitToUnitDistance(npcBot,npcEnemy)<400) 
@@ -234,7 +234,7 @@ Consider[2]=function()
 				end
 			end
 		end
-	end
+	end]]
 	
 	-- If my mana is enough,use it at enemy
 	-- If we're farming and can hit 2+ creeps and kill 1+ 
@@ -373,7 +373,7 @@ Consider[3]=function()
 		end
 	end
 
-	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	--[[ If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
 		for _,npcEnemy in pairs( enemys )
@@ -386,7 +386,7 @@ Consider[3]=function()
 				end
 			end
 		end
-	end
+	end]]
 
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
@@ -463,7 +463,7 @@ Consider[4]=function()
 	do
 		if ( npcEnemy:IsChanneling() ) 
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation()
+			return BOT_ACTION_DESIRE_MODERATE-0.15, npcEnemy:GetLocation()
 		end
 	end
 	--------------------------------------
@@ -475,7 +475,7 @@ Consider[4]=function()
 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
 		if ( locationAoE.count >= 2 ) 
 		then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
+			return BOT_ACTION_DESIRE_LOW-0.15, locationAoE.targetloc
 		end
 	end
 	
@@ -503,6 +503,18 @@ Consider[4]=function()
 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
 		if ( locationAoE.count >= 2 ) then
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
+		end
+	end
+
+	-- If we're in a teamfight, use it 
+	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
+	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 
+	then
+		local npcEnemy = npcBot:GetTarget();
+
+		if ( npcEnemy ~= nil and #Enemys >= 2) 
+		then
+			return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc
 		end
 	end
 

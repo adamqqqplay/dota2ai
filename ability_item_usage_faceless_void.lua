@@ -118,7 +118,7 @@ Consider[1]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 				then
-					return BOT_ACTION_DESIRE_HIGH,utility.GetUnitsTowardsLocation(npcBot,WeakestEnemy,CastRange+200); 
+					return BOT_ACTION_DESIRE_MODERATE,utility.GetUnitsTowardsLocation(npcBot,WeakestEnemy,CastRange+200); 
 				end
 			end
 		end
@@ -133,7 +133,7 @@ Consider[1]=function()
 	end
 	
 	-- If we're seriously retreating
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT or npcBot.FacelessVoidSkill1.Hp-HealthPercentage>=0.15+0.03*#enemys) 
+	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT or npcBot.FacelessVoidSkill1.Hp-HealthPercentage>=0.25+0.05*#enemys) 
 	then
 		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
 	end
@@ -162,7 +162,7 @@ Consider[1]=function()
 				local enemys2= npcEnemy:GetNearbyHeroes(900,true,BOT_MODE_NONE)
 				if (enemys2~=nil and #enemys2<=2)
 				then
-					if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)>CastRange-200 and GetUnitToUnitDistance(npcBot,npcEnemy)<1200)
+					if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)>CastRange-200 and GetUnitToUnitDistance(npcBot,npcEnemy)<1000)
 					then
 						return BOT_ACTION_DESIRE_MODERATE, utility.GetUnitsTowardsLocation(npcBot,npcEnemy,CastRange+200);
 					end
@@ -287,7 +287,7 @@ Consider[4]=function()
 			local Allies = utility.GetAlliesNearLocation(TargetLocation,Radius)
 			if(#Allies==0)
 			then
-				return BOT_ACTION_DESIRE_HIGH, TargetLocation
+				return BOT_ACTION_DESIRE_MODERATE, TargetLocation
 			end
 		end
 	end
@@ -305,7 +305,7 @@ Consider[4]=function()
 					local Allies = utility.GetAlliesNearLocation(TargetLocation,Radius)
 					if(#Allies==0)
 					then
-						return BOT_ACTION_DESIRE_HIGH, TargetLocation
+						return BOT_ACTION_DESIRE_MODERATE-0.1, TargetLocation
 					end
 				end
 			end
@@ -318,13 +318,13 @@ Consider[4]=function()
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
-		if ( locationAoE.count >= 1 ) 
+		if ( locationAoE.count >= 3 ) 
 		then
 			local TargetLocation=locationAoE.targetloc;
 			local Allies = utility.GetAlliesNearLocation(TargetLocation,Radius)
 			if(#Allies==0)
 			then
-				return BOT_ACTION_DESIRE_LOW, TargetLocation
+				return BOT_ACTION_DESIRE_LOW-0.1, TargetLocation
 			end
 		end
 	end
@@ -356,12 +356,12 @@ Consider[4]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK  ) 
 	then
 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
-		if ( locationAoE.count >= 2 ) then
+		if ( locationAoE.count >= 3 ) then
 			local TargetLocation=locationAoE.targetloc;
 			local Allies = utility.GetAlliesNearLocation(TargetLocation,Radius)
-			if(#Allies==0)
+			if(#Allies<=1)
 			then
-				return BOT_ACTION_DESIRE_LOW, TargetLocation
+				return BOT_ACTION_DESIRE_HIGH, TargetLocation
 			end
 		end
 	end

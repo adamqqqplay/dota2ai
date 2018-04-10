@@ -367,7 +367,7 @@ Consider[4]=function()
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) )
+			if ( CanCast[abilityNumber]( WeakestEnemy ))
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_ALL) and #allys >=#enemys)
 				then

@@ -170,7 +170,7 @@ Consider[1]=function()	--Target Ability Example
 	--------------------------------------	
 	--protect myself
 	local enemys2 = npcBot:GetNearbyHeroes( 400, true, BOT_MODE_NONE );
-	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	--[[If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) or #enemys2>0) 
 	then
 		for _,npcEnemy in pairs( enemys )
@@ -186,7 +186,7 @@ Consider[1]=function()	--Target Ability Example
 				end
 			end
 		end
-	end
+	end]]
 	
 	-- If we're farming and can hit 2+ creeps and kill 1+ 
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )

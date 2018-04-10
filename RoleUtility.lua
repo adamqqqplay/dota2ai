@@ -1514,7 +1514,7 @@ function X.CanBeOfflaner(hero)
            or hero == "npc_dota_hero_dark_seer" or hero == "npc_dota_hero_axe" or hero == "npc_dota_hero_batrider" or hero == "npc_dota_hero_centaur"
            or hero == "npc_dota_hero_doom_bringer" or hero == "npc_dota_hero_slardar" or hero == "npc_dota_hero_bristleback" or hero == "npc_dota_hero_windrunner"
            or hero == "npc_dota_hero_abyssal_underlord" or hero == "npc_dota_hero_beastmaster" or hero == "npc_dota_hero_broodmother"
-           or hero == "npc_dota_hero_brewmaster" or hero == "npc_dota_hero_abaddon" or hero == "npc_dota_hero_enchantress" or hero == "npc_dota_hero_mirana"
+           or hero == "npc_dota_hero_brewmaster"  or hero == "npc_dota_hero_enchantress" or hero == "npc_dota_hero_mirana"
 		   --[[or (  X["hero_roles"][hero]["initiator"] > 0 and
 		         X["hero_roles"][hero]["disabler"] > 0 and
 		         X["hero_roles"][hero]["durable"] > 0 and
@@ -1560,6 +1560,7 @@ function X.CanBeSupport(hero)
 	or hero == "npc_dota_hero_undying"
 	or hero == "npc_dota_hero_night_stalker"
 	or hero == "npc_dota_hero_silencer"
+	or hero == "npc_dota_hero_abaddon"
 	--or hero == "npc_dota_hero_spirit_breaker",
 	or hero == "npc_dota_hero_riki"
 	or hero == "npc_dota_hero_earthshaker"

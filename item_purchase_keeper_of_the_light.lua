@@ -14,7 +14,6 @@ local ItemsToBuy =
 	"item_boots",	
 	"item_magic_stick",
 	"item_enchanted_mango",			--大魔棒7.07
-	"item_wind_lace",
 	"item_ring_of_regen",			--绿鞋
 	"item_cloak",
 	"item_shadow_amulet",			--微光

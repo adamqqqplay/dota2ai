@@ -308,9 +308,9 @@ local goodNeutral=
 	"npc_dota_neutral_centaur_khan",			-- 半人马征服者
 	"npc_dota_neutral_dark_troll_warlord",			-- 黑暗巨魔召唤法师
 	"npc_dota_neutral_polar_furbolg_ursa_warrior",			-- 地狱熊怪粉碎者
-	"npc_dota_neutral_forest_troll_high_priest",			-- 丘陵巨魔牧师
-	"npc_dota_neutral_mud_golem",			-- 泥土傀儡
-	"npc_dota_neutral_ogre_magi",		-- 食人魔冰霜法师
+	--"npc_dota_neutral_forest_troll_high_priest",			-- 丘陵巨魔牧师
+	--"npc_dota_neutral_mud_golem",			-- 泥土傀儡
+	--"npc_dota_neutral_ogre_magi",		-- 食人魔冰霜法师
 	"npc_dota_neutral_satyr_hellcaller", -- 萨特苦难使者
 	"npc_dota_neutral_enraged_wildkin",  -- 枭兽撕裂者
 }
@@ -344,9 +344,9 @@ Consider[3]=function()
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+	local creeps = npcBot:GetNearbyCreeps(CastRange+4000,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
-	local creepsNeutral = npcBot:GetNearbyNeutralCreeps(1600)
+	local creepsNeutral = npcBot:GetNearbyNeutralCreeps(4500)
 	local StrongestCreep,CreepHealth2=utility.GetStrongestUnit(creepsNeutral)
 	--------------------------------------
 	-- Mode based usage

@@ -7,15 +7,22 @@ local utility = require( GetScriptDirectory().."/utility" )
 local ItemsToBuy = 
 { 
 	"item_tango",
-	"item_flask",
-	"item_stout_shield",
+	"item_quelling_blade",			--补刀斧
 	"item_branches",
 	"item_branches",
+	"item_enchanted_mango",			--大魔棒7.07
 	"item_boots",
+
+	"item_magic_stick",
+
+	"item_ring_of_regen",
+
+	"item_gauntlets",
+	"item_gauntlets",
+	"item_recipe_soul_ring",  		--魂戒
+
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
-	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
 	
 	"item_ring_of_regen",
 	"item_recipe_headdress",
@@ -28,20 +35,30 @@ local ItemsToBuy =
 	"item_sobi_mask",
 	"item_blight_stone",			--勋章
 	
-	"item_blade_of_alacrity",
-	"item_blade_of_alacrity",
+	"item_quarterstaff",
 	"item_robe",
-	"item_recipe_diffusal_blade",	--散失刀
+	"item_sobi_mask",
+	"item_quarterstaff",
+	"item_robe",
+	"item_sobi_mask",
+	"item_recipe_orchid",			--紫苑
 	
 	"item_talisman_of_evasion",		--大勋章
-	
-	"item_mithril_hammer",
-	"item_mithril_hammer",		
-	"item_blight_stone",			--黯灭
-	
+
 	"item_ogre_axe", 
 	"item_mithril_hammer",
 	"item_recipe_black_king_bar",	--bkb
+
+	"item_broadsword",
+	"item_blades_of_attack",
+	"item_recipe_lesser_crit",
+	"item_recipe_bloodthorn",		--血棘
+	
+	"item_hyperstone",
+				"item_platemail",
+				"item_chainmail",
+				"item_recipe_assault",			--强袭
+	
 }
 
 utility.checkItemBuild(ItemsToBuy)

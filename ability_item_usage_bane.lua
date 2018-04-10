@@ -469,7 +469,7 @@ Consider[4]=function()
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) and not enemyDisabled(WeakestEnemy))
+			if ( CanCast[abilityNumber]( WeakestEnemy ) and not enemyDisabled(WeakestEnemy) and #enemys <= 2)
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
@@ -509,7 +509,7 @@ Consider[4]=function()
 	-- Mode based usage
 	--------------------------------------
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+	--[[if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
 		for _,npcEnemy in pairs( enemys )
 		do
@@ -521,7 +521,7 @@ Consider[4]=function()
 				end
 			end
 		end
-	end
+	end]]
 	
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or

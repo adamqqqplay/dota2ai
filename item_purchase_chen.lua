@@ -8,19 +8,19 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_clarity",
-	"item_wind_lace",
 	"item_branches",
 	"item_branches",
-	"item_boots",	
-	"item_magic_stick",
 	"item_enchanted_mango",			--大魔棒7.07
+	"item_boots",	
+
+	"item_magic_stick",
 	"item_energy_booster",			--秘法鞋
 	
-	"item_ring_of_regen",
+	--[["item_ring_of_regen",
 	"item_recipe_headdress",
 	"item_branches",
 	"item_gloves",
-	"item_ring_of_health",			--支配new
+	"item_ring_of_health",			--支配new]]
 	
 	"item_ring_of_regen",
 	"item_recipe_headdress",
@@ -30,23 +30,20 @@ local ItemsToBuy =
 	"item_branches",
     "item_recipe_mekansm",			--梅肯
 	"item_recipe_guardian_greaves",	--卫士胫甲
-	"item_ring_of_health",
-	"item_staff_of_wizardry",
-	"item_recipe_force_staff",		--推推7.06
-	
+
 	"item_point_booster",		
 	"item_staff_of_wizardry",
 	"item_ogre_axe",
 	"item_blade_of_alacrity",		--蓝杖
-	
-	"item_wind_lace",
-	"item_void_stone",
+
+	"item_ring_of_health",
 	"item_staff_of_wizardry",
-	"item_recipe_cyclone",			--风杖
+	"item_recipe_force_staff",		--推推7.06
 	
-	"item_mystic_staff",
-	"item_ultimate_orb",
-	"item_void_stone",				--羊刀
+	"item_ring_of_health",
+	"item_void_stone",				
+    "item_platemail",
+    "item_energy_booster",			--清莲宝珠
 
 }
 

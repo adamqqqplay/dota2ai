@@ -20,13 +20,13 @@ local AbilityToLevelUp =
 {
 	Abilities[2],
 	Abilities[1],
-	Abilities[2],
 	Abilities[1],
 	Abilities[2],
+	Abilities[1],
 	Abilities[4],
+	Abilities[1],
 	Abilities[2],
-	Abilities[1],
-	Abilities[1],
+	Abilities[2],
 	"talent",
 	Abilities[3],
 	Abilities[4],
@@ -53,7 +53,7 @@ local TalentTree = {
 		return Talents[3]
 	end,
 	function()
-		return Talents[5]
+		return Talents[6]
 	end,
 	function()
 		return Talents[8]
@@ -159,11 +159,11 @@ Consider[1] = function()
 	then
 		if (WeakestCreep ~= nil)
 		then
-			if ((ManaPercentage > 0.6 or npcBot:GetMana() > ComboMana) and GetUnitToUnitDistance(npcBot, WeakestCreep) >= AttackRange + 100)
+			if ((ManaPercentage > 0.6 or npcBot:GetMana() > ComboMana) and GetUnitToUnitDistance(npcBot, WeakestCreep) >= AttackRange + 100 and ability:GetLevel() >= 2)
 			then
 				if (CreepHealth <= WeakestCreep:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL))
 				then
-					return BOT_ACTION_DESIRE_LOW, WeakestCreep;
+					return BOT_ACTION_DESIRE_LOW+0.05, WeakestCreep;
 				end
 			end
 		end
@@ -195,7 +195,7 @@ Consider[1] = function()
 			then
 				if (CanCast[abilityNumber](creeps[1]) and GetUnitToUnitDistance(npcBot, creeps[1]) < CastRange + 75 * #allys)
 				then
-					return BOT_ACTION_DESIRE_LOW, creeps[1];
+					return BOT_ACTION_DESIRE_MODERATE+0.1, creeps[1];
 				end
 			end
 		end
@@ -213,7 +213,7 @@ Consider[1] = function()
 		then
 			if (CanCast[abilityNumber](npcEnemy) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys)
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
+				return BOT_ACTION_DESIRE_MODERATE+0.1, npcEnemy
 			end
 		end
 	end
@@ -275,7 +275,7 @@ Consider[2] = function()
 	-- Mode based usage
 	--------------------------------------
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
+	--[[if (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
 	then
 		if (npcBot:WasRecentlyDamagedByAnyHero(2.0))
 		then
@@ -284,13 +284,13 @@ Consider[2] = function()
 				return BOT_ACTION_DESIRE_MODERATE, GetTowardsFountainLocation(npcBot:GetLocation(), CastRange);
 			end
 		end
-	end
+	end]]
 	
 	-- If my mana is enough,use it at enemy
 	if (npcBot:GetActiveMode() == BOT_MODE_LANING)
 	then
 		if creeps ~= nil and #creeps >= 4 and not IsLocationOverlapWeb(npcBot:GetLocation(), Radius) then
-			return BOT_MODE_DESIRE_MODERATE, npcBot:GetLocation();
+			return BOT_MODE_DESIRE_LOW, npcBot:GetLocation();
 		end
 	end
 	
