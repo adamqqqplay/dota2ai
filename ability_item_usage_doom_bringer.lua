@@ -18,10 +18,10 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 local AbilityToLevelUp=
 {
+	Abilities[1],
+	Abilities[2],
 	Abilities[3],
 	Abilities[2],
-	Abilities[2],
-	Abilities[1],
 	Abilities[2],
 	Abilities[6],
 	Abilities[2],
@@ -49,7 +49,7 @@ local TalentTree={
 		return Talents[1]
 	end,
 	function()
-		return Talents[3]
+		return Talents[4]
 	end,
 	function()
 		return Talents[5]
@@ -98,31 +98,6 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
-
-local goodNeutral=
-{
-	"npc_dota_neutral_alpha_wolf",			-- 头狼
-	"npc_dota_neutral_centaur_khan",			-- 半人马征服者
-	"npc_dota_neutral_dark_troll_warlord",			-- 黑暗巨魔召唤法师
-	--"npc_dota_neutral_polar_furbolg_ursa_warrior",			-- 地狱熊怪粉碎者
-	"npc_dota_neutral_forest_troll_high_priest",			-- 丘陵巨魔牧师
-	--"npc_dota_neutral_mud_golem",			-- 泥土傀儡
-	--"npc_dota_neutral_ogre_magi",		-- 食人魔冰霜法师
-	"npc_dota_neutral_satyr_hellcaller", -- 萨特苦难使者
-	--"npc_dota_neutral_enraged_wildkin",  -- 枭兽撕裂者
-}
-
-function IsGoodNeutralCreeps(npcCreep)
-	local name=npcCreep:GetUnitName();
-	for k,creepName in pairs(goodNeutral) do
-		if(name==creepName)
-		then
-			return true;
-		end
-	end
-	return false;
-end
-
 Consider[1]=function()
 	local abilityNumber=1
 	--------------------------------------
@@ -134,12 +109,17 @@ Consider[1]=function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
-	local creeps = npcBot:GetNearbyCreeps(CastRange+2500,true)
-	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
-	local creepsNeutral = npcBot:GetNearbyNeutralCreeps(3000)
-	local StrongestCreep,CreepHealth2=utility.GetStrongestUnit(creepsNeutral)
+	local CastRange = ability:GetCastRange();
+	local Damage = ability:GetAbilityDamage();
 	
-	--[[if ( not npcBot:HasModifier("modifier_doom_bringer_devour") ) 
+	local CreepHealth=10000
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+
+	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+	local StrongstCreep,CreepHealth=utility.GetStrongestUnit(creeps)
+	
+	if ( not npcBot:HasModifier("modifier_doom_bringer_devour") ) 
 	then
 		if(CanCast[abilityNumber]( StrongstCreep ))
 		then
@@ -153,19 +133,7 @@ Consider[1]=function()
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy;
 			end
 		end
-	end	]]
-
-	if(ManaPercentage>=0.4)
-	then
-		for k,creep in pairs(creepsNeutral) do
-			if(IsGoodNeutralCreeps(creep))
-			then
-				return BOT_ACTION_DESIRE_HIGH+0.15, creep;
-			else
-				return BOT_ACTION_DESIRE_LOW,creep;
-			end
-		end
-	end
+	end	
 	
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
@@ -208,7 +176,7 @@ Consider[2]=function()
 	-- Mode based usage
 	--------------------------------------
 	--protect myself
-	if(npcBot:WasRecentlyDamagedByAnyHero(2) and npcBot:GetActiveMode() == BOT_MODE_RETREAT and HealthPercentage<=0.6+#enemys*0.05)
+	if(npcBot:WasRecentlyDamagedByAnyHero(2) and npcBot:GetActiveMode() == BOT_MODE_RETREAT and HealthPercentage<=0.45+#enemys*0.05)
 	then
 		return BOT_ACTION_DESIRE_HIGH
 	end
@@ -221,13 +189,13 @@ Consider[2]=function()
 	then
 		local npcEnemy = npcBot:GetTarget();
 		
-		if(ManaPercentage>0.45 or npcBot:GetMana()>ComboMana)
+		if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
 		then
 			if ( npcEnemy ~= nil ) 
 			then
 				if ( GetUnitToUnitDistance(npcBot,npcEnemy)< Radius + 300+75*#allys)
 				then
-					return BOT_ACTION_DESIRE_HIGH;
+					return BOT_ACTION_DESIRE_MODERATE;
 				end
 			end
 		end
@@ -241,24 +209,6 @@ Consider[2]=function()
 			return BOT_ACTION_DESIRE_LOW;
 		end
 	end
-
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT )
-	then
-		return BOT_ACTION_DESIRE_HIGH+0.1;
-	end
-
-	-- If we're in a teamfight, use it 
-	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
-	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 
-	then
-		local npcEnemy = npcBot:GetTarget();
-
-		if ( npcEnemy ~= nil ) 
-		then
-			return BOT_ACTION_DESIRE_HIGH
-		end
-	end
-
 
 	return BOT_ACTION_DESIRE_NONE
 	
@@ -313,9 +263,9 @@ Consider[3]=function()
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if (ManaPercentage>0.4 and CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 350)
+			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
-				return BOT_ACTION_DESIRE_HIGH, npcEnemy
+				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end
 		end
 	end
@@ -323,39 +273,26 @@ Consider[3]=function()
 	-- If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if((ManaPercentage>0.7 and npcBot:GetMana()>ComboMana))
+		if((ManaPercentage>0.4 or npcBot:GetMana()>ComboMana))
 		then
 			if (WeakestEnemy~=nil)
 			then
-				if ( CanCast[abilityNumber]( WeakestEnemy ) and GetUnitToUnitDistance(npcBot,WeakestEnemy)< CastRange + 200*#allys )
+				if ( CanCast[abilityNumber]( WeakestEnemy ) )
 				then
-					return BOT_ACTION_DESIRE_LOW-0.05,WeakestEnemy;
+					return BOT_ACTION_DESIRE_LOW,WeakestEnemy;
 				end
 			end
 		end
 	end
 	
-	-- If we're in a teamfight, use it 
-	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
-	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 
-	then
-		local npcEnemy = npcBot:GetTarget();
-
-		if ( npcEnemy ~= nil ) 
-		then
-			return BOT_ACTION_DESIRE_HIGH+0.1
-		end
-	end
-
 	-- If we're farming
-	--[[if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
+	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
 		if ( #creeps >= 1 and ManaPercentage>0.4 or npcBot:GetMana()>ComboMana) 
 		then
 			return BOT_ACTION_DESIRE_LOW, creeps[1];
 		end
-	end]]
-
+	end
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
 end
