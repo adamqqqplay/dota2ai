@@ -380,7 +380,7 @@ function GetAbilityPoint()
 	then
 		return BOT_ACTION_DESIRE_LOW,GetTreeLocation(trees[1])
 	else
-		return BOT_ACTION_DESIRE_LOW,npcBot:GetXUnitsInBehind(200)
+		return BOT_ACTION_DESIRE_LOW,npcBot:GetXUnitsInBehind(100)
 	end
 end
 
@@ -457,6 +457,8 @@ Consider[3]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
 
+
+
 Consider[4]=function()
 	local abilityNumber=4
 	--------------------------------------
@@ -464,7 +466,7 @@ Consider[4]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or ability:GetCurrentCharges()==0 then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -475,18 +477,11 @@ Consider[4]=function()
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
-	-- Check for a channeling enemy
-	for _,npcEnemy in pairs( enemys )
-	do
-		if (( npcEnemy:IsChanneling() or npcEnemy:HasModifier("modifier_pugna_decrepify") ) and CanCast[abilityNumber]( npcEnemy )) 
-		then
-			return BOT_ACTION_DESIRE_LOW, npcEnemy
-		end
-	end
-	
 	--Try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
 	then
@@ -501,10 +496,50 @@ Consider[4]=function()
 			end
 		end
 	end
+	
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-
+	--[[protect myself
+	local enemys2 = npcBot:GetNearbyHeroes( 300, true, BOT_MODE_NONE );
+	if(npcBot:WasRecentlyDamagedByAnyHero(5))
+	then
+		for _,npcEnemy in pairs( enemys2 )
+		do
+			if ( CanCast[abilityNumber]( npcEnemy ) )
+			then
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy
+			end
+		end
+	end]]
+	
+	--[[If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+	then
+		for _,npcEnemy in pairs( enemys )
+		do
+			if ( CanCast[abilityNumber]( npcEnemy )) 
+			then
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy;
+			end
+		end
+	end]]
+	
+	-- If my mana is enough,use it at enemy
+	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+	then
+		if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and HealthPercentage<=0.8 )
+		then
+			if (WeakestEnemy~=nil)
+			then
+				if ( CanCast[abilityNumber]( WeakestEnemy ) )
+				then
+					return BOT_ACTION_DESIRE_LOW,WeakestEnemy;
+				end
+			end
+		end
+	end
+	
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
@@ -515,9 +550,9 @@ Consider[4]=function()
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange -300)
+			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
-				return BOT_ACTION_DESIRE_LOW, npcEnemy
+				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end
 		end
 	end

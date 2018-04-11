@@ -163,7 +163,7 @@ Consider[1]=function()
 	then
 		if ( #Allcreeps >= 2 ) 
 		then
-			if(CreepHealth<=Allcreeps[1]:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
+			if(CreepHealth<=Allcreeps[1]:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and ManaPercentage>0.45 and npcBot:GetMana()>ComboMana)
 			then
 				return BOT_ACTION_DESIRE_LOW, Allcreeps[1];
 			end

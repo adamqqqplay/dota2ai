@@ -25,12 +25,12 @@ local AbilityToLevelUp=
 	Abilities[2],
 	Abilities[4],
 	Abilities[2],
-	Abilities[3],
+	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[1],
 	Abilities[4],
-	Abilities[1],
+	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
@@ -204,7 +204,8 @@ Consider[2]=function()
 				return BOT_ACTION_DESIRE_NONE, 0;
 			end
 		end
-	else
+	end
+	--[[else
 		local t=npcBot:GetAttackTarget()
 		if(t~=nil)
 		then
@@ -214,7 +215,7 @@ Consider[2]=function()
 				return BOT_ACTION_DESIRE_NONE, 0;
 			end
 		end
-	end
+	end]]
 	
 	--try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT) 

@@ -19,21 +19,21 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 local AbilityToLevelUp=
 {
 	Abilities[3],
-	Abilities[1],
-	Abilities[3],
-	Abilities[1],
-	Abilities[1],
-	Abilities[4],
-	Abilities[1],
-	Abilities[3],
-	Abilities[3],
-	"talent",
 	Abilities[2],
+	Abilities[3],
+	Abilities[2],
+	Abilities[3],
 	Abilities[4],
+	Abilities[3],
 	Abilities[2],
 	Abilities[2],
 	"talent",
-	Abilities[2],
+	Abilities[1],
+	Abilities[4],
+	Abilities[1],
+	Abilities[1],
+	"talent",
+	Abilities[1],
 	"nil",
 	Abilities[4],
 	"nil",
@@ -53,7 +53,7 @@ local TalentTree={
 		return Talents[4]
 	end,
 	function()
-		return Talents[5]
+		return Talents[6]
 	end,
 	function()
 		return Talents[8]
@@ -306,6 +306,18 @@ Consider[4]=function()
 			then
 				return BOT_ACTION_DESIRE_MODERATE
 			end
+		end
+	end
+
+	-- If we're in a teamfight, use it 
+	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 700, false, BOT_MODE_ATTACK );
+	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 
+	then
+		local npcEnemy = npcBot:GetTarget();
+
+		if ( npcEnemy ~= nil ) 
+		then
+			return BOT_ACTION_DESIRE_HIGH-0.1
 		end
 	end
 

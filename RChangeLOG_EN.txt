@@ -231,6 +231,16 @@ Two important things:a.If you are the captain, please follow the Offlaner, suppo
 5. Now bots will be laning more peacefully in the first 6-7 minutes without frequent team fight in mid lane.
 6. The following heros are either in item building, ability usage or bug fixed: Batrider, Centaur, Chen, Death prophet, Disruptor, Dragon kignt, Faceless void, Huskar, jakiro, Juggernaut, Legion commander, Leshrac, Lina, Luna, Mirana, Necrolyte, Phantom assassin, Pudge, Riki, Sniper, Sven, Tidehunter, Tiny, Treant, Undying, Windrunner, Zeus.
 7. Fixed some bugs.
-v1.4i(2018.3.31) committed by zmcmcc
-1. Fixed bug that void cannot buy items.
-2. Fixed bug that crystal maiden and batrider buy two magic sticks.
+v1.5(2018.4.8) committed by zmcmcc
+Thanks the author of Bot Experiment Master, Arizona Fauzie。 I used and modified part of his code.
+1. Fixed the bug that bots cannot ward; temporarily remove the purchase of gem and smokes.
+2. (Not sure)Seem to have fixed the bug that bots won't release couriers.
+3. Now your supports will share you a single tangle, no matter what role you play. Please stay in fountain for about 10 seconds. 
+4. Doom now will be able to devour netrual creeps, although still in low frequency.
+5. Enchantress now will be able to charm netrual creeps, although still in low frequency.
+6. Temporarily removed Spirit breaker and Elder Titan because of some serious bugs.
+7. Re-added Antimage, Spectre and Alchemist, but their performance is still lower than expected.
+8. Improved the ability and item building of the following heros：Skeleton King, Sven, Doom, Enchantress, Chen, Broodmother, Queen of pain, Lich, Crystal Maiden, Bounty hunter, Blood seeker, Dark seer, Luna, Gyrocopter, Void, Beast Master, Zeus, Lycan, Pugna, Sniper, Clinkz, Chaos Knight, Drow Ranger, Razor, Keeper of the light, VS.
+9. Optimized the retreating decision for most heros. Now bots will only use abilities with stuns or other debuffs when they must retreat.
+10. Some detailed optimizations about initial item building.
+11. Some bugs fixed.

@@ -19,18 +19,18 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 local AbilityToLevelUp=
 {
 	Abilities[1],
-	Abilities[2],
+	Abilities[3],
 	Abilities[1],
-	Abilities[2],
-	Abilities[2],
+	Abilities[3],
+	Abilities[1],
 	Abilities[4],
+	Abilities[1],
 	Abilities[2],
-	Abilities[1],
-	Abilities[1],
+	Abilities[2],
 	"talent",
-	Abilities[3],
+	Abilities[2],
 	Abilities[4],
-	Abilities[3],
+	Abilities[2],
 	Abilities[3],
 	"talent",
 	Abilities[3],
@@ -53,7 +53,7 @@ local TalentTree={
 		return Talents[4]
 	end,
 	function()
-		return Talents[6]
+		return Talents[5]
 	end,
 	function()
 		return Talents[7]
@@ -160,7 +160,7 @@ Consider[1]=function() --Location AOE Example
 			then
 				if ( CanCast[abilityNumber]( npcEnemy ) ) 
 				then
-					return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetExtrapolatedLocation(CastPoint);
+					return BOT_ACTION_DESIRE_LOW, npcEnemy:GetExtrapolatedLocation(CastPoint);
 				end
 			end
 		end
@@ -191,20 +191,20 @@ Consider[1]=function() --Location AOE Example
 	-- LANING last hit
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana))
+		if((ManaPercentage>0.6 or npcBot:GetMana()>ComboMana))
 		then
 			local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 
-			if ( locationAoE.count >= 1 and GetUnitToLocationDistance(npcBot,locationAoE.targetloc)<=CastRange) 
+			if ( locationAoE.count >= 2 and GetUnitToLocationDistance(npcBot,locationAoE.targetloc)<=CastRange - 100) 
 			then
-				return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+				return BOT_ACTION_DESIRE_LOW-0.03, locationAoE.targetloc;
 			end
 		end
 		
-		if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )
+		if((ManaPercentage>0.6 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )
 		then
 			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
-			if ( locationAoE.count >= 2 and GetUnitToLocationDistance(npcBot,locationAoE.targetloc)<=CastRange) 
+			if ( locationAoE.count >= 3 and GetUnitToLocationDistance(npcBot,locationAoE.targetloc)<=CastRange) 
 			then
 				return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 			end
@@ -261,7 +261,7 @@ Consider[2]=function()
 		then
 			if (WeakestEnemy~=nil)
 			then
-				return BOT_ACTION_DESIRE_LOW
+				return BOT_ACTION_DESIRE_MODERATE
 			end
 		end
 	end
@@ -273,7 +273,7 @@ Consider[2]=function()
 		then
 			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 			then
-				return BOT_ACTION_DESIRE_LOW;
+				return BOT_ACTION_DESIRE_MODERATE;
 			end
 		end
 	end

@@ -6,9 +6,11 @@ local utility = require( GetScriptDirectory().."/utility" )		--导入通用函�
 
 local ItemsToBuy = 
 { 
+	"item_slippers",
+	"item_circlet",
+	"item_recipe_wraith_band",
 	"item_tango",
-	"item_flask",
-	"item_clarity",
+
 	"item_branches",
 	"item_branches",
 	"item_boots",	
@@ -16,10 +18,6 @@ local ItemsToBuy =
 	"item_enchanted_mango",			--大魔棒7.07
 	"item_blades_of_attack",
 	"item_blades_of_attack",		--相位
-	
-	"item_slippers",
-	"item_circlet",
-	"item_recipe_wraith_band",
 	
 	"item_lifesteal",
 	"item_quarterstaff",			--疯狂面具7.06

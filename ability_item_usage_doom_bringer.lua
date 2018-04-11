@@ -176,7 +176,7 @@ Consider[2]=function()
 	-- Mode based usage
 	--------------------------------------
 	--protect myself
-	if(npcBot:WasRecentlyDamagedByAnyHero(2) and npcBot:GetActiveMode() == BOT_MODE_RETREAT and HealthPercentage<=0.6+#enemys*0.05)
+	if(npcBot:WasRecentlyDamagedByAnyHero(2) and npcBot:GetActiveMode() == BOT_MODE_RETREAT and HealthPercentage<=0.45+#enemys*0.05)
 	then
 		return BOT_ACTION_DESIRE_HIGH
 	end
@@ -376,7 +376,7 @@ Consider[6]=function()
 	-- Mode based usage
 	--------------------------------------
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+	--[[if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
 		for _,npcEnemy in pairs( enemys )
 		do
@@ -388,7 +388,7 @@ Consider[6]=function()
 				end
 			end
 		end
-	end
+	end]]
 	
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or

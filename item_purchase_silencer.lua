@@ -10,9 +10,9 @@ local ItemsToBuy =
 	"item_clarity",
 	"item_branches",
 	"item_branches",
-	"item_wind_lace",
-	"item_magic_stick",
 	"item_enchanted_mango",			--大魔棒7.07
+	"item_magic_stick",
+	
 	"item_boots",
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
@@ -37,6 +37,7 @@ local ItemsToBuy =
 	"item_staff_of_wizardry",
 	"item_recipe_rod_of_atos",		--阿托斯7.06
 	
+	"item_wind_lace",
 	"item_staff_of_wizardry",
 	"item_void_stone",
 	"item_recipe_cyclone",				--风杖

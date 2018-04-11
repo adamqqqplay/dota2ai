@@ -55,7 +55,7 @@ local TalentTree={
 		return Talents[6]
 	end,
 	function()
-		return Talents[8]
+		return Talents[7]
 	end
 }
 
@@ -120,13 +120,13 @@ Consider[1]=function()
 	-- Mode based usage
 	--------------------------------------
 	-- If we're farming and can kill 3+ creeps with LSA
-	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
+	--[[if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 
 		if ( locationAoE.count >= 3 ) then
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 		end
-	end
+	end]]
 
 	-- If we're pushing or defending a lane and can hit 4+ creeps, go for it
 	if ( npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
@@ -137,7 +137,7 @@ Consider[1]=function()
 
 		if ( locationAoE.count >= 4 ) 
 		then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_LOW-0.1, locationAoE.targetloc;
 		end
 	end
 
@@ -163,8 +163,8 @@ Consider[1]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK) 
 	then
 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
-		if ( locationAoE.count >= 2 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+		if ( locationAoE.count >= 3 ) then
+			return BOT_ACTION_DESIRE_LOW+0.05, locationAoE.targetloc;
 		end
 	
 		local npcEnemy = npcBot:GetTarget();
@@ -230,7 +230,7 @@ Consider[2]=function()
 
 		if ( npcMostDangerousEnemy ~= nil )
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy;
+			return BOT_ACTION_DESIRE_MODERATE-0.1, npcMostDangerousEnemy;
 		end
 	end
 	--------------------------------------
@@ -251,14 +251,14 @@ Consider[2]=function()
 	then
 		if ( CanCast[abilityNumber]( npcBot ) and not npcBot:HasModifier("modifier_dark_seer_ion_shell") )
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcBot
+			return BOT_ACTION_DESIRE_LOW-0.05, npcBot
 		end
 	end
 	
 	-- If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if(ManaPercentage>0.5 or npcBot:GetMana()>ComboMana)
+		if(ManaPercentage>0.55 and npcBot:GetMana()>ComboMana)
 		then
 			for k,creep in pairs(creeps2) do
 				if(creep:GetAttackRange()<=300 and CanCast[abilityNumber]( creep ) 
@@ -273,11 +273,11 @@ Consider[2]=function()
 	-- If we're farming and can hit 2+ creeps and kill 1+ 
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
-		if ( #creeps >= 2 ) 
+		if ( #creeps >= 4 ) 
 		then
 			if ( CanCast[abilityNumber]( npcBot ) and not npcBot:HasModifier("modifier_dark_seer_ion_shell") )
 			then
-				return BOT_ACTION_DESIRE_HIGH, npcBot
+				return BOT_ACTION_DESIRE_HIGH-0.05, npcBot
 			end
 		end
 	end
@@ -294,7 +294,7 @@ Consider[2]=function()
 			if(creep:GetAttackRange()<=300 and CanCast[abilityNumber]( creep ) 
 				and not creep:HasModifier("modifier_dark_seer_ion_shell") and creep:GetHealth()/creep:GetMaxHealth()>0.8)
 			then
-				return BOT_ACTION_DESIRE_LOW,creep;
+				return BOT_ACTION_DESIRE_HIGH,creep;
 			end
 		end
 
@@ -303,11 +303,11 @@ Consider[2]=function()
 			for _,myFriend in pairs(allys) do
 				if ( not myFriend:HasModifier("modifier_dark_seer_ion_shell") and myFriend:GetAttackRange() < 300 )
 				then
-					return BOT_ACTION_DESIRE_MODERATE, myFriend;
+					return BOT_ACTION_DESIRE_MODERATE-0.05, myFriend;
 				end
 			end	
 			if not npcBot:HasModifier("modifier_dark_seer_ion_shell") then
-				return BOT_ACTION_DESIRE_MODERATE, npcBot;
+				return BOT_ACTION_DESIRE_MODERATE-0.05, npcBot;
 			end
 		end
 	end

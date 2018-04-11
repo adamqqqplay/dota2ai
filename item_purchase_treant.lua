@@ -9,8 +9,9 @@ local ItemsToBuy =
 	"item_tango",
 	"item_branches",
 	"item_branches",
-	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_clarity",
+	"item_enchanted_mango",	
+	"item_magic_stick",		--大魔棒7.07
 
 	"item_boots",	
 	"item_energy_booster",			--秘法鞋

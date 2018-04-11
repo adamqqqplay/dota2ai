@@ -6,16 +6,22 @@ local utility = require( GetScriptDirectory().."/utility" )
 
 local ItemsToBuy = 
 { 
+	"item_slippers",
+	"item_circlet",
+	"item_recipe_wraith_band", --系带
 	"item_tango",
-	"item_flask",
-	"item_stout_shield",
-	"item_branches",
-	"item_branches",
+
+	
 	"item_boots",
-	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
+
 	"item_magic_stick",
 	"item_enchanted_mango",			--大魔棒7.07
+	"item_branches",
+	"item_branches",
+
+	"item_blades_of_attack",
+	"item_blades_of_attack",		--相位
+
 	
 		
 	"item_boots_of_elves",
@@ -36,18 +42,20 @@ local ItemsToBuy =
 	"item_circlet",
 	"item_recipe_wraith_band",		--大推推7.07
 	
-	"item_platemail",
-	"item_mystic_staff",
-	"item_recipe_shivas_guard" ,	--希瓦
+	"item_ogre_axe", 
+	"item_mithril_hammer",
+	"item_recipe_black_king_bar",	--bkb
 	
 	"item_point_booster",		
 	"item_staff_of_wizardry",
 	"item_ogre_axe",
 	"item_blade_of_alacrity",		--蓝杖
 	
-	"item_vitality_booster",
-	"item_vitality_booster",		
-	"item_reaver",					--龙心7.06
+	"item_platemail",
+	"item_mystic_staff",
+	"item_recipe_shivas_guard" ,	--希瓦
+	
+	
 	
 }
 

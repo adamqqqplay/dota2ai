@@ -8,7 +8,6 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_clarity",
-	"item_clarity",
 	
 	"item_bottle",
 	"item_boots",

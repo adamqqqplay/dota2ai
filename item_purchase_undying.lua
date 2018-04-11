@@ -59,4 +59,5 @@ utility.checkItemBuild(ItemsToBuy)
 
 function ItemPurchaseThink()
 	utility.ItemPurchase(ItemsToBuy)
+	utility.BuySupportItem()
 end

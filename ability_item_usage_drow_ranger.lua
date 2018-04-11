@@ -18,17 +18,17 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 local AbilityToLevelUp=
 {
-	Abilities[1],
 	Abilities[3],
 	Abilities[1],
+	Abilities[3],
 	Abilities[2],
-	Abilities[1],
+	Abilities[3],
 	Abilities[4],
+	Abilities[3],
 	Abilities[1],
-	Abilities[3],
-	Abilities[3],
+	Abilities[1],
 	"talent",
-	Abilities[3],
+	Abilities[1],
 	Abilities[4],
 	Abilities[2],
 	Abilities[2],
@@ -117,7 +117,7 @@ Consider[1]=function()
 				return BOT_ACTION_DESIRE_NONE, 0;
 			end
 		end
-	else
+	--[[else
 		local t=npcBot:GetAttackTarget()
 		if(t~=nil)
 		then
@@ -127,7 +127,7 @@ Consider[1]=function()
 				return BOT_ACTION_DESIRE_NONE, 0;
 			end
 		end
-	end
+	end]]
 	
 	--try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT) 
