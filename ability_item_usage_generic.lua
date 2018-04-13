@@ -795,7 +795,7 @@ function UnImplementedItemUsage()
 			or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT
 			or npcBot:GetActiveMode() == BOT_MODE_FARM)
 		then
-			if ( (npcBot:GetHealth() / npcBot:GetMaxHealth()) > 0.5 and (npcBot:GetMana() / npcBot:GetMaxMana()) < 0.3)
+			if ( (npcBot:GetHealth() / npcBot:GetMaxHealth()) > 0.7 and (npcBot:GetMana() / npcBot:GetMaxMana()) < 0.4)
 			then
 			npcBot:Action_UseAbility(sr);
 			return;

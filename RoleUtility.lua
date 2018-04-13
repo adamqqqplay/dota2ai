@@ -1506,6 +1506,7 @@ function X.IsRemovedFromSupportPoll(hero)
            or hero == "npc_dota_hero_doom_bringer" or hero == "npc_dota_hero_slardar" or hero == "npc_dota_hero_bristleback" or hero == "npc_dota_hero_windrunner"
            or hero == "npc_dota_hero_abyssal_underlord" or hero == "npc_dota_hero_beastmaster" or hero == "npc_dota_hero_broodmother"
            or hero == "npc_dota_hero_brewmaster" or hero == "npc_dota_hero_abaddon" or hero == "npc_dota_hero_enchantress" or hero == "npc_dota_hero_mirana"
+           or hero == "npc_dota_hero_obsidian_destroyer"
 end
 
 function X.CanBeOfflaner(hero)
@@ -1527,7 +1528,8 @@ function X.CanBeMidlaner(hero)
 	or hero == "npc_dota_hero_viper" or hero == "npc_dota_hero_necrolyte" or hero == "npc_dota_hero_queenofpain" or hero == "npc_dota_hero_razor"  
 	or hero == "npc_dota_hero_leshrac" or hero == "npc_dota_hero_nevermore" or hero == "npc_dota_hero_huskar" or hero == "npc_dota_hero_tiny" 
 	or hero == "npc_dota_hero_bloodseeker" or hero == "npc_dota_hero_pugna" or hero == "npc_dota_hero_death_prophet" or hero == "npc_dota_hero_alchemist"
-	or hero == "npc_dota_hero_arc_warden" or hero == "npc_dota_hero_sniper" or hero == "npc_dota_hero_medusa"  or hero == "npc_dota_hero_kunkka"     
+	or hero == "npc_dota_hero_arc_warden" or hero == "npc_dota_hero_sniper" or hero == "npc_dota_hero_medusa"  or hero == "npc_dota_hero_kunkka"  
+	or hero == "npc_dota_hero_obsidian_destroyer"   
 		   --[[or ( X["hero_roles"][hero]["carry"] > 0 and
 		      ( 
 		        X["hero_roles"][hero]["nuker"] > 0 or
@@ -1568,7 +1570,7 @@ function X.CanBeSupport(hero)
 	or hero == "npc_dota_hero_bounty_hunter"
 	or hero == "npc_dota_hero_elder_titan"
 	or hero == "npc_dota_hero_keeper_of_the_light"
-	--or hero == "npc_dota_hero_chen",
+	or hero == "npc_dota_hero_chen"
 	or hero == "npc_dota_hero_pudge"
 	or hero == "npc_dota_hero_sand_king"
 	or hero == "npc_dota_hero_ogre_magi"
@@ -1586,6 +1588,7 @@ function X.CanBeSupport(hero)
 	or hero == "npc_dota_hero_ancient_apparition"
 	or hero == "npc_dota_hero_disruptor"
 	or hero == "npc_dota_hero_earth_spirit"
+	or hero == "npc_dota_hero_naga_siren"
 end
 
 function X.GetCurrentSuitableRole(bot, hero)

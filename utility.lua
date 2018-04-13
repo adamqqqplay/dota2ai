@@ -9,6 +9,7 @@ local utilityModule={}
 function utilityModule.HasImmuneDebuff(npcEnemy)
 	return npcEnemy:HasModifier("modifier_abaddon_borrowed_time") or 
 		npcEnemy:HasModifier("modifier_winter_wyvern_winters_curse") or 
+		npcEnemy:HasModifier("modifier_obsidian_destroyer_astral_imprisonment_prison") or
 		npcEnemy:HasModifier("modifier_winter_wyvern_winters_curse_aura")
 end
 
@@ -740,21 +741,21 @@ function utilityModule.checkItemBuild(ItemsToBuy)
 end
 
 invisibleHeroes = {
-	"npc_dota_hero_legion_commander",
+	--"npc_dota_hero_legion_commander",
 	"npc_dota_hero_sand_king",
 	"npc_dota_hero_treant",
 	"npc_dota_hero_bounty_hunter",
-	"npc_dota_hero_broodmother",
+	--"npc_dota_hero_broodmother",
 	"npc_dota_hero_clinkz",
-	"npc_dota_hero_drow_ranger",
+	--"npc_dota_hero_drow_ranger",
 	"npc_dota_hero_mirana",
 	"npc_dota_hero_nyx_assassin",
 	"npc_dota_hero_riki",
-	"npc_dota_hero_nevermore",
-	"npc_dota_hero_slark",
-	"npc_dota_hero_sniper",
+	--"npc_dota_hero_nevermore",
+	--"npc_dota_hero_slark",
+	--"npc_dota_hero_sniper",
 	"npc_dota_hero_templar_assassin",
-	"npc_dota_hero_viper",
+	--"npc_dota_hero_viper",
 	"npc_dota_hero_invoker"
 };
 

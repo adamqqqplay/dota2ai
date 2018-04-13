@@ -234,6 +234,11 @@ Consider[2]=function()
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+
+	--Check if stuck on cliff.
+	if not IsLocationPassable(npcBot:GetLocation()) then
+		return BOT_MODE_DESIRE_HIGH
+	end
 	
 	--try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 

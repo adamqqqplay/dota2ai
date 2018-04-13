@@ -236,7 +236,7 @@ Consider[2]=function()
 	
 	local CastRange = ability:GetCastRange();
 	local Damage = 0
-	local Radius = AbilitiesReal[3]:GetAOERadius()-50
+	local Radius = AbilitiesReal[3]:GetAOERadius()-80
 	local CastPoint = ability:GetCastPoint()
 	
 	local HeroHealth=10000
@@ -448,7 +448,7 @@ Consider[4]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
 				then
-					return BOT_ACTION_DESIRE_MODERATE-0.15
+					return BOT_ACTION_DESIRE_MODERATE
 				end
 			end
 		end
@@ -465,7 +465,7 @@ Consider[4]=function()
 	then
 		local npcEnemy = npcBot:GetTarget();
 
-		if ( npcEnemy ~= nil and count>=5) 
+		if ( npcEnemy ~= nil and #enemys>=2) 
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)<=Radius)
 			then

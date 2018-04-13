@@ -20,13 +20,20 @@ local ItemsToBuy =
 	"item_ring_of_health",
 	"item_staff_of_wizardry",
 	"item_recipe_force_staff",		--推推7.06
-	"item_ogre_axe", 
-	"item_mithril_hammer",
-	"item_recipe_black_king_bar",	--bkb
+
+	"item_vitality_booster",
+	"item_energy_booster",
+	"item_recipe_aeon_disk",		-- 永恒之盘
+
 	"item_platemail",
 	"item_ring_of_health",
 	"item_void_stone",
 	"item_energy_booster",			--清莲宝珠
+
+	"item_ogre_axe", 
+	"item_mithril_hammer",
+	"item_recipe_black_king_bar",	--bkb
+
 	"item_vitality_booster",
 	"item_vitality_booster",		
 	"item_reaver",					--龙心7.06

@@ -6,12 +6,12 @@ local utility = require( GetScriptDirectory().."/utility" )
 
 local ItemsToBuy = 
 { 
-	"item_tango",
-	"item_stout_shield",
 	"item_orb_of_venom", -- 毒球
+	"item_tango",
+	"item_branches",
+	"item_branches",
+	"item_stout_shield",
 	
-	"item_branches",
-	"item_branches",
 	"item_magic_stick",
 	"item_enchanted_mango",			--大魔棒7.07
 
@@ -54,6 +54,7 @@ local ItemsToBuy =
 utility.checkItemBuild(ItemsToBuy)
 
 function ItemPurchaseThink()
+	utility.BuyCourier()
 	utility.BuySupportItem()
 	utility.ItemPurchase(ItemsToBuy)
 end

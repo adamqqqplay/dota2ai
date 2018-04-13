@@ -34,6 +34,10 @@ local ItemsToBuy =
 	"item_recipe_bracer",
 	"item_staff_of_wizardry",
 	"item_recipe_rod_of_atos",		--阿托斯7.06
+
+	"item_vitality_booster",
+	"item_energy_booster",
+	"item_recipe_aeon_disk",		-- 永恒之盘
 	
 	"item_point_booster",
 	"item_vitality_booster",

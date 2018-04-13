@@ -166,7 +166,7 @@ Consider[2]=function()
 	
 	local CastRange = ability:GetCastRange()
 	local Damage = ability:GetAbilityDamage()
-	local Radius = ability:GetAOERadius()-50
+	local Radius = ability:GetAOERadius()-80
 	local CastPoint = ability:GetCastPoint()
 	
 	local i=npcBot:FindItemSlot("item_blink")
