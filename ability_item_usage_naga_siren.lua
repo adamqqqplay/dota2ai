@@ -135,7 +135,7 @@ Consider[1]=function()
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
+	return BOT_ACTION_DESIRE_NONE,0;
 	
 end
 

@@ -111,14 +111,14 @@ Consider[1]=function()
 		local t=npcBot:GetAttackTarget()
 		if(t~=nil)
 		then
-			if (t:IsHero() or t:IsTower() or ManaPercentage > 0.4)
+			if (ManaPercentage > 0.3)
 			then
 				ability:ToggleAutoCast()
 				return BOT_ACTION_DESIRE_NONE, 0;
 			end
 		end
-	
-	else
+	end
+	--[[else
 		local t=npcBot:GetAttackTarget()
 		if(t~=nil)
 		then
@@ -128,7 +128,23 @@ Consider[1]=function()
 				return BOT_ACTION_DESIRE_NONE, 0;
 			end
 		end
-	end
+	end]]
+
+	--[[local t=npcBot:GetAttackTarget()
+		if(t~=nil)
+		then
+			if (t:IsHero() or ManaPercentage > 0.4)
+			then
+				ability:ToggleAutoCast()
+				return BOT_ACTION_DESIRE_NONE, 0;
+			end
+		else
+			if (ManaPercentage < 0.2)
+			then
+				ability:ToggleAutoCast()
+				return BOT_ACTION_DESIRE_NONE, 0;
+			end
+		end]]
 	
 	--try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT) 
@@ -137,7 +153,7 @@ Consider[1]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_ALL))
+				if(WeakestEnemy:GetHealth()<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_ALL))
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
 				end
@@ -148,19 +164,8 @@ Consider[1]=function()
 	-- Mode based usage
 	--------------------------------------
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
-	then
-		if(CreepHealth>=250 and ManaPercentage>=0.5 and HealthPercentage>=0.6 and #creeps2<=1)
-		then
-			if (WeakestEnemy~=nil)
-			then
-				if ( CanCast[abilityNumber]( WeakestEnemy ) )
-				then
-					return BOT_ACTION_DESIRE_LOW-0.01,WeakestEnemy
-				end
-			end
-		end
-		
-		if(WeakestCreep~=nil)
+	then	
+		if(WeakestCreep~=nil and ManaPercentage > 0.4)
 		then
 			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_PHYSICAL)+20)
 			then
@@ -394,7 +399,7 @@ Consider[4]=function()
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) )
+			if ( CanCast[abilityNumber]( WeakestEnemy ) and #enemys>=2)
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then

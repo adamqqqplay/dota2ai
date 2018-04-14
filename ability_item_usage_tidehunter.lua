@@ -253,7 +253,7 @@ function Consider1New()
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 
-		if ( locationAoE.count >= 3 ) then
+		if ( locationAoE.count >= 3 and ManaPercentage >0.4) then
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 		end
 	end
@@ -268,7 +268,7 @@ function Consider1New()
 	then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 
-		if ( locationAoE.count >= 4 ) 
+		if ( locationAoE.count >= 4 and ManaPercentage >0.3) 
 		then
 			return BOT_ACTION_DESIRE_LOW+0.01, locationAoE.targetloc;
 		end
@@ -507,7 +507,13 @@ Consider[4]=function()
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK or
+		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
+		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT) 
 	then
 		local npcEnemy = npcBot:GetTarget();
 

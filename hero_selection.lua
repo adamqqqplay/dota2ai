@@ -375,6 +375,7 @@ allBotHeroes = {
 	"npc_dota_hero_treant",
 	"npc_dota_hero_tidehunter",
 	"npc_dota_hero_tiny",
+	"npc_dota_hero_terrorblade",
 
 	"npc_dota_hero_ursa",
 	"npc_dota_hero_undying",
@@ -402,13 +403,12 @@ hero_pool_position_1 = {
 	"npc_dota_hero_juggernaut",
 	"npc_dota_hero_ursa",
 	"npc_dota_hero_sven",
-
 	"npc_dota_hero_spectre",
 	"npc_dota_hero_antimage",
-
 	"npc_dota_hero_gyrocopter",
 	"npc_dota_hero_lycan",
 	"npc_dota_hero_monkey_king",
+	"npc_dota_hero_terrorblade",
 }
 hero_pool_position_2 = {
 	"npc_dota_hero_leshrac",
@@ -429,8 +429,9 @@ hero_pool_position_2 = {
 	"npc_dota_hero_death_prophet",
 	"npc_dota_hero_arc_warden",
 	"npc_dota_hero_sniper",
-	"npc_dota_hero_obsidian_destroyer", 
 	"npc_dota_hero_alchemist",
+	"npc_dota_hero_obsidian_destroyer", 
+	"npc_dota_hero_templar_assassin",
 }
 hero_pool_position_3 = {
 	"npc_dota_hero_centaur",
@@ -503,8 +504,8 @@ hero_pool_position={
 }
 -- This is the pool of other heros in each position, which dont have bots yet. This is so we can tell which positions the players are in.
 hero_pool_position_unimplemented={
-    [1] = {"npc_dota_hero_morphling","npc_dota_hero_phantom_lancer","npc_dota_hero_terrorblade","npc_dota_hero_troll_warlord"},
-    [2] = {"npc_dota_hero_invoker","npc_dota_hero_meepo","npc_dota_hero_puck","npc_dota_hero_storm_spirit","npc_dota_hero_templar_assassin","npc_dota_hero_tinker"},
+    [1] = {"npc_dota_hero_morphling","npc_dota_hero_phantom_lancer","npc_dota_hero_troll_warlord"},
+    [2] = {"npc_dota_hero_invoker","npc_dota_hero_meepo","npc_dota_hero_puck","npc_dota_hero_storm_spirit","npc_dota_hero_tinker"},
     [3] = {"npc_dota_hero_rattletrap","npc_dota_hero_lone_druid","npc_dota_hero_furion","npc_dota_hero_techies","npc_dota_hero_tusk","npc_dota_hero_weaver","npc_dota_hero_pangolier"},
     [4] = {"npc_dota_hero_nyx_assassin","npc_dota_hero_phoenix"},
     [5] = {"npc_dota_hero_wisp","npc_dota_hero_rubick","npc_dota_hero_shadow_demon","npc_dota_hero_visage","npc_dota_hero_dark_willow"}

@@ -245,12 +245,11 @@ Thanks the author of Bot Experiment Master, Arizona Fauzie。 I used and modifie
 10. Some detailed optimizations about initial item building.
 11. Some bugs fixed.
 v1.5b(2018.4.13) committed by zmcmcc
-1. Added new hero Outworld Destroyer and Naga Siren. They still need further optimization.
+1. Added new hero Outworld Destroyer, Naga Siren, Terrorblade and Templar Assassin.
 2. Now if bots didn't choose a safe lane support, the other support will buy the courier.
 3. Some heros will now purchase Aeon Disk.
 4. Fixed the bug that bots will pick duplicated heroes in Captain mode.
 5. Slightly adjust the ability usage of Centaur, Slardar, Ursa etc. so that they are less likely to miss their stuns.
-6. Add a judgement to some heroes to help them using abilities to leave impassable places.
-7. Rewrite the ability usage of skeleton king. Althogh he still can't use his third ability correctly, he has better ability use now.
-8. Rewrite the ability usage of pugna. Now his ult still has some problems(Similar to SB and ET) but has better ability use now.
-9. Rewrite the ability usage of tidehunter. Now he can use gush correctly.
+6. Rewrite the ability usage of skeleton king. Althogh he still can't use his third ability correctly, he has better ability use now.
+7. Rewrite the ability usage of pugna. Now his ult still has some problems(Similar to SB and ET) but has better ability use now.
+8. Rewrite the ability usage of tidehunter. Now he can use gush correctly.

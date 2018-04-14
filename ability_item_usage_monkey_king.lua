@@ -157,9 +157,9 @@ Consider[1]=function()
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) and not enemyDisabled(WeakestEnemy) and (npcBot:HasModifier('modifier_monkey_king_quadruple_tap_bonuses') or IsTargetDebuffStackEnough(WeakestEnemy,"modifier_monkey_king_quadruple_tap_counter",3)))
+			if ( CanCast[abilityNumber]( WeakestEnemy ) and not enemyDisabled(WeakestEnemy) )
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and (npcBot:HasModifier('modifier_monkey_king_quadruple_tap_bonuses') or IsTargetDebuffStackEnough(WeakestEnemy,"modifier_monkey_king_quadruple_tap_counter",4)))
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetExtrapolatedLocation(CastPoint); 
 				end
@@ -200,7 +200,7 @@ Consider[1]=function()
 	then
 		if(ManaPercentage>0.7 or npcBot:GetMana()>ComboMana)
 		then	
-			if(WeakestEnemy~=nil and CanCast[abilityNumber]( WeakestEnemy ) and not enemyDisabled(WeakestEnemy) and (npcBot:HasModifier('modifier_monkey_king_quadruple_tap_bonuses') or IsTargetDebuffStackEnough(WeakestEnemy,"modifier_monkey_king_quadruple_tap_counter",3)))
+			if(WeakestEnemy~=nil and CanCast[abilityNumber]( WeakestEnemy ) and not enemyDisabled(WeakestEnemy) and (npcBot:HasModifier('modifier_monkey_king_quadruple_tap_bonuses') or IsTargetDebuffStackEnough(WeakestEnemy,"modifier_monkey_king_quadruple_tap_counter",4)))
 			then
 				return BOT_ACTION_DESIRE_LOW,WeakestEnemy:GetExtrapolatedLocation(CastPoint)
 			end	
@@ -215,10 +215,10 @@ Consider[1]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
 	then
-		if((ManaPercentage>0.4 or npcBot:GetMana()>ComboMana))
+		if((ManaPercentage>0.7 or npcBot:GetMana()>ComboMana))
 		then
 			local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
-			if ( locationAoE.count >= 3 ) 
+			if ( locationAoE.count >= 5 and #enemys >=2 ) 
 			then
 				return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 			end
@@ -239,7 +239,7 @@ Consider[1]=function()
 		local npcTarget = npcBot:GetTarget();
 		if ( npcTarget ~= nil ) 
 		then
-			if(npcBot:HasModifier('modifier_monkey_king_quadruple_tap_bonuses') or IsTargetDebuffStackEnough(npcTarget,"modifier_monkey_king_quadruple_tap_counter",3))
+			if(npcBot:HasModifier('modifier_monkey_king_quadruple_tap_bonuses') or IsTargetDebuffStackEnough(npcTarget,"modifier_monkey_king_quadruple_tap_counter",4))
 			then
 				if ( CanCast[abilityNumber]( npcTarget ) and not enemyDisabled(npcTarget) and GetUnitToUnitDistance(npcBot,npcEnemy)<=CastRange)
 					then
