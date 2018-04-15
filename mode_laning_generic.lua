@@ -6,6 +6,7 @@
 function GetDesire()
 
 	--local npcBot = GetBot();
+
 	if (DotaTime()>10 and DotaTime() <= 8*60) then
 		return 0.45;
 	else 
