@@ -26,6 +26,10 @@ local ItemsToBuy =
 	"item_blink",					--跳刀
 	
 	"item_recipe_guardian_greaves",	--卫士胫甲
+
+	"item_vitality_booster",
+	"item_energy_booster",
+	"item_recipe_aeon_disk",		-- 永恒之盘
 	
 	"item_ogre_axe", 
 	"item_mithril_hammer",
@@ -41,9 +45,11 @@ local ItemsToBuy =
 	"item_energy_booster",
 	"item_mystic_staff",			--玲珑心
 	
-	"item_mystic_staff",
-	"item_ultimate_orb",
-	"item_void_stone",				--羊刀
+	"item_ring_of_health",
+	"item_void_stone",		
+	"item_ring_of_health",
+	"item_void_stone",		
+	"item_recipe_refresher", 		--刷新球
 }
 
 utility.checkItemBuild(ItemsToBuy)		--检查装备列表

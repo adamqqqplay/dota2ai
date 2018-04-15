@@ -57,6 +57,7 @@ local ItemsToBuy =
 utility.checkItemBuild(ItemsToBuy)
 
 function ItemPurchaseThink()
+	utility.BuyCourier()
 	utility.BuySupportItem()
 	utility.ItemPurchase(ItemsToBuy)
 end

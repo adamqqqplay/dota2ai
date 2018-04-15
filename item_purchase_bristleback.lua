@@ -34,6 +34,10 @@ local ItemsToBuy =
 	"item_recipe_buckler" ,
 	"item_branches",
 	"item_recipe_crimson_guard",	--赤红甲
+
+	"item_vitality_booster",
+	"item_energy_booster",
+	"item_recipe_aeon_disk",		-- 永恒之盘
 	
 	"item_point_booster",
 	"item_vitality_booster",

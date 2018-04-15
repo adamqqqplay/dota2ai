@@ -26,12 +26,19 @@ local ItemsToBuy =
 	"item_recipe_buckler" ,
 	"item_branches",
 	"item_recipe_crimson_guard",	--赤红甲
-	"item_mithril_hammer",
-	"item_ogre_axe",
-	"item_recipe_black_king_bar",	--bkb
+
+	"item_vitality_booster",
+	"item_energy_booster",
+	"item_recipe_aeon_disk",		-- 永恒之盘
+
 	"item_vitality_booster",
 	"item_vitality_booster",		
 	"item_reaver",					--龙心7.06
+	
+	"item_ring_of_health",
+	"item_void_stone",				
+	"item_platemail",
+	"item_energy_booster",			--清莲宝珠
 
 }
 

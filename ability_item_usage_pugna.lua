@@ -161,7 +161,7 @@ Consider[1]=function()
 	-- Mode based usage
 	--------------------------------------		
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+	--[[if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
 		for _,npcEnemy in pairs( enemys )
 		do
@@ -173,7 +173,7 @@ Consider[1]=function()
 				end
 			end
 		end
-	end
+	end]]
 	
 	-- If we're farming and can kill 3+ creeps
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) 
@@ -285,7 +285,7 @@ Consider[2]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL)) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
 				end
@@ -338,7 +338,7 @@ Consider[2]=function()
 	end
 	
 	-- If my mana is enough,use it at enemy
-	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+	--[[if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
 		if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) )
 		then
@@ -350,8 +350,9 @@ Consider[2]=function()
 				end
 			end
 		end
-	end
+	end]]
 	
+
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
@@ -411,13 +412,15 @@ Consider[3]=function()
 	-- Mode based usage
 	--------------------------------------		
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH and #enemys>=1) 
+	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) 
 	then
-		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) ) 
+		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 )) 
 		then
 			return BOT_ACTION_DESIRE_MODERATE, npcBot:GetLocation()
 		end
 	end
+
+
 
 	-- If we're pushing or defending a lane and can hit 4+ creeps
 	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
@@ -427,19 +430,20 @@ Consider[3]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
 	then		
-		if((tower~=nil and GetUnitToUnitDistance(npcBot,tower[1])>=800) or (tower2~=nil and GetUnitToUnitDistance(npcBot,tower2[1])>=400) and #enemys>=1)
+		if(tower~=nil and GetUnitToUnitDistance(npcBot,tower[1])>=800) or (tower2~=nil and GetUnitToUnitDistance(npcBot,tower2[1])>=400 and #enemys>=1)
 		then
 			return GetAbilityPoint()
 		end
 	end
 	
-	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+	--[[if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
 		if(ManaPercentage>0.5 or npcBot:GetMana()>ComboMana and #enemys>=1)
 		then
 			return GetAbilityPoint()
 		end		
-	end
+	end]]
+
 
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
@@ -489,7 +493,8 @@ Consider[4]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL)) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
+					or WeakestEnemy:HasModifier("modifier_pugna_decrepify")
 				then
 					return BOT_ACTION_DESIRE_LOW,WeakestEnemy; 
 				end
@@ -525,7 +530,7 @@ Consider[4]=function()
 		end
 	end]]
 	
-	-- If my mana is enough,use it at enemy
+	--[[ If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
 		if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and HealthPercentage<=0.8 )
@@ -538,7 +543,9 @@ Consider[4]=function()
 				end
 			end
 		end
-	end
+	end]]
+
+	
 	
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or

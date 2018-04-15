@@ -195,7 +195,7 @@ Consider[1] = function()
 			then
 				if (CanCast[abilityNumber](creeps[1]) and GetUnitToUnitDistance(npcBot, creeps[1]) < CastRange + 75 * #allys)
 				then
-					return BOT_ACTION_DESIRE_MODERATE+0.1, creeps[1];
+					return BOT_ACTION_DESIRE_MODERATE, creeps[1];
 				end
 			end
 		end
@@ -213,7 +213,7 @@ Consider[1] = function()
 		then
 			if (CanCast[abilityNumber](npcEnemy) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys)
 			then
-				return BOT_ACTION_DESIRE_MODERATE+0.1, npcEnemy
+				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end
 		end
 	end
@@ -285,12 +285,17 @@ Consider[2] = function()
 			end
 		end
 	end]]
+
+	-- Check if stuck on cliff.
+	--[[if not IsLocationPassable(npcBot:GetLocation()) then
+		return BOT_MODE_DESIRE_HIGH, npcBot:GetLocation();
+	end]]
 	
 	-- If my mana is enough,use it at enemy
 	if (npcBot:GetActiveMode() == BOT_MODE_LANING)
 	then
 		if creeps ~= nil and #creeps >= 4 and not IsLocationOverlapWeb(npcBot:GetLocation(), Radius) then
-			return BOT_MODE_DESIRE_LOW, npcBot:GetLocation();
+			return BOT_MODE_DESIRE_MODERATE, npcBot:GetLocation();
 		end
 	end
 	

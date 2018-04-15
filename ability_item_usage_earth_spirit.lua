@@ -367,6 +367,13 @@ Consider[2]=function()
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
+	--Check if stuck on cliff.
+	if not IsLocationPassable(npcBot:GetLocation()) then
+		local loc = npcBot:GetXUnitsTowardsLocation( location, nUnitCR );
+		return BOT_MODE_DESIRE_HIGH,loc, false;
+	end
+
+
 	--Try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
 	then
