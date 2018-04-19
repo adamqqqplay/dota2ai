@@ -340,8 +340,28 @@ Consider[3]=function()
 	
 end
 
-Consider[4]=function()
+local goodNeutral=
+{
+	"npc_dota_neutral_alpha_wolf",			-- 头狼
+	"npc_dota_neutral_centaur_khan",			-- 半人马征服者
+	"npc_dota_neutral_dark_troll_warlord",			-- 黑暗巨魔召唤法师
+	"npc_dota_neutral_polar_furbolg_ursa_warrior",			-- 地狱熊怪粉碎者
+	"npc_dota_neutral_satyr_hellcaller", -- 萨特苦难使者
+	"npc_dota_neutral_enraged_wildkin",  -- 枭兽撕裂者
+}
 
+function IsGoodNeutralCreeps(npcCreep)
+	local name=npcCreep:GetUnitName();
+	for k,creepName in pairs(goodNeutral) do
+		if(name==creepName)
+		then
+			return true;
+		end
+	end
+	return false;
+end
+
+Consider[4]=function()
 	local abilityNumber=4
 	--------------------------------------
 	-- Generic Variable Setting
@@ -353,40 +373,39 @@ Consider[4]=function()
 	end
 	
 	local CastRange = ability:GetCastRange();
-	local Damage = ability:GetAbilityDamage();
+	local Damage = 0;
+	local CastPoint = ability:GetCastPoint();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
-	local StrongestCreep,CreepHealth2=utility.GetStrongestUnit(creeps)
-	local creeps2 = npcBot:GetNearbyNeutralCreeps( CastRange+300 )
-	local StrongestCreep2,CreepHealth3=utility.GetStrongestUnit(creeps2)
+	local creepsNeutral = npcBot:GetNearbyNeutralCreeps(1600)
+	local StrongestCreep,CreepHealth2=utility.GetStrongestUnit(creepsNeutral)
+	local StrongstCreep,CreepHealth=utility.GetStrongestUnit(creeps)
 	--------------------------------------
-	-- Global high-priorty usage
+	-- Mode based usage
 	--------------------------------------
-	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT) 
+	-- Find neural creeps
+	if(ManaPercentage>=0.3)
 	then
-		if (StrongestCreep2~=nil)
-		then
-			if ( CanCast[abilityNumber]( StrongestCreep2 ) )
+		for k,creep in pairs(creepsNeutral) do
+			if(IsGoodNeutralCreeps(creep))
 			then
-				return BOT_ACTION_DESIRE_MODERATE,StrongestCreep2
-			end
-		end
-		if (StrongestCreep~=nil)
-		then
-			if ( CanCast[abilityNumber]( StrongestCreep ) )
-			then
-				return BOT_ACTION_DESIRE_MODERATE,StrongestCreep
+				return BOT_ACTION_DESIRE_HIGH, creep;
 			end
 		end
 	end
+
+	
+	if ( CanCast[abilityNumber]( StrongstCreep ) ) 
+	then
+		return BOT_ACTION_DESIRE_LOW, StrongstCreep;
+	end
 	
 	return BOT_ACTION_DESIRE_NONE, 0;
+	
 end
 
 function AbilityUsageThink()

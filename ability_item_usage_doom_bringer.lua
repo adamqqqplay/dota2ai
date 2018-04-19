@@ -162,21 +162,12 @@ Consider[2]=function()
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	
 	--try to kill enemy hero
-	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
-	then
-		if (WeakestEnemy~=nil)
-		then
-			if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
-			then
-				return BOT_ACTION_DESIRE_HIGH 
-			end
-		end
-	end
+
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
 	--protect myself
-	if(npcBot:WasRecentlyDamagedByAnyHero(2) and npcBot:GetActiveMode() == BOT_MODE_RETREAT and HealthPercentage<=0.45+#enemys*0.05)
+	if(npcBot:WasRecentlyDamagedByAnyHero(2) or (npcBot:GetActiveMode() == BOT_MODE_RETREAT and HealthPercentage<=0.4+#enemys*0.05))
 	then
 		return BOT_ACTION_DESIRE_HIGH
 	end
@@ -193,9 +184,9 @@ Consider[2]=function()
 		then
 			if ( npcEnemy ~= nil ) 
 			then
-				if ( GetUnitToUnitDistance(npcBot,npcEnemy)< Radius + 300+75*#allys)
+				if ( GetUnitToUnitDistance(npcBot,npcEnemy) > 450 or npcEnemy:GetHealth()/npcEnemy:GetMaxHealth() < 0.4)
 				then
-					return BOT_ACTION_DESIRE_MODERATE;
+					return BOT_ACTION_DESIRE_HIGH;
 				end
 			end
 		end
@@ -263,7 +254,7 @@ Consider[3]=function()
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
+			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys and WeakestEnemy:GetHealth()/WeakestEnemy:GetMaxHealth() < 0.4)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end
