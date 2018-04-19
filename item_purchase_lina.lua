@@ -10,16 +10,21 @@ local ItemsToBuy =
 	"item_mantle",
 	"item_recipe_null_talisman",	--无用挂件
 	"item_tango",
+
 	"item_bottle",
-	"item_magic_stick",
+
 	"item_boots",
+
+	"item_magic_stick",
+
 	"item_enchanted_mango",			--大魔棒7.07
+
 	"item_branches",
 	"item_branches",
 	"item_blades_of_attack",
 	"item_blades_of_attack",		--相位
 	
-	
+	"item_wind_lance",
 	"item_staff_of_wizardry",
 	"item_void_stone",
 	"item_recipe_cyclone",				--风杖

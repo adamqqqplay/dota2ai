@@ -253,3 +253,13 @@ v1.5b(2018.4.13) committed by zmcmcc
 6. Rewrite the ability usage of skeleton king. Althogh he still can't use his third ability correctly, he has better ability use now.
 7. Rewrite the ability usage of pugna. Now his ult still has some problems(Similar to SB and ET) but has better ability use now.
 8. Rewrite the ability usage of tidehunter. Now he can use gush correctly.
+v1.5c(2018.4.19) commited by zmcmcc
+1. Added new hero weaver and shadow demon. However, he cannot use his shukuchi like human.
+2. Added recent created heroes in Captain mode.
+3. Fixed a bug that Witch Doctor cannot buy items.(May also be the reason why sometime bots didn't buy courier).
+4. Added Witch Doctor in AP mode.(A mistake in previous versions)
+5. Optimized windrunner, Pugna, monkey King, alchemist and venomancer.
+6. Now bots can give you two tangos if you play locally.Please don't buy tangos until they give you.
+7. Fixed a bug that you can get extra tangos if you drop tangos on the ground.
+8. Fixed a bug that bots buy couriers in 3 minutes and don't release it. Now if bots don't buy courier in the beginning, it means they will never buy it. Buy one by yourself then(lol).
+9. Fixed a bug that Lina cannot purchase items correctly.

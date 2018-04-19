@@ -9,8 +9,6 @@ local ItemsToBuy =
 	"item_tango",
     "item_stout_shield",
 	"item_quelling_blade",
-	
-	"item_bottle", -- 魔瓶
 
 	"item_ring_of_regen",
 	"item_gauntlets",
@@ -18,28 +16,32 @@ local ItemsToBuy =
 	"item_recipe_soul_ring",			--灵魂之戒7.07
 	
 	"item_boots",
-
-	--"item_helm_of_iron_will", 
-	--"item_gloves", 
-	--"item_blades_of_attack",
-	--"item_recipe_armlet",			--臂章
-	
-	"item_ring_of_health",
-	"item_void_stone",
-	"item_demon_edge",				-- 狂战（舍弃了辉耀，实战中AI太难攒钱了，25分钟的辉耀没有意义）
-
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
+
+	"item_helm_of_iron_will", 
+	"item_gloves", 
+	"item_blades_of_attack",
+	"item_recipe_armlet",			--臂章
+
+	"item_javelin",
+	"item_belt_of_strength",
+	"item_recipe_basher",			--晕锤
+	
+	--"item_ring_of_health",
+	--"item_void_stone",
+	--"item_demon_edge",				-- 狂战（舍弃了辉耀，实战中AI太难攒钱了，25分钟的辉耀没有意义）
+
 	--"item_relic",
 	--"item_recipe_radiance",			--辉耀
 	
 	--"item_recipe_travel_boots",		--飞鞋
 	
-	"item_blade_of_alacrity",
-	"item_boots_of_elves",
-	"item_recipe_yasha",
-	"item_ultimate_orb",
-	"item_recipe_manta",			--分身
+	--"item_blade_of_alacrity",
+	--"item_boots_of_elves",
+	--"item_recipe_yasha",
+	--"item_ultimate_orb",
+	--"item_recipe_manta",			--分身
 	
 	--"item_vitality_booster",
 	--"item_point_booster",
