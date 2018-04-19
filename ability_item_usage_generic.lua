@@ -532,9 +532,10 @@ function GiveToMidLaner()
 	do
 		local member = GetTeamMember(k);
 		if member ~= nil and not member:IsIllusion() and member:IsAlive() then
-			local num_stg = GetItemCount(member, "item_tango_single"); 
+			local num_sts = GetItemCount(member, "item_tango_single"); 
 			local num_ff = GetItemCount(member, "item_faerie_fire"); 
-			if  num_stg < 1 then
+			local num_stg =  GetItemCount(member, "item_tango"); 
+			if  num_sts < 2 and num_stg < 1 then
 				return member;
 			end
 		end
@@ -638,12 +639,12 @@ function UnImplementedItemUsage()
 						string.gsub(target:GetUnitName(),"npc_dota_hero_","")..
 						"Don't ask why we only give you one tango. We are poor. 别问我们为什么只给一颗吃树了，我们穷。"
 						, false);]]
-				npcBot:ActionImmediate_Chat("Don't ask why we only give you one tango. We are poor. 别问我们为什么只给一颗吃树了，我们穷。",false);
+				npcBot:ActionImmediate_Chat("Give you a tango. 给你个吃树，么么哒",false);
 				npcBot:Action_UseAbilityOnEntity(itg, target);
 				giveTime = DotaTime();
 				return;
 			end
-		elseif npcBot:GetActiveMode() == BOT_MODE_LANING and role.CanBeSupport(npcBot:GetUnitName()) and tCharge > 1 and DotaTime() > giveTime + 2.0 then
+		elseif DotaTime() > 0 and npcBot:GetActiveMode() == BOT_MODE_LANING and role.CanBeSupport(npcBot:GetUnitName()) and tCharge > 1 and DotaTime() > giveTime + 2.0 then
 			local allies = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
 			for _,ally in pairs(allies)
 			do
@@ -676,7 +677,7 @@ function UnImplementedItemUsage()
 		then
 			local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 300, true, BOT_MODE_NONE );
 			local trees = npcBot:GetNearbyTrees(1000);
-			if trees[1] ~= nil  and (npcBot:GetHealth() / npcBot:GetMaxHealth())  < 0.65 
+			if trees[1] ~= nil  and (npcBot:GetHealth() / npcBot:GetMaxHealth())  < 0.7 
 				and ( IsLocationVisible(GetTreeLocation(trees[1])) or IsLocationPassable(GetTreeLocation(trees[1])) )
 			   and #tableNearbyEnemyHeroes == 0 
 			then
@@ -692,9 +693,9 @@ function UnImplementedItemUsage()
 		then
 			local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 300, true, BOT_MODE_NONE );
 			local trees = npcBot:GetNearbyTrees(1000);
-			if trees[1] ~= nil  and (npcBot:GetHealth() / npcBot:GetMaxHealth())  < 0.65 
+			if trees[1] ~= nil  and (npcBot:GetHealth() / npcBot:GetMaxHealth())  < 0.7 
 				and ( IsLocationVisible(GetTreeLocation(trees[1])) or IsLocationPassable(GetTreeLocation(trees[1])) )
-			   and #tableNearbyEnemyHeroes == 0 
+			   and #tableNearbyEnemyHeroes <= 1 
 			then
 				npcBot:Action_UseAbilityOnTree(its, trees[1]);
 				return;
@@ -761,14 +762,15 @@ function UnImplementedItemUsage()
 			return;
 		end
 	end
-	local mg=IsItemAvailable("item_enchanted_mango");
+
+	--[[local mg=IsItemAvailable("item_enchanted_mango");
 	if mg~=nil and mg:IsFullyCastable() then
 		if npcBot:GetMana() < 100 
 		then
 			npcBot:Action_UseAbility(mg);
 			return;
 		end
-	end
+	end]]
 	
 	local tok=IsItemAvailable("item_tome_of_knowledge");
 	if tok~=nil and tok:IsFullyCastable() then
