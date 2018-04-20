@@ -1507,6 +1507,7 @@ function X.IsRemovedFromSupportPoll(hero)
            or hero == "npc_dota_hero_abyssal_underlord" or hero == "npc_dota_hero_beastmaster" or hero == "npc_dota_hero_broodmother"
            or hero == "npc_dota_hero_brewmaster" or hero == "npc_dota_hero_abaddon" or hero == "npc_dota_hero_enchantress" or hero == "npc_dota_hero_mirana"
            or hero == "npc_dota_hero_obsidian_destroyer" or hero == "npc_dota_hero_terrorblade" or hero == "npc_dota_hero_templar_assassin" or hero == "npc_dota_hero_weaver"
+           or hero == "npc_dota_hero_phantom_lancer"
 end
 
 function X.CanBeOfflaner(hero)
@@ -1544,6 +1545,7 @@ function X.CanBeSafeLaneCarry(hero)
 	or hero == "npc_dota_hero_slark" or hero == "npc_dota_hero_clinkz" or hero == "npc_dota_hero_sven" or hero == "npc_dota_hero_drow_ranger" 
 	or hero == "npc_dota_hero_faceless_void" or hero == "npc_dota_hero_life_stealer" or hero == "npc_dota_hero_luna" or hero == "npc_dota_hero_monkey_king"
 	or hero == "npc_dota_hero_ursa" or hero == "npc_dota_hero_lycan" or hero == "npc_dota_hero_gyrocopter" or hero == "npc_dota_hero_terrorblade"
+	or hero == "npc_dota_hero_phantom_lancer"
 	--[[or (X["hero_roles"][hero]["carry"] > 1 and
 		   ( 
 			 ( X["hero_roles"][hero]["nuker"] < 3 and X["hero_roles"][hero]["pusher"] < 3 ) or
@@ -1569,7 +1571,7 @@ function X.CanBeSupport(hero)
 	or hero == "npc_dota_hero_earthshaker"
 	or hero == "npc_dota_hero_omniknight"
 	or hero == "npc_dota_hero_bounty_hunter"
-	or hero == "npc_dota_hero_elder_titan"
+	--or hero == "npc_dota_hero_elder_titan"
 	or hero == "npc_dota_hero_keeper_of_the_light"
 	or hero == "npc_dota_hero_chen"
 	or hero == "npc_dota_hero_pudge"

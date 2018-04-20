@@ -154,7 +154,7 @@ Consider[1]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL)- 100 and #allys <= 1 and not enemyDisabled(WeakestEnemy))
+				if ( CanCast[abilityNumber]( WeakestEnemy ) and not enemyDisabled(WeakestEnemy))
 				then
 					return BOT_ACTION_DESIRE_MODERATE,WeakestEnemy; 
 				end
@@ -191,7 +191,7 @@ Consider[1]=function()
 
 		if ( npcTarget ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcTarget ) and not enemyDisabled(npcTarget) and GetUnitToUnitDistance(npcBot,npcTarget) > 75 * #allys 
+			if ( CanCast[abilityNumber]( npcTarget ) and not enemyDisabled(npcTarget) and GetUnitToUnitDistance(npcBot,npcTarget) > 400 
 				and GetUnitToUnitDistance(npcBot,npcTarget) < CastRange + 100)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcTarget
@@ -206,7 +206,7 @@ Consider[1]=function()
 			end
 		end
 
-		if(HealthPercentage < 0.3 and #allys > #enemys) then
+		if(HealthPercentage < 0.3 and #allys < #enemys) then
 			return BOT_ACTION_DESIRE_HIGH,npcBot
 		end
 	end
@@ -473,6 +473,21 @@ Consider[5]=function()
 			return BOT_ACTION_DESIRE_HIGH, npcEnemy
 		end
 	end
+
+	--try to kill enemy hero
+	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
+	then
+		if (WeakestEnemy~=nil)
+		then
+			if ( CanCast[abilityNumber]( WeakestEnemy ) )
+			then
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+				then
+					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
+				end
+			end
+		end
+	end
 	
 	--------------------------------------
 	-- Mode based usage
@@ -511,7 +526,7 @@ Consider[5]=function()
 		do
 			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) 
 			then
-				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy)) 
+				if ( CanCast[abilityNumber]( npcEnemy ) ) 
 				then
 					return BOT_ACTION_DESIRE_HIGH, npcEnemy;
 				end
@@ -529,9 +544,9 @@ Consider[5]=function()
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
+			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy
 			end
 		end
 	end
