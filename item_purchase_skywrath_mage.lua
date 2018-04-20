@@ -14,10 +14,7 @@ local ItemsToBuy =
 	"item_magic_stick",
 	"item_enchanted_mango",			--大魔棒7.07
 	"item_energy_booster",			--秘法鞋
-	"item_circlet",
-	"item_ring_of_protection",
-	"item_recipe_urn_of_shadows",	
-	"item_infused_raindrop",		--骨灰盒7.06
+
 	"item_gauntlets",
 	"item_circlet",
 	"item_recipe_bracer",
@@ -26,10 +23,12 @@ local ItemsToBuy =
 	"item_recipe_bracer",
 	"item_staff_of_wizardry",
 	"item_recipe_rod_of_atos",		--阿托斯7.06
+
+	"item_wind_lace",
 	"item_staff_of_wizardry",
 	"item_void_stone",
-	"item_recipe_cyclone",
-	"item_wind_lace",				--风杖
+	"item_recipe_cyclone",				--风杖
+
 	"item_point_booster",
 	"item_staff_of_wizardry",
 	"item_ogre_axe",
