@@ -7,22 +7,22 @@ local utility = require( GetScriptDirectory().."/utility" )
 local ItemsToBuy = 
 { 
 	"item_tango",
+	"item_flask",
 	"item_stout_shield",
-	"item_branches",
-	"item_branches",
-	"item_enchanted_mango",	
-	"item_magic_stick",		--大魔棒7.07
+	"item_quelling_blade",			--补刀斧
+	
+
 	"item_boots",
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
 
 	
+	"item_lifesteal",				--祭品
 	"item_ring_of_regen",
-	"item_recipe_headdress",
-	"item_branches",				
+	"item_branches",
+	"item_recipe_headdress",				
 	"item_ring_of_protection",
 	"item_sobi_mask",
-	"item_lifesteal",				--祭品
 
 	"item_sobi_mask",
 	"item_sobi_mask",

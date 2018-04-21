@@ -19,20 +19,20 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 local AbilityToLevelUp=
 {
-	Abilities[2],
-	Abilities[3],
-	Abilities[2],
-	Abilities[3],
-	Abilities[3],
-	Abilities[2],
 	Abilities[1],
+	Abilities[3],
+	Abilities[3],
+	Abilities[2],
+	Abilities[3],
+	Abilities[1],
+	Abilities[3],
 	Abilities[4],
-	Abilities[3],
+	Abilities[1],
 	"talent",
+	Abilities[1],
 	Abilities[2],
-	Abilities[1],
-	Abilities[1],
-	Abilities[1],
+	Abilities[2],
+	Abilities[2],
 	"talent",
 	Abilities[4],
 	"nil",
@@ -111,40 +111,14 @@ Consider[1]=function()
 		local t=npcBot:GetAttackTarget()
 		if(t~=nil)
 		then
-			if (ManaPercentage > 0.3)
+			if (ManaPercentage > 0.35 and npcBot:GetLevel()>=7)
 			then
 				ability:ToggleAutoCast()
 				return BOT_ACTION_DESIRE_NONE, 0;
 			end
 		end
 	end
-	--[[else
-		local t=npcBot:GetAttackTarget()
-		if(t~=nil)
-		then
-			if (ManaPercentage < 0.2)
-			then
-				ability:ToggleAutoCast()
-				return BOT_ACTION_DESIRE_NONE, 0;
-			end
-		end
-	end]]
-
-	--[[local t=npcBot:GetAttackTarget()
-		if(t~=nil)
-		then
-			if (t:IsHero() or ManaPercentage > 0.4)
-			then
-				ability:ToggleAutoCast()
-				return BOT_ACTION_DESIRE_NONE, 0;
-			end
-		else
-			if (ManaPercentage < 0.2)
-			then
-				ability:ToggleAutoCast()
-				return BOT_ACTION_DESIRE_NONE, 0;
-			end
-		end]]
+	
 	
 	--try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT) 
@@ -165,11 +139,11 @@ Consider[1]=function()
 	--------------------------------------
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then	
-		if(WeakestCreep~=nil and ManaPercentage > 0.4)
+		if(WeakestCreep~=nil and ManaPercentage > 0.45)
 		then
-			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_PHYSICAL)+20)
+			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_PHYSICAL))
 			then
-				return BOT_ACTION_DESIRE_LOW-0.02,WeakestCreep
+				return BOT_ACTION_DESIRE_LOW,WeakestCreep
 			end
 		end
 

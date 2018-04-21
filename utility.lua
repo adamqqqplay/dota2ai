@@ -63,6 +63,13 @@ function utilityModule.enemyDisabled(npcEnemy)
 	return false;
 end
 
+function utilityModule.allyDisabled(npcEnemy)
+	if npcAlly:IsRooted( ) or npcEnemy:IsStunned( ) or npcEnemy:IsHexed( ) then
+		return true;
+	end
+	return false;
+end
+
 function utilityModule.IsEnemy(hUnit)
 	local ourTeam=GetTeam()
 	local Team=GetTeamForPlayer(hUnit:GetPlayerID())
@@ -356,8 +363,6 @@ function utilityModule.SellExtraItem(ItemsToBuy)
 			utilityModule.SellSpecifiedItem("item_orb_of_venom")
 			utilityModule.SellSpecifiedItem("item_enchanted_mango")
 			--utilityModule.SellSpecifiedItem("item_poor_mans_shield")
-			utilityModule.SellSpecifiedItem("item_quelling_blade")
-			utilityModule.SellSpecifiedItem("item_soul_ring")
 		end
 		if(GameTime()>35*60 or level>=15)
 		then
@@ -368,6 +373,9 @@ function utilityModule.SellExtraItem(ItemsToBuy)
 			utilityModule.SellSpecifiedItem("item_ancient_janggo")
 			utilityModule.SellSpecifiedItem("item_ring_of_basilius")
 			utilityModule.SellSpecifiedItem("item_ring_of_aquila")
+			utilityModule.SellSpecifiedItem("item_quelling_blade")
+			utilityModule.SellSpecifiedItem("item_soul_ring")
+
 		end
 		if(GameTime()>40*60 or level>=20)
 		then
@@ -402,7 +410,7 @@ function utilityModule.ItemPurchase(ItemsToBuy)
 
 	local npcBot = GetBot();
 	
-	if(utilityModule.GetItemIncludeBackpack("item_courier") or DotaTime()<-75)
+	if(utilityModule.GetItemIncludeBackpack("item_courier") or DotaTime()<-80)
 	then
 		return;
 	end
@@ -424,7 +432,7 @@ function utilityModule.ItemPurchase(ItemsToBuy)
 	
 	utilityModule.SellExtraItem(ItemsToBuy)
 
-	if(npcBot:DistanceFromFountain()<=1000 or npcBot:GetHealth()/npcBot:GetMaxHealth()<=0.4)
+	if(npcBot:DistanceFromFountain()<=2500 or npcBot:GetHealth()/npcBot:GetMaxHealth()<=0.35)
 	then
 		npcBot.secretShopMode = false;
 		npcBot.sideShopMode = false;
@@ -440,12 +448,12 @@ function utilityModule.ItemPurchase(ItemsToBuy)
 	then
 		if(npcBot.secretShopMode~=true and npcBot.sideShopMode ~=true)
 		then
-			if (IsItemPurchasedFromSideShop( sNextItem ) and npcBot:DistanceFromSideShop() <= 4000)  --????????·?????????????·???
+			if (IsItemPurchasedFromSideShop( sNextItem ) and npcBot:DistanceFromSideShop() <= 1800)  --????????·?????????????·???
 			then
 				npcBot.sideShopMode = true;
 				npcBot.secretShopMode = false;
 			end
-			if (IsItemPurchasedFromSecretShop( sNextItem )) 
+			if (IsItemPurchasedFromSecretShop( sNextItem )and npcBot:DistanceFromSecretShop() <= 2500) 
 			then
 				npcBot.secretShopMode = true;
 				npcBot.sideShopMode = false;
@@ -468,19 +476,18 @@ function utilityModule.ItemPurchase(ItemsToBuy)
 			
 			local courier=GetCourier(0)
 			
-			if(courier==nil)
+			--[[if(courier==nil)
 			then
 				local ItemCount=utilityModule.GetItemSlotsCount2(npcBot)
 				if(ItemCount<6)
 				then
 					utilityModule.BuyCourier()		--???????????????????????????
 				end
-			else
-				local ItemCount=utilityModule.GetItemSlotsCount2(courier)
-				if(courier:DistanceFromSecretShop() <= 250 and ItemCount<9)		--???????????
-				then
-					PurchaseResult=GetCourier(0):ActionImmediate_PurchaseItem( sNextItem )
-				end
+			else]]
+			local ItemCount=utilityModule.GetItemSlotsCount2(courier)
+			if(courier:DistanceFromSecretShop() <= 250 and ItemCount<9)		--???????????
+			then
+				PurchaseResult=GetCourier(0):ActionImmediate_PurchaseItem( sNextItem )
 			end
 		else
 			PurchaseResult=npcBot:ActionImmediate_PurchaseItem( sNextItem )
@@ -494,10 +501,8 @@ function utilityModule.ItemPurchase(ItemsToBuy)
 		end
 		if(PurchaseResult==PURCHASE_ITEM_OUT_OF_STOCK)	--??????????????????????
 		then
-			SellSpecifiedItem("item_branches")
 			SellSpecifiedItem("item_dust")
 			SellSpecifiedItem("item_faerie_fire")
-			SellSpecifiedItem("item_enchanted_mango")
 			SellSpecifiedItem("item_tango")
 			SellSpecifiedItem("item_clarity")
 			SellSpecifiedItem("item_flask")
@@ -542,21 +547,22 @@ function utilityModule.BuyCourier()
 	local courier=GetCourier(0)
 	if(courier==nil)
 	then
-		if(npcBot:GetGold()>=GetItemCost("item_flying_courier"))
+		if(npcBot:GetGold()>=GetItemCost("item_courier"))
 		then
 			local info=npcBot:ActionImmediate_PurchaseItem("item_courier");
 			if info ==PURCHASE_ITEM_SUCCESS then
-				print(npcBot:GetUnitName()..' buy the courier',info);
+				npcBot:ActionImmediate_Chat('I bought the courier 我买了鸡。',false);
 			end
 		end
-	else
+	end
+	--[[else
 		if DotaTime()>60*3 and npcBot:GetGold()>=GetItemCost("item_flying_courier") and (courier:GetMaxHealth()==75) then
 			local info=npcBot:ActionImmediate_PurchaseItem("item_flying_courier");
 			if info ==PURCHASE_ITEM_SUCCESS then
 				print(npcBot:GetUnitName()..' has upgraded the courier.',info);
 			end
 		end
-	end
+	end]]
 	
 end
 
@@ -610,7 +616,7 @@ function utilityModule.WeNeedTpscroll()
 	end
 
 	-- If we are at the sideshop or fountain with no TPs, then buy one or two
-	if ( iScrollCount <=1 and item_travel_boots_1 == nil and item_travel_boots_2 == nil ) then
+	if ( iScrollCount <1 and item_travel_boots_1 == nil and item_travel_boots_2 == nil ) then
 	
 		if ( npcBot:DistanceFromSideShop() <= 200 or npcBot:DistanceFromFountain() <= 200 ) then
 
@@ -620,7 +626,7 @@ function utilityModule.WeNeedTpscroll()
 				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 			end
-		else
+		--[[else
 			if(npcBot.WeNeedTpscrollTimer==nil)
 			then
 				npcBot.WeNeedTpscrollTimer=DotaTime()
@@ -629,7 +635,7 @@ function utilityModule.WeNeedTpscroll()
 			then
 				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 				npcBot.WeNeedTpscrollTimer=DotaTime()
-			end
+			end]]
 		end
 	end
 
@@ -756,7 +762,8 @@ invisibleHeroes = {
 	--"npc_dota_hero_sniper",
 	"npc_dota_hero_templar_assassin",
 	--"npc_dota_hero_viper",
-	"npc_dota_hero_invoker"
+	"npc_dota_hero_invoker",
+	"npc_dota_hero_weaver",
 };
 
 -- function utilityModule.GetItemIncludeBackpack( item_name )

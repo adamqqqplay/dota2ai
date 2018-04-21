@@ -339,7 +339,7 @@ function Think()
 			then
 				npcBot:Action_MoveToLocation(RuneLocation)
 			else
-				npcBot:Action_MoveToLocation(RuneLocation+RandomVector(400))
+				npcBot:Action_MoveToLocation(RuneLocation+RandomVector(200))
 			end
 		end
 		return
