@@ -16,7 +16,7 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 
 				"item_boots",
 				"item_gloves",
@@ -30,9 +30,8 @@ local ItemsToBuy =
 				"item_sobi_mask",
 				"item_recipe_ancient_janggo",	--战鼓
 
-				"item_gloves",
-				"item_mithril_hammer",
-				"item_recipe_maelstrom",		--电锤
+	"item_javelin",
+	"item_mithril_hammer",			--电锤7.14
 
 				"item_ogre_axe",
 				"item_mithril_hammer",

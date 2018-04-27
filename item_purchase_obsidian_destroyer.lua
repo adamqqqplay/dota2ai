@@ -14,16 +14,16 @@ local ItemsToBuy =
 
 	"item_branches",
 	"item_branches",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 	"item_magic_stick",
 	
 	"item_boots",
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
 
-	"item_ring_of_health",
+	"item_ring_of_regen",
 	"item_staff_of_wizardry",
-	"item_recipe_force_staff",		--推推7.06
+	"item_recipe_force_staff",		--推推7.14
 	
 	"item_boots_of_elves",
 	"item_boots_of_elves", 

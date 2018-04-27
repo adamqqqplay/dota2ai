@@ -18,7 +18,8 @@ local ItemsToBuy =
 
 	"item_ring_of_health",
 	"item_void_stone",
-	"item_demon_edge",				--狂战7.07
+	"item_demon_edge",
+	"item_recipe_bfury",			--狂战7.14
 	
 	"item_boots_of_elves",
 	"item_blade_of_alacrity",
@@ -26,9 +27,9 @@ local ItemsToBuy =
 	"item_ultimate_orb",
 	"item_recipe_manta",			--分身
 	
-	"item_javelin",
+	"item_mithril_hammer",
 	"item_belt_of_strength",
-	"item_recipe_basher",
+	"item_recipe_basher",			--晕锤7.14
 	
 	"item_ring_of_health",
 	"item_vitality_booster",

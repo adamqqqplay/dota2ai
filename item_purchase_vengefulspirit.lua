@@ -13,7 +13,7 @@ local ItemsToBuy =
 	"item_branches",
 
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 
 	"item_boots",	
 	
@@ -24,9 +24,9 @@ local ItemsToBuy =
 	"item_sobi_mask",
 	"item_blight_stone",			--勋章
 	
-	"item_ring_of_health",
+	"item_ring_of_regen",
 	"item_staff_of_wizardry",
-	"item_recipe_force_staff",		--推推7.06
+	"item_recipe_force_staff",		--推推7.14
 	"item_boots_of_elves",
 	"item_boots_of_elves", 
 	"item_ogre_axe",				--魔龙枪

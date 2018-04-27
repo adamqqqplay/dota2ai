@@ -10,11 +10,10 @@ local ItemsToBuy =
 	"item_stout_shield",
 	"item_branches",
 	"item_branches",
-	"item_enchanted_mango",
 	"item_tango",
-
 	"item_boots",
 	"item_magic_stick",
+	"item_recipe_magic_wand",			--大魔棒7.14
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
 
@@ -44,9 +43,9 @@ local ItemsToBuy =
     "item_talisman_of_evasion",
     "item_quarterstaff",			--蝴蝶
 	
-	"item_hyperstone",
-	"item_javelin",
-	"item_javelin",					--金箍棒7.07
+	"item_demon_edge",	
+	"item_quarterstaff",	
+	"item_javelin",					--金箍棒7.14
 }
 
 utility.checkItemBuild(ItemsToBuy)

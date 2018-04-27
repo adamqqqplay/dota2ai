@@ -17,7 +17,7 @@ local ItemsToBuy =
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 	
 	"item_shadow_amulet",
 	"item_claymore",				--隐刀

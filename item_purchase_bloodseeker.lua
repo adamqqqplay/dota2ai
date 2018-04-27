@@ -12,7 +12,7 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 	"item_boots",
 	"item_belt_of_strength",
 	"item_gloves",					--假腿
@@ -38,13 +38,14 @@ local ItemsToBuy =
 	"item_mithril_hammer",
 	"item_recipe_black_king_bar",	--bkb
 	
-	"item_javelin",
+	"item_mithril_hammer",
 	"item_belt_of_strength",
-	"item_recipe_basher",
+	"item_recipe_basher",			--晕锤7.14
+	
 	"item_vitality_booster",
 	"item_ring_of_health",
 	"item_stout_shield",
-	"item_recipe_abyssal_blade",	--晕锤
+	"item_recipe_abyssal_blade",	--大晕锤
 	
 	"item_eagle",
 	"item_talisman_of_evasion",

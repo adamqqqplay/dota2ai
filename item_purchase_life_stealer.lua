@@ -17,7 +17,7 @@ local ItemsToBuy =
 	"item_blades_of_attack",
 	
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 	
 	"item_helm_of_iron_will", 
 	"item_gloves", 
@@ -34,9 +34,9 @@ local ItemsToBuy =
 	"item_mithril_hammer",
 	"item_mithril_hammer",
 	
-	"item_javelin",
+	"item_mithril_hammer",
 	"item_belt_of_strength",
-	"item_recipe_basher",
+	"item_recipe_basher",			--晕锤7.14
 	
 	"item_ring_of_health",
 	"item_vitality_booster",

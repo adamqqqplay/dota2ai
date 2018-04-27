@@ -8,7 +8,7 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_orb_of_venom",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 	"item_magic_stick",
 	"item_branches",
 	"item_branches",
@@ -33,9 +33,9 @@ local ItemsToBuy =
 	"item_sobi_mask",
 	"item_ogre_axe",				--连击刀
 
-	"item_javelin",
+	"item_mithril_hammer",
 	"item_belt_of_strength",
-	"item_recipe_basher",
+	"item_recipe_basher",			--晕锤7.14
 	
 	"item_ring_of_health",
 	"item_vitality_booster",

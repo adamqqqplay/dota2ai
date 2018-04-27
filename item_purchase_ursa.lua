@@ -13,7 +13,7 @@ local ItemsToBuy =
 	"item_branches",
 	"item_boots",
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 	"item_blades_of_attack",
 	"item_blades_of_attack",		--相位
 	
@@ -27,9 +27,9 @@ local ItemsToBuy =
 	
 	"item_blink"	,				--跳刀
 	
-	"item_javelin",
+	"item_mithril_hammer",
 	"item_belt_of_strength",
-	"item_recipe_basher" ,			--晕锤
+	"item_recipe_basher",			--晕锤7.14
 	
 	"item_point_booster",		
 	"item_staff_of_wizardry",

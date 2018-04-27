@@ -14,7 +14,7 @@ local ItemsToBuy =
 
 	"item_boots",	
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 
 	"item_blades_of_attack",
 	"item_blades_of_attack",		--相位
@@ -26,9 +26,9 @@ local ItemsToBuy =
 	"item_boots_of_elves",
 	"item_boots_of_elves", 
 	"item_ogre_axe",				--魔龙枪
-	"item_ring_of_health",
+	"item_ring_of_regen",
 	"item_staff_of_wizardry",
-	"item_recipe_force_staff",		--推推7.06
+	"item_recipe_force_staff",		--推推7.14
 	"item_slippers",
 	"item_circlet",
 	"item_recipe_wraith_band",		--大推推7.07
@@ -47,9 +47,9 @@ local ItemsToBuy =
 	"item_ultimate_orb",
 	"item_void_stone",				--羊刀
 	
-	"item_hyperstone",
-	"item_javelin",
-	"item_javelin",					--金箍棒7.07
+	"item_demon_edge",	
+	"item_quarterstaff",	
+	"item_javelin",					--金箍棒7.14
 }
 
 utility.checkItemBuild(ItemsToBuy)

@@ -17,7 +17,7 @@ local ItemsToBuy =
 
 	"item_magic_stick",
 
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 
 	"item_branches",
 	"item_branches",

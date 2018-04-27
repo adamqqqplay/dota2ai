@@ -9,11 +9,10 @@ local ItemsToBuy =
 	"item_tango",
 	"item_branches",
 	"item_branches",
-	"item_enchanted_mango",			--大魔棒7.07
 	"item_circlet",
-
 	"item_magic_stick",
-
+	"item_recipe_magic_wand",		--大魔棒7.14
+	
 	"item_boots",
 
 	"item_slippers",
@@ -47,9 +46,9 @@ local ItemsToBuy =
 	"item_recipe_bloodthorn",		--血棘
 	
 	
-	"item_hyperstone",
-	"item_javelin",
-	"item_javelin",					--金箍棒7.07
+	"item_demon_edge",	
+	"item_quarterstaff",	
+	"item_javelin",					--金箍棒7.14
 	
 	"item_lifesteal",
 	"item_reaver", 

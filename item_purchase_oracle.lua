@@ -11,7 +11,7 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 
 	"item_boots",	
 	"item_energy_booster",			--秘法鞋
@@ -24,9 +24,9 @@ local ItemsToBuy =
 	"item_cloak",
 	"item_shadow_amulet",			--微光
 	
-	"item_ring_of_health",
+	"item_ring_of_regen",
 	"item_staff_of_wizardry",
-	"item_recipe_force_staff",		--推推7.06
+	"item_recipe_force_staff",		--推推7.14
 
 	"item_vitality_booster",
 	"item_wind_lace",

@@ -13,7 +13,7 @@ local ItemsToBuy =
 	"item_bottle",
 	"item_boots",
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 	"item_mantle",
 	"item_circlet",
 	"item_recipe_null_talisman",	--无用挂件
@@ -25,9 +25,8 @@ local ItemsToBuy =
 	"item_blades_of_attack",
 	"item_blades_of_attack",		--相位
 	
-	"item_gloves",
-	"item_mithril_hammer",
-	"item_recipe_maelstrom",		--电锤
+	"item_javelin",
+	"item_mithril_hammer",			--电锤7.14
 	"item_hyperstone",
 	"item_recipe_mjollnir",			--大雷锤
 	

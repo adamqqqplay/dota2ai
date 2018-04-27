@@ -24,13 +24,14 @@ local ItemsToBuy =
 	"item_blades_of_attack",
 	"item_recipe_armlet",			--臂章
 
-	"item_javelin",
+	"item_mithril_hammer",
 	"item_belt_of_strength",
-	"item_recipe_basher",			--晕锤
+	"item_recipe_basher",			--晕锤7.14
 	
-	--"item_ring_of_health",
-	--"item_void_stone",
-	--"item_demon_edge",				-- 狂战（舍弃了辉耀，实战中AI太难攒钱了，25分钟的辉耀没有意义）
+	"item_ring_of_health",
+	"item_void_stone",
+	"item_demon_edge",
+	"item_recipe_bfury",			--狂战7.14（舍弃了辉耀，实战中AI太难攒钱了，25分钟的辉耀没有意义）
 
 	--"item_relic",
 	--"item_recipe_radiance",			--辉耀
@@ -61,14 +62,13 @@ local ItemsToBuy =
 	"item_chainmail",
 	"item_recipe_assault",			--强袭
 
-	"item_gauntlets",
-	"item_mithril_hammer",
-	"item_recipe_maelstrom",
+	"item_javelin",
+	"item_mithril_hammer",			--电锤7.14
 	"item_hyperstone",
 	"item_recipe_mjollnir",		--大电锤
 
-	"item_recipe_mjollnir",
-	"item_recipe_mjollnir",  	--银月
+	"item_hyperstone",
+	"item_hyperstone",  	--银月
 }
 
 utility.checkItemBuild(ItemsToBuy)

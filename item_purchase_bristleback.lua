@@ -17,7 +17,7 @@ local ItemsToBuy =
 	"item_gloves",					--假腿
 	
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 	
 	"item_vitality_booster",
 	"item_ring_of_health",			--先锋

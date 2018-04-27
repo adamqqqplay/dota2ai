@@ -11,7 +11,7 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 	"item_boots",
 
 	"item_belt_of_strength",
@@ -29,9 +29,9 @@ local ItemsToBuy =
 	"item_boots_of_elves",
 	"item_boots_of_elves", 
 	"item_ogre_axe",				--魔龙枪
-	"item_ring_of_health",
+	"item_ring_of_regen",
 	"item_staff_of_wizardry",
-	"item_recipe_force_staff",		--推推7.06
+	"item_recipe_force_staff",		--推推7.14
 	"item_slippers",
 	"item_circlet",
 	"item_recipe_wraith_band",		--大推推7.07

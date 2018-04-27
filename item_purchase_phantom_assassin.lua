@@ -12,7 +12,7 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 	"item_boots",
 
 	"item_blades_of_attack",
@@ -28,18 +28,18 @@ local ItemsToBuy =
 	"item_mithril_hammer",
 	"item_mithril_hammer",			--暗灭
 
-	"item_javelin",
+	"item_mithril_hammer",
 	"item_belt_of_strength",
-	"item_recipe_basher" ,
+	"item_recipe_basher",			--晕锤7.14
 	"item_recipe_abyssal_blade",	--大晕锤
 	
 	"item_lifesteal",
 	"item_reaver", 
 	"item_claymore",				--撒旦7.07
 	
-	"item_hyperstone",
-	"item_javelin",
-	"item_javelin",					--金箍棒7.07
+	"item_demon_edge",	
+	"item_quarterstaff",	
+	"item_javelin",					--金箍棒7.14
 }
 
 utility.checkItemBuild(ItemsToBuy)

@@ -14,7 +14,7 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 
 	"item_boots",
 	"item_blades_of_attack",
@@ -27,9 +27,9 @@ local ItemsToBuy =
 	"item_boots_of_elves", 
 	"item_ogre_axe",				--魔龙枪
 	
-	"item_ring_of_health",
+	"item_ring_of_regen",
 	"item_staff_of_wizardry",
-	"item_recipe_force_staff",
+	"item_recipe_force_staff",		--推推7.14
 	"item_slippers",
 	"item_circlet",
 	"item_recipe_wraith_band",		--大推推7.07
@@ -39,9 +39,8 @@ local ItemsToBuy =
 	"item_ultimate_orb",
 	"item_recipe_silver_edge",		--大隐刀
 	
-	"item_gloves",
-	"item_mithril_hammer",
-	"item_recipe_maelstrom",		--电锤
+	"item_javelin",
+	"item_mithril_hammer",			--电锤7.14
 	"item_hyperstone",
 	"item_recipe_mjollnir",			--大雷锤
 	
@@ -51,9 +50,9 @@ local ItemsToBuy =
 	"item_ultimate_orb",
 	"item_recipe_manta",			--分身
 	
-	"item_hyperstone",
-	"item_javelin",
-	"item_javelin",					--金箍棒7.07
+	"item_demon_edge",	
+	"item_quarterstaff",	
+	"item_javelin",					--金箍棒7.14
 	
 }
 

@@ -15,7 +15,7 @@ local ItemsToBuy =
 	"item_blades_of_attack",
 	"item_blades_of_attack",		--相位
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 	"item_chainmail",
 	"item_sobi_mask",
 	"item_blight_stone",			--勇气勋章

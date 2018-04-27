@@ -8,8 +8,8 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_stout_shield",
-	"item_magic_stick",			--大魔棒7.07
-	"item_enchanted_mango",
+	"item_magic_stick",
+	"item_recipe_magic_wand",			--大魔棒7.14
 	"item_branches",
 	"item_branches",
 

@@ -14,7 +14,7 @@ local ItemsToBuy =
 	"item_boots",	
 	"item_ring_of_regen",			--绿鞋
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 	
 	"item_circlet",
 	"item_ring_of_protection",
@@ -28,9 +28,9 @@ local ItemsToBuy =
 	"item_wind_lace",
 	"item_recipe_spirit_vessel",	--大骨灰7.07
 	
-	"item_ring_of_health",
+	"item_ring_of_regen",
 	"item_staff_of_wizardry",
-	"item_recipe_force_staff",		--推推7.06
+	"item_recipe_force_staff",		--推推7.14
 	
 	"item_point_booster",		
 	"item_staff_of_wizardry",

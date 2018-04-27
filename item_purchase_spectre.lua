@@ -13,7 +13,7 @@ local ItemsToBuy =
 
 	"item_boots",	
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 	"item_branches",
 	"item_branches",
 	
@@ -35,9 +35,10 @@ local ItemsToBuy =
 	"item_ultimate_orb",
 	"item_recipe_manta",			--分身
 	
-	"item_javelin",
+	"item_mithril_hammer",
 	"item_belt_of_strength",
-	"item_recipe_basher",
+	"item_recipe_basher",			--晕锤7.14
+	
 	"item_recipe_abyssal_blade",	--大晕锤
 	
 	"item_vitality_booster",

@@ -15,7 +15,7 @@ local ItemsToBuy =
 	"item_ring_of_regen",			--绿鞋
 	"item_boots",
 
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 
 	"item_circlet",
 	"item_ring_of_protection",

@@ -14,7 +14,7 @@ local ItemsToBuy =
 	"item_branches",
 	"item_boots",	
 	"item_magic_stick",
-	"item_enchanted_mango",			--大魔棒7.07
+	"item_recipe_magic_wand",		--大魔棒7.14
 	
 	"item_gloves",
 	"item_recipe_hand_of_midas",	--点金
@@ -22,9 +22,8 @@ local ItemsToBuy =
 	"item_ring_of_protection",
 	"item_sobi_mask",				--天鹰
 	
-	"item_gloves",
-	"item_mithril_hammer",
-	"item_recipe_maelstrom",		--电锤
+	"item_javelin",
+	"item_mithril_hammer",			--电锤7.14
 	
 	"item_shadow_amulet",
 	"item_claymore",				--隐刀
