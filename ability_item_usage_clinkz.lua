@@ -399,7 +399,7 @@ Consider[4]=function()
 	end
 
 	
-	if ( CanCast[abilityNumber]( StrongstCreep ) ) 
+	if ( StrongstCreep~=nil and CanCast[abilityNumber]( StrongstCreep ) ) 
 	then
 		return BOT_ACTION_DESIRE_LOW, StrongstCreep;
 	end

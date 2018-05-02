@@ -369,7 +369,7 @@ Consider[2]=function()
 	--------------------------------------
 	--Check if stuck on cliff.
 	if not IsLocationPassable(npcBot:GetLocation()) then
-		local loc = npcBot:GetXUnitsTowardsLocation( location, nUnitCR );
+		local loc = npcBot:GetXUnitsTowardsLocation( npcBot:GetLocation(), nUnitCR );
 		return BOT_MODE_DESIRE_HIGH,loc, false;
 	end
 

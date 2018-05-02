@@ -106,10 +106,9 @@ Consider[1]=function()
 	end
 	if(blink~=nil and blink:IsFullyCastable())
 	then
-		CastRange=CastRange+850
 		if(npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 		then
-			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange+850, Radius, 0, 0 );
 			if ( locationAoE.count >= 2 ) 
 			then
 				npcBot:Action_UseAbilityOnLocation( blink, locationAoE.targetloc );

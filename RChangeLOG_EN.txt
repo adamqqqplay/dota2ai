@@ -262,3 +262,5 @@ v1.5c(2018.4.19) commited by zmcmcc
 6. Now bots can give you two tangos if you play locally.Please don't buy tangos until they give you.
 7. Fixed a bug that you can get extra tangos if you drop tangos on the ground.
 8. Fixed a bug that bots buy couriers in 3 minutes and don't release it. Now if bots don't buy courier in the beginning, it means they will never buy it. Buy one by yourself then(lol).
+v1.5d(2018.4.27)
+Update item building of Dota2 v7.14

@@ -351,6 +351,18 @@ Consider[3]=function()
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+	local trees= npcBot:GetNearbyTrees(300)
+
+	if(npcBot.Blink==nil or DotaTime()-npcBot.Blink.Timer>=10)
+	then
+		npcBot.Blink={Point=npcBot:GetLocation(),Timer=DotaTime()}
+	end
+
+	-- If we trapped by the trees
+	if(trees~=nil and #trees>=10 or (utility.PointToPointDistance(npcBot:GetLocation(),npcBot.Blink.Point)<=100 and DotaTime()-npcBot.Blink.Timer<10 and DotaTime()-npcBot.Blink.Timer>8))
+	then
+		return BOT_ACTION_DESIRE_HIGH
+	end
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------

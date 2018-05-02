@@ -634,7 +634,12 @@ function UnImplementedItemUsage()
 		for i = 0, 14 do
 			local sCurItem = npcBot:GetItemInSlot(i);
 			if ( sCurItem ~= nil and sCurItem:GetName() == "item_tango" ) then
-				npcBot:ActionImmediate_DropItemAtPositionImmediate("item_tango",npc:GetLocation());
+				local trees = npcBot:GetNearbyTrees(1000);
+				if trees[1] ~= nil then
+					npcBot:Action_UseAbilityOnTree(sCurItem, trees[1]);
+					return;
+				end
+				--npcBot:Action_DropItem(sCurItem,npcBot:GetLocation());
 			end
 		end
 	end
@@ -683,13 +688,15 @@ function UnImplementedItemUsage()
 			end
 		end
 	end]]
+	
 
-	if itg~=nil and its:IsFullyCastable() and npcBot:DistanceFromFountain() > 1000 then
+
+	if itg~=nil and itg:IsFullyCastable() and npcBot:DistanceFromFountain() > 1000 then
 		if DotaTime() > 0 
 		then
 			local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 300, true, BOT_MODE_NONE );
 			local trees = npcBot:GetNearbyTrees(1000);
-			local num_sts = GetItemCount(member, "item_tango_single"); 
+			local num_sts = GetItemCount(npcBot, "item_tango_single"); 
 			if trees[1] ~= nil  and (npcBot:GetHealth() / npcBot:GetMaxHealth())  < 0.7 and num_sts <= 0
 				and ( IsLocationVisible(GetTreeLocation(trees[1])) or IsLocationPassable(GetTreeLocation(trees[1])) )
 			   and #tableNearbyEnemyHeroes == 0 

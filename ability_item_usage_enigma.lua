@@ -512,7 +512,7 @@ Consider[4]=function()
 	then
 		local npcEnemy = npcBot:GetTarget();
 
-		if ( npcEnemy ~= nil and #Enemys >= 2) 
+		if ( npcEnemy ~= nil and Enemys~=nil and #Enemys >= 2) 
 		then
 			return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc
 		end
