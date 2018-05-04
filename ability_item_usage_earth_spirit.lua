@@ -368,9 +368,14 @@ Consider[2]=function()
 	-- Global high-priorty usage
 	--------------------------------------
 	--Check if stuck on cliff.
-	if not IsLocationPassable(npcBot:GetLocation()) then
-		local loc = npcBot:GetXUnitsTowardsLocation( npcBot:GetLocation(), nUnitCR );
-		return BOT_MODE_DESIRE_HIGH,loc, false;
+	if(npcBot.Blink==nil or DotaTime()-npcBot.Blink.Timer>=20)
+	then
+		npcBot.Blink={Point=npcBot:GetLocation(),Timer=DotaTime()}
+	end
+
+	if(trees~=nil and #trees>=10 or (utility.PointToPointDistance(npcBot:GetLocation(),npcBot.Blink.Point)<=150 and DotaTime()-npcBot.Blink.Timer<20 and DotaTime()-npcBot.Blink.Timer>18))
+	then
+		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
 	end
 
 

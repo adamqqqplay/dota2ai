@@ -95,7 +95,7 @@ Consider[1]=function()
 	
 	local CastRange = 0
 	local Damage = ability:GetAbilityDamage()
-	local Radius = ability:GetAOERadius()-120
+	local Radius = ability:GetAOERadius()- 50
 	local CastPoint = ability:GetCastPoint()
 	
 	local i=npcBot:FindItemSlot("item_blink")
@@ -144,7 +144,7 @@ Consider[1]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and GetUnitToUnitDistance(npcBot,WeakestEnemy) <= Radius-CastPoint* WeakestEnemy:GetCurrentMovementSpeed())
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy
 				end
@@ -207,7 +207,7 @@ Consider[1]=function()
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)<=Radius)
+			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy) <= Radius-CastPoint* npcEnemy:GetCurrentMovementSpeed())
 			then
 				return BOT_ACTION_DESIRE_MODERATE,npcEnemy
 			end
@@ -339,6 +339,15 @@ Consider[4]=function()
 					return BOT_ACTION_DESIRE_HIGH; 
 				end
 			end
+		end
+	end
+
+	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+	then
+		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) ) 
+		then
+			return BOT_ACTION_DESIRE_MODERATE
 		end
 	end
 	--------------------------------------

@@ -264,3 +264,10 @@ v1.5c(2018.4.19) commited by zmcmcc
 8. Fixed a bug that bots buy couriers in 3 minutes and don't release it. Now if bots don't buy courier in the beginning, it means they will never buy it. Buy one by yourself then(lol).
 v1.5d(2018.4.27)
 Update item building of Dota2 v7.14
+v1.5e(2018.5.4) commit by zmcmcc
+1. Added new hero Phantom Lancer and Troll
+2. Optimized Centaur, Disruptor,Bristleback, Winter wyvern, Weaver, TA and Medusa.
+3. Optimized the usage of magic stick，wand and bottle.
+4. Further optimized the usage of stomp-like abilities. Now enemies' movement speed and cast delay will be better considered.
+5. Added judgement of whether stuck on cliff for broodmother, slark and earth spirit. 
+6. Fixed some bugs caused by v7.14.
