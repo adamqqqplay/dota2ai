@@ -18,22 +18,22 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 local AbilityToLevelUp=
 {
+	Abilities[2],
+	Abilities[3],
 	Abilities[1],
 	Abilities[3],
 	Abilities[1],
-	Abilities[2],
-	Abilities[1],
 	Abilities[4],
 	Abilities[1],
+	Abilities[1],
+	Abilities[3],
+	"talent",
+	Abilities[3],
+	Abilities[4],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
-	Abilities[4],
-	Abilities[3],
-	Abilities[3],
-	"talent",
-	Abilities[3],
 	"nil",
 	Abilities[4],
 	"nil",
@@ -152,7 +152,7 @@ function Consider1()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetExtrapolatedLocation(CastPoint+0.4); 
+					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetExtrapolatedLocation(CastPoint+0.65); 
 				end
 			end
 		end
@@ -217,7 +217,7 @@ function Consider1()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) )
 			then
-				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation(CastPoint);
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation(CastPoint+0.65);
 			end
 		end
 	end
@@ -275,7 +275,8 @@ Consider[4]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(HeroHealth+WeakestEnemy:GetHealthRegen()*CastPoint<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
+				if(HeroHealth+WeakestEnemy:GetHealthRegen()*CastPoint<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) 
+					and GetUnitToUnitDistance(WeakestEnemy,npcBot) > AttackRange and GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange )
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
 				end
@@ -295,7 +296,7 @@ Consider[4]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT) 
 	then
-		if(ManaPercentage>0.5 or npcBot:GetMana()>ComboMana )
+		if(ManaPercentage>0.6 or npcBot:GetMana()>ComboMana )
 		then
 			if (WeakestEnemy~=nil and #enemys2==0)
 			then
@@ -317,7 +318,7 @@ Consider[4]=function()
 
 		if ( npcEnemy ~= nil and #enemys2==0) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)>600 and GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange)
+			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)>AttackRange and GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end

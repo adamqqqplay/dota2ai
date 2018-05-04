@@ -9,7 +9,6 @@ local ItemsToBuy =
 	"item_tango",
 	"item_clarity",
 	"item_clarity",
-	"item_enchanted_mango",
 	"item_branches",
 	"item_branches",
 	"item_boots",

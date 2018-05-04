@@ -8,20 +8,19 @@ local utility = require( GetScriptDirectory().."/utility" )
 local ItemsToBuy = 
 { 
 	"item_tango",
-	"item_stout_shield",
-	"item_quelling_blade",			--补刀斧
 	"item_flask",
-
-	"item_magic_stick",
-
-	"item_boots",	
-
+	"item_stout_shield",
 	"item_branches",
 	"item_branches",
-	"item_recipe_magic_wand",		--大魔棒7.14
+
+	"item_magic_stick",			
 	
-	"item_belt_of_strength",
-	"item_gloves",					--假腿
+	"item_recipe_magic_wand",		--大魔棒7.14
+
+	"item_boots",
+
+	"item_blades_of_attack",
+	"item_blades_of_attack",		--相位
 
 	"item_slippers",
 	"item_circlet",
@@ -29,26 +28,24 @@ local ItemsToBuy =
 	"item_ring_of_protection",
 	"item_sobi_mask",				--天鹰
 
-	
-	"item_blade_of_alacrity",
-	"item_blade_of_alacrity",
-	"item_robe",
-	"item_recipe_diffusal_blade",	--散失刀
-	
 	"item_boots_of_elves",
 	"item_blade_of_alacrity",
 	"item_recipe_yasha",			--夜叉
 	"item_ogre_axe",
     "item_belt_of_strength",
     "item_recipe_sange",			--双刀
-	
-	"item_vitality_booster",
-	"item_vitality_booster",		
-	"item_reaver",					--龙心7.06
 
-	"item_point_booster",
-	"item_ultimate_orb",
-	"item_ultimate_orb",			--冰眼
+	"item_ogre_axe", 
+	"item_mithril_hammer",
+	"item_recipe_black_king_bar",	--bkb
+
+	"item_eagle",
+	"item_talisman_of_evasion",
+	"item_quarterstaff",			--蝴蝶
+	
+	"item_demon_edge",	
+	"item_quarterstaff",	
+	"item_javelin",					--金箍棒7.14
 }
 
 utility.checkItemBuild(ItemsToBuy)

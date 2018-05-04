@@ -96,7 +96,7 @@ Consider[1]=function()
 	
 	local CastRange = 0
 	local Damage = ability:GetAbilityDamage()
-	local Radius = ability:GetAOERadius()-100
+	local Radius = ability:GetAOERadius()-50
 	local CastPoint = ability:GetCastPoint()
 	
 	local i=npcBot:FindItemSlot("item_blink")
@@ -143,7 +143,7 @@ Consider[1]=function()
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+			if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or GetUnitToUnitDistance(npcBot,WeakestEnemy) <= Radius-CastPoint* WeakestEnemy:GetCurrentMovementSpeed())
 			then
 				return BOT_ACTION_DESIRE_HIGH
 			end

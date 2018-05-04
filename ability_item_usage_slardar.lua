@@ -110,7 +110,7 @@ Consider[1]=function()	--Target Ability Example
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
+			if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_PHYSICAL) and npcBot:GetMana()>ComboMana)
 			then
 				return BOT_ACTION_DESIRE_HIGH
 			end
@@ -166,7 +166,7 @@ Consider[2]=function()
 	
 	local CastRange = ability:GetCastRange()
 	local Damage = ability:GetAbilityDamage()
-	local Radius = ability:GetAOERadius()-80
+	local Radius = ability:GetAOERadius()-50
 	local CastPoint = ability:GetCastPoint()
 	
 	local i=npcBot:FindItemSlot("item_blink")
@@ -215,7 +215,7 @@ Consider[2]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_PHYSICAL) and GetUnitToUnitDistance(npcBot,WeakestEnemy) <= Radius-CastPoint*WeakestEnemy:GetCurrentMovementSpeed())
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy
 				end
@@ -260,7 +260,7 @@ Consider[2]=function()
 	then
 		if ( #creeps >= 2 ) 
 		then
-			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
+			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_PHYSICAL) and npcBot:GetMana()>ComboMana)
 			then
 				return BOT_ACTION_DESIRE_LOW,WeakestCreep
 			end
@@ -278,7 +278,7 @@ Consider[2]=function()
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)<=Radius)
+			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy) <= Radius-CastPoint* npcEnemy:GetCurrentMovementSpeed())
 			then
 				return BOT_ACTION_DESIRE_MODERATE,npcEnemy
 			end
@@ -320,7 +320,7 @@ Consider[4]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_PHYSICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_PHYSICAL) and npcBot:GetMana()>ComboMana))
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
 				end

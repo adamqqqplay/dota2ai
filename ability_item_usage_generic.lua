@@ -656,7 +656,7 @@ function UnImplementedItemUsage()
 						string.gsub(target:GetUnitName(),"npc_dota_hero_","")..
 						"Don't ask why we only give you one tango. We are poor. 别问我们为什么只给一颗吃树了，我们穷。"
 						, false);]]
-				npcBot:ActionImmediate_Chat("Give you a tango. 给你个吃树，么么哒",false);
+				npcBot:ActionImmediate_Chat("Please use hard or unfair mode and not play Monkey king. 请使用困难或疯狂难度，不要使用齐天大圣。",false);
 				npcBot:Action_UseAbilityOnEntity(itg, target);
 				giveTime = DotaTime();
 				return;

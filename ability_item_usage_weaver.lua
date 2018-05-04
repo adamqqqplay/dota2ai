@@ -218,6 +218,14 @@ Consider[2]=function()
 		end
 	end
 
+	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
+	then
+		if (WeakestEnemy~=nil and npcBot:HasModifier("modifier_weaver_shukuchi"))
+		then
+			npcBot:Action_MoveToLocation( WeakestEnemy:GetExtrapolatedLocation(3) + RandomVector(100))
+		end
+	end
+
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------

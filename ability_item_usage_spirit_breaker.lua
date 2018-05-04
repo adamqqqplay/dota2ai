@@ -97,7 +97,7 @@ Consider[1]=function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
-	local CastRange = 1300
+	local CastRange = 800
 	local Damage = 0
 	--print(ability:GetName().." :Damage is "..Damage)
 	
@@ -109,6 +109,12 @@ Consider[1]=function()
 	local enemys2= GetUnitList(UNIT_LIST_ENEMY_HEROES)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local enemysAll=GetUnitList(UNIT_LIST_ENEMY_HEROES)
+
+	if npcBot:HasModifier("modifier_spirit_breaker_charge_of_darkness")
+	then
+		npcBot:Action_ClearActions(false)
+	end
+
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
@@ -145,8 +151,8 @@ Consider[1]=function()
 		--protect teammate
 		for _,npcAlly in pairs(allys2)
 		do
-			local enemys3=npcAlly:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
-			local allys3=npcAlly:GetNearbyHeroes(1600,false,BOT_MODE_NONE)
+			local enemys3=npcAlly:GetNearbyHeroes(800,true,BOT_MODE_NONE)
+			local allys3=npcAlly:GetNearbyHeroes(800,false,BOT_MODE_NONE)
 				
 			if(npcAlly:GetActiveMode() == BOT_MODE_RETREAT )
 			then
@@ -198,7 +204,7 @@ Consider[1]=function()
 						sumdamage=sumdamage+npcAlly:GetEstimatedDamageToTarget(true,npcEnemy,4.0,DAMAGE_TYPE_ALL)
 					end
 				end
-				if(npcEnemy:GetHealth()*1.1<=sumdamage and CanCast[abilityNumber]( npcEnemy ))
+				if(npcEnemy:GetHealth()*1.5<=sumdamage and CanCast[abilityNumber]( npcEnemy ))
 				then
 					return BOT_ACTION_DESIRE_HIGH+0.12,npcEnemy;
 				end
