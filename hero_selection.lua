@@ -327,7 +327,7 @@ allBotHeroes = {
 	"npc_dota_hero_juggernaut",
 
 	"npc_dota_hero_keeper_of_the_light",
-	--"npc_dota_hero_kunkka", 
+	"npc_dota_hero_kunkka", 
 	
 	"npc_dota_hero_lina",
 	"npc_dota_hero_lion",
@@ -347,6 +347,7 @@ allBotHeroes = {
 	"npc_dota_hero_night_stalker",
 	"npc_dota_hero_necrolyte",
 	"npc_dota_hero_naga_siren",
+	"npc_dota_hero_nyx_assassin",
 
 	"npc_dota_hero_oracle",
 	"npc_dota_hero_obsidian_destroyer",
@@ -378,7 +379,7 @@ allBotHeroes = {
 
 	"npc_dota_hero_treant",
 	"npc_dota_hero_tidehunter",
-	"npc_dota_hero_tiny",
+	--"npc_dota_hero_tiny",
 	"npc_dota_hero_terrorblade",
 	"npc_dota_hero_templar_assassin",
 	"npc_dota_hero_troll_warlord",
@@ -432,7 +433,6 @@ hero_pool_position_2 = {
 	"npc_dota_hero_queenofpain",
 	"npc_dota_hero_razor",
 	"npc_dota_hero_nevermore",
-	"npc_dota_hero_tiny",
 	"npc_dota_hero_bloodseeker",
 	"npc_dota_hero_pugna",
 	"npc_dota_hero_death_prophet",
@@ -441,6 +441,9 @@ hero_pool_position_2 = {
 	"npc_dota_hero_alchemist",
 	"npc_dota_hero_obsidian_destroyer", 
 	"npc_dota_hero_templar_assassin",
+	"npc_dota_hero_kunkka",
+
+	--"npc_dota_hero_tiny",
 }
 hero_pool_position_3 = {
 	"npc_dota_hero_centaur",
@@ -480,6 +483,7 @@ hero_pool_position_4 = {
 	"npc_dota_hero_chen",
 	"npc_dota_hero_pudge",
 	"npc_dota_hero_sand_king",
+	"npc_dota_hero_nyx_assassin",
 
 	--"npc_dota_hero_elder_titan",
 	--"npc_dota_hero_spirit_breaker",
@@ -516,7 +520,7 @@ hero_pool_position_unimplemented={
     [1] = {"npc_dota_hero_morphling"},
     [2] = {"npc_dota_hero_invoker","npc_dota_hero_meepo","npc_dota_hero_puck","npc_dota_hero_storm_spirit","npc_dota_hero_tinker"},
     [3] = {"npc_dota_hero_rattletrap","npc_dota_hero_lone_druid","npc_dota_hero_furion","npc_dota_hero_pangolier"},
-    [4] = {"npc_dota_hero_wisp","npc_dota_hero_nyx_assassin","npc_dota_hero_phoenix","npc_dota_hero_techies","npc_dota_hero_tusk"},
+    [4] = {"npc_dota_hero_wisp","npc_dota_hero_phoenix","npc_dota_hero_techies","npc_dota_hero_tusk"},
     [5] = {"npc_dota_hero_rubick","npc_dota_hero_visage","npc_dota_hero_dark_willow"}
 }
 ----------------------------------------------------------------------------------------------------

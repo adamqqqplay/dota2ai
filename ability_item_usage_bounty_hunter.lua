@@ -131,10 +131,10 @@ Consider[1]=function()	--Target Ability Example
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
-					if(GetUnitToUnitDistance(npcBot,WeakestEnemy)<CastRange)
+					if(GetUnitToUnitDistance(npcBot,WeakestEnemy)<CastRange and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk"))
 					then
 						return BOT_ACTION_DESIRE_HIGH, WeakestEnemy;
-					elseif(creeps[1]~=nil and WeakestEnemy:HasModifier("modifier_bounty_hunter_track"))
+					elseif(creeps[1]~=nil and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk") and WeakestEnemy:HasModifier("modifier_bounty_hunter_track"))
 					then
 						return BOT_ACTION_DESIRE_HIGH, creeps[1];
 					end
@@ -188,17 +188,6 @@ Consider[1]=function()	--Target Ability Example
 		end
 	end]]
 	
-	-- If we're farming and can hit 2+ creeps and kill 1+ 
-	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
-	then
-		if ( #creeps >= 2 ) 
-		then
-			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
-			then
-				return BOT_ACTION_DESIRE_LOW, WeakestCreep;
-			end
-		end
-	end
 
 	-- If we're pushing or defending a lane
 	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
@@ -216,10 +205,10 @@ Consider[1]=function()	--Target Ability Example
 				then
 					if ( CanCast[abilityNumber]( WeakestEnemy ) )
 					then
-						if(GetUnitToUnitDistance(npcBot,WeakestEnemy)<CastRange)
+						if(GetUnitToUnitDistance(npcBot,WeakestEnemy)<CastRange and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk"))
 						then
 							return BOT_ACTION_DESIRE_HIGH, WeakestEnemy;
-						elseif(creeps[1]~=nil and WeakestEnemy:HasModifier("modifier_bounty_hunter_track"))
+						elseif(creeps[1]~=nil and WeakestEnemy:HasModifier("modifier_bounty_hunter_track") and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk"))
 						then
 							return BOT_ACTION_DESIRE_HIGH, creeps[1];
 						end
@@ -241,10 +230,10 @@ Consider[1]=function()	--Target Ability Example
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ))
 			then
-				if(GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange)
+				if(GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk"))
 				then
 					return BOT_ACTION_DESIRE_HIGH, npcEnemy;
-				elseif(creeps[1]~=nil and npcEnemy:HasModifier("modifier_bounty_hunter_track"))
+				elseif(creeps[1]~=nil and npcEnemy:HasModifier("modifier_bounty_hunter_track") and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk"))
 				then
 					return BOT_ACTION_DESIRE_HIGH, creeps[1];
 				end

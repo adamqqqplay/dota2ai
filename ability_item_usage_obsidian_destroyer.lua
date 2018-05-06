@@ -395,8 +395,8 @@ Consider[4]=function()
 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
 		if(#enemys >= 2)
 		then
-			if  npcBot:GetModifierStackCount("modifier_obsidian_destroyer_astral_imprisonment_charge_counter") > 30
-				or (#enemys >= 3 and npcBot:GetModifierStackCount("modifier_obsidian_destroyer_astral_imprisonment_charge_counter") > 12)
+			if  npcBot:GetModifierStackCount(npcBot:GetModifierByName("modifier_obsidian_destroyer_astral_imprisonment_charge_counter")) > 30
+				or (#enemys >= 3 and npcBot:GetModifierStackCount(npcBot:GetModifierByName("modifier_obsidian_destroyer_astral_imprisonment_charge_counter")) > 12)
 			then
 				return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 			end

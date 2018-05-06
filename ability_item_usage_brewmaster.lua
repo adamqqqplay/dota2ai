@@ -7,6 +7,8 @@
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+local role = require(GetScriptDirectory() .. "/RoleUtility")
+local bnUtil = require(GetScriptDirectory() .. "/BotNameUtility")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -288,13 +290,13 @@ Consider[2]=function()
 	-- If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if(ManaPercentage>0.7 or npcBot:GetMana()>ComboMana )
-		then
-			if (WeakestEnemy~=nil)
+		for _,npcEnemy in pairs( enemys )
+		do
+			if ( role.CanBeSafeLaneCarry(npcEnemy:GetUnitName())) 
 			then
-				if ( CanCast[abilityNumber]( WeakestEnemy ) )
+				if ( CanCast[abilityNumber]( npcEnemy )) 
 				then
-					return BOT_ACTION_DESIRE_LOW,WeakestEnemy;
+					return BOT_ACTION_DESIRE_HIGH, npcEnemy;
 				end
 			end
 		end

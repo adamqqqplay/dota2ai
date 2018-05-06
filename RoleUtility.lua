@@ -1594,6 +1594,7 @@ function X.CanBeSupport(hero)
 	or hero == "npc_dota_hero_naga_siren"
 	or hero == "npc_dota_hero_witch_doctor"
 	or hero == "npc_dota_hero_shadow_demon"
+	or hero == "npc_dota_hero_nyx_assassin"
 end
 
 function X.GetCurrentSuitableRole(bot, hero)

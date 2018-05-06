@@ -381,6 +381,17 @@ Consider[3]=function()
 		end
 	end
 
+	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
+	then
+		if (WeakestEnemy~=nil)
+		then
+			if ( npcBot:HasModifier("modifier_batrider_firefly") )
+			then
+				npcBot:Action_MoveToLocation(WeakestEnemy:GetExtrapolatedLocation(2.5));
+			end
+		end
+	end
+
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
@@ -424,6 +435,17 @@ Consider[3]=function()
 			end
 		end
 	end
+
+	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
+	then
+		if ( WeakestCreep ~= nil ) 
+		then
+			if(npcBot:HasModifier("modifier_batrider_firefly"))
+			then
+				npcBot:Action_MoveToLocation(WeakestCreep:GetLocation());
+			end
+		end
+	end
 	
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
@@ -438,6 +460,22 @@ Consider[3]=function()
 			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys and GetStickyNapalmCount(npcEnemy)>=3)
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy
+			end
+		end
+	end
+
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+	then
+		local npcEnemy = npcBot:GetTarget();
+
+		if ( npcEnemy ~= nil ) 
+		then
+			if (npcBot:HasModifier("modifier_batrider_firefly") )
+			then
+				npcBot:Action_MoveToLocation(WeakestEnemy:GetExtrapolatedLocation(2.5));
 			end
 		end
 	end

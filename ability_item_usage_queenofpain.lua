@@ -167,7 +167,7 @@ Consider[1]=function()
 	-- If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
+		if(ManaPercentage>0.5 or npcBot:GetMana()>ComboMana)
 		then
 			if (WeakestEnemy~=nil)
 			then
@@ -219,6 +219,7 @@ Consider[2]=function()
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local trees= npcBot:GetNearbyTrees(250)
+	local towers = npcBot:GetNearbyTowers(CastRange+100)
 	
 	--try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
@@ -228,9 +229,10 @@ Consider[2]=function()
 			local enemys2= WeakestEnemy:GetNearbyHeroes(900,false,BOT_MODE_NONE)
 			if ( CanCast[abilityNumber]( WeakestEnemy ) and #enemys2<=2)
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana and GetUnitToUnitDistance(npcBot,WeakestEnemy) > 500)
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) 
+					and npcBot:GetMana()>ComboMana and GetUnitToUnitDistance(npcBot,WeakestEnemy) > 600 and #towers < 1)
 				then
-					return BOT_ACTION_DESIRE_HIGH,utility.GetUnitsTowardsLocation(npcBot,WeakestEnemy,CastRange+200); 
+					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetLocation() + RandomVector(200); 
 				end
 			end
 		end
@@ -275,9 +277,10 @@ Consider[2]=function()
 				local enemys2= npcEnemy:GetNearbyHeroes(900,false,BOT_MODE_NONE)
 				if (enemys2~=nil and #enemys2<=2 and #allys>#enemys)
 				then
-					if ( CanCast[abilityNumber]( npcEnemy )  and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys and GetUnitToUnitDistance(npcBot,npcEnemy) > 500)
+					if ( CanCast[abilityNumber]( npcEnemy )  and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys 
+						and GetUnitToUnitDistance(npcBot,npcEnemy) > 600 and #towers < 1) 
 					then
-						return BOT_ACTION_DESIRE_MODERATE, utility.GetUnitsTowardsLocation(npcBot,npcEnemy,CastRange+200);
+						return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetLocation() + RandomVector(200);
 					end
 				end
 			end

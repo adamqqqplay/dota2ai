@@ -453,7 +453,7 @@ function utilityModule.ItemPurchase(ItemsToBuy)
 				npcBot.sideShopMode = true;
 				npcBot.secretShopMode = false;
 			end
-			if (IsItemPurchasedFromSecretShop( sNextItem )) 
+			if (IsItemPurchasedFromSecretShop( sNextItem ) and sNextItem ~= "item_bottle") 
 			then
 				npcBot.secretShopMode = true;
 				npcBot.sideShopMode = false;
