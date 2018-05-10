@@ -255,6 +255,13 @@ Consider[2]=function()
 		end
 	end
 
+	if (npcBot:GetActiveMode() == BOT_MODE_RETREAT)
+		then
+		if (#enemys2 >= 2 and #allys < #enemys2) then
+			return BOT_ACTION_DESIRE_HIGH;
+		end
+	end
+
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
 end

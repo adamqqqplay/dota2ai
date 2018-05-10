@@ -290,6 +290,16 @@ Consider[2] = function()
 	--[[if not IsLocationPassable(npcBot:GetLocation()) then
 		return BOT_MODE_DESIRE_HIGH, npcBot:GetLocation();
 	end]]
+
+	if(npcBot.Blink==nil or DotaTime()-npcBot.Blink.Timer>=25)
+	then
+		npcBot.Blink={Point=npcBot:GetLocation(),Timer=DotaTime()}
+	end
+
+	if(trees~=nil and #trees>=10 or (utility.PointToPointDistance(npcBot:GetLocation(),npcBot.Blink.Point)<=150 and DotaTime()-npcBot.Blink.Timer<25 and DotaTime()-npcBot.Blink.Timer>23))
+	then
+		return BOT_ACTION_DESIRE_HIGH, npcBot:GetLocation();
+	end
 	
 	-- If my mana is enough,use it at enemy
 	if (npcBot:GetActiveMode() == BOT_MODE_LANING)

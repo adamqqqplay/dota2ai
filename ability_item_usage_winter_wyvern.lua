@@ -97,13 +97,13 @@ Consider[1]=function()
 	then
 		for i,npcEnemy in pairs(enemys)
 		do
-			if(npcBot:HasModifier("modifier_winter_wyvern_arctic_burn_flight") and npcEnemy:HasModifier("modifier_winter_wyvern_arctic_burn_slow")==false)
+			if(npcBot:HasModifier("modifier_winter_wyvern_arctic_burn_flight") and npcEnemy:HasModifier("modifier_winter_wyvern_arctic_burn_slow"))
 			then
 				npcBot:Action_AttackUnit( npcEnemy, true )
 			end
 		end
 	end
-	
+
 	if not ability:IsFullyCastable() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
@@ -129,7 +129,7 @@ Consider[1]=function()
 	
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if((ManaPercentage>0.75 or npcBot:GetMana()>ComboMana) )
+		if(ManaPercentage>0.75)
 		then
 			if (WeakestEnemy~=nil)
 			then

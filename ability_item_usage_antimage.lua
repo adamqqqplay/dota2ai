@@ -116,7 +116,7 @@ Consider[2]=function()
 			local enemys2= WeakestEnemy:GetNearbyHeroes(900,true,BOT_MODE_NONE)
 			if ( CanCast[abilityNumber]( WeakestEnemy ) and #enemys2<=2)
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana and GetUnitToUnitDistance(npcBot,WeakestEnemy) > 500)
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana and GetUnitToUnitDistance(npcBot,WeakestEnemy) > 200)
 				then
 					return BOT_ACTION_DESIRE_HIGH,utility.GetUnitsTowardsLocation(npcBot,WeakestEnemy,CastRange+200); 
 				end
@@ -153,7 +153,7 @@ Consider[2]=function()
 				local enemys2= npcEnemy:GetNearbyHeroes(900,false,BOT_MODE_NONE)
 				if (enemys2~=nil and #enemys2<=2)
 				then
-					if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys and GetUnitToUnitDistance(npcBot,npcEnemy) > 500)
+					if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys and GetUnitToUnitDistance(npcBot,npcEnemy) > 200)
 					then
 						return BOT_ACTION_DESIRE_MODERATE, utility.GetUnitsTowardsLocation(npcBot,npcEnemy,CastRange+200);
 					end

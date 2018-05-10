@@ -348,7 +348,7 @@ function BuybackUsageThink()
 	end	
 	
 	-- no buyback, no need to use GetUnitList() for performance considerations
-	if ( not CanBuybackUpperRespawnTime(10) ) then
+	if ( not CanBuybackUpperRespawnTime(20) ) then
 		return;
 	end
 
@@ -374,17 +374,17 @@ function BuybackUsageThink()
 
 	for _, build in pairs(buildList) do
 		local tableNearbyEnemyHeroes = build:GetNearbyHeroes( 1000, true, BOT_MODE_NONE );
-
-		if ( tableNearbyEnemyHeroes ~= nil and #tableNearbyEnemyHeroes > 0 ) then
-			if ( build:GetHealth() / build:GetMaxHealth() < 0.5
-				and build:WasRecentlyDamagedByAnyHero(2.0) and CanBuybackUpperRespawnTime(30) ) then
-				npcBot:ActionImmediate_Buyback();
-				return;
+		if DotaTime() > 25 * 60 and CanBuybackUpperRespawnTime(20) then
+			if ( tableNearbyEnemyHeroes ~= nil and #tableNearbyEnemyHeroes > 1 ) then
+				if (build:WasRecentlyDamagedByAnyHero(2.0) and CanBuybackUpperRespawnTime(20) ) then
+					npcBot:ActionImmediate_Buyback();
+					return;
+				end
 			end
 		end
 	end
 
-	if ( DotaTime() > 60 * 60 and CanBuybackUpperRespawnTime(30) ) then
+	if ( DotaTime() > 35 * 60 and CanBuybackUpperRespawnTime(30) ) then
 		npcBot:ActionImmediate_Buyback();
 	end
 
@@ -630,7 +630,7 @@ function UnImplementedItemUsage()
 	end
 
 
-	if ( DotaTime() > 5*60) then
+	if ( DotaTime() > 7*60) then
 		for i = 0, 14 do
 			local sCurItem = npcBot:GetItemInSlot(i);
 			if ( sCurItem ~= nil and sCurItem:GetName() == "item_tango" ) then
@@ -656,7 +656,7 @@ function UnImplementedItemUsage()
 						string.gsub(target:GetUnitName(),"npc_dota_hero_","")..
 						"Don't ask why we only give you one tango. We are poor. 别问我们为什么只给一颗吃树了，我们穷。"
 						, false);]]
-				npcBot:ActionImmediate_Chat("Give you a tango. 给你个吃树，么么哒",false);
+				npcBot:ActionImmediate_Chat("Please use hard or unfair mode and not play Monkey king. 请使用困难或疯狂难度，不要使用齐天大圣。",false);
 				npcBot:Action_UseAbilityOnEntity(itg, target);
 				giveTime = DotaTime();
 				return;
@@ -692,14 +692,14 @@ function UnImplementedItemUsage()
 
 
 	if itg~=nil and itg:IsFullyCastable() and npcBot:DistanceFromFountain() > 1000 then
-		if DotaTime() > 0 
+		if DotaTime() > 0 and not npcBot:HasModifier("modifier_tango_heal")
 		then
 			local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 300, true, BOT_MODE_NONE );
 			local trees = npcBot:GetNearbyTrees(1000);
 			local num_sts = GetItemCount(npcBot, "item_tango_single"); 
 			if trees[1] ~= nil  and (npcBot:GetHealth() / npcBot:GetMaxHealth())  < 0.7 and num_sts <= 0
 				and ( IsLocationVisible(GetTreeLocation(trees[1])) or IsLocationPassable(GetTreeLocation(trees[1])) )
-			   and #tableNearbyEnemyHeroes == 0 
+			   and #tableNearbyEnemyHeroes == 0
 			then
 				npcBot:Action_UseAbilityOnTree(itg, trees[1]);
 				return;
@@ -709,19 +709,34 @@ function UnImplementedItemUsage()
 
 	local its=IsItemAvailable("item_tango_single");
 	if its~=nil and its:IsFullyCastable() and npcBot:DistanceFromFountain() > 1000 then
-		if DotaTime() > 0 
+		if DotaTime() > 0 and not npcBot:HasModifier("modifier_tango_heal")
 		then
 			local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 300, true, BOT_MODE_NONE );
 			local trees = npcBot:GetNearbyTrees(1000);
 			if trees[1] ~= nil  and (npcBot:GetHealth() / npcBot:GetMaxHealth())  < 0.7 
 				and ( IsLocationVisible(GetTreeLocation(trees[1])) or IsLocationPassable(GetTreeLocation(trees[1])) )
-			   and #tableNearbyEnemyHeroes <= 1 
+			   and #tableNearbyEnemyHeroes <= 1
 			then
 				npcBot:Action_UseAbilityOnTree(its, trees[1]);
 				return;
 			end
 		end
 	end
+
+	if ( DotaTime() > 4*60) then
+		for i = 0, 14 do
+			local sCurItem = npcBot:GetItemInSlot(i);
+			if ( sCurItem ~= nil and sCurItem:GetName() == "item_tango_single" ) then
+				local trees = npcBot:GetNearbyTrees(1000);
+				if trees[1] ~= nil then
+					npcBot:Action_UseAbilityOnTree(sCurItem, trees[1]);
+					return;
+				end
+				--npcBot:Action_DropItem(sCurItem,npcBot:GetLocation());
+			end
+		end
+	end
+
 
 	local ifl =IsItemAvailable("item_flask");
 	if ifl~=nil and ifl:IsFullyCastable() and npcBot:DistanceFromFountain() > 1000 then
@@ -1059,7 +1074,7 @@ function UnImplementedItemUsage()
 		end
 	end
 
-	local mgw=IsItemAvailable("item_magic_wand");
+	--[[local mgw=IsItemAvailable("item_magic_wand");
 	if mgw~=nil and mgw:IsFullyCastable() then
 		if npcBot:GetMana()/npcBot:GetMaxMana() - npcBot:GetHealth()/npcBot:GetMaxHealth() <= 1 and mgw:GetCurrentCharges()>=15
 		then
@@ -1075,8 +1090,51 @@ function UnImplementedItemUsage()
 			npcBot:Action_UseAbility(mgs);
 			return;
 		end
-	end
+	end]]
 	
+	local stick=IsItemAvailable("item_magic_stick");
+	if stick ~=nil and stick:IsFullyCastable() then
+		if DotaTime() > 0 
+		then
+			local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 500, true, BOT_MODE_NONE );
+			if ((npcBot:GetHealth()/npcBot:GetMaxHealth() < 0.4 or npcBot:GetMana()/npcBot:GetMaxMana() < 0.2) and #tableNearbyEnemyHeroes >= 1 )
+				or ((npcBot:GetHealth()/npcBot:GetMaxHealth() < 0.7 and npcBot:GetMana()/npcBot:GetMaxMana() < 0.7) and GetItemCharges(npcBot,"item_magic_stick") >= 7 )
+			then
+				npcBot:Action_UseAbility(stick);
+				return;
+			end
+		end
+	end
+
+	local wand=IsItemAvailable("item_magic_wand");
+	if wand ~=nil and wand:IsFullyCastable() then
+		if DotaTime() > 0 
+		then
+			local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 500, true, BOT_MODE_NONE );
+			if ((npcBot:GetHealth()/npcBot:GetMaxHealth() < 0.4 or npcBot:GetMana()/npcBot:GetMaxMana() < 0.2) and #tableNearbyEnemyHeroes >= 1 )
+				or ((npcBot:GetHealth()/npcBot:GetMaxHealth() < 0.7 and npcBot:GetMana()/npcBot:GetMaxMana() < 0.7) and GetItemCharges(npcBot,"item_magic_wand") >= 12 )
+			then
+				npcBot:Action_UseAbility(wand);
+				return;
+			end
+		end
+	end
+
+	local bottle =IsItemAvailable("item_bottle");
+	if bottle ~=nil and bottle:IsFullyCastable()
+	then
+		local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 650, true, BOT_MODE_NONE );
+		if GetItemCharges(npcBot,"item_bottle") > 0 and not npcBot:hasModifier("modifier_bottle_regeneration") 
+		then
+			if ((npcBot:GetHealth() / npcBot:GetMaxHealth() < 0.65 and npcBot:GetMana()/npcBot:GetMaxMana() < 0.45) 
+					or npcBot:GetHealth() / npcBot:GetMaxHealth() < 0.4 or npcBot:GetMana()/npcBot:GetMaxMana() < 0.2)
+					and #tableNearbyEnemyHeroes == 0
+			then
+				npcBot:Action_UseAbilityOnEntity(bottle, npcBot);
+				return;
+			end
+		end
+	end
 
 	local cyclone=IsItemAvailable("item_cyclone");
 	if cyclone~=nil and cyclone:IsFullyCastable() then

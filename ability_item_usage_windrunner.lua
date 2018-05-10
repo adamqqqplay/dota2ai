@@ -101,7 +101,6 @@ Consider[3]=function()
 	end
 	
 	local CastRange = ability:GetCastRange();
-	local 0;
 	local CastPoint = ability:GetCastPoint();
 	
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
@@ -115,14 +114,11 @@ Consider[3]=function()
 	--Try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
 	then
-		if (WeakestEnemy~=nil)
+		if (WeakestEnemy~=nil and CanCast[abilityNumber]( WeakestEnemy ))
 		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) )
+			if(WeakestEnemy:GetHealth()/WeakestEnemy:GetMaxHealth() < 0.3)
 			then
-				if(WeakestEnemy:GetHealth()/WeakestEnemy:GetMaxHealth() < 0.3) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
-				then
-					return BOT_ACTION_DESIRE_HIGH
-				end
+				return BOT_ACTION_DESIRE_HIGH
 			end
 		end
 	end

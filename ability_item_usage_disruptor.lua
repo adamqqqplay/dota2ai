@@ -310,7 +310,7 @@ Consider[2]=function()
 		do
 			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) 
 			then
-				if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToLocationDistance(npcBot,GetEarlyLocation(npcEnemy))>=600 ) 
+				if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToLocationDistance(npcBot,GetEarlyLocation(npcEnemy))>=1200 and npcEnemy:GetHealth()/npcEnemy:GetMaxHealth()> 0.7 ) 
 				then
 					return BOT_ACTION_DESIRE_HIGH, npcEnemy;
 				end
@@ -326,7 +326,7 @@ Consider[2]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
 	then
-		if ( #enemys>=1) 
+		if ( #enemys>=1 and #enemys > #allys) 
 		then
 			for k,npcEnemy in pairs(enemys) do
 				if(GetUnitToLocationDistance(npcBot,GetEarlyLocation(npcEnemy))>=3000)
@@ -345,11 +345,11 @@ Consider[2]=function()
 	then
 		local npcEnemy = npcBot:GetTarget();
 
-		if ( npcEnemy ~= nil ) 
+		if ( npcEnemy ~= nil and #allys >= #enemys) 
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)> CastRange/2 and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange)
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy
 			end
 		end
 	end
