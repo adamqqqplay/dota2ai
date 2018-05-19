@@ -219,7 +219,7 @@ Consider[2]=function()
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local trees= npcBot:GetNearbyTrees(250)
-	local towers = npcBot:GetNearbyTowers(CastRange+100)
+	local towers = npcBot:GetNearbyTowers(1300,true)
 	
 	--try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
