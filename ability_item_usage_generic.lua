@@ -1124,7 +1124,7 @@ function UnImplementedItemUsage()
 	if bottle ~=nil and bottle:IsFullyCastable()
 	then
 		local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 650, true, BOT_MODE_NONE );
-		if GetItemCharges(npcBot,"item_bottle") > 0 and not npcBot:hasModifier("modifier_bottle_regeneration") 
+		if GetItemCharges(npcBot,"item_bottle") > 0 and not npcBot:HasModifier("modifier_bottle_regeneration") 
 		then
 			if ((npcBot:GetHealth() / npcBot:GetMaxHealth() < 0.65 and npcBot:GetMana()/npcBot:GetMaxMana() < 0.45) 
 					or npcBot:GetHealth() / npcBot:GetMaxHealth() < 0.4 or npcBot:GetMana()/npcBot:GetMaxMana() < 0.2)

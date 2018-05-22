@@ -318,6 +318,7 @@ allBotHeroes = {
 	--"npc_dota_hero_ember_spirit",
 
 	"npc_dota_hero_faceless_void",
+	"npc_dota_hero_furion",
 
 	"npc_dota_hero_gyrocopter",
 
@@ -383,6 +384,7 @@ allBotHeroes = {
 	"npc_dota_hero_terrorblade",
 	"npc_dota_hero_templar_assassin",
 	"npc_dota_hero_troll_warlord",
+	"npc_dota_hero_tusk",
 
 	"npc_dota_hero_ursa",
 	"npc_dota_hero_undying",
@@ -464,6 +466,8 @@ hero_pool_position_3 = {
 	"npc_dota_hero_magnataur",
 	"npc_dota_hero_mirana",
 	"npc_dota_hero_weaver",
+	"npc_dota_hero_furion",
+	"npc_dota_hero_shredder",
 }
 hero_pool_position_4 = {
 	"npc_dota_hero_skywrath_mage",
@@ -484,6 +488,7 @@ hero_pool_position_4 = {
 	"npc_dota_hero_pudge",
 	"npc_dota_hero_sand_king",
 	"npc_dota_hero_nyx_assassin",
+	"npc_dota_hero_tusk",
 
 	--"npc_dota_hero_elder_titan",
 	--"npc_dota_hero_spirit_breaker",
@@ -519,8 +524,8 @@ hero_pool_position={
 hero_pool_position_unimplemented={
     [1] = {"npc_dota_hero_morphling"},
     [2] = {"npc_dota_hero_invoker","npc_dota_hero_meepo","npc_dota_hero_puck","npc_dota_hero_storm_spirit","npc_dota_hero_tinker"},
-    [3] = {"npc_dota_hero_rattletrap","npc_dota_hero_lone_druid","npc_dota_hero_furion","npc_dota_hero_pangolier"},
-    [4] = {"npc_dota_hero_wisp","npc_dota_hero_phoenix","npc_dota_hero_techies","npc_dota_hero_tusk"},
+    [3] = {"npc_dota_hero_rattletrap","npc_dota_hero_lone_druid","npc_dota_hero_pangolier"},
+    [4] = {"npc_dota_hero_wisp","npc_dota_hero_phoenix","npc_dota_hero_techies"},
     [5] = {"npc_dota_hero_rubick","npc_dota_hero_visage","npc_dota_hero_dark_willow"}
 }
 ----------------------------------------------------------------------------------------------------

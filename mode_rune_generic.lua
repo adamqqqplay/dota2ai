@@ -248,11 +248,11 @@ function GetDesire()
 
 	local HaveBottle=utility.IsItemAvailable("item_bottle")
 
-	if DotaTime()>=60 and DotaTime()<=20*60
+	if DotaTime()>=60 and DotaTime()<=26*60
 	then
 		for _,r in pairs(OurRunes)
 		do
-			if(DotaTime()%120>110)
+			if(DotaTime()%300>290)
 			then
 				if ((HaveBottle~=nil or GetTheBestHero(r)==npcBot) and npcBot:GetAssignedLane()~=LANE_MID)
 				then
@@ -267,7 +267,7 @@ function GetDesire()
 	if DotaTime()<=60+50
 	then
 		TargetRunes=OurRunes2
-	elseif DotaTime()<=20*60
+	elseif DotaTime()<=26*60
 	then
 		TargetRunes=OurRunes
 	else
@@ -354,7 +354,7 @@ function Think()
 		if DotaTime()<=60+50
 		then
 			TargetRunes=OurRunes2
-		elseif DotaTime()<=20*60
+		elseif DotaTime()<=26*60
 		then
 			TargetRunes=OurRunes
 		else
@@ -394,7 +394,7 @@ function Think()
 		end
 	end
 
-	if(npcBot.MyTargetRune==nil and DotaTime()%120>=110)
+	if(npcBot.MyTargetRune==nil and DotaTime()%300>=290)
 	then
 		if(GetRuneStatus(RUNE_POWERUP_1)==RUNE_STATUS_UNKNOWN and GetRuneStatus(RUNE_POWERUP_2)==RUNE_STATUS_UNKNOWN)
 		then
@@ -424,7 +424,7 @@ function Think()
 	then
 		--print(npcBot:GetPlayerID().." [Rune] MyTargetRune is RUNE"..npcBot.MyTargetRune)
 
-		if(DotaTime()%120>=110)
+		if(DotaTime()%300>=290)
 		then
 			npcBot:Action_MoveToLocation(GetRuneSpawnLocation(npcBot.MyTargetRune))
 			return

@@ -117,6 +117,7 @@ Consider[1]=function()
 				return BOT_ACTION_DESIRE_NONE, 0;
 			end
 		end
+	end
 	--[[else
 		local t=npcBot:GetAttackTarget()
 		if(t~=nil)

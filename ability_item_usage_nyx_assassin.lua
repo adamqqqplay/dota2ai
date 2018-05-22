@@ -22,11 +22,11 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[3],
 	Abilities[1],
-	Abilities[2],
+	Abilities[3],
 	Abilities[1],
 	Abilities[5],
 	Abilities[1],
-	Abilities[3],
+	Abilities[2],
 	Abilities[3],
 	"talent",
 	Abilities[3],
@@ -338,7 +338,7 @@ Consider[3]=function()
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if (npcEnemy:GetHealth()/npcEnemy:GetMaxHealth() < 0.4 or GetUnitToUnitDistance(npcBot,npcEnemy) > AttackRange + 200)
+			if (npcEnemy:GetHealth()/npcEnemy:GetMaxHealth() < 0.4)
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy
 			end

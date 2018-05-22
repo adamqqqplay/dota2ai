@@ -933,6 +933,44 @@ function utilityModule.DebugTalk_Delay(message)
 		npcBot.LastSpeaktime=GameTime()
 	end
 end
+
+function utilityModule.AreTreesBetween(loc,r)
+	local npcBot=GetBot();
+	
+	local trees=npcBot:GetNearbyTrees(GetUnitToLocationDistance(npcBot,loc));
+	--check if there are trees between us
+	for _,tree in pairs(trees) do
+		local x=GetTreeLocation(tree);
+		local y=npcBot:GetLocation();
+		local z=loc;
+		
+		if x~=y then
+			local a=1;
+			local b=1;
+			local c=0;
+		
+			if x.x-y.x ==0 then
+				b=0;
+				c=-x.x;
+			else
+				a=-(x.y-y.y)/(x.x-y.x);
+				c=-(x.y + x.x*a);
+			end
+		
+			local d = math.abs((a*z.x+b*z.y+c)/math.sqrt(a*a+b*b));
+			if d<=r and GetUnitToLocationDistance(npcBot,loc)>utilityModule.GetDistance(x,loc)+50 then
+				return true;
+			end
+		end
+	end
+	return false;
+end
+
+function utilityModule.VectorTowards(s,t,d)
+	local f=t-s;
+	f=f / utilityModule.GetDistance(f,Vector(0,0));
+	return s+(f*d);
+end
 --------------------------------------------------------------------------
 
 ---------------------------------------------------------------------------------------------------

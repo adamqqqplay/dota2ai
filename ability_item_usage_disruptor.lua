@@ -310,7 +310,7 @@ Consider[2]=function()
 		do
 			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) 
 			then
-				if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToLocationDistance(npcBot,GetEarlyLocation(npcEnemy))>=1200 and npcEnemy:GetHealth()/npcEnemy:GetMaxHealth()> 0.7 ) 
+				if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy) < 250 and GetUnitToLocationDistance(npcBot,GetEarlyLocation(npcEnemy))>=1200 and npcEnemy:GetHealth()/npcEnemy:GetMaxHealth()> 0.7 ) 
 				then
 					return BOT_ACTION_DESIRE_HIGH, npcEnemy;
 				end
@@ -347,7 +347,8 @@ Consider[2]=function()
 
 		if ( npcEnemy ~= nil and #allys >= #enemys) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)> CastRange/2 and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange)
+			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToLocationDistance(npcBot,GetEarlyLocation(npcEnemy))<= 500
+				and GetUnitToUnitDistance(npcBot,npcEnemy)> 700 and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange)
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy
 			end
@@ -395,7 +396,7 @@ Consider[3]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetExtrapolatedLocation(Delay); 
+					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetExtrapolatedLocation(CastPoint + Delay + 0.1); 
 				end
 			end
 		end
@@ -432,7 +433,7 @@ Consider[3]=function()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) )
 			then
-				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation(Delay);
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation(CastPoint + Delay + 0.1);
 			end
 		end
 	end

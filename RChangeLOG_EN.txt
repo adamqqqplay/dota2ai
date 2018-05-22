@@ -273,3 +273,8 @@ v1.5e(2018.5.6) commit by zmcmcc
 6. Further optimized the usage of stomp-like abilities. Now enemies' movement speed and cast delay will be better considered.
 7. Added judgement of whether stuck on cliff for broodmother, slark and earth spirit. 
 8. Fixed some bugs caused by v7.14.
+v1.5f(2018.5.16) commit by zmcmcc
+1. Added new heroes Tusk, Shredder and Furion.
+2.  Optimized ability usage of TA, QoP, Underlord, Disruptor, Wind Runner, Sniper, NA and Drow Ranger.
+3. FIxed some bugs.
+4. Updated v7.15 bounty runes.

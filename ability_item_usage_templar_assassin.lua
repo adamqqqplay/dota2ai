@@ -287,7 +287,7 @@ Consider[5]=function()
 	local HeroHealth=10000
 	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 
 
@@ -310,7 +310,7 @@ Consider[5]=function()
 
 	for _,loc in pairs(mandateTrapLoc)
 	do
-		if GetUnitToLocationDistance(npcBot, loc) < CastRange then
+		if GetUnitToLocationDistance(npcBot, loc) < 1600 then
 			local exsit = false;
 			local listTrap = GetUnitList(UNIT_LIST_ALLIES);
 			for _,unit in pairs(listTrap)
@@ -335,7 +335,7 @@ Consider[5]=function()
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if((ManaPercentage> 0.4 and GetUnitToUnitDistance(npcBot,npcEnemy) < CastRange) or GetUnitToUnitDistance(npcBot,npcEnemy)< AttackRange)
+			if((ManaPercentage> 0.4 and GetUnitToUnitDistance(npcBot,npcEnemy) < 1600) or GetUnitToUnitDistance(npcBot,npcEnemy)< AttackRange)
 			then
 				return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetLocation();
 			end
