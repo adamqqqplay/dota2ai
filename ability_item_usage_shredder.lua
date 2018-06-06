@@ -313,6 +313,7 @@ Consider[2]=function()
 			local BRTree = GetBestRetreatTree(npcBot, CastRange);
 			if BRTree ~= nil then
 				return BOT_ACTION_DESIRE_MODERATE, BRTree
+			end
 		end
 	end
 	

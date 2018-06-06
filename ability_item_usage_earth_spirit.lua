@@ -373,6 +373,7 @@ Consider[2]=function()
 		npcBot.Blink={Point=npcBot:GetLocation(),Timer=DotaTime()}
 	end
 
+	local trees= npcBot:GetNearbyTrees(300)
 	if(trees~=nil and #trees>=10 or (utility.PointToPointDistance(npcBot:GetLocation(),npcBot.Blink.Point)<=150 and DotaTime()-npcBot.Blink.Timer<20 and DotaTime()-npcBot.Blink.Timer>18))
 	then
 		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)

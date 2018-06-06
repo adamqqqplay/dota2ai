@@ -633,10 +633,11 @@ function AssmbleWithAlly(unit)
 	local TPresult=tryTP(unit,MaxDesireLane)
 	if(TPresult==false)
 	then
-		StepBack( unit )
+		StepBack( unit );
+	else
+		print(getCurrentFileName().." "..getShortName(unit).."'s enemy is too much, fall back. try tp "..tostring(TPresult) )
 	end
-
-	print(getCurrentFileName().." "..getShortName(unit).."'s enemy is too much, fall back. try tp "..tostring(TPresult) )
+	
 end
 
 function StepBack( unit )

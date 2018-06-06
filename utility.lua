@@ -7,8 +7,8 @@ local utilityModule={}
 ------This is global utility library,include some useful function.------
 ---------------------------------------------------------------------------------------------------
 function utilityModule.HasImmuneDebuff(npcEnemy)
-	return npcEnemy:HasModifier("modifier_abaddon_borrowed_time") or 
-		npcEnemy:HasModifier("modifier_winter_wyvern_winters_curse") or 
+	return npcEnemy:HasModifier("modifier_abaddon_borrowed_time") or
+		npcEnemy:HasModifier("modifier_winter_wyvern_winters_curse") or
 		npcEnemy:HasModifier("modifier_obsidian_destroyer_astral_imprisonment_prison") or
 		npcEnemy:HasModifier("modifier_winter_wyvern_winters_curse_aura")
 end
@@ -140,13 +140,14 @@ end
 ----------------------------------------------------------------------------------------------------
 
 function utilityModule.GetUnitsTowardsLocation(unit,target, nUnits)
-	vMyLocation,vTargetLocation=unit:GetLocation(),target:GetLocation()
-	local tempvector=(vTargetLocation-vMyLocation)/PointToPointDistance(vMyLocation,vTargetLocation)
+	local vMyLocation,vTargetLocation=unit:GetLocation(),target:GetLocation()
+	local tempvector=(vTargetLocation-vMyLocation)/utilityModule.PointToPointDistance(vMyLocation,vTargetLocation)
 	return vMyLocation+nUnits*tempvector
 end
 
 function utilityModule.RandomInCastRangePoint(unit,target,CastRange,distance)
-	local i=0
+	local i=0;
+	local l,d;
 	repeat
 		l=utilityModule.GetUnitsTowardsLocation(unit,target,GetUnitToUnitDistance(unit,target)/2)+RandomVector(RandomInt(0,distance))
 		d=GetUnitToLocationDistance(unit,l)
@@ -162,7 +163,7 @@ function utilityModule.RandomInCastRangePoint(unit,target,CastRange,distance)
 end
 
 function utilityModule.GetSafeVector(unit,distance)
-	v=RandomVector(distance)
+	local v=RandomVector(distance)
 	if(unit:GetTeam()==TEAM_RADIANT)
 	then
 		if(v.x>0)
@@ -190,16 +191,16 @@ function utilityModule.GetEnemiesNearLocation(loc,dist)
 	if loc ==nil then
 		return {};
 	end
-	
+
 	local Enemies={}
-	
+
 	for _,enemy in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES)) do
 		if(GetUnitToLocationDistance(enemy,loc)<dist)
 		then
 			table.insert(Enemies,enemy)
 		end
 	end
-	
+
 	return Enemies;
 end
 
@@ -207,9 +208,9 @@ function utilityModule.GetAlliesNearLocation(loc,dist)
 	if loc ==nil then
 		return {};
 	end
-	
+
 	local Enemies={};
-	
+
 	for _,enID in pairs(GetTeamPlayers(GetTeam())) do
 		local enemyInfo=GetHeroLastSeenInfo(enID)[1];
 		if enemyInfo~=nil and enemyInfo['location']~=nil then
@@ -218,7 +219,7 @@ function utilityModule.GetAlliesNearLocation(loc,dist)
 			end
 		end
 	end
-	
+
 	return Enemies;
 end
 ----------------------------------------------------------------------------------------------------
@@ -243,39 +244,39 @@ function utilityModule.GetOtherTeam()
 end
 
 function utilityModule.GetWeakestUnit(EnemyUnits)
-	
+
 	if EnemyUnits==nil or #EnemyUnits==0 then
 		return nil,10000;
 	end
-	
+
 	local WeakestUnit=nil;
 	local LowestHealth=10000;
-	for _,unit in pairs(EnemyUnits) 
+	for _,unit in pairs(EnemyUnits)
 	do
-		if unit~=nil and unit:IsAlive() 
+		if unit~=nil and unit:IsAlive()
 		then
-			if unit:GetHealth()<LowestHealth 
+			if unit:GetHealth()<LowestHealth
 			then
 				LowestHealth=unit:GetHealth();
 				WeakestUnit=unit;
 			end
 		end
 	end
-	
+
 	return WeakestUnit,LowestHealth
 end
 
 function utilityModule.GetStrongestUnit(EnemyUnits)
-	
+
 	if EnemyUnits==nil or #EnemyUnits==0 then
 		return nil,0;
 	end
-	
+
 	local StrongestUnit=nil;
 	local HighestHealth=0;
-	for _,unit in pairs(EnemyUnits) 
+	for _,unit in pairs(EnemyUnits)
 	do
-		if unit~=nil and unit:IsAlive() 
+		if unit~=nil and unit:IsAlive()
 		then
 			if unit:GetHealth()>HighestHealth
 			then
@@ -284,16 +285,16 @@ function utilityModule.GetStrongestUnit(EnemyUnits)
 			end
 		end
 	end
-	
+
 	return StrongestUnit,HighestHealth
 end
 
 function utilityModule.GetNearestBuilding(team, location)
-	local buildings = utilityModule.GetAllBuilding( team, location )
+	local buildings = utilityModule.GetAllBuilding( team )
 	local minDist = 16000 ^ 2
 	local nearestBuilding = nil
 	for k,v in pairs(buildings) do
-		local dist = PointToPointDistance(location, v:GetLocation())^2
+		local dist = utilityModule.PointToPointDistance(location, v:GetLocation())^2
 		if dist < minDist then
 			minDist = dist
 			nearestBuilding = v
@@ -302,7 +303,7 @@ function utilityModule.GetNearestBuilding(team, location)
 	return nearestBuilding
 end
 
-function utilityModule.GetAllBuilding( team,location )
+function utilityModule.GetAllBuilding( team )
 	local buildings = {}
 	for i=0,10 do
 		local tower = GetTower(team,i)
@@ -319,10 +320,10 @@ function utilityModule.GetAllBuilding( team,location )
 	end
 
 	for i=0,4 do
-		local shrine = GetShrine(team, i) 
+		local shrine = GetShrine(team, i)
 		if utilityModule.NotNilOrDead(shrine) then
 			table.insert(buildings,shrine)
-		end 
+		end
 	end
 
 	local ancient = GetAncient( team )
@@ -344,10 +345,10 @@ end
 function utilityModule.SellExtraItem(ItemsToBuy)
 	local npcBot=GetBot()
 	local level=npcBot:GetLevel()
-	item_travel_boots = utilityModule.NoNeedTpscrollForTravelBoots();
-	item_travel_boots_1 = item_travel_boots[1];
-	item_travel_boots_2 = item_travel_boots[2];
-	
+	local item_travel_boots = utilityModule.NoNeedTpscrollForTravelBoots();
+	-- local item_travel_boots_1 = item_travel_boots[1];
+	-- local item_travel_boots_2 = item_travel_boots[2];
+
 	if(utilityModule.IsItemSlotsFull())
 	then
 		if(GameTime()>6*60 or level>=6)
@@ -391,25 +392,25 @@ function utilityModule.SellExtraItem(ItemsToBuy)
 			table.insert(ItemsToBuy,"item_recipe_travel_boots")
 			npcBot.HaveTravelBoots=true
 		end
-	end	
-	
+	end
+
 	if(item_travel_boots[1]~=nil or item_travel_boots[2]~=nil)
 	then
-		SellSpecifiedItem("item_arcane_boots")
-		SellSpecifiedItem("item_phase_boots")
-		SellSpecifiedItem("item_power_treads_agi")
-		SellSpecifiedItem("item_power_treads_int")
-		SellSpecifiedItem("item_power_treads_str")
-		SellSpecifiedItem("item_tranquil_boots")
-		SellSpecifiedItem("item_tpscroll")
+		utilityModule.SellSpecifiedItem("item_arcane_boots")
+		utilityModule.SellSpecifiedItem("item_phase_boots")
+		utilityModule.SellSpecifiedItem("item_power_treads_agi")
+		utilityModule.SellSpecifiedItem("item_power_treads_int")
+		utilityModule.SellSpecifiedItem("item_power_treads_str")
+		utilityModule.SellSpecifiedItem("item_tranquil_boots")
+		utilityModule.SellSpecifiedItem("item_tpscroll")
 	end
-	
+
 end
 
 function utilityModule.ItemPurchase(ItemsToBuy)
 
 	local npcBot = GetBot();
-	
+
 	if(utilityModule.GetItemIncludeBackpack("item_courier") or DotaTime()<-80)
 	then
 		return;
@@ -429,7 +430,7 @@ function utilityModule.ItemPurchase(ItemsToBuy)
 
 	local sNextItem = ItemsToBuy[1];
 	npcBot:SetNextItemPurchaseValue( GetItemCost( sNextItem ) )
-	
+
 	utilityModule.SellExtraItem(ItemsToBuy)
 
 	if(npcBot:DistanceFromFountain()<=2500 or npcBot:GetHealth()/npcBot:GetMaxHealth()<=0.35)
@@ -437,13 +438,13 @@ function utilityModule.ItemPurchase(ItemsToBuy)
 		npcBot.secretShopMode = false;
 		npcBot.sideShopMode = false;
 	end
-	
+
 	if (IsItemPurchasedFromSideShop( sNextItem )==false and IsItemPurchasedFromSecretShop( sNextItem )==false)
 	then
 		npcBot.secretShopMode = false;
 		npcBot.sideShopMode = false;
 	end
-	
+
 	if ( npcBot:GetGold() >= GetItemCost( sNextItem ) )
 	then
 		if(npcBot.secretShopMode~=true and npcBot.sideShopMode ~=true)
@@ -453,13 +454,13 @@ function utilityModule.ItemPurchase(ItemsToBuy)
 				npcBot.sideShopMode = true;
 				npcBot.secretShopMode = false;
 			end
-			if (IsItemPurchasedFromSecretShop( sNextItem ) and sNextItem ~= "item_bottle") 
+			if (IsItemPurchasedFromSecretShop( sNextItem ) and sNextItem ~= "item_bottle")
 			then
 				npcBot.secretShopMode = true;
 				npcBot.sideShopMode = false;
 			end
 		end
-		
+
 		local PurchaseResult=-2		--???????????????????
 		if(npcBot.sideShopMode == true)
 		then
@@ -473,9 +474,9 @@ function utilityModule.ItemPurchase(ItemsToBuy)
 			then
 				PurchaseResult=npcBot:ActionImmediate_PurchaseItem( sNextItem )
 			end
-			
+
 			local courier=GetCourier(0)
-			
+
 			--[[if(courier==nil)
 			then
 				local ItemCount=utilityModule.GetItemSlotsCount2(npcBot)
@@ -492,7 +493,7 @@ function utilityModule.ItemPurchase(ItemsToBuy)
 		else
 			PurchaseResult=npcBot:ActionImmediate_PurchaseItem( sNextItem )
 		end
-		
+
 		if(PurchaseResult==PURCHASE_ITEM_SUCCESS)		--???????????????????????
 		then
 			npcBot.secretShopMode = false;
@@ -501,11 +502,11 @@ function utilityModule.ItemPurchase(ItemsToBuy)
 		end
 		if(PurchaseResult==PURCHASE_ITEM_OUT_OF_STOCK)	--??????????????????????
 		then
-			SellSpecifiedItem("item_dust")
-			SellSpecifiedItem("item_faerie_fire")
-			SellSpecifiedItem("item_tango")
-			SellSpecifiedItem("item_clarity")
-			SellSpecifiedItem("item_flask")
+			utilityModule.SellSpecifiedItem("item_dust")
+			utilityModule.SellSpecifiedItem("item_faerie_fire")
+			utilityModule.SellSpecifiedItem("item_tango")
+			utilityModule.SellSpecifiedItem("item_clarity")
+			utilityModule.SellSpecifiedItem("item_flask")
 		end
 		if(PurchaseResult==PURCHASE_ITEM_INVALID_ITEM_NAME or PurchaseResult==PURCHASE_ITEM_DISALLOWED_ITEM)	--????????????????????
 		then
@@ -563,7 +564,7 @@ function utilityModule.BuyCourier()
 			end
 		end
 	end]]
-	
+
 end
 
 function utilityModule.NoNeedTpscrollForTravelBoots()
@@ -603,9 +604,11 @@ end
 function utilityModule.WeNeedTpscroll()
 
 	local npcBot = GetBot();
-	
 
-	
+	local item_travel_boots = utilityModule.NoNeedTpscrollForTravelBoots();
+	local item_travel_boots_1 = item_travel_boots[1];
+	local item_travel_boots_2 = item_travel_boots[2];
+
 	-- Count current number of TP scrolls
 	local iScrollCount = 0;
 	for i = 0, 14 do
@@ -616,8 +619,8 @@ function utilityModule.WeNeedTpscroll()
 	end
 
 	-- If we are at the sideshop or fountain with no TPs, then buy one or two
-	if ( iScrollCount <1 and item_travel_boots_1 == nil and item_travel_boots_2 == nil ) then
-	
+	if ( iScrollCount <=2 and item_travel_boots_1 == nil and item_travel_boots_2 == nil ) then
+
 		if ( npcBot:DistanceFromSideShop() <= 200 or npcBot:DistanceFromFountain() <= 200 ) then
 
 			if ( DotaTime() > 0 and DotaTime() < 20 * 60 ) then
@@ -636,6 +639,8 @@ function utilityModule.WeNeedTpscroll()
 				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 				npcBot.WeNeedTpscrollTimer=DotaTime()
 			end]]
+		else
+			npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 		end
 	end
 
@@ -648,13 +653,13 @@ function utilityModule.SellSpecifiedItem( item_name )
 	local itemCount = 0;
 	local item = nil;
 
-	for i = 0, 14 
+	for i = 0, 14
 	do
 		local sCurItem = npcBot:GetItemInSlot(i);
-		if ( sCurItem ~= nil ) 
+		if ( sCurItem ~= nil )
 		then
 			itemCount = itemCount + 1;
-			if ( sCurItem:GetName() == item_name ) 
+			if ( sCurItem:GetName() == item_name )
 			then
 				item = sCurItem;
 			end
@@ -670,17 +675,16 @@ end
 function utilityModule.GetItemSlotsCount2(npcBot)
 
 	local itemCount = 0;
-	local item = nil;
 
 	for i = 0, 8
 	do
 		local sCurItem = npcBot:GetItemInSlot(i);
-		if ( sCurItem ~= nil ) 
+		if ( sCurItem ~= nil )
 		then
 			itemCount = itemCount + 1;
 		end
 	end
-	
+
 	return itemCount
 end
 
@@ -688,17 +692,16 @@ function utilityModule.GetItemSlotsCount()
 	local npcBot = GetBot();
 
 	local itemCount = 0;
-	local item = nil;
 
 	for i = 0, 8
 	do
 		local sCurItem = npcBot:GetItemInSlot(i);
-		if ( sCurItem ~= nil ) 
+		if ( sCurItem ~= nil )
 		then
 			itemCount = itemCount + 1;
 		end
 	end
-	
+
 	return itemCount
 end
 
@@ -734,7 +737,7 @@ function utilityModule.checkItemBuild(ItemsToBuy)
 				end
 			end
 		end
-		
+
 		local npcBot=GetBot()
 		for _1,item2 in pairs (ItemsToBuy)
 		do
@@ -746,7 +749,7 @@ function utilityModule.checkItemBuild(ItemsToBuy)
 	end
 end
 
-invisibleHeroes = {
+local invisibleHeroes = {
 	--"npc_dota_hero_legion_commander",
 	"npc_dota_hero_sand_king",
 	"npc_dota_hero_treant",
@@ -807,11 +810,11 @@ end
 function utilityModule.CheckInvisibleEnemy()
 		local enemyTeam=utilityModule.GetOtherTeam()
 		if ( enemyTeam ~= nil ) then
-			for _, id in pairs( GetTeamPlayers(enemyTeam) ) 
+			for _, id in pairs( GetTeamPlayers(enemyTeam) )
 			do
-				for _, invisibleHeroName in pairs(invisibleHeroes) 
+				for _, invisibleHeroName in pairs(invisibleHeroes)
 				do
-					if ( GetSelectedHeroName(id) == invisibleHeroName ) 
+					if ( GetSelectedHeroName(id) == invisibleHeroName )
 					then
 						return true
 					end
@@ -828,65 +831,86 @@ function utilityModule.CheckInvisibleEnemy()
 				end
 			end
 		end
-		
+
 		return false
 end
 
-hasInvisibleEnemy = false
-BuySupportItem_Timer=DotaTime()
+local hasInvisibleEnemy = false
+local BuySupportItem_Timer=DotaTime()
 function utilityModule.BuySupportItem()
 	local npcBot=GetBot()
 	-- decide if there were several invisible enemy heroes.
-	
+
 	if(DotaTime()-BuySupportItem_Timer>=10)
 	then
 		BuySupportItem_Timer=DotaTime()
 		hasInvisibleEnemy=utilityModule.CheckInvisibleEnemy()
 	end
-	
+
 	if(utilityModule.GetItemSlotsCount()<7)
 	then
+		local item_ward_dispenser=utilityModule.GetItemIncludeBackpack( "item_ward_dispenser" );
+
+		if(item_ward_dispenser~=nil)
+		then
+			local wardState=item_ward_dispenser:GetToggleState();
+
+			local observerCount=item_ward_dispenser:GetCurrentCharges();
+			local sentryCount=item_ward_dispenser:GetSecondaryCharges();
+		end
+
+
+
+		-- if(wardState== nil)
+		-- then
+
+		-- else
+
+		-- end
+
+
+
 		local item_ward_observer = utilityModule.GetItemIncludeBackpack( "item_ward_observer" );
-		--local item_ward_sentry2 = utilityModule.GetItemIncludeBackpack( "item_ward_dispenser" )
-		--local item_gem = utilityModule.GetItemIncludeBackpack( "item_gem" )
-		--local item_smoke =  utilityModule.GetItemIncludeBackpack( "item_smoke_of_deceit")
-		if ( DotaTime() >= 0 and hasInvisibleEnemy == true ) 
+		local item_ward_sentry = utilityModule.GetItemIncludeBackpack( "item_ward_dispenser" );
+		local item_gem = utilityModule.GetItemIncludeBackpack( "item_gem" )
+		local item_smoke =  utilityModule.GetItemIncludeBackpack( "item_smoke_of_deceit")
+		if ( DotaTime() >= 0 and hasInvisibleEnemy == true )
 		then
 			local item_dust = utilityModule.GetItemIncludeBackpack( "item_dust" );
 			--local item_ward_sentry = utilityModule.GetItemIncludeBackpack( "item_ward_sentry" )
 			if(item_gem==nil and utilityModule.HaveGem()==false)
 			then
-				if (item_dust==nil and item_ward_sentry==nil and item_ward_sentry2==nil and npcBot:GetGold() >= 2*GetItemCost("item_dust") and GetItemStockCount("item_gem") >= 1) then
+				if (item_dust==nil and item_ward_sentry==nil  and npcBot:GetGold() >= 2*GetItemCost("item_dust") and GetItemStockCount("item_gem") >= 1) then
 					npcBot:ActionImmediate_PurchaseItem( "item_dust" );
 				end
-				
-				--[[if(DotaTime()>=28*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1)
+
+				if(DotaTime()>=28*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1)
 				then
 					npcBot:ActionImmediate_PurchaseItem( "item_gem" );
-				end]]
-				
-				-- if ( item_ward_observer==nil and item_dust==nil and item_ward_sentry==nil and item_ward_sentry2==nil and utilityModule.IsItemSlotsFull()==false and npcBot:GetGold() >= 2*GetItemCost("item_ward_sentry") ) then
-					-- npcBot:ActionImmediate_PurchaseItem( "item_ward_sentry" );
+				end
+
+				-- if ( item_ward_observer==nil and item_dust==nil and item_ward_sentry==nil and utilityModule.IsItemSlotsFull()==false and npcBot:GetGold() >= 2*GetItemCost("item_ward_sentry") ) then
+				-- 	npcBot:ActionImmediate_PurchaseItem( "item_ward_sentry" );
 				-- end
 			end
 		end
-		
-		--[[if(DotaTime()>=40*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1 and item_gem==nil and utilityModule.HaveGem()==false)
+
+		if(DotaTime()>=40*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1 and item_gem==nil and utilityModule.HaveGem()==false)
 		then
 			npcBot:ActionImmediate_PurchaseItem( "item_gem" );
-		end]]
+		end
 				--item_ward_observer==nil and
-		if ( item_ward_observer==nil and item_ward_sentry2==nil and (GetItemStockCount("item_ward_observer") > 1 or DotaTime()<0) and npcBot:GetGold() >= GetItemCost("item_ward_observer")) 
+		if ( item_ward_observer==nil and item_ward_sentry==nil and (GetItemStockCount("item_ward_observer") > 1 or DotaTime()<0) and npcBot:GetGold() >= GetItemCost("item_ward_observer"))
 		then
 			npcBot:ActionImmediate_PurchaseItem( "item_ward_observer" );
 		end
-		
-		--[[if(item_smoke==nil and GetItemStockCount("item_smoke_of_deceit") > 2 and npcBot:GetGold() >= GetItemCost("item_smoke_of_deceit"))
+
+		if(item_smoke==nil and npcBot:GetGold() >= GetItemCost("item_smoke_of_deceit"))
 		then
 			npcBot:ActionImmediate_PurchaseItem("item_smoke_of_deceit");
-		end]]
+		end
 	end
-	
+
 end
 
 function utilityModule.HaveGem()
@@ -936,19 +960,19 @@ end
 
 function utilityModule.AreTreesBetween(loc,r)
 	local npcBot=GetBot();
-	
+
 	local trees=npcBot:GetNearbyTrees(GetUnitToLocationDistance(npcBot,loc));
 	--check if there are trees between us
 	for _,tree in pairs(trees) do
 		local x=GetTreeLocation(tree);
 		local y=npcBot:GetLocation();
 		local z=loc;
-		
+
 		if x~=y then
 			local a=1;
 			local b=1;
-			local c=0;
-		
+			local c;
+
 			if x.x-y.x ==0 then
 				b=0;
 				c=-x.x;
@@ -956,7 +980,7 @@ function utilityModule.AreTreesBetween(loc,r)
 				a=-(x.y-y.y)/(x.x-y.x);
 				c=-(x.y + x.x*a);
 			end
-		
+
 			local d = math.abs((a*z.x+b*z.y+c)/math.sqrt(a*a+b*b));
 			if d<=r and GetUnitToLocationDistance(npcBot,loc)>utilityModule.GetDistance(x,loc)+50 then
 				return true;

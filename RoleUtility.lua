@@ -1531,7 +1531,7 @@ function X.CanBeMidlaner(hero)
 	or hero == "npc_dota_hero_leshrac" or hero == "npc_dota_hero_nevermore" or hero == "npc_dota_hero_huskar" or hero == "npc_dota_hero_tiny" 
 	or hero == "npc_dota_hero_bloodseeker" or hero == "npc_dota_hero_pugna" or hero == "npc_dota_hero_death_prophet" or hero == "npc_dota_hero_alchemist"
 	or hero == "npc_dota_hero_arc_warden" or hero == "npc_dota_hero_sniper" or hero == "npc_dota_hero_medusa"  or hero == "npc_dota_hero_kunkka"  
-	or hero == "npc_dota_hero_obsidian_destroyer" or hero == "npc_dota_hero_templar_assassin"  
+	or hero == "npc_dota_hero_obsidian_destroyer" or hero == "npc_dota_hero_templar_assassin" or hero == "npc_dota_hero_invoker"
 		   --[[or ( X["hero_roles"][hero]["carry"] > 0 and
 		      ( 
 		        X["hero_roles"][hero]["nuker"] > 0 or

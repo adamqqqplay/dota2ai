@@ -287,6 +287,16 @@ Consider[4]=function()
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	
+	if(npcBot.WeaverSkill4==nil or DotaTime()-npcBot.WeaverSkill4.Timer>=2)
+	then
+		npcBot.WeaverSkill4={Hp=HealthPercentage,Timer=DotaTime()}
+	end
+
+	-- If we suffered a lot of damage
+	if ( npcBot.WeaverSkill4.Hp-HealthPercentage>=0.4+0.05*#enemys) 
+	then
+		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
+	end
 	
 	-- If we're in a teamfight, use it on the scariest enemy
 	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 800, false, BOT_MODE_ATTACK );

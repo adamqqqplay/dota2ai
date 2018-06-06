@@ -10,7 +10,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 
-local debugmode=false
+local debugmode=true
 local npcBot = GetBot()
 local Talents ={}
 local Abilities ={}
@@ -73,7 +73,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.NCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -113,65 +113,73 @@ Consider[1]=function()
 	local creeps = npcBot:GetNearbyCreeps(1600,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	
+	-- if there is no enemys and I'm in range, then change to melee.
+	-- if there is enemys and I'm in melee, then change to range.
+	-- change state by nearby enemy.
+	
 	local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 600, true, BOT_MODE_NONE );
-	--[[if #tableNearbyEnemyHeroes == 0 and not inMelee then
-		return BOT_ACTION_DESIRE_MODERATE;
-	end]]
+	-- if #tableNearbyEnemyHeroes == 0 and not inMelee then
+	-- 	return 0.40;
+	-- elseif #tableNearbyEnemyHeroes > 0 and inMelee
+	-- then
+	-- 	return 0.41;
+	-- end
 
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-	--[[if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) then
-		local longestAR = 0;
-		for _,enemy in pairs(tableNearbyEnemyHeroes)
-		do
-			local enemyAR = enemy:GetAttackRange();
-			if enemyAR > longestAR then
-				longestAR = enemyAR;
-			end
-		end
-
-		if longestAR < 320 and inMelee then
-			return BOT_ACTION_DESIRE_MODERATE;
-		elseif longestAR > 320 and inMelee then
-			return BOT_ACTION_DESIRE_MODERATE;
-		end
-	end]]
-
-	--[[if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) then
-		local longestAR = 0;
-		for _,enemy in pairs(tableNearbyEnemyHeroes)
-		do
-			local enemyAR = enemy:GetAttackRange();
-			if enemyAR > longestAR then
-				longestAR = enemyAR;
-			end
-		end
-		
-		if longestAR < 320 and inMelee then
-			return BOT_ACTION_DESIRE_MODERATE;
-		end
-	end]]
-
+	-- change state by enemy attack range.
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) then
-		if (inMelee and not AbilitiesReal[3]:IsFullyCastable()) or (inMelee and HealthPercentage < 0.7)
-		then
-			return BOT_ACTION_DESIRE_LOW;
-		else
-			return BOT_ACTION_DESIRE_NONE;
+		local longestAR = 0;
+		for _,enemy in pairs(tableNearbyEnemyHeroes)
+		do
+			local enemyAR = enemy:GetAttackRange();
+			if enemyAR > longestAR then
+				longestAR = enemyAR;
+			end
+		end
+
+		if longestAR < 320 and not inMelee then
+			return 0.44;
+		elseif longestAR > 320 and inMelee then
+			return 0.45;
 		end
 	end
+
+	-- if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) then
+	-- 	local longestAR = 0;
+	-- 	for _,enemy in pairs(tableNearbyEnemyHeroes)
+	-- 	do
+	-- 		local enemyAR = enemy:GetAttackRange();
+	-- 		if enemyAR > longestAR then
+	-- 			longestAR = enemyAR;
+	-- 		end
+	-- 	end
+		
+	-- 	if longestAR < 320 and inMelee then
+	-- 		return BOT_ACTION_DESIRE_MODERATE;
+	-- 	end
+	-- end
+
+	-- if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) then
+	-- 	if (inMelee and not AbilitiesReal[3]:IsFullyCastable()) or (inMelee and HealthPercentage < 0.7)
+	-- 	then
+	-- 		return BOT_ACTION_DESIRE_LOW;
+	-- 	else
+	-- 		return BOT_ACTION_DESIRE_NONE;
+	-- 	end
+	-- end
 
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT)
 	then
 		if #tableNearbyEnemyHeroes > 0 
 			then 
 			if  AbilitiesReal[2]:IsFullyCastable() and not AbilitiesReal[3]:IsFullyCastable() and inMelee then
-				return BOT_ACTION_DESIRE_MODERATE;
+				return 0.51;
 			elseif AbilitiesReal[3]:IsFullyCastable() and not AbilitiesReal[2]:IsFullyCastable() and not inMelee then   	
-				return BOT_ACTION_DESIRE_MODERATE;
+				return 0.52;
 			else 
-				return BOT_ACTION_DESIRE_NONE;
+				return 0;
 			end
 		end
 	end
@@ -184,14 +192,14 @@ Consider[1]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
 	then
 		if #tableNearbyEnemyHeroes > 2 and inMelee then
-			return BOT_ACTION_DESIRE_MODERATE;
+			return 0.55;
 		elseif not inMelee then
-			return BOT_ACTION_DESIRE_NONE;
+			return 0;
 		end
 	end
 	
 	-- If we're going after someone
-	--[[if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
@@ -202,17 +210,17 @@ Consider[1]=function()
 			local Dist = GetUnitToUnitDistance(npcTarget, npcBot);
 			if enemyDisabled(npcTarget) or npcTarget:IsChanneling() then
 				if not inMelee then
-					return BOT_ACTION_DESIRE_MODERATE;
+					return 0.56;
 				end
 			else
 				if Dist < 200 and not inMelee then
-					return BOT_ACTION_DESIRE_MODERATE;
+					return 0.57;
 				elseif Dist >= 200 and inMelee then
-					return BOT_ACTION_DESIRE_MODERATE;
+					return 0.58;
 				end
 			end
 		end
-	end]]
+	end
 
 	return BOT_ACTION_DESIRE_NONE
 end
@@ -225,7 +233,7 @@ Consider[2]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or not ability:IsActivated() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -300,7 +308,7 @@ Consider[3]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or not ability:IsActivated() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -353,12 +361,10 @@ Consider[3]=function()
 		do
 			if ( CanCast[abilityNumber]( npcEnemy ) )
 			then
-				return BOT_ACTION_DESIRE_HIGH,"immediately"
+				return BOT_ACTION_DESIRE_HIGH
 			end
 		end
 	end
-	
-	
 	
 	-- If we're farming and can hit 2+ creeps
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
@@ -372,7 +378,6 @@ Consider[3]=function()
 		end
 	end
 
-	
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or

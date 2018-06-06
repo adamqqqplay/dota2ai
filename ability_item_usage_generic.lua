@@ -333,7 +333,7 @@ end
 function CanBuybackUpperRespawnTime( respawnTime )
 	local npcBot=GetBot()
 	if ( not npcBot:IsAlive() and respawnTime ~= nil and npcBot:GetRespawnTime() >= respawnTime
-		and npcBot:GetBuybackCooldown() <= 0 and npcBot:GetGold() > npcBot:GetBuybackCost() ) then
+		and npcBot:GetBuybackCooldown() == 0 and npcBot:GetGold() > npcBot:GetBuybackCost() ) then
 		return true;
 	end
 
@@ -449,9 +449,14 @@ function PrintDebugInfo(AbilitiesReal,cast)
 		if ( cast.Desire[i]~=nil and cast.Desire[i] > 0 ) 
 		then
 			local ability=AbilitiesReal[i]
-			if (cast.Type[i]==nil or cast.Type[i]=="Target") and cast.Target[i]~=nil and utility.CheckFlag(ability:GetBehavior(),ABILITY_BEHAVIOR_UNIT_TARGET)
+			if ((cast.Type[i]==nil or cast.Type[i]=="Target") and cast.Target[i]~=nil and utility.CheckFlag(ability:GetBehavior(),ABILITY_BEHAVIOR_UNIT_TARGET))
 			then
-				utility.DebugTalk("try to use skill "..i.." at "..cast.Target[i]:GetUnitName().." Desire= "..cast.Desire[i])
+				if(cast.Target[i]~=nil)
+				then
+					utility.DebugTalk("try to use skill "..i.." at "..cast.Target[i]:GetUnitName().." Desire= "..cast.Desire[i])
+				else
+					utility.DebugTalk("try to use skill "..i.." Desire= "..cast.Desire[i])
+				end
 			else
 				utility.DebugTalk("try to use skill "..i.." Desire= "..cast.Desire[i])
 			end
@@ -587,6 +592,7 @@ function UnImplementedItemUsage()
 		return;
 	end
 	local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 800, true, BOT_MODE_NONE );
+	local nearByTowers = npcBot:GetNearbyTowers(1000,true);
 	
 	local npcTarget = npcBot:GetTarget();
 	
@@ -629,21 +635,7 @@ function UnImplementedItemUsage()
 		end
 	end
 
-
-	if ( DotaTime() > 7*60) then
-		for i = 0, 14 do
-			local sCurItem = npcBot:GetItemInSlot(i);
-			if ( sCurItem ~= nil and sCurItem:GetName() == "item_tango" ) then
-				local trees = npcBot:GetNearbyTrees(1000);
-				if trees[1] ~= nil then
-					npcBot:Action_UseAbilityOnTree(sCurItem, trees[1]);
-					return;
-				end
-				--npcBot:Action_DropItem(sCurItem,npcBot:GetLocation());
-			end
-		end
-	end
-
+	-- give tango to ally
 	local itg=IsItemAvailable("item_tango");
 	if itg~=nil and itg:IsFullyCastable() then
 		local tCharge = itg:GetCurrentCharges()
@@ -688,45 +680,36 @@ function UnImplementedItemUsage()
 			end
 		end
 	end]]
-	
 
-
-	if itg~=nil and itg:IsFullyCastable() and npcBot:DistanceFromFountain() > 1000 then
-		if DotaTime() > 0 and not npcBot:HasModifier("modifier_tango_heal")
-		then
-			local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 300, true, BOT_MODE_NONE );
-			local trees = npcBot:GetNearbyTrees(1000);
-			local num_sts = GetItemCount(npcBot, "item_tango_single"); 
-			if trees[1] ~= nil  and (npcBot:GetHealth() / npcBot:GetMaxHealth())  < 0.7 and num_sts <= 0
-				and ( IsLocationVisible(GetTreeLocation(trees[1])) or IsLocationPassable(GetTreeLocation(trees[1])) )
-			   and #tableNearbyEnemyHeroes == 0
-			then
-				npcBot:Action_UseAbilityOnTree(itg, trees[1]);
-				return;
-			end
-		end
-	end
 
 	local its=IsItemAvailable("item_tango_single");
-	if its~=nil and its:IsFullyCastable() and npcBot:DistanceFromFountain() > 1000 then
+	local tango;
+	if(its~=nil)
+	then
+		tango=its;
+	elseif(itg~=nil)
+	then
+		tango=itg;
+	end
+
+	if tango~=nil and tango:IsFullyCastable() and npcBot:DistanceFromFountain() > 1000 then
 		if DotaTime() > 0 and not npcBot:HasModifier("modifier_tango_heal")
 		then
-			local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 300, true, BOT_MODE_NONE );
 			local trees = npcBot:GetNearbyTrees(1000);
-			if trees[1] ~= nil  and (npcBot:GetHealth() / npcBot:GetMaxHealth())  < 0.7 
+			if trees[1] ~= nil  and (npcBot:GetHealth() / npcBot:GetMaxHealth())  < 0.7
 				and ( IsLocationVisible(GetTreeLocation(trees[1])) or IsLocationPassable(GetTreeLocation(trees[1])) )
-			   and #tableNearbyEnemyHeroes <= 1
+			   and #tableNearbyEnemyHeroes == 0 and #nearByTowers==0
 			then
-				npcBot:Action_UseAbilityOnTree(its, trees[1]);
+				npcBot:Action_UseAbilityOnTree(tango, trees[1]);
 				return;
 			end
 		end
 	end
 
-	if ( DotaTime() > 4*60) then
-		for i = 0, 14 do
+	if ( DotaTime() > 7*60 ) then
+		for i = 0, 5 do
 			local sCurItem = npcBot:GetItemInSlot(i);
-			if ( sCurItem ~= nil and sCurItem:GetName() == "item_tango_single" ) then
+			if ( sCurItem ~= nil and (sCurItem:GetName() == "item_tango" or sCurItem:GetName() == "item_tango_single") ) then
 				local trees = npcBot:GetNearbyTrees(1000);
 				if trees[1] ~= nil then
 					npcBot:Action_UseAbilityOnTree(sCurItem, trees[1]);
@@ -736,7 +719,6 @@ function UnImplementedItemUsage()
 			end
 		end
 	end
-
 
 	local ifl =IsItemAvailable("item_flask");
 	if ifl~=nil and ifl:IsFullyCastable() and npcBot:DistanceFromFountain() > 1000 then
@@ -1097,7 +1079,7 @@ function UnImplementedItemUsage()
 		if DotaTime() > 0 
 		then
 			local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 500, true, BOT_MODE_NONE );
-			if ((npcBot:GetHealth()/npcBot:GetMaxHealth() < 0.4 or npcBot:GetMana()/npcBot:GetMaxMana() < 0.2) and #tableNearbyEnemyHeroes >= 1 )
+			if ((npcBot:GetHealth()/npcBot:GetMaxHealth() < 0.4 or npcBot:GetMana()/npcBot:GetMaxMana() < 0.2) and #tableNearbyEnemyHeroes >= 1 and GetItemCharges(npcBot,"item_magic_stick") >= 1 )
 				or ((npcBot:GetHealth()/npcBot:GetMaxHealth() < 0.7 and npcBot:GetMana()/npcBot:GetMaxMana() < 0.7) and GetItemCharges(npcBot,"item_magic_stick") >= 7 )
 			then
 				npcBot:Action_UseAbility(stick);
@@ -1111,7 +1093,7 @@ function UnImplementedItemUsage()
 		if DotaTime() > 0 
 		then
 			local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 500, true, BOT_MODE_NONE );
-			if ((npcBot:GetHealth()/npcBot:GetMaxHealth() < 0.4 or npcBot:GetMana()/npcBot:GetMaxMana() < 0.2) and #tableNearbyEnemyHeroes >= 1 )
+			if ((npcBot:GetHealth()/npcBot:GetMaxHealth() < 0.4 or npcBot:GetMana()/npcBot:GetMaxMana() < 0.2) and #tableNearbyEnemyHeroes >= 1 and GetItemCharges(npcBot,"item_magic_stick") >= 1)
 				or ((npcBot:GetHealth()/npcBot:GetMaxHealth() < 0.7 and npcBot:GetMana()/npcBot:GetMaxMana() < 0.7) and GetItemCharges(npcBot,"item_magic_wand") >= 12 )
 			then
 				npcBot:Action_UseAbility(wand);

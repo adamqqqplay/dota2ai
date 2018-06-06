@@ -127,9 +127,9 @@ Consider[1]=function()
 	-- Mode based usage
 	--------------------------------------
 	-- If we trapped by the trees
-	if(trees~=nil and #trees>=10)
+	if(trees~=nil and #trees>=6)
 	then
-		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
+		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange-200) + RandomVector(200);
 	end
 	
 	-- If we're seriously retreating

@@ -298,13 +298,13 @@ Consider[3]=function()
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,false)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
-	
+
 	for _,npcEnemy in pairs(enemys)
 	do
 		if(npcEnemy:CanBeSeen())
 		then
-			local allyCreeps = npcEnemy:GetNearbyCreeps(Radius,false)
-			local allyHeroes = npcEnemy:GetNearbyHeroes(Radius,false,BOT_MODE_NONE)
+			local allyCreeps = npcEnemy:GetNearbyCreeps(Radius,true)
+			local allyHeroes = npcEnemy:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
 			local RadiusCount = math.min(MaxTarget,#allyCreeps+#allyHeroes)
 			local RealDamage = RadiusCount*Damage
 			local Target
@@ -315,48 +315,51 @@ Consider[3]=function()
 				Target=allyHeroes[1]
 			end
 			
-			--------------------------------------
-			-- Global high-priorty usage
-			--------------------------------------
-			--Try to kill enemy hero
-			if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
+			if(Target~=nil)
 			then
-				if ( CanCast[abilityNumber]( npcEnemy ) )
-				then
-					if(npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(RealDamage,DamageType))
-					then
-						return BOT_ACTION_DESIRE_HIGH,Target;
-					end
-				end
-			end
-			
-			-- If we're going after someone
-			if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
-				 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-				 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-				 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
-			then
-				local npcEnemy2=npcBot:GetTarget()
-				if(npcEnemy ~= nil)
-				then
-					if ( npcEnemy==npcEnemy2 ) 
-					then
-						if ( CanCast[abilityNumber]( npcEnemy ) )
-						then
-							return BOT_ACTION_DESIRE_HIGH,Target
-						end
-					end
-				end
-			end
-			
-			-- If our mana is enough,use it at enemy
-			if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
-			then
-				if(ManaPercentage>0.4 and RadiusCount>=3 )
+				--------------------------------------
+				-- Global high-priorty usage
+				--------------------------------------
+				--Try to kill enemy hero
+				if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
 				then
 					if ( CanCast[abilityNumber]( npcEnemy ) )
 					then
-						return BOT_ACTION_DESIRE_LOW,Target
+						if(npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(RealDamage,DamageType))
+						then
+							return BOT_ACTION_DESIRE_HIGH,Target;
+						end
+					end
+				end
+				
+				-- If we're going after someone
+				if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+					npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+					npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+					npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+				then
+					local npcEnemy2=npcBot:GetTarget()
+					if(npcEnemy ~= nil)
+					then
+						if ( npcEnemy==npcEnemy2 ) 
+						then
+							if ( CanCast[abilityNumber]( npcEnemy ) )
+							then
+								return BOT_ACTION_DESIRE_HIGH,Target
+							end
+						end
+					end
+				end
+				
+				-- If our mana is enough,use it at enemy
+				if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+				then
+					if(ManaPercentage>0.4 and RadiusCount>=3 )
+					then
+						if ( CanCast[abilityNumber]( npcEnemy ) )
+						then
+							return BOT_ACTION_DESIRE_LOW-0.01,Target
+						end
 					end
 				end
 			end

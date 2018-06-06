@@ -265,17 +265,49 @@ hero_pool_test = {
 	-- "npc_dota_hero_earth_spirit",
 	-- "npc_dota_hero_elder_titan",
 
-	"npc_dota_hero_enchantress",
-	"npc_dota_hero_enigma",
-	"npc_dota_hero_keeper_of_the_light",
-	"npc_dota_hero_lycan",
-	"npc_dota_hero_magnataur",
+	-- "npc_dota_hero_enchantress",
+	-- "npc_dota_hero_enigma",
+	-- "npc_dota_hero_keeper_of_the_light",
+	-- "npc_dota_hero_lycan",
+	-- "npc_dota_hero_magnataur",
 
-	"npc_dota_hero_medusa",
-	"npc_dota_hero_mirana",
-	"npc_dota_hero_monkey_king",
-	"npc_dota_hero_pudge",
-	"npc_dota_hero_sand_king"
+	-- "npc_dota_hero_medusa",
+	-- "npc_dota_hero_mirana",
+	-- "npc_dota_hero_monkey_king",
+	-- "npc_dota_hero_pudge",
+	-- "npc_dota_hero_sand_king",
+
+
+	"npc_dota_hero_troll_warlord",
+	"npc_dota_hero_obsidian_destroyer", 
+	"npc_dota_hero_weaver",
+	"npc_dota_hero_nyx_assassin",
+	"npc_dota_hero_naga_siren",
+
+	"npc_dota_hero_phantom_lancer",
+	"npc_dota_hero_kunkka",
+	"npc_dota_hero_shredder",
+	"npc_dota_hero_tusk",
+	"npc_dota_hero_shadow_demon",
+
+
+	-- "npc_dota_hero_terrorblade",
+	-- "npc_dota_hero_phantom_lancer",
+	-- "npc_dota_hero_troll_warlord",
+
+	-- "npc_dota_hero_obsidian_destroyer", 
+	-- "npc_dota_hero_templar_assassin",
+	-- "npc_dota_hero_kunkka",
+
+	-- "npc_dota_hero_weaver",
+	-- "npc_dota_hero_furion",
+	-- "npc_dota_hero_shredder",
+
+	-- "npc_dota_hero_nyx_assassin",
+	-- "npc_dota_hero_tusk",
+
+	-- "npc_dota_hero_naga_siren",
+	-- "npc_dota_hero_shadow_demon",
 }
 --recording implemented bots, using in CM mode.
 allBotHeroes = {

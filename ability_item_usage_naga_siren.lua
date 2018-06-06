@@ -409,7 +409,7 @@ Consider[4]=function()
 	do
 		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]and #enemys>=2) 
 		then
-			return BOT_ACTION_DESIRE_HIGH,npcEnemy
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 	
@@ -423,7 +423,7 @@ Consider[4]=function()
 		do
 			if ( CanCast[abilityNumber]( npcEnemy ) )
 			then
-				return BOT_ACTION_DESIRE_HIGH,"immediately"
+				return BOT_ACTION_DESIRE_HIGH
 			end
 		end
 	end

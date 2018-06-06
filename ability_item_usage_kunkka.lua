@@ -94,7 +94,7 @@ Consider[1]=function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
-	local CastRange = ability:GetCastRange();
+	local CastRange = 1600;
 	local Damage = ability:GetAbilityDamage();
 	local Radius = ability:GetAOERadius()
 	local CastPoint = 2;
@@ -102,9 +102,9 @@ Consider[1]=function()
 	local HeroHealth=10000
 	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local enemys = npcBot:GetNearbyHeroes(CastRange,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+	local creeps = npcBot:GetNearbyCreeps(CastRange,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 
 
@@ -226,7 +226,7 @@ Consider[3]=function()
 	local HeroHealth=10000
 	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local enemys = npcBot:GetNearbyHeroes(CastRange,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	
 	-- Check for a channeling enemy
@@ -326,7 +326,7 @@ Consider[4]=function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
-	local CastRange = ability:GetCastRange()-300;
+	local CastRange = 1600;
 	local Damage = ability:GetAbilityDamage();
 	local Radius = ability:GetAOERadius()-300;
 	local CastPoint = ability:GetCastPoint();
@@ -334,7 +334,7 @@ Consider[4]=function()
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+	local creeps = npcBot:GetNearbyCreeps(CastRange,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 
 	--------------------------------------
@@ -349,14 +349,15 @@ Consider[4]=function()
 			then
 				if (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 				then
-					if not AbilitiesReal[1]:IsCooldownReady() or npcTarget:GetModifierRemainingDuration( npcTarget:GetModifierByName('modifier_kunkka_x_marks_the_spot') )< 1.2
+					if not AbilitiesReal[1]:IsCooldownReady() or WeakestEnemy:GetModifierRemainingDuration( WeakestEnemy:GetModifierByName('modifier_kunkka_x_marks_the_spot') )< 1.2
 					then
 						return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetExtrapolatedLocation(-2.9); 
 					end
 				end
 			end
 		end
-	end
+	end 
+	
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
@@ -400,7 +401,7 @@ Consider[4]=function()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ))
 			then
-				if not AbilitiesReal[1]:IsCooldownReady() or npcTarget:GetModifierRemainingDuration( npcTarget:GetModifierByName('modifier_kunkka_x_marks_the_spot') )< 1.2
+				if not AbilitiesReal[1]:IsCooldownReady() or npcEnemy:GetModifierRemainingDuration( npcEnemy:GetModifierByName('modifier_kunkka_x_marks_the_spot') )< 1.2
 				then
 					return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation(-2.9);
 				end
