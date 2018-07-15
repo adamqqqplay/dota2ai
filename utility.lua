@@ -618,13 +618,9 @@ function utilityModule.WeNeedTpscroll()
 		end
 	end
 
-	-- Don't buy TP at the begining except there's no TP
-	if(DotaTime() < 5 * 60 and iScrollCount > 0) then
-	    return
-	end
 
 	-- If we are at the sideshop or fountain with no TPs, then buy one or two
-	if ( iScrollCount < 2 and item_travel_boots_1 == nil and item_travel_boots_2 == nil ) then
+	if ( iScrollCount < 1 and item_travel_boots_1 == nil and item_travel_boots_2 == nil ) then
 
 		if ( npcBot:DistanceFromSideShop() <= 200 or npcBot:DistanceFromFountain() <= 200 ) then
 
