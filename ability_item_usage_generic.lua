@@ -99,7 +99,7 @@ function CourierUsageThink()
 		end
 		
 		--RETURN COURIER TO BASE WHEN IDLE 
-		if cState == COURIER_STATE_IDLE then
+		if cState == COURIER_STATE_IDLE then 
 			npcBot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_RETURN );
 			return
 		end
@@ -115,10 +115,12 @@ function CourierUsageThink()
 				if member ~= nil and IsPlayerBot(numPlayer[i]) and member:IsAlive() 
 				then
 					local nMSlot = GetNumStashItem(member);
-					if nMSlot > 0 and nMSlot <= nCSlot and stashValue >= 90 then
-						member:ActionImmediate_Courier( npcCourier, COURIER_ACTION_TAKE_STASH_ITEMS );
-						nCSlot = nCSlot - nMSlot ;
-						courierTime = DotaTime();
+					if nMSlot > 0 and nMSlot <= nCSlot then
+						-- if DotaTime() <= 10 * 60 or stashValue >= 500 then
+							member:ActionImmediate_Courier( npcCourier, COURIER_ACTION_TAKE_STASH_ITEMS );
+							nCSlot = nCSlot - nMSlot ;
+							courierTime = DotaTime();
+					    -- end
 					end
 				end
 			end
