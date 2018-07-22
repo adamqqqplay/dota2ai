@@ -4,6 +4,7 @@
 ----------------------------------------------------------------------------
 --Special thanks to DblTap for his commit of "Updated hero selection to try to build a team with one hero in each position".
 --DblTap: http://steamcommunity.com/profiles/76561197967823929/ Github Link：https://github.com/adamqqqplay/dota2ai/pull/3
+return {}
 local role = require(GetScriptDirectory() .. "/RoleUtility")
 local bnUtil = require(GetScriptDirectory() .. "/BotNameUtility")
 

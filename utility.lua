@@ -416,8 +416,17 @@ function utilityModule.ItemPurchase(ItemsToBuy)
 		return;
 	end
 
+    for k,v in ipairs(ItemsToBy) do
+    	print("items to buy:" ..)
+    end
+	
+
 	-- buy item_tpscroll
-	if(npcBot.secretShopMode~=true or npcBot:GetGold() >= 100)
+	local tpNum = countTp();
+	local item_travel_boots = utilityModule.NoNeedTpscrollForTravelBoots();
+	local item_travel_boots_1 = item_travel_boots[1];
+	local item_travel_boots_2 = item_travel_boots[2];
+	if(tpNum < 1 and item_travel_boots_1 == nil and item_travel_boots_2 == nil)
 	then
 		utilityModule.WeNeedTpscroll();
 	end
@@ -601,26 +610,45 @@ function utilityModule.NoNeedTpscrollForTravelBoots()
 
 end
 
-function utilityModule.WeNeedTpscroll()
-
+function countTp()
 	local npcBot = GetBot();
-
-	local item_travel_boots = utilityModule.NoNeedTpscrollForTravelBoots();
-	local item_travel_boots_1 = item_travel_boots[1];
-	local item_travel_boots_2 = item_travel_boots[2];
-
-	-- Count current number of TP scrolls
 	local iScrollCount = 0;
 	for i = 0, 14 do
 		local sCurItem = npcBot:GetItemInSlot(i);
+		print("bot:".. GetBotNames())
+		print("item in slot: " .. sCurItem:GetName());
+		print("item num: " .. sCurItem:GetCurrentCharges())
 		if ( sCurItem ~= nil and sCurItem:GetName() == "item_tpscroll" ) then
 			iScrollCount = iScrollCount+sCurItem:GetCurrentCharges()
 		end
 	end
 
+	return iScrollCount;
+end
+
+function utilityModule.WeNeedTpscroll()
+
+	local npcBot = GetBot();
+
+	-- local item_travel_boots = utilityModule.NoNeedTpscrollForTravelBoots();
+	-- local item_travel_boots_1 = item_travel_boots[1];
+	-- local item_travel_boots_2 = item_travel_boots[2];
+
+	-- Count current number of TP scrolls
+	-- local iScrollCount = 0;
+	-- for i = 0, 14 do
+	-- 	local sCurItem = npcBot:GetItemInSlot(i);
+	-- 	print("bot:".. GetBotNames())
+	-- 	print("item in slot: " .. sCurItem:GetName());
+	-- 	print("item num: " .. sCurItem:GetCurrentCharges())
+	-- 	if ( sCurItem ~= nil and sCurItem:GetName() == "item_tpscroll" ) then
+	-- 		iScrollCount = iScrollCount+sCurItem:GetCurrentCharges()
+	-- 	end
+	-- end
+
 
 	-- If we are at the sideshop or fountain with no TPs, then buy one or two
-	if ( iScrollCount < 1 and item_travel_boots_1 == nil and item_travel_boots_2 == nil ) then
+	--if ( iScrollCount < 1 and item_travel_boots_1 == nil and item_travel_boots_2 == nil ) then
 
 		if ( npcBot:DistanceFromSideShop() <= 200 or npcBot:DistanceFromFountain() <= 200 ) then
 
@@ -643,7 +671,7 @@ function utilityModule.WeNeedTpscroll()
 		else
 			npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 		end
-	end
+	--end
 
 end
 
