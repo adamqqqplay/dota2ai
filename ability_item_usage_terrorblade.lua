@@ -21,8 +21,8 @@ local AbilityToLevelUp=
 {
 	Abilities[3],
 	Abilities[1],
-	Abilities[1],
 	Abilities[3],
+	Abilities[1],
 	Abilities[3],
 	Abilities[4],
 	Abilities[3],

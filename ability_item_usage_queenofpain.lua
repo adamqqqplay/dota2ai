@@ -22,13 +22,13 @@ local AbilityToLevelUp=
 	Abilities[2],
 	Abilities[1],
 	Abilities[3],
-	Abilities[3],
+	Abilities[1],
 	Abilities[4],
-	Abilities[3],
-	Abilities[3],
 	Abilities[1],
+	Abilities[3],
+	Abilities[3],
 	"talent",
-	Abilities[1],
+	Abilities[3],
 	Abilities[4],
 	Abilities[2],
 	Abilities[2],
@@ -56,7 +56,7 @@ local TalentTree={
 		return Talents[5]
 	end,
 	function()
-		return Talents[7]
+		return Talents[8]
 	end
 }
 

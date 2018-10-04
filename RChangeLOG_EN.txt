@@ -278,3 +278,19 @@ v1.5f(2018.5.16) commit by zmcmcc
 2.  Optimized ability usage of TA, QoP, Underlord, Disruptor, Wind Runner, Sniper, NA and Drow Ranger.
 3. FIxed some bugs.
 4. Updated v7.15 bounty runes.
+V1.5g (2018.6.6)
+1. Fixes the issue that Dazzle is not able to use 3rd ability shadow waves at times.
+2. Fixed the issue that Broodmother, Earth spirit, Faceless void, Slark sometimes stuck in the woods.
+3. Fixed the issue that prophets could not use 1st ability and 4nd ability.
+4. Fixed the issue that the illusions of some heroes (Arc warden) would buy back.
+5. Fixed a problem where kunkka may not be able to use abilities.
+6. Fixed possible problems with Naga siren.
+7. Fixed the issue that the Timber could not use skills
+8. Fixed the issue that the Templar Assassins could not use the ultimate ability.
+9. Try to fix the problem that Troll warlord will not be able to use abilities properly.
+10. Optimize the useage of Weaver's ultimate ability, and now it will use this ability to offset a lot of damage.
+11. Fixed the problem of bristleback can not purchasing items.
+12. Add Invoker's position to the middle to fix the problem.
+13. Now AI will buy more TP and dust.
+V1.5h(2018.10.4)
+1. Update all hero talent building and ability building to the latest version.

@@ -5,11 +5,15 @@
 --------------------------------------
 -- General Initialization
 --------------------------------------
+if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot():GetUnitName(), "hero") or  GetBot():IsIllusion() then
+	return;
+end
+
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 
 local debugmode=false
-local npcBot = GetBot()
+local npcBot = nil;
 local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
@@ -18,15 +22,15 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 local AbilityToLevelUp=
 {
-	Abilities[1],
-	Abilities[3],
 	Abilities[3],
 	Abilities[1],
+	Abilities[1],
 	Abilities[3],
+	Abilities[1],
 	Abilities[4],
+	Abilities[1],
 	Abilities[3],
-	Abilities[1],
-	Abilities[1],
+	Abilities[3],
 	"talent",
 	Abilities[2],
 	Abilities[4],
@@ -520,6 +524,8 @@ end
 
 function AbilityUsageThink()
 
+	if npcBot == nil then npcBot = GetBot(); end
+	
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then 

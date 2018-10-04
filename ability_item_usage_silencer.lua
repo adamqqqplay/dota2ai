@@ -16,27 +16,19 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
-local AbilitiesReal =
-{
-	npcBot:GetAbilityByName(Abilities[1]),
-	npcBot:GetAbilityByName(Abilities[2]),
-	npcBot:GetAbilityByName(Abilities[3]),
-	npcBot:GetAbilityByName(Abilities[4])
-}
-
 local AbilityToLevelUp=
 {
 	Abilities[1],
 	Abilities[3],
+	Abilities[1],
 	Abilities[2],
-	Abilities[3],
-	Abilities[3],
+	Abilities[1],
 	Abilities[4],
+	Abilities[1],
 	Abilities[3],
-	Abilities[1],
-	Abilities[1],
+	Abilities[3],
 	"talent",
-	Abilities[1],
+	Abilities[3],
 	Abilities[4],
 	Abilities[2],
 	Abilities[2],

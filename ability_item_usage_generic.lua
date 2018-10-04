@@ -51,20 +51,20 @@ function CourierUsageThink()
 	end
 	
 	if IsFlyingCourier(npcCourier) then
-		local burst = npcCourier:GetAbilityByName('courier_shield');
-		if IsTargetedByUnit(npcCourier) then
-			if burst:IsFullyCastable() and apiAvailable == true 
-			then
-				npcBot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_BURST );
-				return
-			elseif DotaTime() > returnTime + 7.0
-			       --and not burst:IsFullyCastable() and not npcCourier:HasModifier('modifier_courier_shield') 
-			then
-				npcBot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_RETURN );
-				returnTime = DotaTime();
-				return
-			end
-		end
+		-- local burst = npcCourier:GetAbilityByName('courier_shield');
+		-- if IsTargetedByUnit(npcCourier) then
+		-- 	if burst:IsFullyCastable() and apiAvailable == true 
+		-- 	then
+		-- 		npcBot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_BURST );
+		-- 		return
+		-- 	elseif DotaTime() > returnTime + 7.0
+		-- 	       --and not burst:IsFullyCastable() and not npcCourier:HasModifier('modifier_courier_shield') 
+		-- 	then
+		-- 		npcBot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_RETURN );
+		-- 		returnTime = DotaTime();
+		-- 		return
+		-- 	end
+		-- end
 	else	
 		if IsTargetedByUnit(npcCourier) then
 			if DotaTime() - returnTime > 7.0 then
@@ -343,9 +343,9 @@ end
 --GXC BUYBACK LOGIC	
 function BuybackUsageThink() 
 	local npcBot=GetBot()
-	if npcBot:IsIllusion() then
+	if npcBot:IsInvulnerable() or not npcBot:IsHero() or not string.find(npcBot:GetUnitName(), "hero") or  npcBot:IsIllusion() then
 		return;
-	end	
+	end
 	
 	-- no buyback, no need to use GetUnitList() for performance considerations
 	if ( not CanBuybackUpperRespawnTime(20) ) then
@@ -1203,7 +1203,27 @@ function UnImplementedItemUsage()
 		end
 	end
 
-	
+	-- test code --
+
+	-- local wards=IsItemAvailable("item_ward_dispenser");
+
+	-- if(wards~=nil)
+	-- then
+	-- 	local sentry=wards:GetSecondaryCharges();
+	-- 	local observer= wards:GetCurrentCharges();
+	-- 	local state=wards:GetToggleState();
+	-- 	print(npcBot:GetUnitName().."2nd Charge:"..sentry.." 1st Charge"..observer);
+
+	-- 	if(state==true)
+	-- 	then
+	-- 		npcBot:Action_UseAbilityOnEntity(wards,npcBot);
+	-- 		print("state true")
+	-- 	else
+	-- 		npcBot:Action_UseAbilityOnEntity(wards,npcBot);
+	-- 		print("state false")
+	-- 	end
+
+	-- end
 
 	local WardList=GetUnitList(UNIT_LIST_ALLIED_WARDS)
 	local HaveWard=false

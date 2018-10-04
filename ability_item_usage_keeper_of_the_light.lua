@@ -557,7 +557,7 @@ Consider[4]=function()
 				if player ~= nil and player:IsAlive() and player:GetActiveMode() ~= BOT_MODE_RETREAT then
 					local dist = GetUnitToUnitDistance(nearbyTower[1], player);
 					local health = player:GetHealth()/player:GetMaxHealth();
-					if IsPlayerBot(player:GetPlayerID()) and dist > maxDist and dist > 2500 and health >= 0.25 then
+					if IsPlayerBot(player:GetPlayerID()) and dist > maxDist and dist > 2500 and health >= 0.5 then
 						maxDist = dist;
 						target = GetTeamMember(i);
 					end
@@ -583,7 +583,7 @@ Consider[4]=function()
 				if player ~= nil and player:IsAlive() and player:GetActiveMode() ~= BOT_MODE_RETREAT then
 					local dist = GetUnitToUnitDistance(nearbyTower[1], player);
 					local health = player:GetHealth()/player:GetMaxHealth();
-					if IsPlayerBot(player:GetPlayerID()) and dist > maxDist and dist > 2500 and health >= 0.25  then
+					if IsPlayerBot(player:GetPlayerID()) and dist > maxDist and dist > 2500 and health >= 0.5  then
 						maxDist = dist;
 						target = GetTeamMember(i);
 					end
@@ -612,7 +612,7 @@ Consider[4]=function()
 				if player ~= nil and player:IsAlive() and player:GetActiveMode() ~= BOT_MODE_RETREAT then
 					local dist = GetUnitToUnitDistance(player, npcBot);
 					local health = player:GetHealth()/player:GetMaxHealth();
-					if IsPlayerBot(player:GetPlayerID()) and dist > maxDist and dist > 2500 and health >= 0.25 then
+					if IsPlayerBot(player:GetPlayerID()) and dist > maxDist and dist > 2500 and health >= 0.5 then
 						maxDist = dist;
 						target = GetTeamMember(i);
 					end

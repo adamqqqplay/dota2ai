@@ -19,8 +19,8 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 local AbilityToLevelUp=
 {
 	Abilities[1],
-	Abilities[3],
 	Abilities[2],
+	Abilities[1],
 	Abilities[2],
 	Abilities[2],
 	Abilities[5],
@@ -28,7 +28,7 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[1],
 	"talent",
-	Abilities[1],
+	Abilities[3],
 	Abilities[5],
 	Abilities[3],
 	Abilities[3],
@@ -268,7 +268,7 @@ Consider[2]=function()
 	end
 	
 	--protect myself
-	local enemys2 = npcBot:GetNearbyHeroes( 500, true, BOT_MODE_NONE );
+	local enemys2 = npcBot:GetNearbyHeroes( CastRange, true, BOT_MODE_NONE );
 	if(npcBot:WasRecentlyDamagedByAnyHero(5))
 	then
 		for _,enemy in pairs( enemys2 )

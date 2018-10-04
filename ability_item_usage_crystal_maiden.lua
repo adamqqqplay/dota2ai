@@ -18,17 +18,17 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 local AbilityToLevelUp=
 {
+	Abilities[1],
+	Abilities[3],
+	Abilities[1],
 	Abilities[2],
-	Abilities[3],
-	Abilities[3],
 	Abilities[1],
-	Abilities[3],
 	Abilities[4],
+	Abilities[1],
 	Abilities[3],
-	Abilities[1],
-	Abilities[1],
+	Abilities[3],
 	"talent",
-	Abilities[1],
+	Abilities[3],
 	Abilities[4],
 	Abilities[2],
 	Abilities[2],
@@ -46,10 +46,10 @@ local AbilityToLevelUp=
 }
 local TalentTree={
 	function()
-		return Talents[1]
+		return Talents[2]
 	end,
 	function()
-		return Talents[2]
+		return Talents[4]
 	end,
 	function()
 		return Talents[6]
