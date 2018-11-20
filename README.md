@@ -65,6 +65,10 @@ GPL v3
 
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <http://www.gnu.org/licenses/>.
+    
+## Donate
+If you like this mod:
+[Donate via PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DNKS26D8J38CA&source=url)
 
 # Ranked Matchmaking AI
 该项目是基于Valve默认AI的改进的Dota2 Bot脚本。它能为无法在线游戏的玩家提供一个良好的练习环境，以提高自己的游戏水平。（中文说明在后面）
@@ -126,3 +130,8 @@ GPL v3
      您应已收到附随于本程序的GNU通用公共授权的副本；如果没有，请参照 
      <http://www.gnu.org/licenses/>.
 
+## 捐赠
+如果您喜欢本项目，可以通过paypal或支付宝支持作者：
+[Donate via PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=DNKS26D8J38CA&source=url)
+
+![avatar](https://image-10026452.cos.ap-shanghai.myqcloud.com/alipay1542723302162.jpg)
