@@ -22,14 +22,10 @@ local ItemsToBuy =
 	"item_recipe_urn_of_shadows",	
 	"item_infused_raindrop",		--骨灰盒7.06
 
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
+	"item_crown",
+	"item_crown",
 	"item_staff_of_wizardry",
-	"item_recipe_rod_of_atos",		--阿托斯7.06
+	"item_recipe_rod_of_atos",		--阿托斯7.20
 
 	"item_vitality_booster",
 	"item_wind_lace",
@@ -48,10 +44,10 @@ local ItemsToBuy =
 	"item_platemail",
 	"item_energy_booster",			--清莲宝珠
 
-	"item_vitality_booster",
+	"item_crown",
 	"item_vitality_booster",		
-	"item_reaver",					--龙心7.06
-
+	"item_reaver",
+	"item_recipe_heart",			--龙心7.20
 }
 
 utility.checkItemBuild(ItemsToBuy)

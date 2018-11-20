@@ -11,19 +11,15 @@ local ItemsToBuy =
 	"item_circlet",
 	"item_recipe_wraith_band",
 	"item_boots",
-	"item_ring_of_protection",
-	"item_sobi_mask",				--天鹰
-	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
+	"item_belt_of_strength",
+	"item_blades_of_attack",		--假腿7.20
 	"item_boots_of_elves",
 	"item_boots_of_elves", 
 	"item_ogre_axe",				--魔龙枪
 	"item_ring_of_regen",
 	"item_staff_of_wizardry",
 	"item_recipe_force_staff",		--推推7.14
-	"item_slippers",
-	"item_circlet",
-	"item_recipe_wraith_band",		--大推推7.07
+	"item_recipe_wraith_band",		--大推推7.20
 	"item_point_booster",
 	"item_staff_of_wizardry",
 	"item_ogre_axe",
@@ -37,9 +33,10 @@ local ItemsToBuy =
 	"item_chainmail", 
 	"item_hyperstone",
 	"item_recipe_assault",			--强袭
-	"item_vitality_booster",
+	"item_crown",
 	"item_vitality_booster",		
-	"item_reaver",					--龙心7.06
+	"item_reaver",
+	"item_recipe_heart",			--龙心7.20
 }
 
 utility.checkItemBuild(ItemsToBuy)

@@ -37,7 +37,9 @@ local ItemsToBuy =
     "item_recipe_mekansm",			--梅肯
 
 	"item_recipe_guardian_greaves",	--卫士胫甲
-	"item_talisman_of_evasion",		--大勋章
+	"item_ultimate_orb",
+	"item_wind_lace",
+	"item_recipe_solar_crest",		--大勋章7.20
 	
 
 	"item_mystic_staff",

@@ -18,11 +18,6 @@ local ItemsToBuy =
 	"item_ring_of_regen",			--绿鞋
 	"item_wind_lace",
 
-	"item_slippers",
-	"item_circlet",
-	"item_recipe_wraith_band", --系带
-	"item_ring_of_protection",
-	"item_sobi_mask",				--天鹰
 
 	"item_blade_of_alacrity",
 	"item_blade_of_alacrity",
@@ -41,7 +36,9 @@ local ItemsToBuy =
 	"item_chainmail",
 	"item_sobi_mask",
 	"item_blight_stone",			--勋章
-	"item_talisman_of_evasion",		--大勋章
+	"item_ultimate_orb",
+	"item_wind_lace",
+	"item_recipe_solar_crest",		--大勋章7.20
 
 	"item_ring_of_health",
 	"item_void_stone",				

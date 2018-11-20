@@ -4,11 +4,14 @@
 ----------------------------------------------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 
+
+
 local ItemsToBuy = 
 { 
-	"item_circlet",
+	--[["item_circlet",
 	"item_mantle",
-	"item_recipe_null_talisman",	--无用挂件
+	"item_recipe_null_talisman",]]	--无用挂件
+	"item_null_talisman",
 	"item_tango",
 	
 	"item_magic_stick",
@@ -41,6 +44,18 @@ local ItemsToBuy =
 	"item_ultimate_orb",
 	"item_void_stone",				--羊刀
 }
+
+--[[for k,v in pairs(ItemsToBuy)
+do
+	local item =  GetItemComponents(ItemsToBuy[k])
+	if item ~= nil and #item > 0
+	then
+		for k,v in pairs(item)
+		do
+			table.insert(ItemsToBuy,k,item[k])
+		end
+	end
+end]]
 
 utility.checkItemBuild(ItemsToBuy)
 

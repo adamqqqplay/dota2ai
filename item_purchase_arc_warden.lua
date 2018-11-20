@@ -19,11 +19,12 @@ local ItemsToBuy =
 	"item_gloves",
 	"item_recipe_hand_of_midas",	--点金
 
-	"item_ring_of_protection",
-	"item_sobi_mask",				--天鹰
+	--[["item_ring_of_protection",
+	"item_sobi_mask",		]]		--天鹰
 	
 	"item_javelin",
 	"item_mithril_hammer",			--电锤7.14
+	
 	
 	"item_shadow_amulet",
 	"item_claymore",				--隐刀

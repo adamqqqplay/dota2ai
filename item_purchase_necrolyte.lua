@@ -15,7 +15,8 @@ local ItemsToBuy =
 	"item_recipe_magic_wand",		--大魔棒7.14
 	"item_branches",
 	"item_branches",
-	"item_energy_booster",			--秘法鞋
+	"item_belt_of_strength",
+	"item_blades_of_attack",		--假腿7.20
 	
 	"item_ring_of_regen",
 	"item_recipe_headdress",
@@ -25,11 +26,9 @@ local ItemsToBuy =
 	"item_branches",
     "item_recipe_mekansm",			--梅肯
 
-    "item_mantle",
-	"item_circlet",
-	"item_recipe_null_talisman",	--无用挂件
-	"item_helm_of_iron_will",
-	"item_recipe_veil_of_discord",	--纷争
+    "item_helm_of_iron_will",
+	"item_crown",
+	"item_recipe_veil_of_discord",	--纷争7.20
 	
 	"item_point_booster",
 	"item_recipe_guardian_greaves",	--卫士胫甲

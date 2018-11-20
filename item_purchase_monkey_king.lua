@@ -12,8 +12,8 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	"item_boots",
-	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
+	"item_gloves",
+	"item_chainmail",			--相位7.20
 
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
@@ -37,9 +37,10 @@ local ItemsToBuy =
 	"item_ultimate_orb",
 	"item_ultimate_orb",			--冰眼
 	
-	"item_vitality_booster",
+	"item_crown",
 	"item_vitality_booster",		
-	"item_reaver",					--龙心7.06
+	"item_reaver",
+	"item_recipe_heart",				--龙心7.20
 }
 
 utility.checkItemBuild(ItemsToBuy)

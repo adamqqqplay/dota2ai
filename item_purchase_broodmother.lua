@@ -43,7 +43,9 @@ local ItemsToBuy =
 	"item_sobi_mask",
 	"item_recipe_orchid",			--紫苑
 	
-	"item_talisman_of_evasion",		--大勋章
+	"item_ultimate_orb",
+	"item_wind_lace",
+	"item_recipe_solar_crest",		--大勋章7.20
 
 	"item_ogre_axe", 
 	"item_mithril_hammer",

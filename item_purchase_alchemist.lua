@@ -17,7 +17,7 @@ local ItemsToBuy =
 	
 	"item_boots",
 	"item_belt_of_strength",
-	"item_gloves",					--假腿
+	"item_blades_of_attack",					--假腿7.20
 
 	"item_helm_of_iron_will", 
 	"item_gloves", 

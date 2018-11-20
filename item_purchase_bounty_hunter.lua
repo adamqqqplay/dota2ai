@@ -48,7 +48,9 @@ local ItemsToBuy =
 	"item_chainmail",
 	"item_sobi_mask",
 	"item_blight_stone",			--勋章
-	"item_talisman_of_evasion",		--大勋章
+	"item_ultimate_orb",
+	"item_wind_lance",
+	"item_recipe_solar_crest",		--大勋章7.20
 }
 
 utility.checkItemBuild(ItemsToBuy)

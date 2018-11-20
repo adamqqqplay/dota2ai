@@ -21,10 +21,10 @@ local ItemsToBuy =
 
 	"item_branches",
 	"item_branches",
-	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
+	"item_gloves",
+	"item_chainmail",			--相位7.20
 	
-	"item_wind_lance",
+	"item_wind_lace",
 	"item_staff_of_wizardry",
 	"item_void_stone",
 	"item_recipe_cyclone",				--风杖

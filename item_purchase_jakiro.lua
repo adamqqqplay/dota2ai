@@ -29,14 +29,10 @@ local ItemsToBuy =
 	"item_staff_of_wizardry",
 	"item_recipe_force_staff",		--推推7.14
 
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
+	"item_crown",
+	"item_crown",
 	"item_staff_of_wizardry",
-	"item_recipe_rod_of_atos",		--阿托斯7.06
+	"item_recipe_rod_of_atos",		--阿托斯7.20
 	
 	"item_staff_of_wizardry",
 	"item_void_stone",

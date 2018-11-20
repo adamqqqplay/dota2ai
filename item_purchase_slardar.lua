@@ -34,9 +34,10 @@ local ItemsToBuy =
 	"item_mithril_hammer",
 	"item_recipe_black_king_bar",	--bkb
 
-	"item_vitality_booster",
+	"item_crown",
 	"item_vitality_booster",		
-	"item_reaver",					--龙心7.06
+	"item_reaver",
+	"item_recipe_heart",				--龙心7.20
 }
 
 utility.checkItemBuild(ItemsToBuy)

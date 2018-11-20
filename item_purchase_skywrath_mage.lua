@@ -15,14 +15,10 @@ local ItemsToBuy =
 	"item_recipe_magic_wand",		--大魔棒7.14
 	"item_energy_booster",			--秘法鞋
 
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
+	"item_crown",
+	"item_crown",
 	"item_staff_of_wizardry",
-	"item_recipe_rod_of_atos",		--阿托斯7.06
+	"item_recipe_rod_of_atos",		--阿托斯7.20
 
 	"item_wind_lace",
 	"item_staff_of_wizardry",

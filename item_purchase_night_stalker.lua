@@ -12,14 +12,16 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	"item_boots",
-	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
+	"item_gloves",
+	"item_chainmail",			--相位7.20
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
 	"item_chainmail",
 	"item_sobi_mask",
-	"item_blight_stone",			--勇气勋章
-	"item_talisman_of_evasion",		--大勋章
+	"item_blight_stone",			--勋章
+	"item_ultimate_orb",
+	"item_wind_lace",
+	"item_recipe_solar_crest",		--大勋章7.20
 	"item_point_booster",		
 	"item_staff_of_wizardry",
 	"item_ogre_axe",

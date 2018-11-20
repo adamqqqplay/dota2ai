@@ -14,8 +14,8 @@ local ItemsToBuy =
 	"item_recipe_magic_wand",		--大魔棒7.14
 		
 	"item_boots",
-	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
+	"item_gloves",
+	"item_chainmail",			   --相位7.20
 	
 	"item_ring_of_regen",
 	"item_staff_of_wizardry",
