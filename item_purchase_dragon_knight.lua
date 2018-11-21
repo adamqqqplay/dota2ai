@@ -18,17 +18,14 @@ local ItemsToBuy =
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
 
-				"item_boots",
-				"item_gloves",
-				"item_belt_of_strength",		--假腿
+	"item_boots",	
+	"item_belt_of_strength",
+	"item_blades_of_attack",		--假腿7.20
 
-				"item_gauntlets",
-				"item_circlet",
-				"item_recipe_bracer",
-				
-				"item_wind_lace",
-				"item_sobi_mask",
-				"item_recipe_ancient_janggo",	--战鼓
+	"item_crown",
+	"item_sobi_mask",
+	"item_wind_lance",
+	"item_recipe_ancient_janggo",   --战鼓7.20
 
 	"item_javelin",
 	"item_mithril_hammer",			--电锤7.14

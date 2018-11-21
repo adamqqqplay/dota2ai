@@ -17,18 +17,14 @@ local ItemsToBuy =
 	"item_branches",
 	"item_recipe_magic_wand",		--大魔棒7.14
 
-	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
+	"item_gloves",
+	"item_chainmail",			--相位7.20
 	
-	"item_ring_of_protection",
-	"item_sobi_mask",				--tianying
 
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
-	"item_wind_lace",
+	"item_crown",
 	"item_sobi_mask",
-	"item_recipe_ancient_janggo",	--战鼓
+	"item_wind_lace",
+	"item_recipe_ancient_janggo",   --战鼓7.20
 	
 	"item_boots_of_elves",
 	"item_blade_of_alacrity",
@@ -47,9 +43,7 @@ local ItemsToBuy =
 	"item_ring_of_regen",
 	"item_staff_of_wizardry",
 	"item_recipe_force_staff",		--推推7.14
-	"item_slippers",
-	"item_circlet",
-	"item_recipe_wraith_band",		--大推推7.07
+	"item_recipe_wraith_band",		--大推推7.20
 	
 	"item_quarterstaff",
 	"item_eagle",

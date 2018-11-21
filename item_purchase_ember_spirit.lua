@@ -22,8 +22,8 @@ local ItemsToBuy =
 	"item_recipe_null_talisman",	--无用挂件
 	"item_helm_of_iron_will",
 	"item_recipe_veil_of_discord",	--纷争
-	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
+	"item_gloves",
+	"item_chainmail",			--相位7.20
 	
 	"item_javelin",
 	"item_mithril_hammer",			--电锤7.14

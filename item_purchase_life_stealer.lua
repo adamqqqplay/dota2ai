@@ -13,8 +13,8 @@ local ItemsToBuy =
 	"item_branches",
 	
 	"item_boots",
-	"item_blades_of_attack",
-	"item_blades_of_attack",
+	"item_gloves",
+	"item_chainmail",			--相位7.20
 	
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14

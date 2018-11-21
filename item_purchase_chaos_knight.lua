@@ -13,9 +13,9 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 
-	"item_boots",
+	"item_boots",	
 	"item_belt_of_strength",
-	"item_gloves",					--假腿
+	"item_blades_of_attack",		--假腿7.20
 	
 	"item_helm_of_iron_will", 
 	"item_gloves", 
@@ -33,9 +33,10 @@ local ItemsToBuy =
 	"item_ultimate_orb",
 	"item_recipe_manta",			--分身
 
-	"item_vitality_booster",
+	"item_crown",
 	"item_vitality_booster",		
-	"item_reaver",					--龙心7.06
+	"item_reaver",
+	"item_recipe_heart",			--龙心7.20
 
 	"item_hyperstone",
 	"item_platemail",

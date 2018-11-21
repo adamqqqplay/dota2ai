@@ -16,8 +16,8 @@ local ItemsToBuy =
 	"item_boots",	
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
-	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
+	"item_gloves",
+	"item_chainmail",			--相位7.20
 	
 	"item_lifesteal",
 	"item_quarterstaff",			--疯狂面具7.06
@@ -25,9 +25,7 @@ local ItemsToBuy =
 	"item_boots_of_elves",
 	"item_boots_of_elves", 
 	"item_ogre_axe",				--魔龙枪
-	"item_ring_of_regen",
-	"item_staff_of_wizardry",
-	"item_recipe_force_staff",		--推推7.14
+	"item_recipe_force_staff",		--大推推7.20
 
 
 

@@ -21,13 +21,7 @@ local ItemsToBuy =
 	"item_recipe_magic_wand",		--大魔棒7.14
 	
 	"item_belt_of_strength",
-	"item_gloves",					--假腿
-
-	"item_slippers",
-	"item_circlet",
-	"item_recipe_wraith_band", --系带
-	"item_ring_of_protection",
-	"item_sobi_mask",				--天鹰
+	"item_blades_of_attack",		--假腿7.20
 
 	
 	"item_blade_of_alacrity",
@@ -42,9 +36,10 @@ local ItemsToBuy =
     "item_belt_of_strength",
     "item_recipe_sange",			--双刀
 	
-	"item_vitality_booster",
+	"item_crown",
 	"item_vitality_booster",		
-	"item_reaver",					--龙心7.06
+	"item_reaver",
+	"item_recipe_heart",			--龙心7.20
 
 	"item_point_booster",
 	"item_ultimate_orb",

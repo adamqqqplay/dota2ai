@@ -15,15 +15,10 @@ local ItemsToBuy =
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
 	
-	"item_boots",
-	"item_blades_of_attack",
-	"item_blades_of_attack",
+	"item_gloves",
+	"item_chainmail",			--相位7.20
 	
-	"item_slippers",
-	"item_circlet",
-	"item_recipe_wraith_band",
-	"item_ring_of_protection",
-	"item_sobi_mask",				--天鹰
+	
 	
 	"item_blade_of_alacrity",
 	"item_boots_of_elves",

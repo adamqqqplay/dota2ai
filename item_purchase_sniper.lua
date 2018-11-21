@@ -17,11 +17,10 @@ local ItemsToBuy =
 	"item_recipe_magic_wand",		--大魔棒7.14
 
 	"item_boots",
-	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
+	"item_glove",
+	"item_chainmail",			--相位7.20
 	
-	"item_ring_of_protection",
-	"item_sobi_mask",				--天鹰
+
 	
 	"item_boots_of_elves",
 	"item_boots_of_elves", 
@@ -30,8 +29,6 @@ local ItemsToBuy =
 	"item_ring_of_regen",
 	"item_staff_of_wizardry",
 	"item_recipe_force_staff",		--推推7.14
-	"item_slippers",
-	"item_circlet",
 	"item_recipe_wraith_band",		--大推推7.07
 	
 	"item_shadow_amulet",

@@ -15,8 +15,8 @@ local ItemsToBuy =
 	"item_recipe_magic_wand",		--大魔棒7.14
 	
 	"item_boots",
-	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
+	"item_gloves",
+	"item_chainmail",			--相位7.20
 	
 	"item_shadow_amulet",
 	"item_claymore",				--隐刀
@@ -37,9 +37,10 @@ local ItemsToBuy =
 	"item_hyperstone",
 	"item_recipe_assault",			--强袭	
 	
-	"item_vitality_booster",
+	"item_crown",
 	"item_vitality_booster",		
-	"item_reaver",					--龙心7.06
+	"item_reaver",
+	"item_recipe_heart",				--龙心7.20
 	
 }
 

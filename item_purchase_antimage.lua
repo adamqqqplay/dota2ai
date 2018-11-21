@@ -12,9 +12,8 @@ local ItemsToBuy =
 
 	"item_quelling_blade",			--补刀斧
 	"item_boots",	
-	
 	"item_belt_of_strength",
-	"item_gloves",					--假腿
+	"item_blades_of_attack",		--假腿7.20
 
 	"item_ring_of_health",
 	"item_void_stone",
@@ -41,10 +40,15 @@ local ItemsToBuy =
 	"item_quarterstaff",			--蝴蝶
 
 
-	"item_point_booster",
+	--[["item_point_booster",
 	"item_staff_of_wizardry",
 	"item_ogre_axe",
-	"item_blade_of_alacrity",		--蓝杖
+	"item_blade_of_alacrity",]]		--蓝杖
+
+	"item_crown",
+	"item_vitality_booster",		
+	"item_reaver",
+	"item_recipe_heart",					--龙心7.20
 	
 	--"item_vitality_booster",
 	--"item_vitality_booster",		

@@ -17,8 +17,8 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	
-	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
+	"item_gloves",
+	"item_chainmail",			--相位7.20
 
 	"item_ring_of_health",
 	"item_vitality_booster",		--先锋
@@ -41,9 +41,10 @@ local ItemsToBuy =
 	
 	"item_recipe_abyssal_blade",	--大晕锤
 	
-	"item_vitality_booster",
+	"item_crown",
 	"item_vitality_booster",		
-	"item_reaver",					--龙心7.06
+	"item_reaver",
+	"item_recipe_heart",			--龙心7.20
 }
 
 utility.checkItemBuild(ItemsToBuy)

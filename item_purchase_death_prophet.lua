@@ -18,22 +18,18 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	
-	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
+	"item_gloves",
+	"item_chainmail",			--相位7.20
 	
 	"item_staff_of_wizardry",
 	"item_void_stone",
 	"item_recipe_cyclone",
 	"item_wind_lace",				--风杖
 	
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
+	"item_crown",
+	"item_crown",
 	"item_staff_of_wizardry",
-	"item_recipe_rod_of_atos",		--阿托斯7.06
+	"item_recipe_rod_of_atos",		--阿托斯7.20
 
 	"item_vitality_booster",
 	"item_energy_booster",

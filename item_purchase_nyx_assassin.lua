@@ -34,9 +34,7 @@ local ItemsToBuy =
 	"item_staff_of_wizardry",
 	"item_recipe_force_staff",     --推推
 
-	"item_circlet",
-	"item_mantle",
-	"item_recipe_null_talisman",	--无用挂件
+	"item_crown",
 	"item_staff_of_wizardry",
 	"item_recipe_dagon",
 	"item_recipe_dagon",

@@ -17,16 +17,17 @@ local ItemsToBuy =
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
 
-	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
+	"item_gloves",
+	"item_chainmail",			--相位7.20
 	
 	"item_gauntlets",
 	"item_circlet",
 	"item_recipe_bracer",
 				
-	"item_wind_lace",
+	"item_crown",
 	"item_sobi_mask",
-	"item_recipe_ancient_janggo",	--战鼓
+	"item_wind_lace",
+	"item_recipe_ancient_janggo",   --战鼓7.20
 	
 	"item_shadow_amulet",
 	"item_claymore",				--隐刀

@@ -16,9 +16,8 @@ local ItemsToBuy =
 	"item_recipe_magic_wand",		--大魔棒7.14
 
 	"item_boots",	
-	
 	"item_belt_of_strength",
-	"item_gloves",					--假腿
+	"item_blades_of_attack",		--假腿7.20
 	
 	"item_chainmail",
 	"item_sobi_mask",
@@ -30,11 +29,11 @@ local ItemsToBuy =
 	"item_boots_of_elves",
 	"item_boots_of_elves", 
 	"item_ogre_axe",				--魔龙枪
-	"item_slippers",
-	"item_circlet",
-	"item_recipe_wraith_band",		--大推推7.07
+	"item_recipe_wraith_band",		--大推推7.20
 	
-	"item_talisman_of_evasion",		--大勋章
+	"item_ultimate_orb",
+	"item_wind_lace",
+	"item_recipe_solar_crest",		--大勋章7.20
 	
 	"item_point_booster",
 	"item_staff_of_wizardry",

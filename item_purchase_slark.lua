@@ -13,9 +13,9 @@ local ItemsToBuy =
 	"item_branches",
 	"item_orb_of_venom",
 	
-	"item_boots",
+	"item_boots",	
 	"item_belt_of_strength",
-	"item_gloves",					--假腿
+	"item_blades_of_attack",		--假腿7.20
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
 	

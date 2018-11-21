@@ -16,9 +16,9 @@ local ItemsToBuy =
 
 	"item_bottle",					-- 魔瓶
 
-	"item_boots",
+	"item_boots",	
 	"item_belt_of_strength",
-	"item_gloves",					--假腿
+	"item_blades_of_attack",		--假腿7.20
 	
 	"item_blink",					--跳刀
 

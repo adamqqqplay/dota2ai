@@ -17,12 +17,9 @@ local ItemsToBuy =
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
 
-	"item_ring_of_protection",
-	"item_sobi_mask",				--天鹰
-
-	"item_boots",
+	"item_boots",	
 	"item_belt_of_strength",
-	"item_gloves",					--假腿
+	"item_blades_of_attack",		--假腿7.20
 
 	"item_ring_of_health",
 	"item_void_stone",

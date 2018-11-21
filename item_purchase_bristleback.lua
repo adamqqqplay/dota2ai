@@ -12,9 +12,9 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	
-	"item_boots",
+	"item_boots",	
 	"item_belt_of_strength",
-	"item_gloves",					--假腿
+	"item_blades_of_attack",		--假腿7.20
 	
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
@@ -48,9 +48,10 @@ local ItemsToBuy =
 	"item_mystic_staff",
 	"item_recipe_shivas_guard" ,	--希瓦
 	
-	"item_vitality_booster",
+	"item_crown",
 	"item_vitality_booster",		
-	"item_reaver",					--龙心7.06
+	"item_reaver",
+	"item_recipe_heart",			--龙心7.20
 }
 
 utility.checkItemBuild(ItemsToBuy)

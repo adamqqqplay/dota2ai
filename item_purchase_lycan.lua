@@ -12,9 +12,9 @@ local ItemsToBuy =
 	"item_quelling_blade",			--补刀斧
 	
 
-	"item_boots",
+	"item_boots",	
 	"item_belt_of_strength",
-	"item_gloves",					--假腿
+	"item_blades_of_attack",		--假腿7.20
 
 	
 	"item_lifesteal",				--祭品

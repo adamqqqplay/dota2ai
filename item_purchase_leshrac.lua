@@ -18,11 +18,9 @@ local ItemsToBuy =
 	--"item_bottle",					--魔瓶
 	"item_energy_booster",			--秘法鞋
 	
-	"item_mantle",
-	"item_circlet",
-	"item_recipe_null_talisman",	--无用挂件
 	"item_helm_of_iron_will",
-	"item_recipe_veil_of_discord",	--纷争
+	"item_crown",
+	"item_recipe_veil_of_discord",	--纷争7.20
 	
 	"item_point_booster", 
 	"item_vitality_booster", 

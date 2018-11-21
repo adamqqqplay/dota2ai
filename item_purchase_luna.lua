@@ -12,10 +12,9 @@ local ItemsToBuy =
 	"item_branches",
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
-	"item_boots",
-
+	"item_boots",	
 	"item_belt_of_strength",
-	"item_gloves",					--假腿
+	"item_blades_of_attack",		--假腿7.20
 
 	"item_lifesteal",
 	"item_quarterstaff",			--疯狂面具7.06
@@ -32,8 +31,6 @@ local ItemsToBuy =
 	"item_ring_of_regen",
 	"item_staff_of_wizardry",
 	"item_recipe_force_staff",		--推推7.14
-	"item_slippers",
-	"item_circlet",
 	"item_recipe_wraith_band",		--大推推7.07
 
 	"item_point_booster",
