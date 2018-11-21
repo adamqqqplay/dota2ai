@@ -112,12 +112,14 @@ function X.GetWardSpotWhenTowerFall()
 	local wardSpot = {};
 	for i = 1, #Towers
 	do
-		local t = GetTower(GetTeam(),  Towers[i]);
+		local t = GetTower(GetTeam(),Towers[i]);
 		if t == nil then
 			if GetTeam() == TEAM_RADIANT then
-				table.insert(wardSpot, WardSpotTowerFallRadiant[i]);
+				--table.insert(wardSpot, WardSpotTowerFallRadiant[i]);
+				wardSpot[#wardSpot+1]=WardSpotTowerFallRadiant[i];
 			else
-				table.insert(wardSpot, WardSpotTowerFallDire[i]);
+				--table.insert(wardSpot, WardSpotTowerFallDire[i]);
+				wardSpot[#wardSpot+1]=WardSpotTowerFallDire[i];
 			end
 		end
 	end
@@ -180,18 +182,21 @@ function X.GetAvailableSpot(bot)
 	local temp = {};
 	for _,s in pairs(X.GetMandatorySpot()) do
 		if not X.CloseToAvailableWard(s) then
-			table.insert(temp, s);
+			--table.insert(temp, s);
+			temp[#temp+1]=s;
 		end
 	end
 	for _,s in pairs(X.GetWardSpotWhenTowerFall()) do
 		if not X.CloseToAvailableWard(s) then
-			table.insert(temp, s);
+			--table.insert(temp, s);
+			temp[#temp+1]=s;
 		end
 	end
 	if DotaTime() > 5*60 then
 		for _,s in pairs(X.GetAggressiveSpot()) do
 			if GetUnitToLocationDistance(bot, s) <= 1200 and not X.CloseToAvailableWard(s) then
-				table.insert(temp, s);
+				--table.insert(temp, s);
+				temp[#temp+1]=s;
 			end
 		end
 	end

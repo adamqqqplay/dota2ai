@@ -71,7 +71,7 @@ end
 -- Ability Usage Thinking
 --------------------------------------
 function CanCast2(npcTarget)
-	if(utility.NCanCast(npcTarget) and npcTarget:GetLevel()<=5 )
+	if(utility.NCanCast(npcTarget) and npcTarget:GetLevel()<=5 and npcTarget:IsAncientCreep()==false )
 	then
 		return true;
 	end
