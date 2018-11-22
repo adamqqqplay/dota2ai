@@ -611,7 +611,7 @@ function utilityModule.WeNeedTpscroll()
 
 	-- Count current number of TP scrolls
 	local iScrollCount = 0;
-	for i = 0, 14 do
+	for i = 0, 15 do
 		local sCurItem = npcBot:GetItemInSlot(i);
 		if ( sCurItem ~= nil and sCurItem:GetName() == "item_tpscroll" ) then
 			iScrollCount = iScrollCount+sCurItem:GetCurrentCharges()
@@ -623,7 +623,7 @@ function utilityModule.WeNeedTpscroll()
 
 		if ( npcBot:DistanceFromSideShop() <= 200 or npcBot:DistanceFromFountain() <= 200 ) then
 
-			if ( DotaTime() > 0 and DotaTime() < 20 * 60 ) then
+			if ( DotaTime() > 2*60 and DotaTime() < 20 * 60 ) then
 				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 			elseif ( DotaTime() >= 20 * 60 ) then
 				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
