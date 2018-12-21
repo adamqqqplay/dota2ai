@@ -10,7 +10,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 
-local debugmode=true
+local debugmode=false
 local npcBot = GetBot()
 local Talents ={}
 local Abilities ={}
@@ -405,23 +405,21 @@ Consider[5]=function()
 	-- Generic Variable Setting
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
-	
+
 	if not ability:IsFullyCastable() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
-	
+
 	local CastRange = 300
-	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
-	
+
 	--Try to kill enemy hero
-	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
+	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT )
 	then
 		if (WeakestEnemy~=nil)
 		then
@@ -437,62 +435,31 @@ Consider[5]=function()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-	-- If we're roshaning
-	if ( npcBot:GetActiveMode() == BOT_MODE_ROSHAN ) 
+	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH )
 	then
-		local npcTarget = npcBot:GetTarget();
-		local t=npcBot:GetAttackTarget()
-		if ( npcTarget ~= nil and t~=nil )
+		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ))
 		then
-			return BOT_ACTION_DESIRE_MODERATE;
+			return BOT_ACTION_DESIRE_HIGH;
 		end
 	end
-	
+
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK )
 	then
 		local npcEnemy = npcBot:GetTarget();
 
-		if ( npcEnemy ~= nil and GetUnitToUnitDistance(npcBot,npcEnemy)<=800) 
+		if ( npcEnemy ~= nil and GetUnitToUnitDistance(npcBot,npcEnemy)<=800 and HealthPercentage<=0.2 )
 		then
 			return BOT_ACTION_DESIRE_MODERATE
 		end
+	end
 
-		if #enemys >= 2
-		then
-			return BOT_ACTION_DESIRE_MODERATE
-		end
-	end
-	
-	-- If we're pushing or defending a lane
-	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT ) 
-	then
-		local t=npcBot:GetAttackTarget()
-		if(t~=nil)
-		then
-			if (ManaPercentage>0.4 and t:IsTower())
-				then
-			return BOT_ACTION_DESIRE_MODERATE, npcBot
-			end
-		end
-	end
-	
-	-- If we're farming
-	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) 
-	then
-		if (ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
-		then
-			return BOT_ACTION_DESIRE_LOW;
-		end
-	end
-	
 	return BOT_ACTION_DESIRE_NONE, 0;
-	
+
 end
 
 

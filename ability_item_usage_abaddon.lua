@@ -400,7 +400,23 @@ Consider[2]=function()
 end
 
 Consider[4]=function()
+
+	local abilityNumber=4
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber];
 	
+	if not ability:IsFullyCastable() then
+		return BOT_ACTION_DESIRE_NONE, 0;
+	end
+
+	-- In case of silence
+	if(npcBot:GetHealth()<=400)
+	then
+		return BOT_ACTION_DESIRE_HIGH;
+	end
+
 	return BOT_ACTION_DESIRE_NONE
 end
 

@@ -156,20 +156,20 @@ Consider[1]=function()
 		end
 	end
 	
-	-- If my mana is enough,use it at enemy
-	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
-	then
-		if((ManaPercentage>0.4 or npcBot:GetMana()>ComboMana))
-		then
-			if (WeakestEnemy~=nil)
-			then
-				if ( CanCast[abilityNumber]( WeakestEnemy ) and (role.IsCarry(WeakestEnemy:GetUnitName()) or #enemys==1))
-				then
-					return BOT_ACTION_DESIRE_LOW,WeakestEnemy;
-				end
-			end
-		end
-	end
+	-- -- If my mana is enough,use it at enemy
+	-- if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+	-- then
+	-- 	if((ManaPercentage>0.4 or npcBot:GetMana()>ComboMana))
+	-- 	then
+	-- 		if (WeakestEnemy~=nil)
+	-- 		then
+	-- 			if ( CanCast[abilityNumber]( WeakestEnemy ) and (role.IsCarry(WeakestEnemy:GetUnitName()) or #enemys==1))
+	-- 			then
+	-- 				return BOT_ACTION_DESIRE_LOW,WeakestEnemy;
+	-- 			end
+	-- 		end
+	-- 	end
+	-- end
 
 	-- If we're pushing or defending a lane
 	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or

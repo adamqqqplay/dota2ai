@@ -10,42 +10,42 @@ local RADIANT_T3TOPFALL = Vector(-6600.000000, -3072.000000, 0.000000);
 local RADIANT_T3MIDFALL = Vector(-4314.000000, -3887.000000, 0.000000);
 local RADIANT_T3BOTFALL = Vector(-3586.000000, -6131.000000, 0.000000);
 
-local RADIANT_T2TOPFALL = Vector(-4382.000000, -1283.000000, 0.000000);
-local RADIANT_T2MIDFALL = Vector(-1026.000000, -4607.000000, 0.000000);
-local RADIANT_T2BOTFALL = Vector(1496.000000, -5136.000000, 0.000000);
+local RADIANT_T2TOPFALL = Vector(-4340.000000, -1015.000000, 0.000000);
+local RADIANT_T2MIDFALL = Vector(-1023.000000, -4605.000000, 0.000000);
+local RADIANT_T2BOTFALL = Vector(1010.000000, -5321.000000, 0.000000);
 
-local RADIANT_T1TOPFALL = Vector(-5127.000000, 2048.000000, 0.000000);
-local RADIANT_T1MIDFALL = Vector(-18.000000, -1062.000000, 0.000000);
-local RADIANT_T1BOTFALL = Vector(5144.000000, -3796.000000, 0.000000);
+local RADIANT_T1TOPFALL = Vector(-5117.000000, 2068.000000, 0.00000);
+local RADIANT_T1MIDFALL = Vector(991.000000, -1574.000000, 0.000000);
+local RADIANT_T1BOTFALL = Vector(5093.000000, -3722.000000, 0.000000);
 
 local RADIANT_MANDATE1 = Vector(-1794.000000, 473.000000, 0.000000);
-local RADIANT_MANDATE2 = Vector(1795.000000, -2809.000000, 0.000000);
+local RADIANT_MANDATE2 = Vector(2910.000000, -2765.000000, 0.000000);
 
-local RADIANT_AGGRESSIVETOP  = Vector(-1679.000000, 4848.000000, 0.000000);
-local RADIANT_AGGRESSIVEMID1 = Vector(-24.000000, 2401.000000, 0.000000);
-local RADIANT_AGGRESSIVEMID2 = Vector(3199.000000, -254.000000, 0.000000);
-local RADIANT_AGGRESSIVEBOT  = Vector(5122.000000, -766.000000, 0.000000);
+local RADIANT_AGGRESSIVETOP  = Vector(-1221.000000, 4833.000000, 0.000000);
+local RADIANT_AGGRESSIVEMID1 = Vector(-55.000000, 2685.000000, 0.000000);
+local RADIANT_AGGRESSIVEMID2 = Vector(3568.000000, 1027.000000, 0.000000);
+local RADIANT_AGGRESSIVEBOT  = Vector(5115.000000, -764.000000, 0.000000);
 
 ---DIRE WARDING SPOT
 local DIRE_T3TOPFALL = Vector(3087.000000, 5690.000000, 0.000000);
 local DIRE_T3MIDFALL = Vector(4024.000000, 3445.000000, 0.000000);
 local DIRE_T3BOTFALL = Vector(6354.000000, 2606.000000, 0.000000);
 
-local DIRE_T2TOPFALL = Vector(1021.000000, 4608.000000, 0.000000);
-local DIRE_T2MIDFALL = Vector(1009.000000, 2256.000000, 0.000000);
-local DIRE_T2BOTFALL = Vector(5125.000000, 770.000000, 0.000000);
+local DIRE_T2TOPFALL = Vector(1022.000000, 4868.000000, 0.000000);
+local DIRE_T2MIDFALL = Vector(1012.000000, 2247.000000, 0.000000);
+local DIRE_T2BOTFALL = Vector(5113.000000, 773.000000, 0.000000);
 
-local DIRE_T1TOPFALL = Vector(-6013.000000, 3357.000000, 0.000000);
-local DIRE_T1MIDFALL = Vector(775.000000, -502.000000, 0.000000);
-local DIRE_T1BOTFALL = Vector(5119.000000, -757.000000, 0.000000);
+local DIRE_T1TOPFALL = Vector(-5697.000000, 3212.000000, 0.000000);
+local DIRE_T1MIDFALL = Vector(1031.000000, -736.000000, 0.000000);
+local DIRE_T1BOTFALL = Vector(5096.000000, -760.000000, 0.000000);
 
-local DIRE_MANDATE1 = Vector(3364.000000, -1536.000000, 0.000000);
-local DIRE_MANDATE2 = Vector(-1009.000000, 1351.000000, 0.000000);
+local DIRE_MANDATE1 = Vector(-826.000000, 1186.000000, 0.000000);
+local DIRE_MANDATE2 = Vector(3543.000000, -1467.000000, 0.000000);
 
-local DIRE_AGGRESSIVETOP  = Vector(-4586.000000, 1052.000000, 0.000000);
-local DIRE_AGGRESSIVEMID1 = Vector(-3288.000000, -1372.000000, 0.000000);
-local DIRE_AGGRESSIVEMID2 = Vector(-885.000000, -3983.000000, 0.000000);
-local DIRE_AGGRESSIVEBOT  = Vector(2194.000000, -3766.000000, 0.000000);
+local DIRE_AGGRESSIVETOP  = Vector(-4625.000000, 738.000000, 0.000000);
+local DIRE_AGGRESSIVEMID1 = Vector(-4348.000000, -1014.000000, 0.000000);
+local DIRE_AGGRESSIVEMID2 = Vector(-1305.000000, -2889.000000, 0.000000);
+local DIRE_AGGRESSIVEBOT  = Vector(1826.000000, -4266.000000, 0.000000);
 
 
 local Towers = {
@@ -112,14 +112,12 @@ function X.GetWardSpotWhenTowerFall()
 	local wardSpot = {};
 	for i = 1, #Towers
 	do
-		local t = GetTower(GetTeam(),Towers[i]);
+		local t = GetTower(GetTeam(),  Towers[i]);
 		if t == nil then
 			if GetTeam() == TEAM_RADIANT then
-				--table.insert(wardSpot, WardSpotTowerFallRadiant[i]);
-				wardSpot[#wardSpot+1]=WardSpotTowerFallRadiant[i];
+				table.insert(wardSpot, WardSpotTowerFallRadiant[i]);
 			else
-				--table.insert(wardSpot, WardSpotTowerFallDire[i]);
-				wardSpot[#wardSpot+1]=WardSpotTowerFallDire[i];
+				table.insert(wardSpot, WardSpotTowerFallDire[i]);
 			end
 		end
 	end
@@ -182,21 +180,18 @@ function X.GetAvailableSpot(bot)
 	local temp = {};
 	for _,s in pairs(X.GetMandatorySpot()) do
 		if not X.CloseToAvailableWard(s) then
-			--table.insert(temp, s);
-			temp[#temp+1]=s;
+			table.insert(temp, s);
 		end
 	end
 	for _,s in pairs(X.GetWardSpotWhenTowerFall()) do
 		if not X.CloseToAvailableWard(s) then
-			--table.insert(temp, s);
-			temp[#temp+1]=s;
+			table.insert(temp, s);
 		end
 	end
 	if DotaTime() > 5*60 then
 		for _,s in pairs(X.GetAggressiveSpot()) do
 			if GetUnitToLocationDistance(bot, s) <= 1200 and not X.CloseToAvailableWard(s) then
-				--table.insert(temp, s);
-				temp[#temp+1]=s;
+				table.insert(temp, s);
 			end
 		end
 	end

@@ -8,23 +8,14 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_clarity",
-	
 	"item_bottle",
 	"item_boots",
-
 	"item_magic_stick",
 	"item_branches",
 	"item_branches",
 	"item_recipe_magic_wand",		--大魔棒7.14
-	
 	"item_energy_booster",			--秘法鞋
-
-	"item_circlet",
-	"item_mantle",
-	"item_recipe_null_talisman",	--无用挂件
-	"item_mantle",
-	"item_circlet",
-	"item_recipe_null_talisman",	--无用挂件
+	"item_crown",
 	"item_helm_of_iron_will",
 	"item_recipe_veil_of_discord",	--纷争
 	"item_void_stone",

@@ -309,27 +309,25 @@ Consider[3]=function()
 	
 	local WeakestAlly2=nil;
 	local HighestFactor=0
+	for i,npcTarget in pairs(allys2)
 	do
-		for i,npcTarget in pairs(allys2)
-		do
-			if(npcTarget:IsAlive() and npcTarget:DistanceFromFountain()>=1000)
-			then
-				local Threats=npcTarget:GetNearbyHeroes(900,true,BOT_MODE_NONE);
-				local Towers=npcTarget:GetNearbyTowers(900,true);
-				local TempFactor=(1-npcTarget:GetHealth()/npcTarget:GetMaxHealth())+(#Threats+#Towers)*0.05+0.05*(5-math.min(5,npcTarget:TimeSinceDamagedByAnyHero()))
-				
-				if TempFactor>HighestFactor
-				then
-					WeakestAlly2=npcTarget;
-					HighestFactor=TempFactor
-				end
+		if(npcTarget:IsAlive() and npcTarget:DistanceFromFountain()>=1000)
+		then
+			local Threats=npcTarget:GetNearbyHeroes(900,true,BOT_MODE_NONE);
+			local Towers=npcTarget:GetNearbyTowers(900,true);
+			local TempFactor=(1-npcTarget:GetHealth()/npcTarget:GetMaxHealth())+(#Threats+#Towers)*0.05+0.05*(5-math.min(5,npcTarget:TimeSinceDamagedByAnyHero()))
 			
-				if(HighestFactor>=0.4)
+			if TempFactor>HighestFactor
+			then
+				WeakestAlly2=npcTarget;
+				HighestFactor=TempFactor
+			end
+		
+			if(HighestFactor>=0.4)
+			then
+				if ( CanCast[abilityNumber]( npcTarget ) )
 				then
-					if ( CanCast[abilityNumber]( npcTarget ) )
-					then
-						return BOT_ACTION_DESIRE_MODERATE, WeakestAlly2,"Target"
-					end
+					return BOT_ACTION_DESIRE_MODERATE, WeakestAlly2,"Target"
 				end
 			end
 		end

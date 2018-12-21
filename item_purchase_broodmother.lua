@@ -22,7 +22,7 @@ local ItemsToBuy =
 	"item_recipe_soul_ring",  		--魂戒
 
 	"item_belt_of_strength",
-	"item_gloves",					--假腿
+	"item_blades_of_attack",		--假腿7.20
 	
 	"item_ring_of_regen",
 	"item_recipe_headdress",

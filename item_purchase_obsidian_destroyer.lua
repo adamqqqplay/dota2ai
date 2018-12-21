@@ -27,7 +27,7 @@ local ItemsToBuy =
 	"item_boots_of_elves",
 	"item_boots_of_elves", 
 	"item_ogre_axe",				--魔龙枪
-	"item_recipe_wraith_band",		--大推推7.07
+	"item_crown",					--大推推7.20
 	
 	"item_crown",
 	"item_crown",

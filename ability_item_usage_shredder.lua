@@ -345,9 +345,9 @@ Consider[2]=function()
 				or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 				or HeroHealth/WeakestEnemy:GetMaxHealth() < 0.65)
 			then
-				if ( GetUnitToUnitDistance(npcBot,npcTarget) < CastRange and not utility.AreTreesBetween( npcTarget:GetLocation(),Radius ) ) 
+				if ( GetUnitToUnitDistance(npcBot,WeakestEnemy) < CastRange and not utility.AreTreesBetween( WeakestEnemy:GetLocation(),Radius ) ) 
 				then
-				local BTree = GetBestTree(npcBot, npcTarget, CastRange, Radius);
+				local BTree = GetBestTree(npcBot, WeakestEnemy, CastRange, Radius);
 					if BTree ~= nil then
 						return BOT_ACTION_DESIRE_MODERATE, BTree;
 					end

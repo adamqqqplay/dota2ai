@@ -40,8 +40,8 @@ local ItemsToBuy =
 	
 	"item_crown",
 	"item_vitality_booster",		
-	"item_reaver",
-	"item_recipe_heart",				--龙心7.20
+	"item_ring_of_tarrasque",
+	"item_recipe_heart",					--龙心7.20
 }
 
 utility.checkItemBuild(ItemsToBuy)

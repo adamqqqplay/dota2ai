@@ -18,11 +18,15 @@ function utilityModule.NCanCast( npcEnemy )--normal judgement
 end
 
 function utilityModule.MiCanCast( npcEnemy )--magic immune
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable() and not utilityModule.HasImmuneDebuff(npcEnemy) and not npcEnemy:IsIllusion() and not npcEnemy:HasModifier("modifier_item_sphere") and not npcEnemy:HasModifier("modifier_item_sphere_target")
+	return utilityModule.UCanCast( npcEnemy )
 end
 
 function utilityModule.UCanCast( npcEnemy )--magic immune
 	return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable() and not utilityModule.HasImmuneDebuff(npcEnemy) and not npcEnemy:IsIllusion() and not npcEnemy:HasModifier("modifier_item_sphere") and not npcEnemy:HasModifier("modifier_item_sphere_target")
+end
+
+function utilityModule.IsRoshan(npcTarget)
+	return npcTarget ~= nil and npcTarget:IsAlive() and string.find(npcTarget:GetUnitName(), "roshan");
 end
 
 -- gxc's code
@@ -58,13 +62,6 @@ end
 
 function utilityModule.enemyDisabled(npcEnemy)
 	if npcEnemy:IsRooted( ) or npcEnemy:IsStunned( ) or npcEnemy:IsHexed( ) then
-		return true;
-	end
-	return false;
-end
-
-function utilityModule.allyDisabled(npcEnemy)
-	if npcAlly:IsRooted( ) or npcEnemy:IsStunned( ) or npcEnemy:IsHexed( ) then
 		return true;
 	end
 	return false;

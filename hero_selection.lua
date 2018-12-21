@@ -278,24 +278,24 @@ hero_pool_test = {
 	-- "npc_dota_hero_sand_king",
 
 
-	"npc_dota_hero_troll_warlord",
-	"npc_dota_hero_obsidian_destroyer", 
-	"npc_dota_hero_weaver",
-	"npc_dota_hero_nyx_assassin",
-	"npc_dota_hero_naga_siren",
+	-- "npc_dota_hero_troll_warlord",
+	-- "npc_dota_hero_obsidian_destroyer", 
+	-- "npc_dota_hero_weaver",
+	-- "npc_dota_hero_nyx_assassin",
+	-- "npc_dota_hero_naga_siren",
 
-	"npc_dota_hero_phantom_lancer",
-	"npc_dota_hero_kunkka",
-	"npc_dota_hero_shredder",
-	"npc_dota_hero_tusk",
-	"npc_dota_hero_shadow_demon",
+	-- "npc_dota_hero_phantom_lancer",
+	-- "npc_dota_hero_kunkka",
+	-- "npc_dota_hero_shredder",
+	-- "npc_dota_hero_tusk",
+	-- "npc_dota_hero_shadow_demon",
 
 
 	-- "npc_dota_hero_terrorblade",
 	-- "npc_dota_hero_phantom_lancer",
 	-- "npc_dota_hero_troll_warlord",
 
-	-- "npc_dota_hero_obsidian_destroyer", 
+	-- "npc_dota_hero_obsidian_destroyer",
 	-- "npc_dota_hero_templar_assassin",
 	-- "npc_dota_hero_kunkka",
 

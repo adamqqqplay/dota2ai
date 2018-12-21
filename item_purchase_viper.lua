@@ -19,7 +19,7 @@ local ItemsToBuy =
 	"item_ring_of_regen",
 	"item_staff_of_wizardry",
 	"item_recipe_force_staff",		--推推7.14
-	"item_recipe_wraith_band",		--大推推7.20
+	"item_crown",					--大推推7.20
 	"item_point_booster",
 	"item_staff_of_wizardry",
 	"item_ogre_axe",
@@ -35,8 +35,8 @@ local ItemsToBuy =
 	"item_recipe_assault",			--强袭
 	"item_crown",
 	"item_vitality_booster",		
-	"item_reaver",
-	"item_recipe_heart",			--龙心7.20
+	"item_ring_of_tarrasque",
+	"item_recipe_heart",					--龙心7.20
 }
 
 utility.checkItemBuild(ItemsToBuy)

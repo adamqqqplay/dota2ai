@@ -97,7 +97,9 @@ Consider[1]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	local CastPoint = ability:GetCastPoint();
+	local Radius = ability:GetAOERadius();
 
+	local blink
 	local i=npcBot:FindItemSlot("item_blink")
 	if(i>=0 and i<=5)
 	then

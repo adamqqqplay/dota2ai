@@ -238,7 +238,7 @@ Consider[2]=function()
 	do
 		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy ) and not npcEnemy:HasModifier("modifier_teleporting") and not npcEnemy:HasModifier("modifier_boots_of_travel_incoming")) 
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy,"Location"
+			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation(),"Location"
 		end
 	end
 	--------------------------------------

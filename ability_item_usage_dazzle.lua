@@ -229,8 +229,6 @@ Consider[2]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
@@ -428,45 +426,45 @@ Consider[3]=function()
 end
 
 Consider[4]=function()
-	local abilityNumber=4
-	--------------------------------------
-	-- Generic Variable Setting
-	--------------------------------------
-	local ability=AbilitiesReal[abilityNumber];
+	-- local abilityNumber=4
+	-- --------------------------------------
+	-- -- Generic Variable Setting
+	-- --------------------------------------
+	-- local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
-	end
+	-- if not ability:IsFullyCastable() then
+	-- 	return BOT_ACTION_DESIRE_NONE, 0;
+	-- end
 	
-	local CastRange = ability:GetCastRange();
-	local Damage = 0
-	local Radius = ability:GetAOERadius()
+	-- local CastRange = ability:GetCastRange();
+	-- local Damage = 0
+	-- local Radius = ability:GetAOERadius()
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
-	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(1600,true)
-	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
-	--------------------------------------
-	-- Mode based usage
-	--------------------------------------
+	-- local HeroHealth=10000
+	-- local CreepHealth=10000
+	-- local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	-- local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
+	-- local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	-- local creeps = npcBot:GetNearbyCreeps(1600,true)
+	-- local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+	-- --------------------------------------
+	-- -- Mode based usage
+	-- --------------------------------------
 	
-	if(npcBot:GetActiveMode() == BOT_MODE_ATTACK)
-	then
-		local locationAoE = npcBot:FindAoELocation( false, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
-		if ( locationAoE.count >= 3 ) 
-		then
-			return BOT_ACTION_DESIRE_MODERATE-0.04, locationAoE.targetloc;
-		end
+	-- if(npcBot:GetActiveMode() == BOT_MODE_ATTACK)
+	-- then
+	-- 	local locationAoE = npcBot:FindAoELocation( false, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+	-- 	if ( locationAoE.count >= 3 ) 
+	-- 	then
+	-- 		return BOT_ACTION_DESIRE_MODERATE-0.04, locationAoE.targetloc;
+	-- 	end
 			
-		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
-		if ( locationAoE.count >= 2 ) 
-		then
-			return BOT_ACTION_DESIRE_MODERATE-0.04, locationAoE.targetloc;
-		end
-	end
+	-- 	local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+	-- 	if ( locationAoE.count >= 2 ) 
+	-- 	then
+	-- 		return BOT_ACTION_DESIRE_MODERATE-0.04, locationAoE.targetloc;
+	-- 	end
+	-- end
 	
 	return BOT_ACTION_DESIRE_NONE, 0;
 	

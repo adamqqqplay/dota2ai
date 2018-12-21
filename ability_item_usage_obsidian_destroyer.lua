@@ -342,6 +342,49 @@ Consider[2]=function()
 	return BOT_ACTION_DESIRE_NONE, 0 
 end
 
+Consider[2]=function()
+
+	local abilityNumber=2
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber];
+	
+	if not ability:IsFullyCastable() then
+		return BOT_ACTION_DESIRE_NONE, 0;
+	end
+	
+	local CastRange = ability:GetCastRange();
+	local Damage = ability:GetAbilityDamage();
+
+	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE )
+	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+
+
+	-- If we're going after someone
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK )
+	then
+		local npcEnemy = npcBot:GetTarget();
+		if ( npcEnemy ~= nil )
+		then
+			if ( CanCast[abilityNumber]( npcEnemy )  and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
+			then
+				return BOT_ACTION_DESIRE_MODERATE, npcEnemy;
+			end
+		end
+	end
+
+
+
+	return BOT_ACTION_DESIRE_NONE, 0 
+end
+
 Consider[4]=function()
 
 	local abilityNumber=4

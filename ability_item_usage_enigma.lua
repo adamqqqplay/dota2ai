@@ -459,16 +459,21 @@ Consider[4]=function()
 	-- Global high-priorty usage
 	--------------------------------------
 	-- Check for a channeling enemy
-	for _,npcEnemy in pairs( enemys )
-	do
-		if ( npcEnemy:IsChanneling() ) 
-		then
-			return BOT_ACTION_DESIRE_MODERATE-0.15, npcEnemy:GetLocation()
+	-- If we're in a teamfight, use it on the scariest enemy
+	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
+	if ( #tableNearbyAttackingAlliedHeroes >= 2 )
+	then
+		for _,npcEnemy in pairs( enemys )
+		do
+			if ( npcEnemy:IsChanneling() )
+			then
+				return BOT_ACTION_DESIRE_MODERATE-0.15, npcEnemy:GetLocation()
+			end
 		end
 	end
 	--------------------------------------
 	-- Mode based usage
-	--------------------------------------		
+	--------------------------------------
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then

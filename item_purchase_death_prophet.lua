@@ -44,9 +44,10 @@ local ItemsToBuy =
 	"item_mystic_staff",
 	"item_recipe_shivas_guard" ,	--希瓦
 	
-	"item_vitality_booster",
+	"item_crown",
 	"item_vitality_booster",		
-	"item_reaver",					--龙心7.06
+	"item_ring_of_tarrasque",
+	"item_recipe_heart",					--龙心7.20
 }
 
 utility.checkItemBuild(ItemsToBuy)

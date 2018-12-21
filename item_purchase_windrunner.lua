@@ -15,7 +15,7 @@ local ItemsToBuy =
 		
 	"item_boots",
 	"item_gloves",
-	"item_chainmail",			   --相位7.20
+	"item_chainmail",			--相位7.20
 	
 	"item_ring_of_regen",
 	"item_staff_of_wizardry",
