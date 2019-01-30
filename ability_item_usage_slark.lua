@@ -235,16 +235,11 @@ Consider[2]=function()
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 
-	--Check if stuck on cliff.
-	if(npcBot.Blink==nil or DotaTime()-npcBot.Blink.Timer>=20)
+	-- If we get stuck
+	if utility.IsStuck(npcBot)
 	then
-		npcBot.Blink={Point=npcBot:GetLocation(),Timer=DotaTime()}
-	end
-
-	local trees= npcBot:GetNearbyTrees(300)
-	if(trees~=nil and #trees>=10 or (utility.PointToPointDistance(npcBot:GetLocation(),npcBot.Blink.Point)<=150 and DotaTime()-npcBot.Blink.Timer<20 and DotaTime()-npcBot.Blink.Timer>18))
-	then
-		return BOT_ACTION_DESIRE_HIGH
+		local loc = utility.GetEscapeLoc();
+		return BOT_ACTION_DESIRE_HIGH;
 	end
 	
 	--try to kill enemy hero

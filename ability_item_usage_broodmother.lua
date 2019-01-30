@@ -258,7 +258,7 @@ Consider[2] = function()
 	--------------------------------------
 	local ability = AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or npcBot:IsCastingAbility() or ability:IsInAbilityPhase()  then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -286,19 +286,10 @@ Consider[2] = function()
 		end
 	end]]
 
-	-- Check if stuck on cliff.
-	--[[if not IsLocationPassable(npcBot:GetLocation()) then
-		return BOT_MODE_DESIRE_HIGH, npcBot:GetLocation();
-	end]]
-
-	if(npcBot.Blink==nil or DotaTime()-npcBot.Blink.Timer>=25)
+	-- If we get stuck
+	if utility.IsStuck(npcBot)
 	then
-		npcBot.Blink={Point=npcBot:GetLocation(),Timer=DotaTime()}
-	end
-
-	local trees= npcBot:GetNearbyTrees(300)
-	if(trees~=nil and #trees>=10 or (utility.PointToPointDistance(npcBot:GetLocation(),npcBot.Blink.Point)<=150 and DotaTime()-npcBot.Blink.Timer<25 and DotaTime()-npcBot.Blink.Timer>23))
-	then
+		local loc = utility.GetEscapeLoc();
 		return BOT_ACTION_DESIRE_HIGH, npcBot:GetLocation();
 	end
 	

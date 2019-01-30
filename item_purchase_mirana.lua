@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.3
+--	Ranked Matchmaking AI v1.6b
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
-local utility = require( GetScriptDirectory().."/utility" )	--导入通用函数库
+local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
 
 local ItemsToBuy = 
 { 
@@ -40,8 +40,8 @@ local ItemsToBuy =
 	"item_talisman_of_evasion",		--蝴蝶
 }
 
-utility.checkItemBuild(ItemsToBuy)		--检查装备列表
+ItemPurchaseSystem.checkItemBuild(ItemsToBuy)		--检查装备列表
 
 function ItemPurchaseThink()
-	utility.ItemPurchase(ItemsToBuy)	--购买装备
+	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)	--购买装备
 end

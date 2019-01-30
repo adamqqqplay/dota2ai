@@ -367,18 +367,12 @@ Consider[2]=function()
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
-	--Check if stuck on cliff.
-	if(npcBot.Blink==nil or DotaTime()-npcBot.Blink.Timer>=20)
+	-- If we get stuck
+	if utility.IsStuck(npcBot)
 	then
-		npcBot.Blink={Point=npcBot:GetLocation(),Timer=DotaTime()}
+		local loc = utility.GetEscapeLoc();
+		return BOT_ACTION_DESIRE_HIGH, npcBot:GetLocation(),"Location";
 	end
-
-	local trees= npcBot:GetNearbyTrees(300)
-	if(trees~=nil and #trees>=10 or (utility.PointToPointDistance(npcBot:GetLocation(),npcBot.Blink.Point)<=150 and DotaTime()-npcBot.Blink.Timer<20 and DotaTime()-npcBot.Blink.Timer>18))
-	then
-		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
-	end
-
 
 	--Try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 

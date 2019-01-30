@@ -1,8 +1,10 @@
-require( GetScriptDirectory().."/item_purchase_generic_gxc" )
+----------------------------------------------------------------------------
+--	Ranked Matchmaking AI v1.6b
+--	Author: adamqqq		Email:adamqqq@163.com
+----------------------------------------------------------------------------
+local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
 
-npcBot = GetBot();
-
-local tableItemsToBuy = { 
+local ItemsToBuy = { 
 	"item_circlet",
 	"item_mantle",
 	"item_recipe_null_talisman",
@@ -41,24 +43,10 @@ local tableItemsToBuy = {
 	"item_recipe_sphere" ,
 
 	"item_blink",
-	};
+}
 
-
-----------------------------------------------------------------------------------------------------
+ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
 
 function ItemPurchaseThink()
-
-	-- if we have travel boots, no need item_tpscroll
-	purchase.NoNeedTpscrollForTravelBoots();
-
-	-- buy item_tpscroll
-	purchase.WeNeedTpscroll();
-
-	--------------------------------------------------------------------------
-
-	npcBot.tableItemsToBuy = tableItemsToBuy;
-	purchase.ItemPurchase();
-
+	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
 end
-
-----------------------------------------------------------------------------------------------------

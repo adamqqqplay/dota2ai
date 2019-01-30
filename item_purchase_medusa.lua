@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.3
+--	Ranked Matchmaking AI v1.6b
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
-local utility = require( GetScriptDirectory().."/utility" )		--导入通用函数库
+local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
 
 local ItemsToBuy = 
 { 
@@ -16,8 +16,8 @@ local ItemsToBuy =
 	"item_boots",	
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
-	"item_gloves",
-	"item_chainmail",			--相位7.20
+	"item_blades_of_attack",
+	"item_chainmail",			--相位7.21
 	
 	"item_lifesteal",
 	"item_quarterstaff",			--疯狂面具7.06
@@ -53,8 +53,8 @@ local ItemsToBuy =
 	"item_recipe_mjollnir",			--大雷锤
 }
 
-utility.checkItemBuild(ItemsToBuy)		--检查装备列表
+ItemPurchaseSystem.checkItemBuild(ItemsToBuy)		--检查装备列表
 
 function ItemPurchaseThink()
-	utility.ItemPurchase(ItemsToBuy)	--购买装备
+	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)	--购买装备
 end

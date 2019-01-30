@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.0a
+--	Ranked Matchmaking AI v1.6b
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
-local utility = require( GetScriptDirectory().."/utility" ) 
+local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
 
 local ItemsToBuy = 
 { 
@@ -14,15 +14,12 @@ local ItemsToBuy =
 
 	"item_boots",	
 	"item_belt_of_strength",
-	"item_blades_of_attack",		--假腿7.20
+	"item_gloves",			--假腿7.21
 
-	
-	"item_lifesteal",				--祭品
-	"item_ring_of_regen",
-	"item_branches",
-	"item_recipe_headdress",				
 	"item_ring_of_protection",
 	"item_sobi_mask",
+	"item_lifesteal",
+	"item_recipe_vladmir",			--祭品7.21
 
 	"item_sobi_mask",
 	"item_sobi_mask",
@@ -45,8 +42,8 @@ local ItemsToBuy =
 	"item_recipe_assault",			--强袭
 }
 
-utility.checkItemBuild(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
 
 function ItemPurchaseThink()
-	utility.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
 end

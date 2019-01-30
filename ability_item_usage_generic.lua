@@ -40,10 +40,62 @@ local function ConsiderGlyph()
 	end
 end
 
+local function RecordStuckState()
+	local npcBot = GetBot()
+	local botLoc = npcBot:GetLocation();
+	if npcBot:IsAlive() and npcBot:GetCurrentActionType() == BOT_ACTION_TYPE_MOVE_TO and not IsLocationPassable(botLoc) then
+		if npcBot.stuckLoc == nil then
+			npcBot.stuckLoc = botLoc
+			npcBot.stuckTime = DotaTime();
+		elseif npcBot.stuckLoc ~= botLoc then
+			npcBot.stuckLoc = botLoc
+			npcBot.stuckTime = DotaTime();
+		end
+	else	
+		npcBot.stuckTime = nil;
+		npcBot.stuckLoc = nil;
+	end
+end
+
+local announceFlag=false
+local function SendAnnouncement()
+	if announceFlag == false then
+		announceFlag = true;
+		for id=1,36,1
+		do
+			if(IsPlayerBot(id)==true)
+			then
+				if(GetTeamForPlayer(id)==GetTeam())
+				then
+					local npcBot=GetBot();
+					if(npcBot:GetPlayerID()==id)
+					then
+						npcBot:ActionImmediate_Chat(
+							"Welcome to Ranked Matchmaking AI, the current version is 1.6b, updated on January 31, 2019. If you have any questions or feedback, please leave message on steam workshop https://steamcommunity.com/sharedfiles/filedetails/?id=855965029 or contact adamqqq@163.com",
+							true
+						)
+						npcBot:ActionImmediate_Chat(
+							"Please use hard or unfair mode and do not play Monkey king. 请使用困难或疯狂难度，不要使用齐天大圣。",
+							true
+						)
+					end
+				end
+				return;
+			end
+		end
+	end
+end
+
 function CourierUsageThink()
 	ConsiderGlyph()
 	ItemUsageSystem.UnImplementedItemUsage()
 	Courier.CourierUsageThink()
+	RecordStuckState()
+
+	if(DotaTime()>=-60 and DotaTime()<=-59)
+	then
+		SendAnnouncement()
+	end
 end
 
 function AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)

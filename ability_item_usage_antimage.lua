@@ -102,12 +102,7 @@ Consider[2]=function()
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local trees= npcBot:GetNearbyTrees(300)
-	
-	if(npcBot.Blink==nil or DotaTime()-npcBot.Blink.Timer>=10)
-	then
-		npcBot.Blink={Point=npcBot:GetLocation(),Timer=DotaTime()}
-	end
-	
+
 	--try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
 	then
@@ -126,10 +121,11 @@ Consider[2]=function()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-	-- If we trapped by the trees
-	if(trees~=nil and #trees>=10 or (utility.PointToPointDistance(npcBot:GetLocation(),npcBot.Blink.Point)<=100 and DotaTime()-npcBot.Blink.Timer<10 and DotaTime()-npcBot.Blink.Timer>8))
+	-- If we get stuck
+	if utility.IsStuck(npcBot)
 	then
-		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
+		local loc = utility.GetEscapeLoc();
+		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,loc,CastRange);
 	end
 	
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently

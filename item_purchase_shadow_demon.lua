@@ -1,9 +1,9 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.5c
+--	Ranked Matchmaking AI v1.6b
 --	Author: adamqqq		Email:adamqqq@163.com
 --  Contributor: zmcmcc Email:mengzhang@utexas.edu
 ----------------------------------------------------------------------------
-local utility = require( GetScriptDirectory().."/utility" ) 
+local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
 
 local ItemsToBuy = 
 { 
@@ -40,10 +40,10 @@ local ItemsToBuy =
 
 }
 
-utility.checkItemBuild(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
 
 function ItemPurchaseThink()
-	utility.BuySupportItem()
-	utility.BuyCourier()
-	utility.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.BuySupportItem()
+	ItemPurchaseSystem.BuyCourier()
+	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
 end

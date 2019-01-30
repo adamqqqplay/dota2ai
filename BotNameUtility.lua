@@ -24,7 +24,7 @@ local dota2team = {
 			'PLT',
 			'X!!'
 		};
-		['sponsorship'] = 'CN';
+		['sponsorship'] = '';
 	},
 	[3] = {
 		['name'] = "IG TI2";
@@ -96,7 +96,7 @@ local dota2team = {
 			'fy',
 			'Fenrir'
 		};
-		['sponsorship'] = '天喔';
+		['sponsorship'] = '';
 	},
 	[9] = {
 		['name'] = "Evil Geniuses TI5";
@@ -120,7 +120,7 @@ local dota2team = {
 			'Shiki',
 			'Agressif'
 		};
-		['sponsorship'] = 'DouYuTV';
+		['sponsorship'] = '';
 	},
 	[11] = {
 		['name'] = "Wings Gaming TI6";
@@ -170,9 +170,33 @@ local dota2team = {
 		};
 		['sponsorship'] = '';
 	},
+	[15] = {
+		['name'] = "OG TI8";
+		['alias'] = "OG";
+		['players'] = {
+			'ana',
+			'Topson',
+			'7ckngMad',
+			'JerAx',
+			'N0tail'
+		};
+		['sponsorship'] = '';
+	},
+	[16] = {
+		['name'] = "PSG.LGD TI7";
+		['alias'] = "PSG.LGD";
+		['players'] = {
+			'Ame',
+			'Somnus丶M',
+			'Chalice',
+			'fy',
+			'xNova'
+		};
+		['sponsorship'] = '';
+	},
 }
 
-local sponsorship = {"GG.bet", "gg.bet", "VPGAME", "LOOT.bet", "loot.bet", "", "Esports.bet", "G2A", "Dota2.net"};
+local sponsorship = {"RMMAI"};
 
 function U.GetDota2Team()
 	local bot_names = {};
@@ -190,7 +214,7 @@ function U.GetDota2Team()
 	local team = dota2team[rand];
 	for _,player in pairs(team.players) do
 		if team.sponsorship == "" then
-			table.insert(bot_names, team.alias.."."..player);
+			table.insert(bot_names, team.alias.."."..player.."."..sponsorship[srand]);
 		else
 			table.insert(bot_names, team.alias.."."..player.."."..team.sponsorship);
 		end
