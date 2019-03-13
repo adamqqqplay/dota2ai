@@ -12,8 +12,12 @@ local ItemsToBuy =
 	"item_circlet",
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
-	
+	"item_slippers",
+	"item_recipe_wraith_band",
 	"item_boots",	
+	"item_slippers",
+	"item_circlet",
+	"item_recipe_wraith_band",
 	"item_belt_of_strength",
 	"item_gloves",			--假腿7.21
 	

@@ -8,6 +8,9 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_stout_shield",
+	"item_slippers",
+	"item_circlet",
+	"item_recipe_wraith_band",
 	"item_branches",
 	"item_branches",
 	"item_magic_stick",

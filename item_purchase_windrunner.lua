@@ -13,6 +13,10 @@ local ItemsToBuy =
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
 		
+	
+	"item_mantle",
+	"item_circlet",
+	"item_recipe_null_talisman",
 	"item_boots",
 	"item_blades_of_attack",
 	"item_chainmail",			--相位7.21

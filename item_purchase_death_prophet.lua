@@ -8,9 +8,12 @@ local ItemsToBuy =
 { 
 	"item_circlet",
 	"item_mantle",
-	"item_recipe_null_talisman",	--无用挂件
+	"item_circlet",
 	"item_tango",
-	"item_bottle",
+	"item_flask",
+	"item_recipe_null_talisman",	--无用挂件
+	"item_mantle",
+	"item_recipe_null_talisman",	--无用挂件
 	"item_boots",
 	
 	"item_magic_stick",
@@ -25,6 +28,10 @@ local ItemsToBuy =
 	"item_void_stone",
 	"item_recipe_cyclone",
 	"item_wind_lace",				--风杖
+
+	"item_ogre_axe", 
+	"item_mithril_hammer",
+	"item_recipe_black_king_bar",	--bkb
 	
 	"item_crown",
 	"item_crown",

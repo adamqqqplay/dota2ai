@@ -8,8 +8,14 @@ local ItemsToBuy =
 { 
 	"item_circlet",
 	"item_mantle",
-	"item_recipe_null_talisman",	--无用挂件
+		--无用挂件
 	"item_tango",
+	
+	"item_mantle",
+
+	"item_recipe_null_talisman",
+	"item_circlet",
+	"item_recipe_null_talisman",
 
 	"item_bottle",
 

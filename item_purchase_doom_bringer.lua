@@ -8,12 +8,17 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_flask",
+	"item_enchanted_mango",
+	"item_enchanted_mango",
 	"item_stout_shield",
-	"item_branches",
-	"item_branches",
+	"item_gauntlets",
+	"item_circlet",
+	"item_recipe_bracer",
+	
 
 	"item_boots",
-
+	"item_branches",
+	"item_branches",
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
 
@@ -31,6 +36,10 @@ local ItemsToBuy =
 	
 	"item_shadow_amulet",
 	"item_claymore",				--隐刀
+
+	"item_ogre_axe", 
+	"item_mithril_hammer",
+	"item_recipe_black_king_bar",	--bkb
 	
 	"item_broadsword",
 	"item_robe",

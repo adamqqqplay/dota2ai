@@ -8,6 +8,7 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_quelling_blade",
+	"item_stout_shield",
 	"item_gauntlets",
 	"item_gauntlets",
 	"item_ring_of_regen",

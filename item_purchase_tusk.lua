@@ -15,6 +15,12 @@ local ItemsToBuy =
 	"item_boots",
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
+	"item_gauntlets",
+	"item_circlet",
+	"item_recipe_bracer",
+	"item_gauntlets",
+	"item_circlet",
+	"item_recipe_bracer",
 
 	"item_blades_of_attack",
 	"item_chainmail",			--相位7.21

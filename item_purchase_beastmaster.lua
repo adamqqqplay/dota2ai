@@ -8,13 +8,19 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_flask",
+	"item_enchanted_mango",
+	"item_enchanted_mango",
 	"item_stout_shield",
-	"item_branches",
-	"item_branches",
+	"item_gauntlets",
+	"item_circlet",
+	"item_recipe_bracer",
+	
 	"item_boots",
 	"item_blades_of_attack",
 	"item_chainmail",				--相位7.21
 	"item_magic_stick",
+	"item_branches",
+	"item_branches",
 	"item_recipe_magic_wand",		--大魔棒7.14
 	
 	"item_chainmail",

@@ -15,6 +15,10 @@ local ItemsToBuy =
 	"item_recipe_magic_wand",		--大魔棒7.14
 	"item_energy_booster",			--秘法鞋
 		
+	
+
+	"item_blink",					--跳刀
+
 	"item_ring_of_regen",
 	"item_recipe_headdress",
 	"item_branches",
@@ -22,18 +26,18 @@ local ItemsToBuy =
 	"item_recipe_buckler" ,
 	"item_branches",
     "item_recipe_mekansm",			--梅肯
-
-	"item_blink",					--跳刀
 	
 	"item_recipe_guardian_greaves",	--卫士胫甲
 
-	"item_vitality_booster",
-	"item_energy_booster",
-	"item_recipe_aeon_disk",		-- 永恒之盘
+
 	
 	"item_ogre_axe", 
 	"item_mithril_hammer",
 	"item_recipe_black_king_bar",	--bkb
+
+	"item_vitality_booster",
+	"item_energy_booster",
+	"item_recipe_aeon_disk",		-- 永恒之盘
 	
 	"item_point_booster",		
 	"item_staff_of_wizardry",

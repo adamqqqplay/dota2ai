@@ -10,6 +10,12 @@ local ItemsToBuy =
 	"item_tango",
 	"item_flask",
 	"item_orb_of_venom", -- 毒球
+	"item_mantle",
+	"item_circlet",
+	"item_recipe_null_talisman",
+	"item_mantle",
+	"item_circlet",
+	"item_recipe_null_talisman",
 	"item_branches",
 	"item_branches",
 	"item_boots",

@@ -8,8 +8,12 @@ local ItemsToBuy =
 { 
 	"item_slippers",
 	"item_circlet",
-	"item_recipe_wraith_band",
+	"item_slippers",
 	"item_tango",
+	"item_flask",
+	"item_recipe_wraith_band", --系带
+	"item_circlet",
+	"item_recipe_wraith_band", --系带
 	
 	"item_branches",
 	"item_branches",
@@ -28,13 +32,15 @@ local ItemsToBuy =
 	"item_boots_of_elves",
 	"item_blade_of_alacrity",
 	"item_recipe_yasha",			--夜叉
-	"item_ultimate_orb",
-	"item_recipe_manta",			--分身
+	
 	
 	"item_ring_of_regen",
 	"item_staff_of_wizardry",
 	"item_recipe_force_staff",		--推推7.14
 	"item_crown",					--大推推7.20
+
+	"item_ultimate_orb",
+	"item_recipe_manta",			--分身
 	
 	"item_point_booster",		
 	"item_staff_of_wizardry",

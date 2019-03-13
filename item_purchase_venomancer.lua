@@ -8,9 +8,12 @@ local ItemsToBuy =
 {
 	"item_slippers",
 	"item_circlet",
-	"item_recipe_wraith_band", --系带
+	"item_slippers",
 	"item_tango",
-	"item_clarity",
+	"item_flask",
+	"item_recipe_wraith_band", --系带
+	"item_circlet",
+	"item_recipe_wraith_band", --系带
 	"item_branches",
 	"item_branches",
 

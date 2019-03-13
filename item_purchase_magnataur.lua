@@ -14,6 +14,12 @@ local ItemsToBuy =
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
 
+	"item_gauntlets",
+	"item_circlet",
+	"item_recipe_bracer",
+	"item_gauntlets",
+	"item_circlet",
+	"item_recipe_bracer",
 	"item_boots",
 	"item_energy_booster",			--秘法鞋
 	

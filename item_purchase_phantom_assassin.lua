@@ -16,6 +16,10 @@ local ItemsToBuy =
 	"item_boots",
 	"item_blades_of_attack",
 	"item_chainmail",			--相位7.21
+	
+	"item_slippers",
+	"item_circlet",
+	"item_recipe_wraith_band",
 
 	"item_ring_of_health",
 	"item_vitality_booster",		--先锋

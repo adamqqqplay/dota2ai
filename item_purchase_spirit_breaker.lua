@@ -17,6 +17,13 @@ local ItemsToBuy =
 	"item_orb_of_venom",
 
 	"item_boots",	
+	"item_gauntlets",
+	"item_circlet",
+	"item_recipe_bracer",
+	"item_gauntlets",
+	"item_circlet",
+	"item_recipe_bracer",
+
 	"item_belt_of_strength",
 	"item_gloves",			--假腿7.21
 

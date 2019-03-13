@@ -71,7 +71,7 @@ local function SendAnnouncement()
 					if(npcBot:GetPlayerID()==id)
 					then
 						npcBot:ActionImmediate_Chat(
-							"Welcome to Ranked Matchmaking AI, the current version is 1.6b, updated on January 31, 2019. If you have any questions or feedback, please leave message on steam workshop https://steamcommunity.com/sharedfiles/filedetails/?id=855965029 or contact adamqqq@163.com",
+							"Welcome to Ranked Matchmaking AI, the current version is 1.6c, updated on March 13, 2019. If you have any questions or feedback, please leave message on steam workshop https://steamcommunity.com/sharedfiles/filedetails/?id=855965029 or contact adamqqq@163.com",
 							true
 						)
 						npcBot:ActionImmediate_Chat(

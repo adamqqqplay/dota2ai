@@ -13,6 +13,11 @@ local ItemsToBuy =
 	"item_branches",
 	"item_orb_of_venom",
 	
+	
+	"item_slippers",
+	"item_circlet",
+	"item_recipe_wraith_band",
+
 	"item_boots",	
 	"item_belt_of_strength",
 	"item_gloves",			--假腿7.21

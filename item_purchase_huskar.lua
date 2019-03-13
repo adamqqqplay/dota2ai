@@ -8,7 +8,13 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_circlet",
-	--"item_flask",
+	"item_flask",
+	"item_gauntlets",
+	"item_recipe_bracer",
+	"item_gauntlets",
+	"item_circlet",
+	"item_recipe_bracer",
+
 	"item_branches",
 	"item_branches",
 	"item_magic_stick",
@@ -18,9 +24,7 @@ local ItemsToBuy =
 	"item_belt_of_strength",
 	"item_gloves",			--假腿7.21
 
-	"item_infused_raindrop",
-	"item_ring_of_protection",
-	"item_recipe_urn_of_shadows",	--骨灰盒7.06
+	
 	
 	"item_helm_of_iron_will", 
 	"item_gloves", 

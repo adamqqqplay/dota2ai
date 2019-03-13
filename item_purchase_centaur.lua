@@ -9,18 +9,23 @@ local ItemsToBuy =
 	"item_tango",
 	"item_flask",
 	"item_stout_shield",
+	"item_enchanted_mango",
+	"item_enchanted_mango",
 	"item_branches",
 	"item_branches",
 	
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
+	"item_gauntlets",
+	"item_circlet",
+	"item_recipe_bracer",
+
 
 	"item_boots",
-	"item_wind_lace",
-	"item_ring_of_regen",			--绿鞋
+
+	"item_ring_of_health",
 	
-	"item_vitality_booster",
-	"item_ring_of_health",			--先锋
+	"item_vitality_booster",--先锋
 	
 	"item_blink",					--跳刀
 	"item_chainmail",

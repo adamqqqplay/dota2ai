@@ -16,7 +16,8 @@ local ItemsToBuy =
 	"item_recipe_magic_wand",		--大魔棒7.14
 
 	"item_boots",
-	"item_energy_booster",			--秘法鞋
+	"item_blades_of_attack",
+	"item_chainmail",				--秘法鞋
 	
 	"item_circlet",
 	"item_ring_of_protection",

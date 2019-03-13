@@ -11,11 +11,18 @@ local ItemsToBuy =
 	"item_stout_shield",
 	"item_branches",
 	"item_branches",
-	"item_boots",
-	"item_energy_booster",			--秘法鞋	
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
-	
+	"item_gauntlets",
+	"item_circlet",
+	"item_recipe_bracer",
+	"item_boots",
+
+	"item_circlet",
+	"item_ring_of_protection",
+	"item_recipe_urn_of_shadows",	
+	"item_infused_raindrop",		--骨灰盒7.06
+
 	"item_cloak",
 	"item_ring_of_health",
 	"item_ring_of_regen",			--挑战

@@ -17,6 +17,12 @@ local ItemsToBuy =
 	"item_boots",	
 
 	"item_ring_of_regen",			--绿鞋
+	"item_gauntlets",
+	"item_circlet",
+	"item_recipe_bracer",
+	"item_gauntlets",
+	"item_circlet",
+	"item_recipe_bracer",
 	
 	"item_cloak",
 	"item_shadow_amulet",			--微光

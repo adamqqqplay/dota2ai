@@ -304,3 +304,5 @@ V1.6b (2018.1.31)
 3. Improve some code with displacement ability heroes to reduce their chances of being stuck in the terrain.
 4. Add TI8 champion player ID. And add the suffix RMMAI to all hero IDs to better identify this AI.
 5. The update announcement will now be sent at the beginning of the game.
+1.6c (2018.3.13)
+1. Update item building of most heroes to fit the latest version.
