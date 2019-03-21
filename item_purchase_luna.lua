@@ -31,7 +31,7 @@ local ItemsToBuy =
 	"item_ring_of_regen",
 	"item_staff_of_wizardry",
 	"item_recipe_force_staff",		--推推7.14
-	"item_crown",					--大推推7.20
+	"item_recipe_hurricane_pike",					--大推推7.20
 
 	"item_point_booster",
 	"item_staff_of_wizardry",

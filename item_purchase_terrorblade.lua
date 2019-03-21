@@ -34,7 +34,12 @@ local ItemsToBuy =
 	
     "item_point_booster",
     "item_ultimate_orb",
-    "item_ultimate_orb",			--冰眼
+	"item_ultimate_orb",			--冰眼
+	"item_ring_of_regen",
+	"item_staff_of_wizardry",
+	"item_recipe_force_staff",		--推推7.14
+	"item_recipe_hurricane_pike",					--大推推7.20
+
 
     "item_eagle",
     "item_talisman_of_evasion",

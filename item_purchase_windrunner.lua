@@ -25,13 +25,20 @@ local ItemsToBuy =
 	"item_staff_of_wizardry",
 	"item_recipe_force_staff",		--推推7.14
 	
+	
+	
+	"item_javelin",
+	"item_mithril_hammer",			--电锤7.14
+
+	"item_boots_of_elves",
+	"item_boots_of_elves", 
+	"item_ogre_axe",				--魔龙枪
+	"item_recipe_hurricane_pike",					--大推推7.20
+
 	"item_ring_of_health",
 	"item_void_stone",
 	"item_ultimate_orb",
 	"item_recipe_sphere",			--林肯
-	
-	"item_javelin",
-	"item_mithril_hammer",			--电锤7.14
 	
 	"item_point_booster",
 	"item_staff_of_wizardry",
