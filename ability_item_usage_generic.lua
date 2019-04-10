@@ -146,10 +146,11 @@ local function CanBuybackUpperRespawnTime(respawnTime)
 end
 
 function IsMeepoClone()
-	if bot:GetUnitName() == "npc_dota_hero_meepo" and bot:GetLevel() > 1 
+	local npcBot = GetBot()
+	if npcBot:GetUnitName() == "npc_dota_hero_meepo" and npcBot:GetLevel() > 1 
 	then
 		for i=0, 5 do
-			local item = bot:GetItemInSlot(i);
+			local item = npcBot:GetItemInSlot(i);
 			if item ~= nil and not ( string.find(item:GetName(),"boots") or string.find(item:GetName(),"treads") )  
 			then
 				return false;
