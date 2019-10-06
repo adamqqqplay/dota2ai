@@ -298,15 +298,15 @@ V1.6 (2018.12.21)
 1. Full support for version 7.20.
 2. Fixed several bugs.
 3. Refactor some of the code to improve efficiency and reduce the possibility of errors.
-V1.6b (2018.1.31)
+V1.6b (2019.1.31)
 1. Update the item building of 7.21.
 2. Reduce the desire of the team pushing to reduce the situation of gathering in the middle lane.
 3. Improve some code with displacement ability heroes to reduce their chances of being stuck in the terrain.
 4. Add TI8 champion player ID. And add the suffix RMMAI to all hero IDs to better identify this AI.
 5. The update announcement will now be sent at the beginning of the game.
-v1.6c (2018.3.13)
+v1.6c (2019.3.13)
 1. Update item building of most heroes to fit the latest version.
-v1.6d (2018.4.15)
+v1.6d (2019.4.15)
 1. Add All Random, 1 VS 1, Turbo Mode, and Mid Only mode support.
 2. Added the ability to manually select heroes for AI. If you want to make the bots pick certain hero for allies you can Team Chat the hero name or All Chat for picking hero for enemy. You don't have to type full name of the hero just some text that closed to hero name. 
 But the hero's internal name and game title are not the same, please refer to this link: https://dota2.gamepedia.com/Cheats#Hero_names
