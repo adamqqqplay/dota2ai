@@ -7,8 +7,8 @@ if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot(
 	return;
 end
 
-local wardUtils = require(GetScriptDirectory() ..  "/WardUtility")
-local role = require(GetScriptDirectory() .. "/RoleUtility");
+local wardUtils = require(GetScriptDirectory() ..  "/util/WardUtility")
+local role = require(GetScriptDirectory() .. "/util/RoleUtility");
 local bot = GetBot();
 local AvailableSpots = {};
 local nWardCastRange = 500;

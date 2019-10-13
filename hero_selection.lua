@@ -4,8 +4,8 @@
 ----------------------------------------------------------------------------
 --Special thanks to DblTap for his commit of "Updated hero selection to try to build a team with one hero in each position".
 --DblTap: http://steamcommunity.com/profiles/76561197967823929/ Github Link：https://github.com/adamqqqplay/dota2ai/pull/3
-local role = require(GetScriptDirectory() .. "/RoleUtility")
-local bnUtil = require(GetScriptDirectory() .. "/BotNameUtility")
+local role = require(GetScriptDirectory() .. "/util/RoleUtility")
+local bnUtil = require(GetScriptDirectory() .. "/util/BotNameUtility")
 
 --recording all dota2 heroes
 local hero_pool = {
@@ -279,7 +279,7 @@ local hero_pool_test = {
 
 
 	-- "npc_dota_hero_troll_warlord",
-	-- "npc_dota_hero_obsidian_destroyer", 
+	-- "npc_dota_hero_obsidian_destroyer",
 	-- "npc_dota_hero_weaver",
 	-- "npc_dota_hero_nyx_assassin",
 	-- "npc_dota_hero_naga_siren",
@@ -374,7 +374,7 @@ local allBotHeroes = {
 	"npc_dota_hero_magnataur",
 	"npc_dota_hero_medusa",
 	"npc_dota_hero_mirana",
-	"npc_dota_hero_monkey_king",
+	--"npc_dota_hero_monkey_king",
 
 	"npc_dota_hero_nevermore",
 	"npc_dota_hero_night_stalker",
@@ -449,7 +449,7 @@ local hero_pool_position_1 = {
 	"npc_dota_hero_antimage",
 	"npc_dota_hero_gyrocopter",
 	"npc_dota_hero_lycan",
-	"npc_dota_hero_monkey_king",
+	--"npc_dota_hero_monkey_king",
 	"npc_dota_hero_terrorblade",
 	"npc_dota_hero_phantom_lancer",
 	"npc_dota_hero_troll_warlord",

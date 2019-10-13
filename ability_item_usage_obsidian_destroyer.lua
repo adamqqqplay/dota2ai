@@ -191,8 +191,6 @@ Consider[2]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE )
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local allys2 = GetUnitList(UNIT_LIST_ALLIED_HEROES)

@@ -79,15 +79,12 @@ function CanCast1( npcEnemy )
 	end
 end
 
-function CanCast6( npcEnemy )
-	return utility.UCanCast(npcEnemy) and string.find(npcEnemy:GetUnitName(), "hero");
-end
 --------------------------------------
 -- Ability Usage Thinking
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={CanCast1,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast,CanCast6}
+local CanCast={CanCast1,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -223,9 +220,9 @@ Consider[3]=function()
 	local HeroHealth=10000
 	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local enemys = npcBot:GetNearbyHeroes(CastRange+150,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+	local creeps = npcBot:GetNearbyCreeps(CastRange+150,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 
 	--------------------------------------
@@ -254,7 +251,7 @@ Consider[3]=function()
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys and WeakestEnemy:GetHealth()/WeakestEnemy:GetMaxHealth() < 0.4)
+			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end
@@ -264,7 +261,7 @@ Consider[3]=function()
 	-- If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if((ManaPercentage>0.4 or npcBot:GetMana()>ComboMana))
+		if((HealthPercentage>0.7 and ManaPercentage>0.4 or npcBot:GetMana()>ComboMana))
 		then
 			if (WeakestEnemy~=nil)
 			then

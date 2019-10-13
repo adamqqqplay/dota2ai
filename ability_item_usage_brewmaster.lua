@@ -7,7 +7,7 @@
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
-local role = require(GetScriptDirectory() .. "/RoleUtility")
+local role = require(GetScriptDirectory() .. "/util/RoleUtility")
 local AbilityHelper = dofile(GetScriptDirectory() .. "/util/AbilityHelper")
 
 local debugmode=false

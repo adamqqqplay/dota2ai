@@ -1,7 +1,7 @@
 _G._savedEnv = getfenv()
 module("PushUtility", package.seeall)
 
-local role = require(GetScriptDirectory() ..  "/RoleUtility")
+local role = require(GetScriptDirectory() ..  "/util/RoleUtility")
 
 function GetLane( nTeam ,hHero )
         local vBot = GetLaneFrontLocation(nTeam, LANE_BOT, 0)

@@ -1,481 +1,292 @@
-----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.0a
---	Author: adamqqq		Email:adamqqq@163.com
-----------------------------------------------------------------------------
--------
-_G._savedEnv = getfenv()
-module( "mode_generic_rune", package.seeall )
-local utility = require( GetScriptDirectory().."/utility" ) 
-local role = require(GetScriptDirectory() ..  "/RoleUtility")
-----------
-local AllRunes={
-    RUNE_POWERUP_1,
-    RUNE_POWERUP_2,
-    RUNE_BOUNTY_1,
-    RUNE_BOUNTY_2,
-    RUNE_BOUNTY_3,
-    RUNE_BOUNTY_4,
-}
-local OurRunes={}
-if(GetTeam()==TEAM_RADIANT)
-then
-	OurRunes={
+if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot():GetUnitName(), "hero") or  GetBot():IsIllusion() then
+	return;
+end
+
+local role = require(GetScriptDirectory() .. "/util/RoleUtility");
+local hero_roles = role["hero_roles"];
+local bot = GetBot();
+local minute = 0;
+local sec = 0;
+local closestRune  = -1;
+local runeStatus = -1;
+local ProxDist = 1500;
+local teamPlayers = nil;
+local PingTimeGap = 10;
+local bottle = nil;
+
+local ListRune = {
+	RUNE_BOUNTY_1,
+	RUNE_BOUNTY_2,
+	RUNE_BOUNTY_3,
+	RUNE_BOUNTY_4,
 	RUNE_POWERUP_1,
-    RUNE_POWERUP_2,
-    RUNE_BOUNTY_1,
-    RUNE_BOUNTY_3,
-	}
-else
-	OurRunes={
-    RUNE_POWERUP_1,
-    RUNE_POWERUP_2,
-    RUNE_BOUNTY_2,
-    RUNE_BOUNTY_4,
-	}
-end
-if(GetTeam()==TEAM_RADIANT)
-then
-	OurRunes2={
-    RUNE_BOUNTY_1,
-    RUNE_BOUNTY_3,
-	}
-else
-	OurRunes2={
-    RUNE_BOUNTY_2,
-    RUNE_BOUNTY_4,
-	}
-end
-function IsNearRune()
-	local npcBot=GetBot()
-	for _,rune in pairs(AllRunes)
-	do
-		local d=GetUnitToLocationDistance(npcBot,GetRuneSpawnLocation(rune))
-		if(d<=1200)
-		then
-			return true
-		end
-	end
-	return false
-end
+	RUNE_POWERUP_2
+}
 
-function IsMidNearby()
-	local npcBot=GetBot()
-	if(IsNearRune()==true)
-	then
-		local allys=npcBot:GetNearbyHeroes( 1600, false, BOT_MODE_NONE );
-		for _,ally in pairs(allys)
-		do
-			if(ally~=npcBot)
-			then
-				if (ally:GetAssignedLane()==LANE_MID or ally:IsBot()==false)
-				then
-					return true
-				end
-			end
-		end
-	end
-	return false
-end
-
-function IsRuneAdaptHero(rune,npcHero)
-	local allys=GetUnitList(UNIT_LIST_ALLIED_HEROES)
-	local d=GetUnitToLocationDistance(npcHero, GetRuneSpawnLocation(rune))
-	if(GetRuneStatus(rune)==RUNE_STATUS_UNKNOWN)
-	then
-		return false
-	end
-
-	if(GetRuneType(rune)==RUNE_REGENERATION and npcHero:GetHealth()/npcHero:GetMaxHealth()+npcHero:GetMana()/npcHero:GetMaxMana()>=1.5)
-	then
-		return false
-	end
-
-	if(GetRuneType(rune)==RUNE_INVISIBILITY and npcHero:HasInvisibility(false))
-	then
-		return false
-	end
-
-	if(GetRuneType(rune)==RUNE_HASTE and npcHero:GetCurrentMovementSpeed()>=450)
-	then
-		return false
-	end
-
-	if(GetRuneType(rune)==RUNE_BOUNTY and npcHero:GetAssignedLane()==LANE_MID and d>=1600)
-	then
-		return false
-	end
-
-	if(GetRuneType(rune)==RUNE_DOUBLEDAMAGE and npcHero:GetAttackDamage()<=50+3*npcHero:GetLevel() and role.IsCarry(npcHero:GetUnitName())==false)
-	then
-		return false
-	end
-
-	if(GetRuneType(rune)==RUNE_ARCANE and role.IsCarry(npcHero:GetUnitName())==false and role.IsNuker(npcHero:GetUnitName())==false)
-	then
-		return false
-	end
-
-	if(GetRuneType(rune)==RUNE_ILLUSION and npcHero:GetHealth()/npcHero:GetMaxHealth()+npcHero:GetMana()/npcHero:GetMaxMana()<=1.2)
-	then
-		return false
-	end
-
-	return true
-end
-
-function GetAllyHero()
-	local allys={}
-	local teamPlayers = GetTeamPlayers(GetTeam())
-	for k,v in pairs(teamPlayers)
-	do
-		local member = GetTeamMember(k)
-		if  member ~= nil and not member:IsIllusion() and member:IsAlive() then
-			table.insert(allys,member)
-		end
-	end
-	return allys
-end
-
-function GetTheClosestHero(rune)
-	local minDist = 10000
-	local closest
-	for k,member in pairs(GetAllyHero())
-	do
-		local dist = GetUnitToLocationDistance(member, GetRuneSpawnLocation(rune));
-		if dist < minDist then
-			minDist = dist;
-			closest = member;
-		end
-	end
-	return closest
-end
-
-function GetTheBestHero(rune)
-	local allys=GetAllyHero()
-	local ClosestHero=GetTheClosestHero(rune)
-	local BestHero
-	local HighestFactor=0
-	for i,ally in pairs(allys)
-	do
-		local distance=math.min(GetUnitToLocationDistance(ally,GetRuneSpawnLocation(rune)),6000)
-		local DistanceFactor=(6000-distance)/6000;
-		local Factor=DistanceFactor
-		if(IsRuneAdaptHero(rune,ally))
-		then
-			Factor=Factor+0.25
-		end
-		if((role.CanBeSupport(ally:GetUnitName()) or role.IsSupport(ally:GetUnitName())) and rune~=RUNE_POWERUP_1 and rune~=RUNE_POWERUP_2)
-		then
-			Factor=Factor+0.2
-		end
-		local bottle=IsHeroHaveItem(ally,"item_bottle")
-		if(bottle~=nil )
-		then
-			local charge = bottle:GetCurrentCharges()
-			if(charge<=1)
-			then
-				Factor=Factor+0.1
-			end
-		end
-		if(ally:GetAssignedLane()==LANE_MID and (rune==RUNE_POWERUP_1 or rune==RUNE_POWERUP_2))
-		then
-			Factor=Factor+0.1
-		end
-		if(ally:IsBot()==false)
-		then
-			Factor=Factor+0.1
-		end
-		if(Factor>=HighestFactor)
-		then
-			BestHero=ally
-			HighestFactor=Factor
-		end
-	end
-	if(BestHero~=nil)
-	then
-		-- if(printTimer==nil)
-		-- then
-			-- printTimer=DotaTime()
-		-- end
-		-- if(DotaTime()-printTimer>5)
-		-- then
-			-- print(GetBot():GetPlayerID().." [Rune] BestHero for "..rune.." is "..BestHero:GetUnitName())
-		-- end
-		return BestHero
-	elseif(ClosestHero~=nil)
-	then
-		return ClosestHero
-	end
-end
-
-function IsHeroHaveItem(npcBot,item_name)
-    for i = 0, 5, 1 do
-        local item = npcBot:GetItemInSlot(i);
-		if (item~=nil) then
-			if(item:GetName() == item_name) then
-				return item;
-			end
-		end
-    end
-    return nil;
-end
 
 function GetDesire()
-	local npcBot=GetBot();
-	local enemys = npcBot:GetNearbyHeroes(1200,true,BOT_MODE_NONE)
-	local allys = npcBot:GetNearbyHeroes(1200,false,BOT_MODE_NONE)
 
-	if(#enemys>#allys and IsNearRune()==true)
+	--[[if bot.lastPlayerChat ~= nil and string.find(bot.lastPlayerChat.text, "rune") then
+		bot:ActionImmediate_Chat("Catch this in mode_rune_generic", false);
+		bot.lastPlayerChat = nil;
+	end]]--
+
+	if GetGameMode() == GAMEMODE_1V1MID then
+		return BOT_MODE_DESIRE_NONE;
+	end
+	
+	if GetGameMode() == GAMEMODE_MO and DotaTime() <= 0 then
+		return BOT_MODE_DESIRE_NONE;
+	end
+	
+	if teamPlayers == nil then teamPlayers = GetTeamPlayers(GetTeam()) end
+	
+	if bot:IsIllusion() or bot:IsInvulnerable() or not bot:IsHero() or bot:HasModifier("modifier_arc_warden_tempest_double") or
+       bot:IsUsingAbility() or bot:IsChanneling() or bot:GetCurrentActionType() == BOT_ACTION_TYPE_IDLE or 
+	   GetUnitToUnitDistance(bot, GetAncient(GetTeam())) < 2500 or  GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) < 2500 
 	then
-		return 0
+		return BOT_MODE_DESIRE_NONE;
 	end
 
-	if DotaTime()>=-40 and DotaTime()<=0.5
-	then
-		if(DotaTime()>=-5 and IsMidNearby()==true)
-		then
-			return 0
+	minute = math.floor(DotaTime() / 60)
+	sec = DotaTime() % 60
+	
+	if not IsSuitableToPick() then
+		return BOT_MODE_DESIRE_NONE;
+	end	
+	
+	if DotaTime() < 0 and not bot:WasRecentlyDamagedByAnyHero(5.0) then 
+		return BOT_MODE_DESIRE_MODERATE;
+	end	
+	
+	closestRune, closestDist = GetBotClosestRune();
+	if closestRune ~= -1 then
+		if closestRune == RUNE_BOUNTY_1 or closestRune == RUNE_BOUNTY_2 or closestRune == RUNE_BOUNTY_3 or closestRune == RUNE_BOUNTY_4 then
+			runeStatus = GetRuneStatus( closestRune );
+			if runeStatus == RUNE_STATUS_AVAILABLE then
+				return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, 3000);
+			elseif runeStatus == RUNE_STATUS_UNKNOWN and closestDist <= ProxDist then
+				return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, ProxDist);
+			elseif runeStatus == RUNE_STATUS_MISSING and DotaTime() > 60 and ( minute % 4 == 0 and sec > 52 ) and closestDist <= ProxDist then
+				return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, ProxDist);
+			elseif IsTeamMustSaveRune(closestRune) and runeStatus == RUNE_STATUS_UNKNOWN then
+				return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, 5000);
+			end
 		else
-			return 0.35
-		end
-	end
-
-	-- if(npcBot.MyTargetRune~=nil)
-	-- then
-		-- local d=GetUnitToLocationDistance(npcBot,GetRuneSpawnLocation(npcBot.MyTargetRune))
-		-- return (6000-d)/6000*0.3+0.3;
-	-- end
-
-	local HaveBottle=utility.IsItemAvailable("item_bottle")
-
-	if DotaTime()>=60 and DotaTime()<=26*60
-	then
-		for _,r in pairs(OurRunes)
-		do
-			if(DotaTime()%300>290)
-			then
-				if ((HaveBottle~=nil or GetTheBestHero(r)==npcBot) and npcBot:GetAssignedLane()~=LANE_MID)
-				then
-					return 0.35
-				end
+			runeStatus = GetRuneStatus( closestRune );
+			if runeStatus == RUNE_STATUS_AVAILABLE then
+				return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, 5000);
+			elseif runeStatus == RUNE_STATUS_UNKNOWN and closestDist <= ProxDist then
+				return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, ProxDist);
+			elseif runeStatus == RUNE_STATUS_MISSING and DotaTime() > 60 and ( minute % 2 == 1 and sec > 52 ) and closestDist <= ProxDist then
+				return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, ProxDist);
+			elseif IsTeamMustSaveRune(closestRune) and runeStatus == RUNE_STATUS_UNKNOWN then
+				return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, 5000);
 			end
-		end
-	end
-
-	local TargetRunes
-
-	if DotaTime()<=60+50
-	then
-		TargetRunes=OurRunes2
-	elseif DotaTime()<=26*60
-	then
-		TargetRunes=OurRunes
-	else
-		TargetRunes=OurRunes
-		--TargetRunes=AllRunes
-	end
-
-	
-	local BestRune
-	local HighestFactor=0
-	if(IsSuitableToPick())
-	then
-		for _,r in pairs(TargetRunes) do
-			local d=GetUnitToLocationDistance(npcBot,GetRuneSpawnLocation(r))
-			local factor=(6000-d)/6000*0.15+0.25;			
-			if d<6000 and GetRuneStatus(r)~=RUNE_STATUS_MISSING
-			then
-				if(d<300)
-				then
-					factor=0.9
-				end
-				local BestHero=GetTheBestHero(r)
-				if(factor>HighestFactor and npcBot==BestHero)
-				then
-					HighestFactor=factor
-					BestRune=r
-				end
-			end
-		end
+		end	
 	end
 	
-	return HighestFactor
-
+	return BOT_MODE_DESIRE_NONE;
 end
 
+function OnStart()
+	local bottle_slot = bot:FindItemSlot('item_bottle');
+	if bot:GetItemSlotType(bottle_slot) == ITEM_SLOT_TYPE_MAIN then
+		bottle = bot:GetItemInSlot(bottle_slot);
+	end	
+end
+
+function OnEnd()
+	bottle = nil;
+end
 
 function Think()
-	local npcBot=GetBot();
-
-	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() )
-	then
-		return
-	end
-
-	if (DotaTime()>=-55 and DotaTime()<=0)
-	then
-		local d=10000
-		local RuneLocation
-		for _,r in pairs(AllRunes)
-		do
-			if(_>2)
-			then
-				local d2=GetUnitToLocationDistance(npcBot,GetRuneSpawnLocation(r))
-				if(d2<d)
-				then
-					RuneLocation=GetRuneSpawnLocation(r)
-					d=d2
-				end
-			end
-		end
-		if(npcBot.runetimer==nil)
-		then
-			npcBot.runetimer=DotaTime()
-		end
-		if(DotaTime()-npcBot.runetimer>=1.5)
-		then
-			npcBot.runetimer=nil
-			if(npcBot:GetAssignedLane()==LANE_MID)
-			then
-				npcBot:Action_MoveToLocation(RuneLocation)
+	
+	if DotaTime() < 0 then 
+		if GetTeam() == TEAM_RADIANT then
+			if bot:GetAssignedLane() == LANE_BOT then 
+				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_3));
+				return
 			else
-				npcBot:Action_MoveToLocation(RuneLocation+RandomVector(200))
+				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_1));
+				return
+			end
+		elseif GetTeam() == TEAM_DIRE then
+			if bot:GetAssignedLane() == LANE_TOP then 
+				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_4));
+				return
+			else
+				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_2));
+				return
 			end
 		end
-		return
-	end
-
---------------------------------------------------------------------------------------------
-	local MinDistance=10000
-	local ClosestRune
-	if(npcBot.MyTargetRune==nil)
-	then
-		local TargetRunes
-		if DotaTime()<=60+50
-		then
-			TargetRunes=OurRunes2
-		elseif DotaTime()<=26*60
-		then
-			TargetRunes=OurRunes
-		else
-			TargetRunes=OurRunes
-			--TargetRunes=AllRunes
-		end
-		for _,r in pairs(TargetRunes)
-		do
-			if(GetRuneStatus(r)~=RUNE_STATUS_MISSING)
-			then
-				if(GetTheBestHero(r)==npcBot)
-				then
-					if(GetUnitToLocationDistance(npcBot,GetRuneSpawnLocation(r))<1200 and GetRuneStatus(r)==RUNE_STATUS_AVAILABLE)
-					then
-						npcBot:Action_PickUpRune(r);
-					else
-						npcBot:Action_MoveToLocation(GetRuneSpawnLocation(r))
-					end
-					return
-				end
+	end	
+	
+	if runeStatus == RUNE_STATUS_AVAILABLE then
+		if bottle ~= nil and closestDist < 1200 then 
+			local bottle_charge = bottle:GetCurrentCharges() 
+			if bottle:IsFullyCastable() and bottle_charge > 0 and ( bot:GetHealth() < bot:GetMaxHealth() or bot:GetMana() < bot:GetMaxMana() ) then
+				bot:Action_UseAbility( bottle );
+				return;
 			end
-			-- if(GetRuneStatus(r)==RUNE_STATUS_AVAILABLE)
-			-- then
-				-- if(npcBot:GetAssignedLane()==LANE_MID or IsMidNearby()==false)
-				-- then
-
-				-- end
-			-- end
-
-			local d=GetUnitToLocationDistance(npcBot,GetRuneSpawnLocation(r))
-			if(d<MinDistance and GetTheBestHero(r)==npcBot)
-			then
-				MinDistance=d
-				ClosestRune=r
-			end
-
 		end
-	end
-
-	if(npcBot.MyTargetRune==nil and DotaTime()%300>=290)
-	then
-		if(GetRuneStatus(RUNE_POWERUP_1)==RUNE_STATUS_UNKNOWN and GetRuneStatus(RUNE_POWERUP_2)==RUNE_STATUS_UNKNOWN)
-		then
-			npcBot.MyTargetRune=RandomInt(0,1)
-		else
-			if(GetRuneStatus(RUNE_POWERUP_1)==RUNE_STATUS_AVAILABLE)
-			then
-				npcBot.MyTargetRune=RUNE_POWERUP_1
-			elseif(GetRuneStatus(RUNE_POWERUP_2)==RUNE_STATUS_AVAILABLE)
-			then
-				npcBot.MyTargetRune=RUNE_POWERUP_2
-			end
-			npcBot.MyTargetRune=ClosestRune
-		end
-	end
-
-	-- for _,hero in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES ))
-	-- do
-		-- local d2=GetUnitToLocationDistance(hero,GetRuneSpawnLocation(r))
-		-- if(d>d2 and hero:GetActiveMode() == BOT_MODE_RUNE)
-		-- then
-			-- npcBot.MyTargetRune=nil
-		-- end
-	-- end
-
-	if(npcBot.MyTargetRune~=nil)
-	then
-		--print(npcBot:GetPlayerID().." [Rune] MyTargetRune is RUNE"..npcBot.MyTargetRune)
-
-		if(DotaTime()%300>=290)
-		then
-			npcBot:Action_MoveToLocation(GetRuneSpawnLocation(npcBot.MyTargetRune))
+		
+		if closestDist > 200 then
+			bot:Action_MoveToLocation(GetRuneSpawnLocation(closestRune));
 			return
 		else
-			npcBot.MyTargetRune=nil
+			bot:Action_PickUpRune(closestRune);
+			return
 		end
-
-		-- if(GetRuneStatus(npcBot.MyTargetRune)==RUNE_STATUS_MISSING)
-		-- then
-			-- npcBot.MyTargetRune=nil
-			-- return
-		-- end
-
-		-- if (GetRuneStatus(npcBot.MyTargetRune)==RUNE_STATUS_UNKNOWN)
-		-- then
-			-- npcBot:Action_MoveToLocation(GetRuneSpawnLocation(npcBot.MyTargetRune))
-			-- return
-		-- end
-
-		-- if (GetRuneStatus(npcBot.MyTargetRune)==RUNE_STATUS_AVAILABLE)
-		-- then
-			-- if(npcBot:GetAssignedLane()==LANE_MID or IsMidNearby()==false)
-			-- then
-				-- npcBot:Action_PickUpRune(npcBot.MyTargetRune);
-				-- return
-			-- end
-		-- end
+	else 
+		bot:Action_MoveToLocation(GetRuneSpawnLocation(closestRune));
+		return
 	end
+	
+end
 
-	return
+function CountDesire(base_desire, dist, maxDist)
+	 return base_desire + RemapValClamped( dist, maxDist, 0, 0, 1-base_desire );
+end	
+
+
+function GetBotClosestRune()
+	local cDist = 100000;	
+	local cRune = -1;	
+	for _,r in pairs(ListRune)
+	do
+		local rLoc = GetRuneSpawnLocation(r);
+		if not IsHumanPlayerNearby(rLoc) and not IsPingedByHumanPlayer(rLoc) and not IsThereMidlaner(rLoc) and not IsThereCarry(rLoc) and IsTheClosestOne(rLoc)
+		then
+			local dist = GetUnitToLocationDistance(bot, rLoc);
+			if dist < cDist then
+				cDist = dist;
+				cRune = r;
+			end	
+		end
+	end
+	return cRune, cDist;
+end
+
+function GetDistance(s, t)
+    return math.sqrt((s[1]-t[1])*(s[1]-t[1]) + (s[2]-t[2])*(s[2]-t[2]));
+end
+
+function IsTeamMustSaveRune(rune)
+	if GetTeam() == TEAM_DIRE then
+		return rune == RUNE_BOUNTY_2 or rune == RUNE_BOUNTY_4 or rune == RUNE_POWERUP_1 or rune == RUNE_POWERUP_2
+	else
+		return rune == RUNE_BOUNTY_1 or rune == RUNE_BOUNTY_3 or rune == RUNE_POWERUP_1 or rune == RUNE_POWERUP_2
+	end
+end
+
+function IsHumanPlayerNearby(runeLoc)
+	for k,v in pairs(teamPlayers)
+	do
+		local member = GetTeamMember(k);
+		if member ~= nil and not member:IsIllusion() and not IsPlayerBot(v) and member:IsAlive() then
+			local dist1 = GetUnitToLocationDistance(member, runeLoc);
+			local dist2 = GetUnitToLocationDistance(bot, runeLoc);
+			if dist2 < 1200 and dist1 < 1200 then
+				return true;
+			end
+		end
+	end
+	return false;
+end
+
+function IsPingedByHumanPlayer(runeLoc)
+	local listPings = {};
+	local dist2 = GetUnitToLocationDistance(bot, runeLoc);
+	for k,v in pairs(teamPlayers)
+	do
+		local member = GetTeamMember(k);
+		if member ~= nil and not member:IsIllusion() and not IsPlayerBot(v) and member:IsAlive() then
+			local ping = member:GetMostRecentPing();
+			table.insert(listPings, ping);
+		end
+	end
+	for _,p in pairs(listPings)
+	do
+		if p ~= nil and not p.normal_ping and GetDistance(p.location, runeLoc) < 1200 and dist2 < 1200 and GameTime() - p.time < PingTimeGap then
+			return true;
+		end
+	end
+	return false;
+end
+
+function IsTheClosestOne(r)
+	local minDist = GetUnitToLocationDistance(bot, r);
+	local closest = bot;
+	for k,v in pairs(teamPlayers)
+	do	
+		local member = GetTeamMember(k);
+		if  member ~= nil and not member:IsIllusion() and member:IsAlive() then
+			local dist = GetUnitToLocationDistance(member, r);
+			if dist < minDist then
+				minDist = dist;
+				closest = member;
+			end
+		end
+	end
+	return closest == bot;
+end
+
+function IsThereMidlaner(runeLoc)
+	for k,v in pairs(teamPlayers)
+	do
+		local member = GetTeamMember(k);
+		if member ~= nil and not member:IsIllusion() and member:IsAlive() and member:GetAssignedLane() == LANE_MID then
+			local dist1 = GetUnitToLocationDistance(member, runeLoc);
+			local dist2 = GetUnitToLocationDistance(bot, runeLoc);
+			if dist2 < 1200 and dist1 < 1200 and bot:GetUnitName() ~= member:GetUnitName() then
+				return true;
+			end
+		end
+	end
+	return false;
+end
+
+function IsThereCarry(runeLoc)
+	for k,v in pairs(teamPlayers)
+	do
+		local member = GetTeamMember(k);
+		if member ~= nil and not member:IsIllusion() and member:IsAlive() and role.CanBeSafeLaneCarry(member:GetUnitName()) 
+		   and ( (GetTeam()==TEAM_DIRE and member:GetAssignedLane()==LANE_TOP) or (GetTeam()==TEAM_RADIANT and member:GetAssignedLane()==LANE_BOT)  )	
+		then
+			local dist1 = GetUnitToLocationDistance(member, runeLoc);
+			local dist2 = GetUnitToLocationDistance(bot, runeLoc);
+			if dist2 < 1200 and dist1 < 1200 and bot:GetUnitName() ~= member:GetUnitName() then
+				return true;
+			end
+		end
+	end
+	return false;
 end
 
 function IsSuitableToPick()
-	local npcBot=GetBot()
-	local mode = npcBot:GetActiveMode();
-	local Enemies = npcBot:GetNearbyHeroes(1300, true, BOT_MODE_NONE);
-	if ( ( mode == npcBot_MODE_RETREAT and npcBot:GetActiveModeDesire() > BOT_MODE_NONE )
-		or mode == npcBot_MODE_ATTACK
-		or mode == npcBot_MODE_DEFEND_ALLY
-		or mode == npcBot_MODE_DEFEND_TOWER_TOP
-		or mode == npcBot_MODE_DEFEND_TOWER_MID
-		or mode == npcBot_MODE_DEFEND_TOWER_BOT
-		or mode == npcBot_MODE_PUSH_TOWER_TOP
-		or mode == npcBot_MODE_PUSH_TOWER_MID
-		or mode == npcBot_MODE_PUSH_TOWER_BOT
-		or ( ( Enemies ~= nil or #Enemies >= 1 ) and npcBot:WasRecentlyDamagedByAnyHero(2.0) )
-		) 
+	local mode = bot:GetActiveMode();
+	local Enemies = bot:GetNearbyHeroes(1300, true, BOT_MODE_NONE);
+	if ( mode == BOT_MODE_RETREAT and bot:GetActiveModeDesire() > BOT_MODE_DESIRE_MODERATE )
+		or mode == BOT_MODE_ATTACK
+		or mode == BOT_MODE_DEFEND_ALLY
+		or mode == BOT_MODE_DEFEND_TOWER_TOP
+		or mode == BOT_MODE_DEFEND_TOWER_MID
+		or mode == BOT_MODE_DEFEND_TOWER_BOT
+		or ( #Enemies >= 1 and IsIBecameTheTarget(Enemies) )
+		or bot:WasRecentlyDamagedByAnyHero(5.0)
 	then
 		return false;
 	end
 	return true;
 end
---------
-for k,v in pairs( mode_generic_rune ) do	_G._savedEnv[k] = v end
+
+function IsIBecameTheTarget(units)
+	for _,u in pairs(units) do
+		if u:GetAttackTarget() == bot then
+			return true;
+		end
+	end
+	return false;
+end
+

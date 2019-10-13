@@ -1,4 +1,4 @@
-local minionutils = dofile( GetScriptDirectory().."/NewMinionUtil" )
+local minionutils = dofile( GetScriptDirectory().."/util/NewMinionUtil" )
 
 function MinionThink(  hMinionUnit ) 
 	if minionutils.IsValidUnit(hMinionUnit) then

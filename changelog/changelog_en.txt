@@ -311,3 +311,12 @@ v1.6d (2019.4.15)
 2. Added the ability to manually select heroes for AI. If you want to make the bots pick certain hero for allies you can Team Chat the hero name or All Chat for picking hero for enemy. You don't have to type full name of the hero just some text that closed to hero name. 
 But the hero's internal name and game title are not the same, please refer to this link: https://dota2.gamepedia.com/Cheats#Hero_names
 3. You can decide how lane assignment of your team done through Chat by typing 5 lane ( between "top", "mid", and "bot" ) separated with " " (space) in game Strategy Phase or Pre Game. For example, if you're Radiant and want to solo off-lane you can type "top mid bot bot bot" if you are on the first slot.
+V1.6e(2019.10.13)
+1. Update new Rune system.
+2. Update new farming system. (the efficiency of farming may be improved in the later gaming)
+3. Fix the issue that Arc Warden, Spectre, Templar Assassin and Tiny could not upgrade skills.
+4. Fix the issue that Doom and Centaur could not use skills.
+5. Optimize the ability using of Doom and Arc Warden.
+6. Temporarily closed the team roaming system.
+7. Remove Monkey King from the lineup.
+8. Warlock will now cancel the channling of 3rd ability at the appropriate time.

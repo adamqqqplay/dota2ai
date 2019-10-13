@@ -1,5 +1,5 @@
 local BotsInit = require("game/botsinit")
-local role = require(GetScriptDirectory() .. "/RoleUtility")
+local role = require(GetScriptDirectory() .. "/util/RoleUtility")
 
 local M = BotsInit.CreateGeneric()
 

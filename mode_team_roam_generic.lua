@@ -3,7 +3,7 @@
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
-local role = require(GetScriptDirectory() ..  "/RoleUtility")
+local role = require(GetScriptDirectory() ..  "/util/RoleUtility")
 local HeroMode
 
 function OnStart()
@@ -18,7 +18,8 @@ function GetDesire()
 		return 0
 	end
 	local ShrineDesire=GetShrineDesire()
-	local TeamRoamDesire=GetTeamRoamDesire()
+	--local TeamRoamDesire=GetTeamRoamDesire()
+	local TeamRoamDesire=0
 
 	if(ShrineDesire>TeamRoamDesire)
 	then
