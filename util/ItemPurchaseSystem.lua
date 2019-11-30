@@ -69,6 +69,36 @@ function M.SellExtraItem(ItemsToBuy)
 
 end
 
+function M.Transfer(itemtable)
+    local output = {}
+    for key, value in pairs(itemtable) do
+        if type(value) == "table" then
+            for k,v in pairs(value) do
+                local recipe = GetItemComponents(v)
+                if next(recipe) == nil then
+                    table.insert(output, v)
+                else
+                    local new = M.Transfer(recipe)
+                    for k2, v2 in pairs(new) do
+                        table.insert(output, v2)
+                    end
+                end
+            end
+        else
+            local recipe = GetItemComponents(value)
+            if next(recipe) == nil then
+                table.insert(output, value)
+            else
+                local new = M.Transfer(recipe)
+                for k3, v3 in pairs(new) do
+                    table.insert(output, v3)
+                end
+            end
+        end
+    end
+    return output
+end
+
 function M.ItemPurchase(ItemsToBuy)
 
 	local npcBot = GetBot();
