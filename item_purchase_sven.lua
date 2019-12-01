@@ -51,10 +51,12 @@ local ItemsToBuy =
 	"item_blade_of_alacrity",
 	"item_recipe_yasha",			--夜叉
 	
-	"item_hyperstone",
+	"item_ring_of_protection",
+	"item_branches",
+	"item_recipe_buckler",
 	"item_platemail",
-	"item_chainmail",
-	"item_recipe_assault",			--强袭
+	"item_hyperstone",
+	"item_recipe_assault",			--强袭7.23
 }
 
 ItemPurchaseSystem.checkItemBuild(ItemsToBuy)

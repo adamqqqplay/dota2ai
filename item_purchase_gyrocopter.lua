@@ -27,9 +27,9 @@ local ItemsToBuy =
 	
 
 	"item_crown",
-	"item_sobi_mask",
+	"item_gloves",
 	"item_wind_lace",
-	"item_recipe_ancient_janggo",   --战鼓7.20
+	"item_recipe_ancient_janggo",   --战鼓7.23
 	
 	"item_boots_of_elves",
 	"item_blade_of_alacrity",

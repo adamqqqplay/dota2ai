@@ -20,8 +20,9 @@ local ItemsToBuy =
 	"item_blades_of_attack",
 	"item_chainmail",			--相位7.21
 
-	"item_ring_of_health",
-	"item_vitality_booster",		--先锋
+	"item_recipe_vanguard"
+	"item_ring_of_health",	
+	"item_vitality_booster",		--先锋7.23
 
 	
 	"item_blade_of_alacrity",
@@ -41,10 +42,10 @@ local ItemsToBuy =
 	
 	"item_recipe_abyssal_blade",	--大晕锤
 	
-	"item_crown",
+	"item_reaver",
 	"item_vitality_booster",		
 	"item_ring_of_tarrasque",
-	"item_recipe_heart",					--龙心7.20
+	"item_recipe_heart",					--龙心7.23
 }
 
 ItemPurchaseSystem.checkItemBuild(ItemsToBuy)

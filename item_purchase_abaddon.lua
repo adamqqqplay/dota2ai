@@ -28,16 +28,18 @@ local ItemsToBuy =
 	"item_ring_of_regen",
 	"item_recipe_headdress",
 	"item_branches",
-
 	"item_chainmail",
-	"item_recipe_buckler" ,
-	"item_branches",
-    "item_recipe_mekansm",			--梅肯
+    "item_recipe_mekansm",			--梅肯7.23
 	
 	"item_ring_of_protection",
+	"item_branches",
+	"item_recipe_buckler",
 	"item_sobi_mask",
-	"item_lifesteal",
-	"item_recipe_vladmir",			--祭品7.21
+	"item_branches",
+	"item_recipe_ring_of_basilius",
+	"item_recipe_vladmir",
+	"item_lifesteal",	             --祭品7.23
+	
 	"item_recipe_guardian_greaves",	--卫士胫甲
 	
 	"item_cloak",

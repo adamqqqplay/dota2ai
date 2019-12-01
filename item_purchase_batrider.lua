@@ -20,9 +20,10 @@ local ItemsToBuy =
 	"item_ring_of_regen",			--绿鞋
 
 	"item_crown",
-	"item_sobi_mask",
+	"item_gloves",
 	"item_wind_lace",
-	"item_recipe_ancient_janggo",   --战鼓7.20
+	"item_recipe_ancient_janggo",   --战鼓7.23
+	
 	"item_blink",					--跳刀
 	"item_ring_of_regen",
 	"item_staff_of_wizardry",

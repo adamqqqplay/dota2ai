@@ -21,8 +21,9 @@ local ItemsToBuy =
 	"item_circlet",
 	"item_recipe_wraith_band",
 
-	"item_ring_of_health",
-	"item_vitality_booster",		--先锋
+	"item_recipe_vanguard"
+	"item_ring_of_health",	
+	"item_vitality_booster",		--先锋7.23
 
 	"item_ogre_axe", 
 	"item_mithril_hammer",

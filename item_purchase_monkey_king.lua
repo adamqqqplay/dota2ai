@@ -43,10 +43,10 @@ local ItemsToBuy =
 	"item_ultimate_orb",
 	"item_ultimate_orb",			--冰眼
 	
-	"item_crown",
+	"item_reaver",
 	"item_vitality_booster",		
 	"item_ring_of_tarrasque",
-	"item_recipe_heart",					--龙心7.20
+	"item_recipe_heart",					--龙心7.23
 }
 
 ItemPurchaseSystem.checkItemBuild(ItemsToBuy)

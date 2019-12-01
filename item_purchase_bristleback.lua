@@ -25,8 +25,9 @@ local ItemsToBuy =
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
 	
-	"item_vitality_booster",
-	"item_ring_of_health",			--先锋
+	"item_recipe_vanguard"
+	"item_ring_of_health",	
+	"item_vitality_booster",		--先锋7.23
 
 	"item_cloak",
 	"item_ring_of_health",
@@ -36,9 +37,7 @@ local ItemsToBuy =
 	"item_branches",
 	"item_recipe_pipe" ,			--笛子
 	
-	"item_chainmail",
-	"item_recipe_buckler" ,
-	"item_branches",
+	"item_helm_of_iron_will",
 	"item_recipe_crimson_guard",	--赤红甲
 
 	"item_vitality_booster",
@@ -54,10 +53,10 @@ local ItemsToBuy =
 	"item_mystic_staff",
 	"item_recipe_shivas_guard" ,	--希瓦
 	
-	"item_crown",
+	"item_reaver",
 	"item_vitality_booster",		
 	"item_ring_of_tarrasque",
-	"item_recipe_heart",					--龙心7.20
+	"item_recipe_heart",					--龙心7.23
 }
 
 ItemPurchaseSystem.checkItemBuild(ItemsToBuy)

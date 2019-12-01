@@ -18,9 +18,13 @@ local ItemsToBuy =
 	"item_chainmail",				--相位7.21
 	
 	"item_ring_of_protection",
+	"item_branches",
+	"item_recipe_buckler",
 	"item_sobi_mask",
-	"item_lifesteal",
-	"item_recipe_vladmir",			--祭品7.21
+	"item_branches",
+	"item_recipe_ring_of_basilius",
+	"item_recipe_vladmir",
+	"item_lifesteal",	             --祭品7.23
 	
 	"item_blink"	,				--跳刀
 	
@@ -37,9 +41,10 @@ local ItemsToBuy =
 	"item_ogre_axe",
 	"item_recipe_black_king_bar",	--bkb
 	
-	"item_ring_of_health",
-	"item_vitality_booster",		
-	"item_stout_shield",			--先锋
+	"item_recipe_vanguard"
+	"item_ring_of_health",	
+	"item_vitality_booster",		--先锋7.23
+	
 	"item_recipe_abyssal_blade",	--大晕锤
 }
 

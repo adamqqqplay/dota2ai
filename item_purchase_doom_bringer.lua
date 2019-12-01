@@ -30,9 +30,9 @@ local ItemsToBuy =
 	"item_recipe_bracer",
 				
 	"item_crown",
-	"item_sobi_mask",
+	"item_gloves",
 	"item_wind_lace",
-	"item_recipe_ancient_janggo",   --战鼓7.20
+	"item_recipe_ancient_janggo",   --战鼓7.23
 	
 	"item_shadow_amulet",
 	"item_claymore",				--隐刀
@@ -52,10 +52,12 @@ local ItemsToBuy =
 	"item_ultimate_orb",
 	"item_recipe_silver_edge",		--大隐刀
 	
-	"item_hyperstone",
+	"item_ring_of_protection",
+	"item_branches",
+	"item_recipe_buckler",
 	"item_platemail",
-	"item_chainmail",
-	"item_recipe_assault",			--强袭
+	"item_hyperstone",
+	"item_recipe_assault",			--强袭7.23
 }
 
 ItemPurchaseSystem.checkItemBuild(ItemsToBuy)

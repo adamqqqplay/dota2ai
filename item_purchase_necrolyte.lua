@@ -27,14 +27,15 @@ local ItemsToBuy =
 	"item_ring_of_regen",
 	"item_recipe_headdress",
 	"item_branches",
+	
 	"item_chainmail",
-	"item_recipe_buckler" ,
-	"item_branches",
-    "item_recipe_mekansm",			--梅肯
+    "item_recipe_mekansm",			--梅肯7.23
 
-    "item_helm_of_iron_will",
+    "item_sobi_mask",
+	"item_branches",
+	"item_recipe_ring_of_basilius",
 	"item_crown",
-	"item_recipe_veil_of_discord",	--纷争7.20
+	"item_recipe_veil_of_discord",	--纷争7.23
 	
 	"item_point_booster",
 	"item_recipe_guardian_greaves",	--卫士胫甲

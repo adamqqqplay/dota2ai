@@ -18,11 +18,13 @@ local ItemsToBuy =
 
 	"item_energy_booster",			--秘法鞋	
 
+	"item_staff_of_wizardry",
+	"item_robe",
+	"item_recipe_kaya",				--慧光
+	
 	"item_point_booster", 
 	"item_vitality_booster", 
-	"item_energy_booster",
-	"item_ring_of_health",
-	"item_void_stone",				--血精石7.07
+	"item_energy_booster",          --血精石7.23
 	
 	"item_stout_shield",
 	"item_cloak",

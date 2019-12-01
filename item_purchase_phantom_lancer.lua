@@ -41,10 +41,10 @@ local ItemsToBuy =
     "item_belt_of_strength",
     "item_recipe_sange",			--双刀
 	
-	"item_crown",
+	"item_reaver",
 	"item_vitality_booster",		
 	"item_ring_of_tarrasque",
-	"item_recipe_heart",					--龙心7.20
+	"item_recipe_heart",					--龙心7.23
 
 	"item_point_booster",
 	"item_ultimate_orb",

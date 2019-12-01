@@ -21,7 +21,7 @@ local ItemsToBuy =
 	"item_circlet",
 	"item_ring_of_protection",
 	"item_recipe_urn_of_shadows",	
-	"item_infused_raindrop",		--骨灰盒7.06
+	"item_sobi_mask",		--骨灰盒7.23
 
 	"item_cloak",
 	"item_ring_of_health",
@@ -45,10 +45,10 @@ local ItemsToBuy =
 	"item_mystic_staff",
 	"item_recipe_shivas_guard" ,	--希瓦
 	
-	"item_crown",
+	"item_reaver",
 	"item_vitality_booster",		
 	"item_ring_of_tarrasque",
-	"item_recipe_heart",					--龙心7.20
+	"item_recipe_heart",					--龙心7.23
 }
 
 ItemPurchaseSystem.checkItemBuild(ItemsToBuy)

@@ -23,30 +23,33 @@ local ItemsToBuy =
 
 	"item_boots",
 
-	"item_ring_of_health",
-	
-	"item_vitality_booster",--先锋
+	"item_recipe_vanguard"
+	"item_ring_of_health",	
+	"item_vitality_booster",		--先锋7.23
 	
 	"item_blink",					--跳刀
-	"item_chainmail",
-	"item_recipe_buckler" ,
-	"item_branches",
+	
+	"item_helm_of_iron_will",
 	"item_recipe_crimson_guard",	--赤红甲
+	
 	"item_cloak",
 	"item_ring_of_health",
 	"item_ring_of_regen",			--挑战
+	
 	"item_ring_of_regen",
 	"item_recipe_headdress",
 	"item_branches",
 	"item_recipe_pipe" ,			--笛子
+	
 	"item_point_booster",		
 	"item_staff_of_wizardry",
 	"item_ogre_axe",
 	"item_blade_of_alacrity",		--蓝杖
-	"item_crown",
+	
+	"item_reaver",
 	"item_vitality_booster",		
 	"item_ring_of_tarrasque",
-	"item_recipe_heart",					--龙心7.20
+	"item_recipe_heart",					--龙心7.23
 	
 }
 

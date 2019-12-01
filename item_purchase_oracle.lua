@@ -19,7 +19,7 @@ local ItemsToBuy =
 	"item_circlet",
 	"item_ring_of_protection",
 	"item_recipe_urn_of_shadows",	
-	"item_infused_raindrop",		--骨灰盒7.06
+	"item_sobi_mask",		--骨灰盒7.23
 	
 	"item_cloak",
 	"item_shadow_amulet",			--微光
@@ -33,12 +33,12 @@ local ItemsToBuy =
 	"item_recipe_spirit_vessel",	--大骨灰7.07
 	
 	"item_ring_of_regen",
-	"item_branches",
 	"item_recipe_headdress",
-	"item_chainmail",
 	"item_branches",
-	"item_recipe_buckler" ,
-    "item_recipe_mekansm",			--梅肯
+	
+	"item_chainmail",
+    "item_recipe_mekansm",			--梅肯7.23
+	
     "item_recipe_guardian_greaves",	--卫士胫甲
 	
 	"item_mystic_staff",

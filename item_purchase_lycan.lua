@@ -17,9 +17,13 @@ local ItemsToBuy =
 	"item_gloves",			--假腿7.21
 
 	"item_ring_of_protection",
+	"item_branches",
+	"item_recipe_buckler",
 	"item_sobi_mask",
-	"item_lifesteal",
-	"item_recipe_vladmir",			--祭品7.21
+	"item_branches",
+	"item_recipe_ring_of_basilius",
+	"item_recipe_vladmir",
+	"item_lifesteal",	             --祭品7.23
 
 	"item_sobi_mask",
 	"item_sobi_mask",
@@ -36,10 +40,12 @@ local ItemsToBuy =
 	"item_mithril_hammer",
 	"item_mithril_hammer",			--黯灭
 	
-	"item_hyperstone",
+	"item_ring_of_protection",
+	"item_branches",
+	"item_recipe_buckler",
 	"item_platemail",
-	"item_chainmail",
-	"item_recipe_assault",			--强袭
+	"item_hyperstone",
+	"item_recipe_assault",			--强袭7.23
 }
 
 ItemPurchaseSystem.checkItemBuild(ItemsToBuy)

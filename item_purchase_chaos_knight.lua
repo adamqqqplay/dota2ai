@@ -36,15 +36,17 @@ local ItemsToBuy =
 	"item_ultimate_orb",
 	"item_recipe_manta",			--分身
 
-	"item_crown",
+	"item_reaver",
 	"item_vitality_booster",		
 	"item_ring_of_tarrasque",
-	"item_recipe_heart",					--龙心7.20
+	"item_recipe_heart",					--龙心7.23
 
-	"item_hyperstone",
+	"item_ring_of_protection",
+	"item_branches",
+	"item_recipe_buckler",
 	"item_platemail",
-	"item_chainmail",
-	"item_recipe_assault",			--强袭
+	"item_hyperstone",
+	"item_recipe_assault",			--强袭7.23
 }
 
 ItemPurchaseSystem.checkItemBuild(ItemsToBuy)

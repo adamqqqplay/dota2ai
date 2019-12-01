@@ -23,15 +23,19 @@ local ItemsToBuy =
 	--"item_bottle",					--魔瓶
 	"item_energy_booster",			--秘法鞋
 	
-	"item_helm_of_iron_will",
+	"item_sobi_mask",
+	"item_branches",
+	"item_recipe_ring_of_basilius",
 	"item_crown",
-	"item_recipe_veil_of_discord",	--纷争7.20
+	"item_recipe_veil_of_discord",	--纷争7.23
+	
+	"item_staff_of_wizardry",
+	"item_robe",
+	"item_recipe_kaya",				--慧光
 	
 	"item_point_booster", 
 	"item_vitality_booster", 
-	"item_energy_booster",
-	"item_ring_of_health",
-	"item_void_stone",				--血精石7.07
+	"item_energy_booster",          --血精石7.23
 	
 	"item_staff_of_wizardry",
 	"item_void_stone",
