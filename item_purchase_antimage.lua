@@ -49,10 +49,10 @@ local ItemsToBuy =
 	"item_ogre_axe",
 	"item_blade_of_alacrity",]]		--蓝杖
 
-	"item_reaver",
+	"item_crown",
 	"item_vitality_booster",		
 	"item_ring_of_tarrasque",
-	"item_recipe_heart",					--龙心7.23
+	"item_recipe_heart",					--龙心7.20
 	
 	--"item_vitality_booster",
 	--"item_vitality_booster",		

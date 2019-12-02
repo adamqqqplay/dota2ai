@@ -23,13 +23,9 @@ local ItemsToBuy =
 	"item_circlet",
 	"item_recipe_null_talisman",
 	"item_energy_booster",			--秘法鞋
-	
-	"item_sobi_mask",
-	"item_branches",
-	"item_recipe_ring_of_basilius",
 	"item_crown",
-	"item_recipe_veil_of_discord",	--纷争7.23
-	
+	"item_helm_of_iron_will",
+	"item_recipe_veil_of_discord",	--纷争
 	"item_void_stone",
 	"item_energy_booster",
 	"item_recipe_aether_lens",		--以太之镜7.06

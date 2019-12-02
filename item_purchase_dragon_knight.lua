@@ -24,9 +24,9 @@ local ItemsToBuy =
 	"item_gloves",			--假腿7.21
 
 	"item_crown",
-	"item_gloves",
-	"item_wind_lace",
-	"item_recipe_ancient_janggo",   --战鼓7.23
+	"item_sobi_mask",
+	"item_wind_lance",
+	"item_recipe_ancient_janggo",   --战鼓7.20
 
 	"item_javelin",
 	"item_mithril_hammer",			--电锤7.14
@@ -38,13 +38,10 @@ local ItemsToBuy =
 				"item_hyperstone",
 				"item_recipe_mjollnir",			--大雷锤
 
-				"item_ring_of_protection",
-				
-	"item_branches",
-	"item_recipe_buckler",
-	"item_platemail",
-	"item_hyperstone",
-	"item_recipe_assault",			--强袭7.23
+				"item_hyperstone",
+				"item_platemail",
+				"item_chainmail",
+				"item_recipe_assault",			--强袭
 				
 				"item_broadsword",
 				"item_blades_of_attack",

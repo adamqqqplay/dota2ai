@@ -29,14 +29,10 @@ local ItemsToBuy =
 	"item_ogre_axe", 
 	"item_mithril_hammer",
 	"item_recipe_black_king_bar",	--bkb
-	
-	"item_ring_of_protection",
-	"item_branches",
-	"item_recipe_buckler",
-	"item_platemail",
 	"item_hyperstone",
-	"item_recipe_assault",			--强袭7.23
-	
+	"item_platemail",
+	"item_chainmail",
+	"item_recipe_assault",			--强袭
 	"item_ring_of_health",
 	"item_void_stone",				
 	"item_platemail",

@@ -38,23 +38,19 @@ local ItemsToBuy =
 	"item_recipe_necronomicon",		--死灵书
 	
 	"item_ring_of_protection",
-	"item_branches",
-	"item_recipe_buckler",
 	"item_sobi_mask",
-	"item_branches",
-	"item_recipe_ring_of_basilius",
-	"item_recipe_vladmir",
-	"item_lifesteal",	             --祭品7.23
+	"item_lifesteal",
+	"item_recipe_vladmir",			--祭品7.21
 	
 	"item_platemail",
 	"item_ring_of_health",
 	"item_void_stone",
 	"item_energy_booster",			--清莲宝珠
 	
-	"item_reaver",
+	"item_crown",
 	"item_vitality_booster",		
 	"item_ring_of_tarrasque",
-	"item_recipe_heart",					--龙心7.23
+	"item_recipe_heart",					--龙心7.20
 }
 
 ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
