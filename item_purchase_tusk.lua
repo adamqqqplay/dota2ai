@@ -28,7 +28,7 @@ local ItemsToBuy =
 	"item_circlet",
 	"item_ring_of_protection",
 	"item_recipe_urn_of_shadows",	
-	"item_sobi_mask",		--骨灰盒7.23
+	"item_infused_raindrop",		--骨灰盒7.06
 	
 	"item_shadow_amulet",
 	"item_claymore",				--隐刀

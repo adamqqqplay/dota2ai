@@ -22,11 +22,9 @@ local ItemsToBuy =
 	"item_recipe_magic_wand",		--大魔棒7.14
 	"item_energy_booster",			--秘法鞋
 
-	"item_sobi_mask",
-	"item_branches",
-	"item_recipe_ring_of_basilius",
+	"item_helm_of_iron_will",
 	"item_crown",
-	"item_recipe_veil_of_discord",	--纷争7.23
+	"item_recipe_veil_of_discord",	--纷争7.20
 
 	
 	"item_ring_of_regen",
