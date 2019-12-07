@@ -194,6 +194,30 @@ local dota2team = {
 		};
 		['sponsorship'] = '';
 	},
+	[17] = {
+		['name'] = "OG TI9";
+		['alias'] = "OG";
+		['players'] = {
+			'ana',
+			'Topson',
+			'7ckngMad',
+			'JerAx',
+			'N0tail'
+		};
+		['sponsorship'] = '';
+	},
+	[18] = {
+		['name'] = "Team Liquid TI9";
+		['alias'] = "Liquid";
+		['players'] = {
+			'Miracle-',
+			'w33',
+			'MinD_ContRoL',
+			'GH',
+			'KuroKy'
+		};
+		['sponsorship'] = '';
+	},
 }
 
 local sponsorship = {"RMMAI"};
