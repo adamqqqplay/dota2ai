@@ -183,7 +183,7 @@ local dota2team = {
 		['sponsorship'] = '';
 	},
 	[16] = {
-		['name'] = "PSG.LGD TI7";
+		['name'] = "PSG.LGD TI8";
 		['alias'] = "PSG.LGD";
 		['players'] = {
 			'Ame',
