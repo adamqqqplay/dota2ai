@@ -1,45 +1,36 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.0a
+--	Ranked Matchmaking AI v1.6b
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
-local utility = require( GetScriptDirectory().."/utility" ) 
+local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
 
 local ItemsToBuy = 
 { 
 	"item_tango",
 	"item_flask",
-	"item_stout_shield",
-	"item_branches",
-	"item_branches",
-	"item_magic_stick",
-	"item_recipe_magic_wand",		--大魔棒7.14
+	"item_quelling_blade",			--补刀斧
+	"item_magic_wand",		--大魔棒7.14
 
-	"item_boots",
-	"item_energy_booster",			--秘法鞋
+	"item_bracer",
 	
-	"item_blink",					--跳刀
-
-	"item_shadow_amulet",
-	"item_claymore",				--隐刀
-
-	"item_ogre_axe", 
-	"item_mithril_hammer",
-	"item_recipe_black_king_bar",	--bkb
+	"item_power_treads",		
 	
-	"item_point_booster",
-	"item_vitality_booster",
-	"item_energy_booster",
-	"item_mystic_staff",			--玲珑心
+	"item_ultimate_scepter_1",					--A
 
-	"item_ring_of_health",
-	"item_void_stone",		
-	"item_ring_of_health",
-	"item_void_stone",		
-	"item_recipe_refresher", 		--刷新球
+	"item_echo_sabre",				--连击刀
+
+	
+
+	"item_black_king_bar",	--bkb
+	
+	"item_greater_crit",		--大炮
+
+	"item_assault", 		
 }
 
-utility.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	utility.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

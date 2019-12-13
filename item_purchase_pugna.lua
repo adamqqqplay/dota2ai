@@ -1,24 +1,27 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.0a
+--	Ranked Matchmaking AI v1.6b
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
-local utility = require( GetScriptDirectory().."/utility" ) 
+local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
+
+
 
 local ItemsToBuy = 
 { 
-	"item_circlet",
-	"item_mantle",
-	"item_recipe_null_talisman",	--无用挂件
 	"item_tango",
-	
+	"item_mantle",
+	"item_circlet",
+	"item_mantle",	--无用挂件
+	"item_branches",
+	"item_branches",
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
-	"item_branches",
-	"item_branches",
-	
-	
-	"item_bottle",
 	"item_boots",
+	
+
+	"item_recipe_null_talisman",
+	"item_circlet",
+	"item_recipe_null_talisman",
 	"item_energy_booster",			--秘法鞋
 
 	"item_robe",
@@ -42,8 +45,20 @@ local ItemsToBuy =
 	"item_void_stone",				--羊刀
 }
 
-utility.checkItemBuild(ItemsToBuy)
+--[[for k,v in pairs(ItemsToBuy)
+do
+	local item =  GetItemComponents(ItemsToBuy[k])
+	if item ~= nil and #item > 0
+	then
+		for k,v in pairs(item)
+		do
+			table.insert(ItemsToBuy,k,item[k])
+		end
+	end
+end]]
+
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	utility.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

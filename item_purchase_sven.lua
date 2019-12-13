@@ -1,57 +1,41 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.0a
+--	Ranked Matchmaking AI v1.6b
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
-local utility = require( GetScriptDirectory().."/utility" ) 
+local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
 
 local ItemsToBuy = 
 { 
 	"item_tango",
 	"item_flask",
-	"item_stout_shield",
-	"item_branches",
-	"item_branches",	
-	"item_magic_stick",
-	"item_recipe_magic_wand",		--大魔棒7.14
-	"item_boots",
-	"item_belt_of_strength",
-	"item_gloves",					--假腿
+	"item_magic_wand",		--大魔棒7.14
 	
-	"item_lifesteal",
-	"item_quarterstaff",			--疯狂面具7.06
+	"item_bracer",
 	
-	"item_quarterstaff",
-	"item_robe",
-	"item_sobi_mask",
-	"item_ogre_axe",				--连击刀
 
-	"item_blink",					--跳刀
+	"item_phase_boots",			
 
-	"item_ogre_axe",
-	"item_mithril_hammer",
-	"item_recipe_black_king_bar",	--bkb
-
-	"item_broadsword",
-	"item_blades_of_attack",
-	"item_recipe_lesser_crit" ,
-	"item_demon_edge",
-	"item_recipe_greater_crit",		--大炮
-
-	"item_ogre_axe",
-	"item_belt_of_strength",
-	"item_recipe_sange",			--散华
-	"item_boots_of_elves",
-	"item_blade_of_alacrity",
-	"item_recipe_yasha",			--夜叉
+	"item_hand_of_midas",
 	
-	"item_hyperstone",
-	"item_platemail",
-	"item_chainmail",
-	"item_recipe_assault",			--强袭
+	
+	"item_ultimate_scepter_1",				
+
+	
+
+	"item_black_king_bar",	--bkb
+
+	"item_sange_and_yasha",	
+
+	"item_greater_crit",		--大炮
+
+	
+	
+	"item_assault",			--强袭
 }
 
-utility.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	utility.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

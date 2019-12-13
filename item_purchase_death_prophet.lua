@@ -1,60 +1,51 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.0a
+--	Ranked Matchmaking AI v1.6b
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
-local utility = require( GetScriptDirectory().."/utility" ) 
+local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
 
 local ItemsToBuy = 
 { 
-	"item_circlet",
-	"item_mantle",
-	"item_recipe_null_talisman",	--无用挂件
+	
+	
+	
 	"item_tango",
-	"item_bottle",
+	"item_tango",
+	"item_flask",
+	"item_null_talisman",	--无用挂件
+	
+	"item_null_talisman",	--无用挂件
 	"item_boots",
 	
-	"item_magic_stick",
-	"item_recipe_magic_wand",		--大魔棒7.14
-	"item_branches",
-	"item_branches",
+	"item_magic_wand",		--大魔棒7.14
+	
+	
 	
 	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
+	"item_chainmail",			--相位7.21
 	
-	"item_staff_of_wizardry",
-	"item_void_stone",
-	"item_recipe_cyclone",
-	"item_wind_lace",				--风杖
 	
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
-	"item_staff_of_wizardry",
-	"item_recipe_rod_of_atos",		--阿托斯7.06
+	"item_cyclone",			--风杖
 
-	"item_vitality_booster",
-	"item_energy_booster",
-	"item_recipe_aeon_disk",		-- 永恒之盘
+	"item_black_king_bar",	--bkb
 	
-	"item_point_booster",
-	"item_vitality_booster",
-	"item_energy_booster",
-	"item_mystic_staff",			--玲珑心
+	"item_ultimate_scepter_1",
+
 	
-	"item_platemail",
-	"item_mystic_staff",
-	"item_recipe_shivas_guard" ,	--希瓦
 	
-	"item_vitality_booster",
-	"item_vitality_booster",		
-	"item_reaver",					--龙心7.06
+	
+	"item_octarine_core",			--玲珑心
+	
+	
+	"item_shivas_guard" ,	--希瓦
+	
+	
+	"item_heart",					--龙心7.20
 }
 
-utility.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	utility.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

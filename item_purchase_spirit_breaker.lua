@@ -1,54 +1,44 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.0a
+--	Ranked Matchmaking AI v1.6b
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
-local utility = require( GetScriptDirectory().."/utility" ) 
+local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
 
 local ItemsToBuy = 
 { 
 	"item_tango",
-	"item_flask",
-	"item_stout_shield",
-	"item_branches",
-	"item_branches",
-	"item_magic_stick",
-	"item_recipe_magic_wand",		--大魔棒7.14
-
 	"item_orb_of_venom",
+	"item_tango",
+	"item_flask",
+	
+	"item_magic_wand",		--大魔棒7.14
 
-	"item_boots",
-	"item_belt_of_strength",
-	"item_gloves",					--假腿
+	
 
-	"item_circlet",
-	"item_ring_of_protection",
-	"item_recipe_urn_of_shadows",	
-	"item_infused_raindrop",		--骨灰盒7.06
+	"item_bracer",
+	"item_bracer",
 
-	"item_quarterstaff",
-	"item_robe",
-	"item_sobi_mask",
-	"item_ogre_axe",				--连击刀
+	"item_power_treads",			--假腿7.21
 
-	"item_ogre_axe", 
-	"item_mithril_hammer",
-	"item_recipe_black_king_bar",	--bkb
+	"item_urn_of_shadows",		--骨灰盒7.06
 
-	"item_point_booster",
-	"item_staff_of_wizardry",
-	"item_ogre_axe",
-	"item_blade_of_alacrity",		--蓝杖
+	"item_blade_mail",
 
-	"item_vitality_booster",
-	"item_vitality_booster",		
-	"item_reaver",					--龙心7.06
+	"item_echo_sabre",				--连击刀
+
+	"item_black_king_bar",	--bkb
+
+	"item_sange_and_yasha",		
+
+	"item_heart",					--龙心7.20
 	
 }
 
-utility.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	utility.BuyCourier()
-	utility.BuySupportItem()
-	utility.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.BuyCourier()
+	ItemPurchaseSystem.BuySupportItem()
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

@@ -1,49 +1,38 @@
 ----------------------------------------------------------------------------
---	Ranked Matchmaking AI v1.0a
+--	Ranked Matchmaking AI v1.6b
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
-local utility = require( GetScriptDirectory().."/utility" ) 
+local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
 
 local ItemsToBuy = 
 { 
 	"item_tango",
-	"item_stout_shield",
-	"item_blight_stone",
-	"item_branches",
-	"item_branches",
-	"item_magic_stick",
-	"item_recipe_magic_wand",		--大魔棒7.14
-	"item_boots",
-
-	"item_blades_of_attack",
-	"item_blades_of_attack",		--相位
-
-	"item_ring_of_health",
-	"item_vitality_booster",		--先锋
-
-	"item_ogre_axe", 
-	"item_mithril_hammer",
-	"item_recipe_black_king_bar",	--bkb
-
-	"item_mithril_hammer",
-	"item_mithril_hammer",			--暗灭
-
-	"item_mithril_hammer",
-	"item_belt_of_strength",
-	"item_recipe_basher",			--晕锤7.14
-	"item_recipe_abyssal_blade",	--大晕锤
+	"item_tango",
+	"item_quelling_blade",			--补刀斧
+	"item_wraith_band", --系带
+	"item_wraith_band", --系带
 	
-	"item_lifesteal",
-	"item_reaver", 
-	"item_claymore",				--撒旦7.07
+	"item_magic_wand",		--大魔棒7.14
+	"item_phase_boots",			--相位7.21
 	
-	"item_demon_edge",	
-	"item_quarterstaff",	
-	"item_javelin",					--金箍棒7.14
+	"item_bfury",
+
+	"item_desolator",
+
+	"item_black_king_bar",	--bkb
+
+
+
+	"item_abyssal_blade",	--大晕锤
+	
+	"item_satanic",				--撒旦7.07
+	
+	"item_assault",			
 }
 
-utility.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	utility.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end
