@@ -8,42 +8,31 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_flask",
-	"item_stout_shield",
+
 	"item_quelling_blade",			--补刀斧
+
+	"item_headdress",
 	
 
-	"item_boots",	
-	"item_belt_of_strength",
-	"item_gloves",			--假腿7.21
+	"item_power_treads",			--假腿7.21
 
-	"item_ring_of_protection",
-	"item_sobi_mask",
-	"item_lifesteal",
-	"item_recipe_vladmir",			--祭品7.21
+	"item_broadsword",
+	"item_crown",
+	"item_recipe_helm_of_the_dominator",
 
-	"item_sobi_mask",
-	"item_sobi_mask",
-	"item_belt_of_strength",
-	"item_recipe_necronomicon",
-	"item_recipe_necronomicon", 
-	"item_recipe_necronomicon",		--死灵书
+	"item_vladmir",			--祭品7.21
+
+	"item_necronomicon_3",		--死灵书
 	
-	"item_ogre_axe", 
-	"item_mithril_hammer",
-	"item_recipe_black_king_bar",	--bkb
+	"item_black_king_bar",	--bkb
 	
-	"item_blight_stone",
-	"item_mithril_hammer",
-	"item_mithril_hammer",			--黯灭
 	
-	"item_hyperstone",
-	"item_platemail",
-	"item_chainmail",
-	"item_recipe_assault",			--强袭
+	"item_assault",			--强袭
 }
 
-ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

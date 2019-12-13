@@ -5,48 +5,37 @@
 local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
 
 local ItemsToBuy = { 
-	"item_circlet",
-	"item_mantle",
-	"item_recipe_null_talisman",
 	
-	"item_gloves",
-	"item_recipe_hand_of_midas",
+	"item_null_talisman",
+	"item_tango",
+	
+
+	"item_hand_of_midas",
 	
 	"item_boots",
 
-	"item_wind_lace",
-	"item_void_stone",
-	"item_staff_of_wizardry",
-	"item_recipe_cyclone",
+	
+	"item_cyclone",
 
-	"item_belt_of_strength",
-	"item_sobi_mask",
-	"item_sobi_mask",
-	"item_recipe_necronomicon",
-	"item_recipe_necronomicon",
-	"item_recipe_necronomicon",
+	"item_black_king_bar",
+
+	"item_ultimate_scepter_1",
+
 	
 	"item_recipe_travel_boots",
 
-	"item_point_booster",
-	"item_staff_of_wizardry",
-	"item_ogre_axe",
-	"item_blade_of_alacrity",
 
-	"item_ogre_axe",
-	"item_mithril_hammer",
-	"item_recipe_black_king_bar",
+	
+	"item_black_king_bar",
 
-	"item_void_stone",
-	"item_ring_of_health",
-	"item_ultimate_orb",
-	"item_recipe_sphere" ,
+	"item_sphere",
 
-	"item_blink",
+	"item_sheepstick",
 }
 
-ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

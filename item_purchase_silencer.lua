@@ -7,47 +7,32 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 local ItemsToBuy = 
 { 
 	"item_tango",
+	"item_tango",
 	"item_clarity",
-	"item_branches",
-	"item_branches",
-	"item_recipe_magic_wand",		--大魔棒7.14
+
+	"item_ring_of_basilius",
+	"item_null_talisman",
+	"item_null_talisman",
 	"item_magic_stick",
 	
-	"item_boots",	
-	"item_belt_of_strength",
-	"item_gloves",			--假腿7.21
+	"item_power_treads",			--假腿7.21
 
-	"item_ring_of_regen",
-	"item_staff_of_wizardry",
-	"item_recipe_force_staff",		--推推7.14
+	"item_hurricane_pike",					--大推推7.20
 	
-	"item_boots_of_elves",
-	"item_boots_of_elves", 
-	"item_ogre_axe",				--魔龙枪
-	"item_recipe_hurricane_pike",					--大推推7.20
+	"item_rod_of_atos",		--阿托斯7.20
 	
-	"item_crown",
-	"item_crown",
-	"item_staff_of_wizardry",
-	"item_recipe_rod_of_atos",		--阿托斯7.20
+	"item_cyclone",				--风杖
+
+	"item_ultimate_scepter_1",		--蓝杖
 	
-	"item_wind_lace",
-	"item_staff_of_wizardry",
-	"item_void_stone",
-	"item_recipe_cyclone",				--风杖
-	"item_point_booster",
-	"item_staff_of_wizardry",
-	"item_ogre_axe",
-	"item_blade_of_alacrity",		--蓝杖
-	"item_void_stone",
-	"item_ultimate_orb",
-	"item_mystic_staff",			--羊刀
+	"item_sheepstick",			--羊刀
 }
 
-ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
 	ItemPurchaseSystem.BuyCourier()				--购买信使
 	ItemPurchaseSystem.BuySupportItem()
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

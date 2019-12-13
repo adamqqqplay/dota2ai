@@ -7,50 +7,29 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 local ItemsToBuy = 
 { 
 	"item_tango",
-    "item_stout_shield",
-	"item_blight_stone",
-	"item_branches",
-	"item_branches",
+	"item_tango",
+    "item_quelling_blade",			--补刀斧
+
 	
-	"item_boots",
-	"item_blades_of_attack",
-	"item_chainmail",			--相位7.21
+	"item_phase_boots",			--相位7.21
 	
-	"item_magic_stick",
-	"item_recipe_magic_wand",		--大魔棒7.14
 	
-	"item_helm_of_iron_will", 
-	"item_gloves", 
-	"item_blades_of_attack",
-	"item_recipe_armlet",			--臂章
+	"item_magic_wand",		--大魔棒7.14
 	
-	"item_ogre_axe",
-	"item_belt_of_strength",
-	"item_recipe_sange",
-	"item_blade_of_alacrity",
-	"item_boots_of_elves",
-	"item_recipe_yasha",
+	"item_armlet",			--臂章
 	
-	"item_mithril_hammer",
-	"item_mithril_hammer",
+	"item_sange_and_yasha",
 	
-	"item_mithril_hammer",
-	"item_belt_of_strength",
-	"item_recipe_basher",			--晕锤7.14
+	"item_desolator",
 	
-	"item_ring_of_health",
-	"item_vitality_booster",
-	"item_stout_shield",
-	"item_recipe_abyssal_blade",
+	"item_abyssal_blade",
 	
-	"item_hyperstone",
-	"item_platemail",
-	"item_chainmail",
-	"item_recipe_assault",
+	"item_assault",
 }
 
-ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

@@ -9,48 +9,34 @@ local ItemsToBuy =
 { 
 	"item_tango",
 	"item_flask",
-	"item_stout_shield",
-	"item_branches",
-	"item_branches",
-	"item_boots",
-	"item_magic_stick",
-	"item_recipe_magic_wand",		--大魔棒7.14
+	"item_quelling_blade",			--补刀斧
 
-	"item_energy_booster",			--秘法鞋	
+	"item_soul_ring",
+	"item_magic_wand",		--大魔棒7.14
 
-	"item_point_booster", 
-	"item_vitality_booster", 
-	"item_energy_booster",
-	"item_ring_of_health",
-	"item_void_stone",				--血精石7.07
+
+	"item_arcane_boots",			--秘法鞋	
+
+	"item_cyclone",			
 	
-	"item_stout_shield",
-	"item_cloak",
-	"item_ring_of_health",
-	"item_ring_of_regen",			--挑战
-	"item_ring_of_regen",
-	"item_recipe_headdress",
-	"item_branches",
-	"item_recipe_pipe" ,			--笛子
+	"item_pipe" ,			--笛子
+
+	"item_bloodstone",
 	
-	"item_point_booster",		
-	"item_staff_of_wizardry",
-	"item_ogre_axe",
-	"item_blade_of_alacrity",		--蓝杖
+	"item_ultimate_scepter_1",		--蓝杖
+
+	"item_mekansm",			--梅肯
+	"item_recipe_guardian_greaves",	--卫士胫甲
 
 	
-	"item_platemail",
-	"item_mystic_staff",
-	"item_recipe_shivas_guard" ,	--希瓦
+	"item_shivas_guard",	--希瓦
 
-	"item_point_booster",
-	"item_vitality_booster",
-	"item_energy_booster",
-	"item_mystic_staff",			--玲珑心
+	
 }
 
-ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end
