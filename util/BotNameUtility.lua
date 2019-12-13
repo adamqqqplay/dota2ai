@@ -183,7 +183,7 @@ local dota2team = {
 		['sponsorship'] = '';
 	},
 	[16] = {
-		['name'] = "PSG.LGD TI7";
+		['name'] = "PSG.LGD TI8";
 		['alias'] = "PSG.LGD";
 		['players'] = {
 			'Ame',
@@ -191,6 +191,30 @@ local dota2team = {
 			'Chalice',
 			'fy',
 			'xNova'
+		};
+		['sponsorship'] = '';
+	},
+	[17] = {
+		['name'] = "OG TI9";
+		['alias'] = "OG";
+		['players'] = {
+			'ana',
+			'Topson',
+			'7ckngMad',
+			'JerAx',
+			'N0tail'
+		};
+		['sponsorship'] = '';
+	},
+	[18] = {
+		['name'] = "Team Liquid TI9";
+		['alias'] = "Liquid";
+		['players'] = {
+			'Miracle-',
+			'w33',
+			'MinD_ContRoL',
+			'GH',
+			'KuroKy'
 		};
 		['sponsorship'] = '';
 	},
