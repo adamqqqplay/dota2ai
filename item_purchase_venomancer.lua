@@ -6,56 +6,40 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 
 local ItemsToBuy = 
 {
-	"item_slippers",
-	"item_circlet",
-	"item_slippers",
+	"item_wraith_band", --系带
+	"item_tango",
 	"item_tango",
 	"item_flask",
-	"item_recipe_wraith_band", --系带
-	"item_circlet",
-	"item_recipe_wraith_band", --系带
-	"item_branches",
-	"item_branches",
+	"item_wraith_band", --系带
+	
 
 	"item_boots",
 	"item_magic_stick",
-	"item_recipe_magic_wand",		--大魔棒7.14
+
 	"item_energy_booster",			--秘法鞋
 
-	"item_helm_of_iron_will",
-	"item_crown",
-	"item_recipe_veil_of_discord",	--纷争7.20
+	"item_veil_of_discord",	--纷争7.20
 
 	
-	"item_ring_of_regen",
-	"item_staff_of_wizardry",
-	"item_recipe_force_staff",		--推推7.14
+	"item_hurricane_pike",					--大推推7.20
 
-	"item_boots_of_elves",
-	"item_boots_of_elves", 
-	"item_ogre_axe",				--魔龙枪
-	"item_recipe_hurricane_pike",					--大推推7.20
+	"item_mekansm",			--梅肯
+	"item_recipe_guardian_greaves",	--卫士胫甲
 
-	"item_point_booster",
-	"item_staff_of_wizardry",
-	"item_ogre_axe",
-	"item_blade_of_alacrity",		--蓝杖
+	"item_ultimate_scepter_1",		--蓝杖
 
-	"item_ring_of_health",
-	"item_void_stone",			
-	"item_platemail",
-	"item_energy_booster",			--清莲宝珠
+	"item_black_king_bar",
 
-	"item_ring_of_health",
-	"item_void_stone",
-	"item_ultimate_orb",
-	"item_recipe_sphere",			--林肯
+	"item_lotus_orb",			--清莲宝珠
+
+	
 }
 
-ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
 	ItemPurchaseSystem.BuyCourier()
 	ItemPurchaseSystem.BuySupportItem()
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

@@ -7,31 +7,25 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 local ItemsToBuy = 
 { 
 	"item_tango",
-    "item_stout_shield",
+    
 	"item_quelling_blade",
-
-	"item_ring_of_regen",
-	"item_gauntlets",
-	"item_gauntlets",
-	"item_recipe_soul_ring",		--灵魂之戒7.07
+	"item_bracer",
+	"item_soul_ring",		--灵魂之戒7.07
 	
-	"item_boots",
-	"item_belt_of_strength",
-	"item_gloves",			--假腿7.21
+	"item_power_treads",	--假腿7.21
 
-	"item_helm_of_iron_will", 
-	"item_gloves", 
-	"item_blades_of_attack",
-	"item_recipe_armlet",			--臂章
+	"item_armlet",			--臂章
+
+	"item_blink",
+
+	"item_black_king_bar",		--BKB
 
 	"item_mithril_hammer",
 	"item_belt_of_strength",
 	"item_recipe_basher",			--晕锤7.14
 	
-	"item_ring_of_health",
-	"item_void_stone",
-	"item_demon_edge",
-	"item_recipe_bfury",			--狂战7.14（舍弃了辉耀，实战中AI太难攒钱了，25分钟的辉耀没有意义）
+	
+	--"item_bfury",			--狂战7.14（舍弃了辉耀，实战中AI太难攒钱了，25分钟的辉耀没有意义）
 
 	--"item_relic",
 	--"item_recipe_radiance",			--辉耀
@@ -53,9 +47,7 @@ local ItemsToBuy =
 	--"item_mystic_staff",
 	--"item_recipe_shivas_guard",		--希瓦
 
-	"item_ogre_axe",
-	"item_mithril_hammer",
-	"item_recipe_black_king_bar",		--BKB
+			--BKB
 	
 	"item_platemail",
 	"item_hyperstone",
@@ -67,12 +59,16 @@ local ItemsToBuy =
 	"item_hyperstone",
 	"item_recipe_mjollnir",		--大电锤
 
+	"item_vanguard",
+	"item_recipe_abyssal_blade",--大晕
+
 	"item_hyperstone",
 	"item_hyperstone",  	--银月
 }
 
-ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

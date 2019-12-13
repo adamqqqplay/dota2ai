@@ -7,37 +7,30 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 local ItemsToBuy = 
 { 
 	"item_tango",
+	"item_tango",
 	"item_clarity",
-	"item_branches",
-	"item_branches",
-	"item_boots",
-	"item_magic_stick",
-	"item_recipe_magic_wand",		--大魔棒7.14
-	"item_energy_booster",			--秘法鞋
-	"item_void_stone",
-	"item_energy_booster",
-	"item_recipe_aether_lens",		--以太之镜7.06
-	"item_blink",					--跳刀
-	"item_staff_of_wizardry",
-	"item_void_stone",
-	"item_recipe_cyclone",
-	"item_wind_lace",				--风杖
-	"item_point_booster",
-	"item_staff_of_wizardry",
-	"item_ogre_axe",
-	"item_blade_of_alacrity",		--蓝杖
-	"item_ring_of_health",
-	"item_void_stone",		
-	"item_ring_of_health",
-	"item_void_stone",		
-	"item_recipe_refresher", 		--刷新球
+	"item_flask",
+	"item_ring_of_basilius",
+
+
+	"item_arcane_boots",
 	
+	"item_blink",
+	
+	"item_glimmer_cape",			--微光
+	"item_force_staff",
+	"item_ultimate_scepter_1",		--蓝杖
+	"item_lotus_orb",			--清莲宝珠
+	
+	"item_sheepstick",				--羊刀
 }
 
-ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
 	ItemPurchaseSystem.BuySupportItem()
 	ItemPurchaseSystem.BuyCourier()
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

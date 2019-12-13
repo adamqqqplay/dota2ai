@@ -7,53 +7,41 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 local ItemsToBuy = 
 { 
 	"item_tango",
-	"item_branches",
-	"item_branches",
-	"item_circlet",
-	"item_magic_stick",
-	"item_recipe_magic_wand",		--大魔棒7.14
-	"item_slippers",
-	"item_recipe_wraith_band",
-	"item_boots",	
-	"item_slippers",
-	"item_circlet",
-	"item_recipe_wraith_band",
-	"item_belt_of_strength",
-	"item_gloves",			--假腿7.21
+	"item_tango",
 	
-	"item_blight_stone",
-    "item_mithril_hammer",
-    "item_mithril_hammer",			--黯灭
+	
+	"item_magic_wand",		--大魔棒7.14
+	
+	"item_wraith_band",
+	
+	
+	
+	"item_wraith_band",
+	"item_power_treads",			--假腿7.21
+	
+	
+    "item_desolator",			--黯灭
 
-	"item_quarterstaff",
-	"item_robe",
-	"item_sobi_mask",
-	"item_quarterstaff",
-	"item_robe",
-	"item_sobi_mask",
-	"item_recipe_orchid",			--紫苑
 	
-	"item_ogre_axe", 
-	"item_mithril_hammer",
-	"item_recipe_black_king_bar",	--bkb
+	"item_orchid",			--紫苑
 	
-	"item_broadsword",
-	"item_blades_of_attack",
-	"item_recipe_lesser_crit" ,
+	
+	"item_black_king_bar",	--bkb
+	
+	
+	"item_lesser_crit",
 	"item_recipe_bloodthorn",		--血棘
 	
 	
-	"item_demon_edge",	
-	"item_quarterstaff",	
-	"item_javelin",					--金箍棒7.14
+	"item_monkey_king_bar",					--金箍棒7.14
 	
-	"item_lifesteal",
-	"item_reaver", 
-	"item_claymore",				--撒旦7.07
+	
+	"item_satanic",				--撒旦7.07
 }
 
-ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

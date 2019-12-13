@@ -7,48 +7,33 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 
 local ItemsToBuy = 
 { 
-		"item_slippers",
-	"item_circlet",
-	"item_slippers",
+	"item_wraith_band", --系带
+	"item_tango",
 	"item_tango",
 	"item_flask",
-	"item_recipe_wraith_band", --系带
-	"item_circlet",
-	"item_recipe_wraith_band", --系带
+	"item_wraith_band", --系带
 
-	"item_branches",
-	"item_branches",
-	"item_magic_stick",
-	"item_recipe_magic_wand",		--大魔棒7.14
+	"item_magic_wand",		--大魔棒7.14
 
-	"item_boots",	
-	"item_belt_of_strength",
-	"item_gloves",			--假腿7.21
+	"item_power_treads",			--假腿7.21
 
-	"item_ring_of_health",
-	"item_void_stone",
-	"item_ultimate_orb",
-	"item_recipe_sphere",			--林肯
+	"item_maelstrom",
+
+	"item_diffusal_blade",
+
+	"item_sphere",			--林肯
 	
-	"item_blight_stone",
-    "item_mithril_hammer",
-    "item_mithril_hammer",			--黯灭
-
-	"item_ogre_axe", 
-	"item_mithril_hammer",
-	"item_recipe_black_king_bar",	--bkb
+	"item_black_king_bar",	--bkb
 	
-	"item_quarterstaff",
-	"item_eagle",
-	"item_talisman_of_evasion",		--蝴蝶
+	"item_bloodthorn",		--血棘
 	
-	"item_point_booster",
-    "item_ultimate_orb",
-    "item_ultimate_orb",			--冰眼
+	"item_hyperstone",
+	"item_recipe_mjollnir",			--大雷锤
 }
 
-ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end
