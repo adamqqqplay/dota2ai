@@ -28,14 +28,8 @@ local ItemsToBuy =
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-
 ItemPurchaseSystem.checkItemBuild(Transfered)
 
-
-
-
 function ItemPurchaseThink()
-	
 	ItemPurchaseSystem.ItemPurchase(Transfered)
-	PrintTable(ItemPurchaseSystem.Transfer(ItemsToBuy) , 1)
 end

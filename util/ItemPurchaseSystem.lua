@@ -38,6 +38,10 @@ function M.SellExtraItem(ItemsToBuy)
 			M.SellSpecifiedItem("item_ring_of_aquila")
 			M.SellSpecifiedItem("item_quelling_blade")
 			M.SellSpecifiedItem("item_soul_ring")
+			M.SellSpecifiedItem("item_buckler")
+			M.SellSpecifiedItem("item_ring_of_basilius")
+			M.SellSpecifiedItem("item_headdress")
+			
 
 		end
 		if(GameTime()>40*60 or level>=20)
@@ -303,7 +307,7 @@ function M.WeNeedTpscroll()
 
 	-- Count current number of TP scrolls
 	local iScrollCount = 0;
-	for i = 0, 15 do
+	for i = 0, 16 do
 		local sCurItem = npcBot:GetItemInSlot(i);
 		if ( sCurItem ~= nil and sCurItem:GetName() == "item_tpscroll" ) then
 			iScrollCount = iScrollCount+sCurItem:GetCurrentCharges()
@@ -623,5 +627,33 @@ function M.HaveGem()
 	end
 	return false
 end
+
+key = ""
+function M.PrintTable(table , level)
+  level = level or 1
+  local indent = ""
+  for i = 1, level do
+    indent = indent.."  "
+  end
+
+  if key ~= "" then
+    print(indent..key.." ".."=".." ".."{")
+  else
+    print(indent .. "{")
+  end
+
+  key = ""
+  for k,v in pairs(table) do
+     if type(v) == "table" then
+        key = k
+        PrintTable(v, level + 1)
+     else
+        local content = string.format("%s%s = %s", indent .. "  ",tostring(k), tostring(v))
+      print(content)  
+      end
+  end
+  print(indent .. "}")
+
+end  ------function for printing table
 
 return M
