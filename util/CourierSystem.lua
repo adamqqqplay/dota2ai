@@ -62,18 +62,6 @@ local function IsTheClosestToCourier(npcBot, npcCourier)
     return closest ~= nil and closest == npcBot
 end
 
-local function GetBotCourier(npcBot)
-	local BotCourier = GetCourier(0)
-	local numPlayer = GetTeamPlayers(GetTeam())
-	for i = 1, #numPlayer do
-        local member = GetTeamMember(i)
-        if member ~= nil and member:GetUnitName() == npcBot:GetUnitName() then
-            BotCourier = GetCourier(i-1)
-		end
-    end
-	return BotCourier
-end
-
 local function GetCourierEmptySlot(courier)
     local amount = 0
     for i = 0, 8 do
@@ -149,7 +137,7 @@ function M.CourierUsageThink()
         return
     end
 
-    local npcCourier = GetBotCourier(npcBot)
+    local npcCourier = GetCourier(0)
     local cState = GetCourierState(npcCourier)
     --PrintCourierState(cState);
     local courierPHP = npcCourier:GetHealth() / npcCourier:GetMaxHealth()
