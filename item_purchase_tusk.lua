@@ -7,57 +7,48 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 
 local ItemsToBuy = 
 { 
-	"item_tango",
-	"item_flask",
-	"item_stout_shield",
-	"item_branches",
-	"item_branches",
-	"item_boots",
-	"item_magic_stick",
-	"item_recipe_magic_wand",		--大魔棒7.14
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
-
-	"item_blades_of_attack",
-	"item_chainmail",			--相位7.21
-
-	"item_circlet",
-	"item_ring_of_protection",
-	"item_recipe_urn_of_shadows",	
-	"item_infused_raindrop",		--骨灰盒7.06
 	
-	"item_shadow_amulet",
-	"item_claymore",				--隐刀
+
+	"item_tango",
+	"item_buckler",
+	"item_tango",
+	"item_enchanted_mango",
+	"item_enchanted_mango",
+	"item_bracer",
+
+	"item_phase_boots",
+
+	"item_magic_stick",
+
+	
+	"item_urn_of_shadows",	
+	
+	
+	"item_invis_sword",				--隐刀
+
+	"item_solar_crest",
 
 	"item_vitality_booster",
 	"item_recipe_spirit_vessel", --大骨灰
 
+	"item_black_king_bar",	--bkb
+
 
 	
-	"item_point_booster",		
-	"item_staff_of_wizardry",
-	"item_ogre_axe",
-	"item_blade_of_alacrity",		--蓝杖
+	"item_ultimate_scepter_1",		--蓝杖
 
 	
 	"item_ultimate_orb",
 	"item_recipe_silver_edge",		--大隐刀
 	
-	"item_broadsword",
-	"item_blades_of_attack",
-	"item_recipe_lesser_crit" ,
-	"item_demon_edge",
-	"item_recipe_greater_crit",		--大炮
+	
 }
 
-ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
 	ItemPurchaseSystem.BuyCourier()
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 	ItemPurchaseSystem.BuySupportItem()
 end

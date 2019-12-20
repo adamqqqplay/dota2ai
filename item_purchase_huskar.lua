@@ -7,56 +7,34 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 local ItemsToBuy = 
 { 
 	"item_tango",
-	"item_circlet",
-	"item_flask",
-	"item_gauntlets",
-	"item_recipe_bracer",
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
-
-	"item_branches",
-	"item_branches",
-	"item_magic_stick",
-	"item_recipe_magic_wand",		--大魔棒7.14
+	"item_tango",
 	
-	"item_boots",	
-	"item_belt_of_strength",
-	"item_gloves",			--假腿7.21
+	"item_bracer",
+	"item_bracer",
+	
+
+	
+	"item_magic_wand",		--大魔棒7.14
+	
+	"item_power_treads",			--假腿7.21
 
 	
 	
-	"item_helm_of_iron_will", 
-	"item_gloves", 
-	"item_blades_of_attack",
-	"item_recipe_armlet",			--臂章
+	"item_armlet",			--臂章
 	
-	"item_belt_of_strength", 
-	"item_ogre_axe",
-	"item_recipe_sange",
-	"item_talisman_of_evasion",		--天堂
+	"item_heavens_halberd",		--天堂
 	
-	"item_boots_of_elves",
-	"item_boots_of_elves", 
-	"item_ogre_axe",				--魔龙枪
-	
-	"item_ring_of_regen",
-	"item_staff_of_wizardry",
-	"item_recipe_force_staff",		--推推7.14
-	"item_recipe_hurricane_pike",					--大推推7.20
-	
-	"item_point_booster",
-	"item_staff_of_wizardry",
-	"item_ogre_axe",
-	"item_blade_of_alacrity",		--蓝杖
 
-	"item_lifesteal",
-	"item_reaver", 
-	"item_claymore",				--撒旦7.07
+	"item_hurricane_pike",					--大推推7.20
+	
+	"item_ultimate_scepter_1",		--蓝杖
+
+	"item_satanic",				--撒旦7.07
 }
 
-ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

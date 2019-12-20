@@ -7,24 +7,17 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 local ItemsToBuy = 
 { 
 	"item_tango",
-	"item_stout_shield",
-	"item_quelling_blade",	
-	"item_slippers",
-	"item_circlet",
-	"item_recipe_wraith_band",
 	"item_flask",
+	"item_quelling_blade",	
 	
-	"item_slippers",
-	"item_circlet",
-	"item_recipe_wraith_band",
+	"item_wraith_band",
+	"item_wraith_band",
 	
 	"item_branches",
 	"item_branches",
 	"item_magic_stick",
 	"item_recipe_magic_wand",		--大魔棒7.14
-	"item_boots",	
-	"item_belt_of_strength",
-	"item_gloves",			--假腿7.21
+	"item_phase_boots",				--相位
 
 	--[["item_slippers",
 	"item_circlet",
@@ -32,38 +25,28 @@ local ItemsToBuy =
 	"item_ring_of_protection",
 	"item_sobi_mask",		]]		--天鹰
 	
-	"item_broadsword",
-	"item_robe",
-	"item_chainmail",				--刃甲
+	"item_blade_mail",				--刃甲
 	
-	"item_blade_of_alacrity",
-	"item_boots_of_elves",
-	"item_recipe_yasha",
-	"item_ogre_axe",
-	"item_belt_of_strength",
-	"item_recipe_sange",			--双刀
+	"item_sange_and_yasha",
+
+	"item_black_king_bar",	--bkb
 	
-	"item_ogre_axe",
-	"item_mithril_hammer",
-	"item_recipe_black_king_bar",	--bkb
 	
-	"item_mithril_hammer",
-	"item_belt_of_strength",
-	"item_recipe_basher",			--晕锤7.14
+	"item_basher",			--晕锤7.14
+
+	"item_mjollnir",		--大电锤
 	
-	"item_vitality_booster",
-	"item_ring_of_health",
-	"item_stout_shield",
+	"item_vanguard",		--先锋盾
+	
 	"item_recipe_abyssal_blade",	--大晕锤
 	
-	"item_eagle",
-	"item_talisman_of_evasion",
-	"item_quarterstaff",			--蝴蝶
+	"item_butterfly",			--蝴蝶
 	
 }
 
-ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

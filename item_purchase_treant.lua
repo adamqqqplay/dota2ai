@@ -7,41 +7,33 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 local ItemsToBuy = 
 { 
 	"item_tango",
-	"item_branches",
-	"item_branches",
-	"item_clarity",
+	"item_buckler",
+	"item_tango",
+	"item_enchanted_mango",
+
 	"item_magic_stick",
-	"item_recipe_magic_wand",			--大魔棒7.14
 
-	"item_boots",	
-	"item_energy_booster",			--秘法鞋
+	"item_bracer",
+
+	"item_arcane_boots",			--秘法鞋
 	
-	"item_chainmail",
-	"item_sobi_mask",
-	"item_blight_stone",			--勋章
+	"item_medallion_of_courage",			--勋章
 
-	"item_ring_of_regen",
-	"item_recipe_headdress",
-	"item_branches",
-	"item_chainmail",
-	"item_recipe_buckler" ,
-	"item_branches",
-    "item_recipe_mekansm",			--梅肯
+	"item_mekansm",			--梅肯
 
 	"item_recipe_guardian_greaves",	--卫士胫甲
+
+	"item_vladmir",
+
+	"item_force_staff",
+	
 	"item_ultimate_orb",
 	"item_wind_lace",
 	"item_recipe_solar_crest",		--大勋章7.20
 
-	"item_ring_of_health",
-	"item_void_stone",				
-	"item_platemail",
-	"item_energy_booster",			--清莲宝珠
+	"item_lotus_orb",			--清莲宝珠
 	
-	"item_point_booster",
-	"item_staff_of_wizardry",
-	"item_ogre_axe",
-	"item_blade_of_alacrity",		--蓝杖
+	"item_ultimate_scepter_1",		--蓝杖
 
 	"item_ring_of_health",
 	"item_void_stone",		
@@ -52,10 +44,11 @@ local ItemsToBuy =
 
 }
 
-ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
 	ItemPurchaseSystem.BuyCourier()
 	ItemPurchaseSystem.BuySupportItem()
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

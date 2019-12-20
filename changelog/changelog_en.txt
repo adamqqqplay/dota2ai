@@ -320,3 +320,9 @@ V1.6e(2019.10.13)
 6. Temporarily closed the team roaming system.
 7. Remove Monkey King from the lineup.
 8. Warlock will now cancel the channling of 3rd ability at the appropriate time.
+v1.6f (2019.12.19)
+1. Update the item building of 7.23.
+2. Update warding location of 7.23.
+3. Fix courier related issues.
+4. Update the title of the professional teams in TI9.
+5. Refactor item building system to automatically adapt to recipe changes caused by game version.

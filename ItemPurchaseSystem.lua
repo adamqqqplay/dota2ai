@@ -73,53 +73,29 @@ function M.SellExtraItem(ItemsToBuy)
 
 end
 
-function isLeaf (Node)
-    local recipe = GetItemComponents(Node)
-    if next(recipe) == nil then
-        return true
-    else
-        return false
-    end
-end
-
-function nextNodes (Node)
-    local recipe = GetItemComponents(Node)
-    return recipe[1]
-end
-
 function M.Transfer(itemtable)
     local output = {}
-    for k1, v1 in pairs(itemtable) do
-        if isLeaf(v1) then
-            table.insert(output, v1)
-        else
-            for k2, v2 in pairs(nextNodes(v1)) do
-                if isLeaf(v2) then
-                    table.insert(output, v2)
+    for key, value in pairs(itemtable) do
+        if type(value) == "table" then
+            for k,v in pairs(value) do
+                local recipe = GetItemComponents(v)
+                if next(recipe) == nil then
+                    table.insert(output, v)
                 else
-                    for k3, v3 in pairs(nextNodes(v2)) do
-                        if isLeaf(v3) then
-                            table.insert(output, v3)
-                        else
-                            for k4, v4 in pairs(nextNodes(v3)) do
-                                if isLeaf(v4) then
-                                    table.insert(output, v4)
-                                else
-                                    for k5, v5 in pairs(nextNodes(v4)) do
-                                        if isLeaf(v5) then
-                                            table.insert(output, v5)
-                                        else
-                                            for k6, v6 in pairs(nextNodes(v5)) do
-                                                if isLeaf(v6) then
-                                                    table.insert(output, v6)
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
+                    local new = M.Transfer(recipe)
+                    for k2, v2 in pairs(new) do
+                        table.insert(output, v2)
                     end
+                end
+            end
+        else
+            local recipe = GetItemComponents(value)
+            if next(recipe) == nil then
+                table.insert(output, value)
+            else
+                local new = M.Transfer(recipe)
+                for k3, v3 in pairs(new) do
+                    table.insert(output, v3)
                 end
             end
         end

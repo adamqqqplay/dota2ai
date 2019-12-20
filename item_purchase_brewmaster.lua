@@ -10,44 +10,32 @@ local ItemsToBuy =
 	"item_flask",
 	"item_enchanted_mango",
 	"item_enchanted_mango",
-	"item_stout_shield",
-	"item_branches",
-	"item_branches",
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
-
-	"item_boots",
-	"item_blades_of_attack",
-	"item_chainmail",			--相位7.21
-	"item_magic_stick",
-	"item_recipe_magic_wand",		--大魔棒7.14
+	"item_quelling_blade",
 	
-	"item_ring_of_protection",
-	"item_sobi_mask",
-	"item_lifesteal",
-	"item_recipe_vladmir",			--祭品7.21
+	
+	"item_bracer",
+
+	"item_phase_boots",			--相位7.21
+	
+	"item_magic_wand",		--大魔棒7.14
+	
+	
+	"item_vladmir",			--祭品7.21
 	
 	"item_blink",					--跳刀
+
+	"item_black_king_bar",  --BKB
 	
-	"item_point_booster",		
-	"item_staff_of_wizardry",
-	"item_ogre_axe",
-	"item_blade_of_alacrity",		--蓝杖
+	"item_ultimate_scepter_1",		--蓝杖
 	
-	"item_ring_of_health",
-	"item_void_stone",				
-	"item_platemail",
-	"item_energy_booster",			--清莲宝珠
+	"item_lotus_orb",			--清莲宝珠
 	
-	"item_platemail", 
-	"item_chainmail", 
-	"item_hyperstone",
-	"item_recipe_assault",			--强袭	
+	"item_assault",			--强袭	
 }
 
-ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

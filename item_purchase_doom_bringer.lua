@@ -11,55 +11,43 @@ local ItemsToBuy =
 	"item_enchanted_mango",
 	"item_enchanted_mango",
 	"item_stout_shield",
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
+
+	"item_bracer",
 	
 
 	"item_boots",
-	"item_branches",
-	"item_branches",
-	"item_magic_stick",
-	"item_recipe_magic_wand",		--大魔棒7.14
+	
+	"item_magic_wand",		--大魔棒7.14
 
 	"item_blades_of_attack",
 	"item_chainmail",			--相位7.21
 	
-	"item_gauntlets",
-	"item_circlet",
-	"item_recipe_bracer",
-				
-	"item_crown",
-	"item_sobi_mask",
-	"item_wind_lace",
-	"item_recipe_ancient_janggo",   --战鼓7.20
-	
-	"item_shadow_amulet",
-	"item_claymore",				--隐刀
 
-	"item_ogre_axe", 
-	"item_mithril_hammer",
-	"item_recipe_black_king_bar",	--bkb
+	"item_bracer",
+				
 	
-	"item_broadsword",
-	"item_robe",
-	"item_chainmail",				--刃甲
+	"item_ancient_janggo",   --战鼓7.20
 	
-	"item_platemail",
-	"item_mystic_staff",
-	"item_recipe_shivas_guard" ,	--希瓦
+	"item_invis_sword",				--隐刀
+
+
+	"item_black_king_bar",	--bkb
+	
+	"item_blade_mail",				--刃甲
+	
+
+	"item_shivas_guard" ,	--希瓦
 	
 	"item_ultimate_orb",
 	"item_recipe_silver_edge",		--大隐刀
 	
-	"item_hyperstone",
-	"item_platemail",
-	"item_chainmail",
-	"item_recipe_assault",			--强袭
+
+	"item_assault",			--强袭
 }
 
-ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
+ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchase(Transfered)
 end
