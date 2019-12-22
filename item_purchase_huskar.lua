@@ -4,32 +4,19 @@
 ----------------------------------------------------------------------------
 local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
 
-local ItemsToBuy = 
-{ 
+local ItemsToBuy =
+{
 	"item_tango",
 	"item_tango",
-	
 	"item_bracer",
 	"item_bracer",
-	
-
-	
-	"item_magic_wand",		--大魔棒7.14
-	
-	"item_power_treads",			--假腿7.21
-
-	
-	
-	"item_armlet",			--臂章
-	
-	"item_heavens_halberd",		--天堂
-	
-
-	"item_hurricane_pike",					--大推推7.20
-	
-	"item_ultimate_scepter_1",		--蓝杖
-
-	"item_satanic",				--撒旦7.07
+	"item_magic_wand", --大魔棒7.14
+	"item_power_treads", --假腿7.21
+	"item_armlet", --臂章
+	"item_heavens_halberd", --天堂
+	"item_hurricane_pike", --大推推7.20
+	"item_ultimate_scepter_1", --蓝杖
+	"item_satanic" --撒旦7.07
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
