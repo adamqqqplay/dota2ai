@@ -23,19 +23,19 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[2],
 	Abilities[1],
-	Abilities[4],
+	Abilities[5],
 	Abilities[1],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
-	Abilities[4],
+	Abilities[5],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
 	"nil",
-	Abilities[4],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -252,8 +252,8 @@ Consider[3]=function()
 	
 end
 
-Consider[4]=function()
-	local abilityNumber=4
+Consider[1]=function()
+	local abilityNumber=1
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
