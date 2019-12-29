@@ -1,7 +1,7 @@
 _G._savedEnv = getfenv()
 module("PushUtility", package.seeall)
 
-local role = require(GetScriptDirectory() ..  "/RoleUtility")
+local role = require(GetScriptDirectory() ..  "/util/RoleUtility")
 
 function GetLane( nTeam ,hHero )
         local vBot = GetLaneFrontLocation(nTeam, LANE_BOT, 0)
@@ -64,7 +64,7 @@ function GetUnitPushLaneDesire(npcBot,lane)
 	if npcBot:GetLevel() < 6 then
 		levelFactor = 0
 	end
-	
+
 	local mylane=GetLane(team,npcBot)
 	if(mylane ~= LANE_NONE)
 	then
@@ -74,22 +74,18 @@ function GetUnitPushLaneDesire(npcBot,lane)
 			return 0
 		end
 	end
-	
+
 	local healthRate = npcBot:GetHealth() / npcBot:GetMaxHealth()
 	local manaRate = npcBot:GetMana() / npcBot:GetMaxMana()
 	local stateFactor = healthRate * 0.7 + manaRate * 0.3
 	local roleFactor =0
 
-	if role.IsCarry(npcBot:GetUnitName())==true then
-		roleFactor=roleFactor-0.2;
-	end
-
 	if role.IsPusher(npcBot:GetUnitName())==true then
 		roleFactor=roleFactor+0.2;
-	end
-
-	if role.IsSupport(npcBot:GetUnitName())==true then
+	elseif role.IsSupport(npcBot:GetUnitName())==true then
 		roleFactor=roleFactor+0.1;
+	elseif role.IsCarry(npcBot:GetUnitName())==true then
+		roleFactor=roleFactor;
 	end
 
 	local front = GetLaneFrontLocation( GetTeam(), lane, 0 )
@@ -98,7 +94,7 @@ function GetUnitPushLaneDesire(npcBot,lane)
 	local distBuilding = GetUnitToLocationDistance( nearBuilding, front )
 	local distFactor = 0
 	local tp = IsItemAvailable("item_tpscroll")
-	if tp then 
+	if tp then
 		tp = tp:IsFullyCastable()
 	end
 	local travel = IsItemAvailable("item_travel_boots")
@@ -120,10 +116,10 @@ function GetUnitPushLaneDesire(npcBot,lane)
 	else
 		distFactor = -(DistanceToFront - 10000) / 9000
 	end
-	
-	local sumFactor=0.2 + 0.2 * levelFactor + 0.25 * stateFactor + 0.35 * distFactor + roleFactor;
+
+	local sumFactor=0.2 + 0.2 * levelFactor + 0.2 * stateFactor + 0.2 * distFactor + roleFactor;
 	local desire =  math.min(sumFactor * teamPush , 0.8)
-	
+
 	return desire
 end
 

@@ -102,12 +102,7 @@ Consider[2]=function()
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local trees= npcBot:GetNearbyTrees(300)
-	
-	if(npcBot.Blink==nil or DotaTime()-npcBot.Blink.Timer>=10)
-	then
-		npcBot.Blink={Point=npcBot:GetLocation(),Timer=DotaTime()}
-	end
-	
+
 	--try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
 	then
@@ -126,10 +121,11 @@ Consider[2]=function()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-	-- If we trapped by the trees
-	if(trees~=nil and #trees>=10 or (utility.PointToPointDistance(npcBot:GetLocation(),npcBot.Blink.Point)<=100 and DotaTime()-npcBot.Blink.Timer<10 and DotaTime()-npcBot.Blink.Timer>8))
+	-- If we get stuck
+	if utility.IsStuck(npcBot)
 	then
-		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
+		local loc = utility.GetEscapeLoc();
+		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,loc,CastRange);
 	end
 	
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
@@ -164,6 +160,65 @@ Consider[2]=function()
 
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
+end
+
+Consider[3]=function()
+	local abilityNumber=3
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber];
+
+	if not ability:IsFullyCastable() then
+		return BOT_ACTION_DESIRE_NONE, 0;
+	end
+
+	local CastRange = ability:GetSpecialValueInt( "blink_range" );
+
+	local HeroHealth=10000
+	local CreepHealth=10000
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local trees= npcBot:GetNearbyTrees(300)
+	
+	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	if (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
+	then
+		local incProj = npcBot:GetIncomingTrackingProjectiles()
+		for _,p in pairs(incProj)
+		do
+			if GetUnitToLocationDistance(npcBot, p.location) <= 300 and p.is_attack == false then
+				return BOT_ACTION_DESIRE_HIGH;
+			end
+		end
+	end
+	
+	-- If we're going after someone
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+		npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+		npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+		npcBot:GetActiveMode() == BOT_MODE_ATTACK or
+		(npcBot:GetActiveMode() == BOT_MODE_LANING and ManaPercentage >=0.4 ) )
+	then
+		local npcTarget = npcBot:GetTarget();
+		if(npcTarget~=nil)
+		then
+			if CanCast[abilityNumber]( npcTarget ) and GetUnitToUnitDistance(npcBot,npcTarget)<600
+			then
+				local incProj = npcBot:GetIncomingTrackingProjectiles()
+				for _,p in pairs(incProj)
+				do
+					if GetUnitToLocationDistance(npcBot, p.location) <= 300 and p.is_attack == false then
+						return BOT_ACTION_DESIRE_HIGH;
+					end
+				end
+			end
+		end
+	end
+	
+	return BOT_ACTION_DESIRE_NONE, 0;
+
 end
 
 Consider[4]=function()

@@ -18,7 +18,10 @@ local ItemsToBuy =
 
 	"item_magic_wand",		--大魔棒7.14
 
+
 	"power_treads",			--假腿7.21
+
+	"item_power_treads",			--假腿7.21
 	
 	"item_desolator",			--黯灭
 

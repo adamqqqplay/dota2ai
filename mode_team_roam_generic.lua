@@ -3,7 +3,7 @@
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
-local role = require(GetScriptDirectory() ..  "/RoleUtility")
+local role = require(GetScriptDirectory() ..  "/util/RoleUtility")
 local HeroMode
 
 function OnStart()
@@ -18,7 +18,8 @@ function GetDesire()
 		return 0
 	end
 	local ShrineDesire=GetShrineDesire()
-	local TeamRoamDesire=GetTeamRoamDesire()
+	--local TeamRoamDesire=GetTeamRoamDesire()
+	local TeamRoamDesire=0
 
 	if(ShrineDesire>TeamRoamDesire)
 	then
@@ -556,64 +557,66 @@ function TeamRoamThink()
 		end
 
 		local seeninfo=GetHeroLastSeenInfo(npcBot.TeamRoamTargetID)
-		local seenpoint=seeninfo[1].location
-		seenpoint=GetLocationTowardsLocation(seenpoint,GetAncient(utility.GetOtherTeam()):GetLocation(),1000)
-		local seentime=seeninfo[1].time_since_seen
+		if(seeinfo~=nil)
+		then
+			local seenpoint=seeninfo[1].location
+			seenpoint=GetLocationTowardsLocation(seenpoint,GetAncient(utility.GetOtherTeam()):GetLocation(),1000)
+			local seentime=seeninfo[1].time_since_seen
 
-		if(seentime>5 and npcBot.TeamRoamLeader:GetUnitName()==npcBot:GetUnitName())
-		then
-			local factor,target2,ChangedAllys=FindTarget()
-			if(factor>0.6)
+			if(seentime>5 and npcBot.TeamRoamLeader:GetUnitName()==npcBot:GetUnitName())
 			then
-				npcBot.TeamRoamTargetID=target2:GetPlayerID()
-				for i,npcAlly in pairs(ChangedAllys)
-				do
-					npcAlly.TeamRoamTargetID=target2:GetPlayerID()
-				end
-				npcBot:ActionImmediate_Chat("Target Change to "..string.gsub(target2:GetUnitName(),"npc_dota_hero_",""),false)
-				print(npcBot:GetPlayerID().." Target Change！factor:"..factor.." target:"..target2:GetUnitName())
-			else
-				npcBot.TeamRoam=false
-				for i,npcAlly in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
-				do
-					npcAlly.TeamRoam=false
-				end
-				npcBot:ActionImmediate_Chat("Target disappear, Ganking stop",false)
-				print(npcBot:GetPlayerID().." Target disappear！Roaming stop")
-			end
-		end
-		
-		if(GetUnitToLocationDistance(npcBot,seenpoint)<=1200)
-		then
-			if(target~=nil)
-			then
-				npcBot:SetTarget(target)
-				npcBot:Action_AttackUnit(target,false)
-			else
-				npcBot:Action_AttackMove(seenpoint)
-			end
-		else
-			local ready=true
-			for _,npcAlly in pairs (GetUnitList(UNIT_LIST_ALLIED_HEROES ))
-			do
-				if(IsPlayerBot(npcAlly:GetPlayerID())==true and npcAlly.TeamRoam==true)
+				local factor,target2,ChangedAllys=FindTarget()
+				if(factor>0.6)
 				then
-					if(GetUnitToUnitDistance(npcBot,npcBot.TeamRoamLeader)>500)
+					npcBot.TeamRoamTargetID=target2:GetPlayerID()
+					for i,npcAlly in pairs(ChangedAllys)
+					do
+						npcAlly.TeamRoamTargetID=target2:GetPlayerID()
+					end
+					npcBot:ActionImmediate_Chat("Target Change to "..string.gsub(target2:GetUnitName(),"npc_dota_hero_",""),false)
+					print(npcBot:GetPlayerID().." Target Change！factor:"..factor.." target:"..target2:GetUnitName())
+				else
+					npcBot.TeamRoam=false
+					for i,npcAlly in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
+					do
+						npcAlly.TeamRoam=false
+					end
+					npcBot:ActionImmediate_Chat("Target disappear, Ganking stop",false)
+					print(npcBot:GetPlayerID().." Target disappear！Roaming stop")
+				end
+			end
+
+			if(GetUnitToLocationDistance(npcBot,seenpoint)<=1200)
+			then
+				if(target~=nil)
+				then
+					npcBot:SetTarget(target)
+					npcBot:Action_AttackUnit(target,false)
+				else
+					npcBot:Action_AttackMove(seenpoint)
+				end
+			else
+				local ready=true
+				for _,npcAlly in pairs (GetUnitList(UNIT_LIST_ALLIED_HEROES ))
+				do
+					if(IsPlayerBot(npcAlly:GetPlayerID())==true and npcAlly.TeamRoam==true)
 					then
-						ready=false
+						if(GetUnitToUnitDistance(npcBot,npcBot.TeamRoamLeader)>500)
+						then
+							ready=false
+						end
 					end
 				end
-			end
 
-			if(ready==true)
-			then
-				npcBot:Action_MoveToLocation(seenpoint)
-			else
-				npcBot:Action_MoveToLocation(npcBot.TeamRoamLeader:GetLocation())
+				if(ready==true)
+				then
+					npcBot:Action_MoveToLocation(seenpoint)
+				else
+					npcBot:Action_MoveToLocation(npcBot.TeamRoamLeader:GetLocation())
+				end
 			end
 		end
 	end
-
 end
 
 function OnEnd()

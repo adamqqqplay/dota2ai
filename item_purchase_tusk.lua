@@ -7,40 +7,36 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 
 local ItemsToBuy = 
 { 
-	"item_tango",
-	"item_buckler"
-	"item_flask",
+
 	
+
+	"item_tango",
+	"item_buckler",
+	"item_tango",
+	"item_enchanted_mango",
+	"item_enchanted_mango",
 	"item_bracer",
-	"item_boots",
 
-	"item_bracer",
-	"item_magic_wand",		--大魔棒7.14
+	"item_phase_boots",
 
+	"item_magic_stick",
 
-	"item_blades_of_attack",
-	"item_chainmail",			--相位7.21
-
-	"item_urn_of_shadows",		--骨灰盒7.06
-
-	"item_medallion_of_courage",
+	
+	"item_urn_of_shadows",	
+	
 	
 	"item_invis_sword",				--隐刀
 
-	"item_ultimate_orb",
+	"item_solar_crest",
 
-	"item_wind_lace",
-
-	"item_recipe_solar_crest",
-
-	"item_desolator"
+	"item_vitality_booster",
+	"item_recipe_spirit_vessel", --大骨灰
 
 	"item_black_king_bar",	--bkb
 
-	"item_vitality_booster",
-	"item_wind_lace",
-	"item_recipe_spirit_vessel", --大骨灰
 
+	
+	"item_ultimate_scepter_1",		--蓝杖
 
 
 	

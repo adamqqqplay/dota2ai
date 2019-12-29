@@ -1,4 +1,4 @@
-require( GetScriptDirectory().."/PushUtility");
+require( GetScriptDirectory().."/util/PushUtility");
 
 npcBot = GetBot();
 lane = LANE_BOT

@@ -157,7 +157,7 @@ Consider[2]=function()
 	end
 	
 	local CastRange = ability:GetCastRange();
-	local Damage = (ability:GetSpecialValueInt("damage_max")+ability:GetSpecialValueInt("damage_min"))*0.5
+	--local Damage = (ability:GetSpecialValueInt("damage_max")+ability:GetSpecialValueInt("damage_min"))*0.5
 	local Heal = (ability:GetSpecialValueInt("heal_max")+ability:GetSpecialValueInt("heal_min"))*0.5
 	
 	local HeroHealth=10000
@@ -171,20 +171,6 @@ Consider[2]=function()
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
-	--Try to kill enemy hero
-	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
-	then
-		if (WeakestEnemy~=nil)
-		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) )
-			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
-				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy
-				end
-			end
-		end
-	end
 	
 	--------------------------------------
 	-- Mode based usage
@@ -250,49 +236,6 @@ Consider[2]=function()
 				if ( CanCast[abilityNumber]( npcTarget ) )
 				then
 					return BOT_ACTION_DESIRE_MODERATE, npcTarget
-				end
-			end
-		end
-	end
-	
-	-- If we're going after someone
-	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
-	then
-		local npcEnemy = npcBot:GetTarget();
-		if ( npcEnemy ~= nil ) 
-		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
-			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
-			end
-		end
-	end
-	
-	-- If we're farming
-	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
-	then
-		if ( #creeps>=1 and #creeps <= 3 ) 
-		then
-			if(ManaPercentage>0.5)
-			then
-				return BOT_ACTION_DESIRE_LOW,WeakestCreep
-			end	
-		end
-	end
-	
-	-- If our mana is enough,use it at enemy
-	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
-	then
-		if(ManaPercentage>0.6 and ability:GetLevel()>=2 )
-		then
-			if (WeakestEnemy~=nil)
-			then
-				if ( CanCast[abilityNumber]( WeakestEnemy ) )
-				then
-					return BOT_ACTION_DESIRE_LOW,WeakestEnemy
 				end
 			end
 		end
@@ -383,8 +326,134 @@ Consider[3]=function()
 		return BOT_ACTION_DESIRE_MODERATE, lowHpAlly;
 	end
 	
+	local desire,targetloc=ConsiderRecall()
+	if(desire>0)
+	then
+		return desire,targetloc
+	end
+
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
+end
+
+function ConsiderRecall()
+	
+	local abilityNumber=3
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber];
+	
+	if ( not ability:IsFullyCastable() ) 
+	then 
+		return BOT_ACTION_DESIRE_NONE, 0;
+	end
+	
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local creeps = npcBot:GetNearbyCreeps(1600,true)
+	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+
+	local numPlayer =  GetTeamPlayers(GetTeam());
+	-- for i = 1, #numPlayer
+	-- do
+	-- 	local player = GetTeamMember(i);
+	-- 	if player ~= nil and not IsPlayerBot(player:GetPlayerID()) and player:IsAlive() and GetUnitToUnitDistance(npcBot, player) > 1000 then
+	-- 			local p = player:GetMostRecentPing();
+	-- 			if p ~= nil and GetUnitToLocationDistance(player, p.location) < 1000 and GameTime() - p.time < 10 then
+	-- 				--print("Human pinged to get recalled")
+	-- 				return BOT_ACTION_DESIRE_MODERATE, player;
+	-- 			end
+	-- 	end
+	-- end
+	
+	-- If we're defending a lane
+	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
+		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
+	then
+		local nearbyTower = npcBot:GetNearbyTowers(1000, false) 
+		if nearbyTower[1] ~= nil then
+			local maxDist = 0;
+			local target = nil;
+			for i = 1, #numPlayer
+			do
+				local player = GetTeamMember(i);
+				if player ~= nil and player:IsAlive() and player:GetActiveMode() ~= BOT_MODE_RETREAT then
+					local dist = GetUnitToUnitDistance(nearbyTower[1], player);
+					local health = player:GetHealth()/player:GetMaxHealth();
+					if IsPlayerBot(player:GetPlayerID()) and dist > maxDist and dist > 2500 and health >= 0.5 then
+						maxDist = dist;
+						target = GetTeamMember(i);
+					end
+				end
+			end
+			if target ~= nil then
+				return BOT_ACTION_DESIRE_MODERATE, target;
+			end
+		end
+	end
+	
+	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
+	npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+	npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT  ) 
+	then
+		local nearbyTower = npcBot:GetNearbyTowers(1000, true) 
+		if nearbyTower[1] ~= nil then
+			local maxDist = 0;
+			local target = nil;
+			for i = 1, #numPlayer
+			do
+				local player = GetTeamMember(i);
+				if player ~= nil and player:IsAlive() and player:GetActiveMode() ~= BOT_MODE_RETREAT then
+					local dist = GetUnitToUnitDistance(nearbyTower[1], player);
+					local health = player:GetHealth()/player:GetMaxHealth();
+					if IsPlayerBot(player:GetPlayerID()) and dist > maxDist and dist > 2500 and health >= 0.5  then
+						maxDist = dist;
+						target = GetTeamMember(i);
+					end
+				end
+			end
+			if target ~= nil then
+				return BOT_ACTION_DESIRE_MODERATE, target;
+			end
+		end
+	end
+	
+	-- If we're going after someone
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+	then
+		local npcTarget = npcBot:GetTarget();
+		if ( npcTarget ~= nil  and npcTarget:IsHero() and GetUnitToUnitDistance( npcTarget, npcBot ) < 1000  ) 
+		then	
+			local maxDist = 0;
+			local target = nil;
+			for i = 1, #numPlayer
+			do
+				local player = GetTeamMember(i);
+				if player ~= nil and player:IsAlive() and player:GetActiveMode() ~= BOT_MODE_RETREAT then
+					local dist = GetUnitToUnitDistance(player, npcBot);
+					local health = player:GetHealth()/player:GetMaxHealth();
+					if IsPlayerBot(player:GetPlayerID()) and dist > maxDist and dist > 2500 and health >= 0.5 then
+						maxDist = dist;
+						target = GetTeamMember(i);
+					end
+				end
+			end
+			if target ~= nil then
+				return BOT_ACTION_DESIRE_MODERATE, target;
+			end
+		end
+	end
+	
+	return BOT_ACTION_DESIRE_NONE, 0;
 end
 
 Consider[4]=function()

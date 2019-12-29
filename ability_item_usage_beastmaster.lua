@@ -23,19 +23,19 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[2],
 	Abilities[1],
-	Abilities[4],
+	Abilities[5],
 	Abilities[1],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[3],
-	Abilities[4],
+	Abilities[5],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
 	"nil",
-	Abilities[4],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -72,7 +72,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -299,9 +299,97 @@ Consider[2]=function()
 	
 end
 
+Consider[3]=function()
+	local abilityNumber=3
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber];
+	
+	if not ability:IsFullyCastable() then
+		return BOT_ACTION_DESIRE_NONE, 0;
+	end
+	
+	local CastRange = ability:GetCastRange();
+	local Damage = 0;
+	local CastPoint = ability:GetCastPoint();
+	
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 
-Consider[4]=function()	--Target Ability Example
-	local abilityNumber=4
+	local runeIndex = {
+		RUNE_POWERUP_1,
+		RUNE_POWERUP_2,
+		RUNE_BOUNTY_1,
+		RUNE_BOUNTY_2,
+		RUNE_BOUNTY_3,
+		RUNE_BOUNTY_4
+	}
+	local runeLocation={};
+	local runeDistance={};
+	for i,v in ipairs(runeIndex) do
+		runeLocation[i]=GetRuneSpawnLocation(v);
+		runeDistance[i]=GetUnitToLocationDistance(npcBot,runeLocation[i]);
+	end
+	local targetLocation;
+	if(runeDistance[1]<runeDistance[2])
+	then
+		targetLocation=runeLocation[1];
+	else
+		targetLocation=runeLocation[2];
+	end
+
+	--------------------------------------
+	-- Mode based usage
+	--------------------------------------
+	-- If my mana is enough,use it at enemy
+	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+	then
+		if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
+		then
+			return BOT_ACTION_DESIRE_MODERATE,targetLocation;
+		end
+	end
+	
+	-- If we're farming and can hit 2+ creeps and kill 1+ 
+	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
+	then
+		if ( #creeps >= 2 ) 
+		then
+			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
+			then
+				return BOT_ACTION_DESIRE_MODERATE,targetLocation;
+			end
+		end
+	end
+	
+	-- If we're going after someone
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+	then
+		local npcEnemy = npcBot:GetTarget();
+
+		if ( npcEnemy ~= nil ) 
+		then
+			if ( GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys )
+			then
+				return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetExtrapolatedLocation(10);
+			end
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE, 0;
+	
+end
+
+
+Consider[5]=function()	--Target Ability Example
+	local abilityNumber=5
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

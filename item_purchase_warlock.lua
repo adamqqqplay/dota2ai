@@ -31,11 +31,14 @@ local ItemsToBuy =
 	"item_sheepstick",				--羊刀
 }
 
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered)
+
+ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+
 
 function ItemPurchaseThink()
 	ItemPurchaseSystem.BuySupportItem()
 	ItemPurchaseSystem.BuyCourier()
-	ItemPurchaseSystem.ItemPurchase(Transfered)
+
+	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+
 end

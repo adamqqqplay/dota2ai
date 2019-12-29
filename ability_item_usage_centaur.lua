@@ -18,10 +18,10 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 local AbilityToLevelUp=
 {
-	Abilities[3],
 	Abilities[1],
 	Abilities[2],
 	Abilities[2],
+	Abilities[3],
 	Abilities[2],
 	Abilities[4],
 	Abilities[2],
@@ -307,6 +307,56 @@ Consider[2]=function()
 	
 end
 
+Consider[3]=function()
+
+	local abilityNumber=3
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber];
+	
+	if not ability:IsFullyCastable() then
+		return BOT_ACTION_DESIRE_NONE, 0;
+	end
+
+	-- Get some of its values
+	local nRadius = 300;
+	local maxStacks = ability:GetSpecialValueInt('max_stacks');
+	local stack = 0;
+	local modIdx = npcBot:GetModifierByName("modifier_centaur_return_counter");
+	if modIdx > -1 then
+		stack = npcBot:GetModifierStackCount(modIdx);
+	end
+	if stack <= maxStacks / 2 then
+		return BOT_ACTION_DESIRE_NONE;
+	end
+	--------------------------------------
+	-- Mode based usage
+	--------------------------------------
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROSHAN  ) 
+	then
+		local npcTarget = npcBot:GetAttackTarget();
+		if ( utility.IsRoshan(npcTarget) and GetUnitToUnitDistance(npcBot,npcTarget) < nRadius )
+		then
+			return BOT_ACTION_DESIRE_LOW;
+		end
+	end
+
+	-- If we're going after someone
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK )
+	then
+		local npcTarget = npcBot:GetTarget();
+		if ( CanCast[abilityNumber]( npcTarget ) and GetUnitToUnitDistance(npcBot,npcTarget) < nRadius )
+		then
+			return BOT_ACTION_DESIRE_HIGH;
+		end
+	end
+	return BOT_ACTION_DESIRE_NONE;
+end
+
 Consider[4]=function()
 
 	local abilityNumber=4
@@ -320,9 +370,6 @@ Consider[4]=function()
 	end
 	
 	local CastRange = 1200
-	
-	local HeroHealth=10000
-	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -381,7 +428,7 @@ function AbilityUsageThink()
 
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
-	then 
+	then
 		return
 	end
 	
@@ -399,6 +446,6 @@ function AbilityUsageThink()
 	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
 end
 
-function CourierUsageThink() 
+function CourierUsageThink()
 	ability_item_usage_generic.CourierUsageThink()
 end

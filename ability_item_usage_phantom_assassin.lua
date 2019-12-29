@@ -308,6 +308,58 @@ Consider[2]=function()
 
 end
 
+Consider[3]=function()
+	local abilityNumber=3
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber];
+
+	if not ability:IsFullyCastable() then
+		return BOT_ACTION_DESIRE_NONE, 0;
+	end
+
+	local CastRange = ability:GetAOERadius();
+
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local enemys = npcBot:GetNearbyHeroes(CastRange,true,BOT_MODE_NONE)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local creeps = npcBot:GetNearbyCreeps(CastRange,true)
+	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+	--------------------------------------
+	-- Mode based usage
+	--------------------------------------
+	--protect myself
+	if(npcBot:WasRecentlyDamagedByAnyHero(5) or
+		(npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_MODERATE))
+	then
+		if (#enemys==0)
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
+	-- If we're going after someone
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK )
+	then
+		local npcEnemy = npcBot:GetTarget();
+
+		if ( npcEnemy ~= nil )
+		then
+			if ( GetUnitToUnitDistance(npcBot,npcEnemy)> CastRange + 75*#allys)
+			then
+				return BOT_ACTION_DESIRE_MODERATE
+			end
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE, 0;
+
+end
+
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability

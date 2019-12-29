@@ -315,22 +315,21 @@ Consider[2]=function()
 end
 
 Consider[3]=function()
-	
+
 	local abilityNumber=3
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
-	
+
 	if not ability:IsFullyCastable() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
-	
+
 	local CastRange = ability:GetCastRange();
-	local Damage = 0
-	local Radius = ability:GetAOERadius()
+	local Damage = ability:GetAbilityDamage();
 	local CastPoint = ability:GetCastPoint();
-	
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -340,27 +339,54 @@ Consider[3]=function()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
+	-- protect myself
+	local enemys2 = npcBot:GetNearbyHeroes( 400, true, BOT_MODE_NONE );
+	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	if ( (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) or #enemys2>0)
+	then
+		for _,npcEnemy in pairs( enemys )
+		do
+			if ( (npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) and CanCast[abilityNumber]( npcEnemy )) or GetUnitToUnitDistance(npcBot,npcEnemy)<400)
+			then
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy;
+			end
+		end
+	end
+
+	-- If my mana is enough,use it at enemy
+	if ( npcBot:GetActiveMode() == BOT_MODE_LANING )
+	then
+		if((ManaPercentage>0.7 or npcBot:GetMana()>ComboMana) )
+		then
+			if (WeakestEnemy~=nil)
+			then
+				if ( CanCast[abilityNumber]( WeakestEnemy ) )
+				then
+					return BOT_ACTION_DESIRE_LOW,WeakestEnemy;
+				end
+			end
+		end
+	end
+
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-		 npcBot:GetActiveMode() == BOT_MODE_ATTACK or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT or
-		 (npcBot:GetActiveMode() == BOT_MODE_LANING and ManaPercentage>=0.6))
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK )
 	then
-		local locationAoE = npcBot:FindAoELocation( false, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
-		if ( locationAoE.count >= 2 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+		local npcEnemy = npcBot:GetTarget();
+
+		if ( npcEnemy ~= nil )
+		then
+			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
+			then
+				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
+			end
 		end
 	end
 
 	return BOT_ACTION_DESIRE_NONE, 0;
-	
+
 end
 
 Consider[4]=function()

@@ -312,8 +312,35 @@ Consider[2]=function()
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
+	-- Protect ally
+	if (npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK) then
+		local weakestAlly, allyHealth = utility.GetWeakestUnit(allys)
+		if (weakestAlly ~= nil) then
+			local allyNeaybyEnemys = weakestAlly:GetNearbyHeroes(CastRange, true, BOT_MODE_NONE)
+			if
+				(allyHealth / weakestAlly:GetMaxHealth() < 0.4 + 0.4 * ManaPercentage + #allyNeaybyEnemys * 0.05 or
+					#allyNeaybyEnemys >= 2)
+				then
+				return BOT_ACTION_DESIRE_MODERATE, weakestAlly
+			end
+		end
+
+		for _, npcTarget in pairs(allys) do
+			local allyNeaybyEnemys = npcTarget:GetNearbyHeroes(CastRange, true, BOT_MODE_NONE)
+			if
+				(npcTarget:GetHealth() / npcTarget:GetMaxHealth() < (0.6 + #enemys * 0.05 + 0.2 * ManaPercentage) or
+					npcTarget:WasRecentlyDamagedByAnyHero(5.0) or
+					#allyNeaybyEnemys >= 2)
+				then
+				if (CanCast[abilityIndex](npcTarget)) then
+					return BOT_ACTION_DESIRE_MODERATE, npcTarget
+				end
+			end
+		end
+	end
+
 	-- If we're in a teamfight, use it on the scariest enemy
-	if ( #allys >= 2 ) 
+	if ( #allys >= 2 )
 	then
 
 		local npcMostDangerousEnemy = nil;
