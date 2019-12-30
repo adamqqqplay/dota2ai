@@ -325,6 +325,17 @@ function M.UnImplementedItemUsage()
         end
     end
 
+    local buck = IsItemAvailable("item_buckler")
+    if buck ~= nil and buck:IsFullyCastable() then
+        if mode == BOT_MODE_LANING and not buck:GetToggleState() then
+            npcBot:Action_UseAbility(buck)
+            return
+        elseif mode ~= BOT_MODE_LANING and buck:GetToggleState() then
+            npcBot:Action_UseAbility(buck)
+            return
+        end
+    end
+
     local aq = IsItemAvailable("item_ring_of_aquila")
     if aq ~= nil and aq:IsFullyCastable() then
         if mode == BOT_MODE_LANING and not aq:GetToggleState() then
