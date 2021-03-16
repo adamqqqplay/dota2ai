@@ -17,6 +17,12 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
+-- utility.PrintAbilityName(Abilities)
+
+
+local abilityName = {"kunkka_torrent", "kunkka_tidebringer", "kunkka_x_marks_the_spot", "kunkka_torrent_storm", "kunkka_tidal_wave", "kunkka_ghostship", "kunkka_return" }
+local abilityIndex = utility.ReverseTable(abilityName)
+
 local AbilityToLevelUp=
 {
 	Abilities[2],
@@ -24,19 +30,19 @@ local AbilityToLevelUp=
 	Abilities[2],
 	Abilities[3],
 	Abilities[2],
-	Abilities[4],
+	Abilities[6],
 	Abilities[2],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
-	Abilities[4],
+	Abilities[6],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[1],
 	"nil",
-	Abilities[4],
+	Abilities[6],
 	"nil",
 	"talent",
 	"nil",
@@ -314,9 +320,9 @@ Consider[3]=function()
 	return BOT_ACTION_DESIRE_NONE, 0
 end
 
-Consider[4]=function()
+Consider[6]=function()
 	
-	local abilityNumber=4
+	local abilityNumber=6
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

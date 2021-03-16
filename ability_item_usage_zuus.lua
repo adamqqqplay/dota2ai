@@ -16,6 +16,11 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
+-- utility.PrintAbilityName(Abilities)
+local abilityName =  { "zuus_arc_lightning", "zuus_lightning_bolt", "zuus_static_field", "zuus_cloud", "zuus_heavenly_jump", "zuus_thundergods_wrath" }
+local abilityIndex = utility.ReverseTable(abilityName)
+
+
 local AbilityToLevelUp=
 {
 	Abilities[1],
@@ -23,19 +28,19 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[2],
 	Abilities[2],
-	Abilities[5],
+	Abilities[abilityIndex.zuus_thundergods_wrath],
 	Abilities[2],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[3],
-	Abilities[5],
+	Abilities[abilityIndex.zuus_thundergods_wrath],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
 	"nil",
-	Abilities[5],
+	Abilities[abilityIndex.zuus_thundergods_wrath],
 	"nil",
 	"talent",
 	"nil",
@@ -334,9 +339,9 @@ Consider[2]=function()
 	return BOT_ACTION_DESIRE_NONE, 0 ,"nil";
 end
 
-Consider[5]=function()
+Consider[abilityIndex.zuus_thundergods_wrath]=function()
 	
-	local ability=AbilitiesReal[5]
+	local ability=AbilitiesReal[abilityIndex.zuus_thundergods_wrath]
 	if not ability:IsFullyCastable() 
 	then
 		return BOT_ACTION_DESIRE_NONE
@@ -376,7 +381,8 @@ Consider[5]=function()
 		local allys=WeakestEnemy:GetNearbyHeroes( 600, false, BOT_MODE_ATTACK );
 		if(#allys==0 or allys[1]==npcBot)
 		then
-			return BOT_ACTION_DESIRE_VERYHIGH
+			-- Don't rush to get the kill
+			return BOT_ACTION_DESIRE_MODERATE
 		else
 			if(npcBot.ult==nil)
 			then

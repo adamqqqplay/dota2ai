@@ -16,6 +16,11 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
+-- utility.PrintAbilityName(Abilities)
+local abilityName = { "alchemist_acid_spray", "alchemist_unstable_concoction", "alchemist_goblins_greed", "alchemist_berserk_potion", "alchemist_chemical_rage", "alchemist_unstable_concoction_throw" }
+local abilityIndex = utility.ReverseTable(abilityName)
+
+
 local AbilityToLevelUp=
 {
 	Abilities[3],
@@ -23,19 +28,19 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[3],
 	Abilities[1],
-	Abilities[4],
+	Abilities[5],
 	Abilities[1],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[2],
-	Abilities[4],
+	Abilities[5],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
 	"nil",
-	Abilities[4],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -309,8 +314,8 @@ function Consider2()
 	
 end
 
-Consider[4]=function()
-	local abilityNumber=4
+Consider[abilityIndex.alchemist_unstable_concoction_throw]=function()
+	local abilityNumber=abilityIndex.alchemist_unstable_concoction_throw
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -371,8 +376,8 @@ Consider[4]=function()
 	
 end
 
-Consider[5]=function()
-	local abilityNumber=5
+Consider[abilityIndex.alchemist_unstable_concoction_throw]=function()
+	local abilityNumber=abilityIndex.alchemist_unstable_concoction_throw
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

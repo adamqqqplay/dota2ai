@@ -353,6 +353,50 @@ function utilityModule.DebugTalk(message)
 	end
 end
 
+function utilityModule.DebugTable(tb)
+	local msg = "{ "
+	local DebugRec
+	DebugRec = function(tb)
+		for k,v in pairs(tb) do
+			if type(v) == "number" or type(v) == "string" then
+				msg = msg..k.." = "..v
+				msg = msg..", "
+			end
+			if type(v) == "table" then
+				msg = msg..k.." = ".."{ "
+				DebugRec(v)
+				msg = msg.."}, "
+			end
+		end
+	end
+	DebugRec(tb)
+	msg = msg.." }"
+	
+	local npcBot=GetBot()
+	npcBot:ActionImmediate_Chat(msg,true)
+end
+
+function utilityModule.ReverseTable(tb) 
+	local g = {}
+	for k,v in pairs(tb) do
+		if type(v) == "number" or type(v) == "string" then
+			g[v] = k
+		end
+	end
+	return g
+end
+
+function utilityModule.PrintAbilityName(abilities) 
+	local msg = "{ "
+	for k,v in ipairs(abilities) do 
+		msg = msg.."\""..v.."\", "
+	end
+	msg = string.sub(msg, 0, #msg-2) -- curtail the trailing comma
+	msg = msg.." }"
+	local npcBot=GetBot()
+	npcBot:ActionImmediate_Chat(msg,true)
+end
+
 function utilityModule.DebugTalk_Delay(message)
 
 	local npcBot=GetBot()

@@ -16,6 +16,11 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
+-- utility.PrintAbilityName(Abilities)
+local abilityName =  { "ogre_magi_fireblast", "ogre_magi_ignite", "ogre_magi_bloodlust", "ogre_magi_unrefined_fireblast", "ogre_magi_smash", "ogre_magi_multicast" }
+local abilityIndex = utility.ReverseTable(abilityName)
+
+
 local AbilityToLevelUp=
 {
 	Abilities[2],
@@ -23,19 +28,19 @@ local AbilityToLevelUp=
 	Abilities[2],
 	Abilities[3],
 	Abilities[2],
-	Abilities[5],
+	Abilities[abilityIndex.ogre_magi_multicast],
 	Abilities[2],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[1],
-	Abilities[5],
+	Abilities[abilityIndex.ogre_magi_multicast],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
 	"nil",
-	Abilities[5],
+	Abilities[abilityIndex.ogre_magi_multicast],
 	"nil",
 	"talent",
 	"nil",
@@ -172,7 +177,7 @@ Consider[1]=function()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-	--[[--ÏûºÄ
+	--[[--ï¿½ï¿½ï¿½ï¿½
 	--if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	--then
 		if((ManaPercentage>0.4 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=1 )

@@ -16,6 +16,11 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
+-- utility.PrintAbilityName(Abilities)
+local abilityName = { "medusa_split_shot", "medusa_mystic_snake", "medusa_mana_shield", "medusa_cold_blooded", "medusa_stone_gaze" }
+local abilityIndex = utility.ReverseTable(abilityName)
+
+
 local AbilityToLevelUp=
 {
 	Abilities[2],
@@ -23,19 +28,19 @@ local AbilityToLevelUp=
 	Abilities[2],
 	Abilities[3],
 	Abilities[2],
-	Abilities[4],
+	Abilities[abilityIndex.medusa_stone_gaze],
 	Abilities[2],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[1],
-	Abilities[4],
+	Abilities[abilityIndex.medusa_stone_gaze],
 	Abilities[1],
 	Abilities[3],
 	"talent",
 	Abilities[3],
 	"nil",
-	Abilities[4],
+	Abilities[abilityIndex.medusa_stone_gaze],
 	"nil",
 	"talent",
 	"nil",
@@ -243,9 +248,9 @@ Consider[3]=function()
 	
 end
 
-Consider[4]=function()
+Consider[abilityIndex.medusa_stone_gaze]=function()
 
-	local abilityNumber=4
+	local abilityNumber=abilityIndex.medusa_stone_gaze
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

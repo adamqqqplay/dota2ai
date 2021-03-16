@@ -16,6 +16,11 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
+-- utility.PrintAbilityName(Abilities)
+local abilityName =  { "slark_dark_pact", "slark_pounce", "slark_essence_shift", "slark_fish_bait", "slark_shadow_dance" }
+local abilityIndex = utility.ReverseTable(abilityName)
+
+
 local AbilityToLevelUp=
 {
 	Abilities[3],
@@ -23,19 +28,19 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[1],
 	Abilities[1],
-	Abilities[4],
+	Abilities[abilityIndex.slark_shadow_dance],
 	Abilities[1],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
-	Abilities[4],
+	Abilities[abilityIndex.slark_shadow_dance],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
 	"nil",
-	Abilities[4],
+	Abilities[abilityIndex.slark_shadow_dance],
 	"nil",
 	"talent",
 	"nil",
@@ -303,8 +308,8 @@ Consider[2]=function()
 	
 end
 
-Consider[4]=function()
-	local abilityNumber=4
+Consider[abilityIndex.slark_shadow_dance]=function()
+	local abilityNumber=abilityIndex.slark_shadow_dance
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

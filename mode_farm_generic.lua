@@ -132,7 +132,7 @@ function GetDesire()
 		end
 	end
 	
-	if campUtils.IsStrongJungler(bot) and bot:GetLevel() >= 6 and bot:GetLevel() < 25 and not IsHumanPlayerInTeam() and GetGameMode() ~= GAMEMODE_MO 
+	if campUtils.IsStrongJungler(bot) and bot:GetLevel() >= 6 and bot:GetLevel() < 30 and not IsHumanPlayerInTeam() and GetGameMode() ~= GAMEMODE_MO 
 	then
 		LaneCreeps = bot:GetNearbyLaneCreeps(1600, true);
 		if LaneCreeps ~= nil and #LaneCreeps > 0 then

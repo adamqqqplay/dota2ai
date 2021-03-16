@@ -23,31 +23,31 @@ local abilityIndex = utility.ReverseTable(abilityName)
 
 local AbilityToLevelUp=
 {
-	Abilities[3],
-	Abilities[1],
-	Abilities[1],
-	Abilities[2],
-	Abilities[1],
-	Abilities[5],
-	Abilities[1],
-	Abilities[2],
-	Abilities[2],
-	"talent",
-	Abilities[2],
-	Abilities[5],
-	Abilities[3],
-	Abilities[3],
-	"talent",
-	Abilities[3],
-	"nil",
-	Abilities[5],
-	"nil",
-	"talent",
-	"nil",
-	"nil",
-	"nil",
-	"nil",
-	"talent",
+	Abilities[1], --1 
+	Abilities[3], --2
+	Abilities[1], --3
+	Abilities[3], --4
+	Abilities[1], --5
+    Abilities[4], --6
+	Abilities[1], --7
+	Abilities[3], --8
+	Abilities[3], --9
+	Abilities[2], --10
+	"talent", --11
+	Abilities[4], --12
+	Abilities[2], --13
+	Abilities[2], --14
+	"talent", --15
+    Abilities[2], --16
+    "nil", --17
+	Abilities[4], --18
+	"nil", --19
+	"talent", --20
+	"nil", --21
+	"nil", --22
+	"nil", --23
+	"nil", --24
+ 	"talent", --25
 }
 
 local TalentTree={
@@ -55,13 +55,13 @@ local TalentTree={
 		return Talents[2]
 	end,
 	function()
-		return Talents[3]
+		return Talents[4]
 	end,
 	function()
-		return Talents[5]
+		return Talents[6]
 	end,
 	function()
-		return Talents[7]
+		return Talents[8]
 	end
 }
 
@@ -347,8 +347,8 @@ Consider[3]=function()
 	
 end
 
-Consider[5]=function()
-	local abilityNumber=5
+Consider[4]=function()
+	local abilityNumber=4
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

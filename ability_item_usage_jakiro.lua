@@ -16,6 +16,10 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
+-- utility.PrintAbilityName(Abilities)
+local abilityName =  { "jakiro_dual_breath", "jakiro_ice_path", "jakiro_liquid_fire", "jakiro_liquid_ice", "jakiro_macropyre" }
+local abilityIndex = utility.ReverseTable(abilityName)
+
 local AbilityToLevelUp=
 {
 	Abilities[3],
@@ -23,19 +27,19 @@ local AbilityToLevelUp=
 	Abilities[3],
 	Abilities[2],
 	Abilities[3],
-	Abilities[4],
+	Abilities[abilityIndex.jakiro_macropyre],
 	Abilities[3],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[1],
-	Abilities[4],
+	Abilities[abilityIndex.jakiro_macropyre],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
 	"nil",
-	Abilities[4],
+	Abilities[abilityIndex.jakiro_macropyre],
 	"nil",
 	"talent",
 	"nil",
@@ -460,8 +464,8 @@ Consider[3]=function()
 	
 end
 
-Consider[4]=function()
-	local abilityNumber=4
+Consider[abilityIndex.jakiro_macropyre]=function()
+	local abilityNumber=abilityIndex.jakiro_macropyre
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

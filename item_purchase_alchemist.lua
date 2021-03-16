@@ -11,6 +11,7 @@ local ItemsToBuy =
 	"item_bracer",
 	"item_soul_ring", --灵魂之戒7.07
 	"item_power_treads", --假腿7.21
+	"item_radiance",
 	"item_armlet", --臂章
 	"item_blink",
 	"item_black_king_bar", --BKB
@@ -28,7 +29,6 @@ local ItemsToBuy =
 	"item_vanguard",
 	"item_recipe_abyssal_blade", --大晕
 	"item_hyperstone",
-	"item_hyperstone" --银月
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)

@@ -16,6 +16,11 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
+-- utility.PrintAbilityName(Abilities)
+local abilityName = {}
+local abilityIndex = utility.ReverseTable(abilityName)
+
+
 local AbilityToLevelUp=
 {
 	Abilities[1],
@@ -242,7 +247,7 @@ Consider[2]=function()		--Target AOE Ability Example
 	do
 		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy ))
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 	--------------------------------------
@@ -253,7 +258,7 @@ Consider[2]=function()		--Target AOE Ability Example
 	if ((npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) or
 		(npcBot:GetActiveMode() == BOT_MODE_ATTACK and #nearyByEnemys >=2 )) then
 		if (npcBot:WasRecentlyDamagedByAnyHero(2.0)) then
-			return BOT_ACTION_DESIRE_HIGH, npcBot
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 
