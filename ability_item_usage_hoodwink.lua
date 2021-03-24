@@ -20,7 +20,6 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 local abilityName = {}
 local abilityIndex = utility.ReverseTable(abilityName)
 
-
 local AbilityToLevelUp=
 {
 	Abilities[1], --1 
