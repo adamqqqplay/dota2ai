@@ -19,6 +19,19 @@ local ItemsToBuy =
 	"item_diffusal_blade" --散失刀
 }
 
+local ItemsToBuy1 = {
+	"item_tango","item_tango",
+	"item_wraith_brand",
+	"item_power_treads",
+	"item_manta",
+	"item_diffusal_blade",
+	"item_heart",
+	"item_butterfly",
+	"item_black_king_bar",
+	"item_travel_boots_1",
+	"item_travel_boots_2"
+}
+
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
 ItemPurchaseSystem.checkItemBuild(Transfered)
 

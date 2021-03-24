@@ -336,16 +336,16 @@ function M.UnImplementedItemUsage()
         end
     end
 
-    local aq = IsItemAvailable("item_ring_of_aquila")
-    if aq ~= nil and aq:IsFullyCastable() then
-        if mode == BOT_MODE_LANING and not aq:GetToggleState() then
-            npcBot:Action_UseAbility(aq)
-            return
-        elseif mode ~= BOT_MODE_LANING and aq:GetToggleState() then
-            npcBot:Action_UseAbility(aq)
-            return
-        end
-    end
+    -- local aq = IsItemAvailable("item_ring_of_aquila")
+    -- if aq ~= nil and aq:IsFullyCastable() then
+    --     if mode == BOT_MODE_LANING and not aq:GetToggleState() then
+    --         npcBot:Action_UseAbility(aq)
+    --         return
+    --     elseif mode ~= BOT_MODE_LANING and aq:GetToggleState() then
+    --         npcBot:Action_UseAbility(aq)
+    --         return
+    --     end
+    -- end
 
     -- give tango to ally
     local itg = IsItemAvailable("item_tango")

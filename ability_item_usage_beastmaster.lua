@@ -16,6 +16,11 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
+-- utility.PrintAbilityName(Abilities)
+local abilityName = { "beastmaster_wild_axes", "beastmaster_call_of_the_wild_boar", "beastmaster_call_of_the_wild_hawk", "beastmaster_inner_beast", "beastmaster_mark_of_the_beast", "beastmaster_primal_roar" }
+local abilityIndex = utility.ReverseTable(abilityName)
+
+
 local AbilityToLevelUp=
 {
 	Abilities[1],
@@ -23,19 +28,19 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[2],
 	Abilities[1],
-	Abilities[5],
+	Abilities[abilityIndex.beastmaster_primal_roar],
 	Abilities[1],
 	Abilities[2],
 	Abilities[2],
 	"talent",
-	Abilities[3],
-	Abilities[5],
-	Abilities[3],
-	Abilities[3],
+	Abilities[abilityIndex.beastmaster_inner_beast],
+	Abilities[abilityIndex.beastmaster_primal_roar],
+	Abilities[abilityIndex.beastmaster_inner_beast],
+	Abilities[abilityIndex.beastmaster_inner_beast],
 	"talent",
-	Abilities[3],
+	Abilities[abilityIndex.beastmaster_inner_beast],
 	"nil",
-	Abilities[5],
+	Abilities[abilityIndex.beastmaster_primal_roar],
 	"nil",
 	"talent",
 	"nil",
@@ -388,8 +393,8 @@ Consider[3]=function()
 end
 
 
-Consider[5]=function()	--Target Ability Example
-	local abilityNumber=5
+Consider[abilityIndex.beastmaster_primal_roar]=function()	--Target Ability Example
+	local abilityNumber=abilityIndex.beastmaster_primal_roar
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

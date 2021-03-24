@@ -20,6 +20,12 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
+local abilityName = { "arc_warden_flux", "arc_warden_magnetic_field",  "arc_warden_spark_wraith", "arc_warden_tempest_double" }
+local abilityIndex = utility.ReverseTable(abilityName)
+
+-- utility.PrintAbilityName(Abilities)
+
+
 local AbilityToLevelUp=
 {
 	Abilities[3],
@@ -27,19 +33,19 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[3],
 	Abilities[1],
-	Abilities[5],
+	Abilities[4],
 	Abilities[1],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[2],
-	Abilities[5],
+	Abilities[4],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
 	"nil",
-	Abilities[5],
+	Abilities[4],
 	"nil",
 	"talent",
 	"nil",
@@ -456,8 +462,8 @@ Consider[3]=function()
 	
 end
 
-Consider[5]=function()
-	local abilityNumber=5
+Consider[4]=function()
+	local abilityNumber=4
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

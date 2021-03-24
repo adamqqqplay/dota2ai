@@ -16,6 +16,11 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
+-- utility.PrintAbilityName(Abilities)
+local abilityName = { "omniknight_purification", "omniknight_repel", "omniknight_degen_aura", "omniknight_hammer_of_purity", "omniknight_guardian_angel" }
+local abilityIndex = utility.ReverseTable(abilityName)
+
+
 local AbilityToLevelUp=
 {
 	Abilities[1],
@@ -23,19 +28,19 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[2],
 	Abilities[1],
-	Abilities[4],
+	Abilities[abilityIndex.omniknight_guardian_angel],
 	Abilities[1],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
-	Abilities[4],
+	Abilities[abilityIndex.omniknight_guardian_angel],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
 	"nil",
-	Abilities[4],
+	Abilities[abilityIndex.omniknight_guardian_angel],
 	"nil",
 	"talent",
 	"nil",
@@ -377,9 +382,9 @@ Consider[2]=function()
 	
 end
 
-Consider[4]=function()
+Consider[abilityIndex.omniknight_guardian_angel]=function()
 
-	local abilityNumber=4
+	local abilityNumber=abilityIndex.omniknight_guardian_angel
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

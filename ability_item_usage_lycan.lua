@@ -16,6 +16,11 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
+-- utility.PrintAbilityName(Abilities)
+local abilityName = { "lycan_summon_wolves", "lycan_howl", "lycan_feral_impulse", "lycan_wolf_bite", "lycan_shapeshift" }
+local abilityIndex = utility.ReverseTable(abilityName)
+
+
 local AbilityToLevelUp=
 {
 	Abilities[3],
@@ -23,19 +28,19 @@ local AbilityToLevelUp=
 	Abilities[3],
 	Abilities[1],
 	Abilities[1],
-	Abilities[4],
+	Abilities[abilityIndex.lycan_shapeshift],
 	Abilities[1],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[2],
-	Abilities[4],
+	Abilities[abilityIndex.lycan_shapeshift],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
 	"nil",
-	Abilities[4],
+	Abilities[abilityIndex.lycan_shapeshift],
 	"nil",
 	"talent",
 	"nil",
@@ -260,9 +265,9 @@ Consider[2]=function()
 
 end
 
-Consider[4]=function()
+Consider[abilityIndex.lycan_shapeshift]=function()
 
-	local abilityNumber=4
+	local abilityNumber=abilityIndex.lycan_shapeshift
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

@@ -15,7 +15,7 @@ function GetCommonPushLaneDesires()
 	
 	local itemtable=GetItemCount()
 
-	if itemtable["item_ring_of_basilius"]~=nil or itemtable["item_ring_of_aquila"]~=nil then
+	if itemtable["item_ring_of_basilius"]~=nil then
 		common = common + 45/time
 	end
 
