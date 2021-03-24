@@ -13,13 +13,13 @@ local ItemsToBuy =
 	"item_soul_ring",
 	"item_magic_wand", --大魔棒7.14
 	"item_arcane_boots", --秘法鞋
-	"item_cyclone",
-	"item_pipe", --笛子
 	"item_bloodstone",
-	"item_ultimate_scepter_1", --蓝杖
-	"item_mekansm", --梅肯
-	"item_recipe_guardian_greaves", --卫士胫甲
-	"item_shivas_guard" --希瓦
+	"item_pipe", --笛子
+	"item_cyclone",
+	"item_ultimate_scepter", --蓝杖
+	"item_shivas_guard", --希瓦
+	"item_octarine_core",
+	"item_black_king_bar",
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)

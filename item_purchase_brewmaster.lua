@@ -17,7 +17,7 @@ local ItemsToBuy =
 	"item_vladmir", --祭品7.21
 	"item_blink", --跳刀
 	"item_black_king_bar", --BKB
-	"item_ultimate_scepter_1", --蓝杖
+	"item_ultimate_scepter", --蓝杖
 	"item_lotus_orb", --清莲宝珠
 	"item_assault" --强袭
 }

@@ -13,10 +13,11 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
 	"item_ring_of_basilius",
 	"item_null_talisman",
-	"item_energy_booster", --秘法
+	--"item_energy_booster",
+	"item_arcane_boots", --秘法
 	"item_glimmer_cape", --微光
 	"item_cyclone", --风杖
-	"item_ultimate_scepter_1", --蓝杖
+	"item_ultimate_scepter", --蓝杖
 	"item_sheepstick", --羊刀
 	"item_lotus_orb" --清莲宝珠
 }

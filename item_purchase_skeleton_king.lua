@@ -16,7 +16,7 @@ local ItemsToBuy =
 	"item_blade_mail", --刃甲
 	"item_black_king_bar", --bkb
 	"item_assault", --强袭
-	"item_ultimate_scepter_1" --蓝杖
+	-- "item_ultimate_scepter" --蓝杖
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)

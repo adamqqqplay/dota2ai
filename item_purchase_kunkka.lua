@@ -14,7 +14,7 @@ local ItemsToBuy =
 	"item_phase_boots", --相位7.21
 	"item_invis_sword", --隐刀
 	"item_black_king_bar", --bkb
-	"item_ultimate_scepter_1",
+	-- "item_ultimate_scepter",
 	"item_greater_crit", --大炮
 	"item_ultimate_orb",
 	"item_recipe_silver_edge", --大隐刀

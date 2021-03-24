@@ -12,7 +12,7 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
 	"item_bracer",
 	"item_power_treads",
-	"item_ultimate_scepter_1", --A
+	-- "item_ultimate_scepter", --A
 	"item_echo_sabre", --连击刀
 	"item_black_king_bar", --bkb
 	"item_greater_crit", --大炮

@@ -18,7 +18,7 @@ local ItemsToBuy =
 	"item_blink", --跳刀
 	"item_basher", --晕锤7.14
 	"item_black_king_bar", --bkb
-	"item_ultimate_scepter_1",
+	-- "item_ultimate_scepter",
 	"item_vanguard", --先锋
 	"item_recipe_abyssal_blade" --大晕锤
 }

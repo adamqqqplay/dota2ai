@@ -18,7 +18,8 @@ local ItemsToBuy =
 	"item_bracer",
 	"item_boots",
 	"item_bracer",
-	"item_energy_booster", --秘法
+	--"item_energy_booster",
+	"item_arcane_boots", --秘法
 	"item_mekansm", --梅肯
 	"item_vladmir", --祭品7.21
 	"item_recipe_guardian_greaves", --卫士胫甲
@@ -27,7 +28,7 @@ local ItemsToBuy =
 	"item_recipe_headdress",
 	"item_branches",
 	"item_recipe_pipe", --笛子
-	"item_ultimate_scepter_1", --蓝杖
+	"item_ultimate_scepter", --蓝杖
 	"item_lotus_orb" --清莲宝珠
 }
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)

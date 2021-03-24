@@ -14,9 +14,9 @@ local ItemsToBuy =
 	"item_ring_of_regen", --绿鞋
 	"item_magic_wand", --大魔棒7.14
 	"item_glimmer_cape",
-	"item_spirit_vessel", --大骨灰7.07
+	"item_ultimate_scepter", --蓝杖
+	-- "item_spirit_vessel", --大骨灰7.07
 	"item_force_staff", --推推7.14
-	"item_ultimate_scepter_1", --蓝杖
 	"item_sheepstick" --羊刀
 }
 

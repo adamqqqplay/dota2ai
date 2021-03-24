@@ -17,7 +17,7 @@ local ItemsToBuy =
 	"item_gloves", --假腿7.21
 	"item_orchid", --紫苑
 	"item_black_king_bar", --bkb
-	"item_ultimate_scepter_1", --蓝杖
+	"item_ultimate_scepter", --蓝杖
 	"item_shivas_guard", --希瓦
 	"item_lesser_crit",
 	"item_recipe_bloodthorn" --血棘

@@ -17,7 +17,7 @@ local ItemsToBuy =
 	"item_hurricane_pike", --大推推7.20
 	"item_ultimate_orb",
 	"item_recipe_manta", --分身
-	"item_ultimate_scepter_1", --蓝杖
+	"item_ultimate_scepter", --蓝杖
 	"item_greater_crit", --大炮
 	"item_monkey_king_bar" --金箍棒7.14
 }

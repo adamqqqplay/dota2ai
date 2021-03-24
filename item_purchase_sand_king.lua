@@ -16,7 +16,7 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
 	"item_veil_of_discord", --纷争7.20
 	"item_blink", --跳刀
-	"item_ultimate_scepter_1", --蓝杖
+	"item_ultimate_scepter", --蓝杖
 	"item_black_king_bar", --bkb
 	"item_lotus_orb" --清莲宝珠
 }

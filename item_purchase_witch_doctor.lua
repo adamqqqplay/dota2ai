@@ -13,11 +13,12 @@ local ItemsToBuy =
 	"item_buckler",
 	"item_boots",
 	"item_magic_stick",
-	"item_energy_booster",
+	--"item_energy_booster",
+	"item_arcane_boots"
 	"item_urn_of_shadows",
 	"item_glimmer_cape", --微光
 	"item_force_staff",
-	"item_ultimate_scepter_1", --蓝杖
+	"item_ultimate_scepter", --蓝杖
 	"item_lotus_orb", --清莲宝珠
 	"item_sheepstick" --羊刀
 }

@@ -21,7 +21,7 @@ local ItemsToBuy =
 	"item_force_staff", --推推7.14
 	"item_black_king_bar", --bkb
 	"item_cyclone", --风杖
-	"item_ultimate_scepter_1", --蓝杖
+	"item_ultimate_scepter", --蓝杖
 	"item_lotus_orb",
 	"item_shivas_guard"
 }

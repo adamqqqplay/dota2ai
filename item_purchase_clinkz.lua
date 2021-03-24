@@ -15,7 +15,7 @@ local ItemsToBuy =
 	"item_desolator", --黯灭
 	"item_orchid", --紫苑
 	"item_black_king_bar", --bkb
-	"item_lesser_crit",
+	"item_sheepstick",
 	"item_recipe_bloodthorn", --血棘
 	"item_monkey_king_bar", --金箍棒7.14
 	"item_satanic" --撒旦7.07

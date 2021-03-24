@@ -1,6 +1,6 @@
 Ranked Matchmaking AI v1.1
 
-Hello, everyone, I am adamqqq.Welcome to play with our ai, the script aims to achieve a high level of man-machine confrontation. Our ultimate goal is to simulate the Ranked Matchmaking gaming experience (ha ha ha). The script partly take over bot hero, the rest implement by the default program. Players can be in any position, the default support 5v5 game. Support 60+ hero now.
+Hello, everyone, I am adamqqq.Welcome to play with our ai, the script aims to achieve a high level of man-machine confrontation. Our ultimate goal is to simulate the Ranked Matchmaking gaming experience (ha ha ha). The script partiallly takes over bot control while the rest is contorlled by the default implementation. Players can be in any position and the default supports 5v5 game. Support 60+ hero now.
 
 You are free to use all of the codes for any non-commercial purposes you choose, with a reference to the original Author. Do not use any of the files here for any program which is not open source and free to use.
 
@@ -16,20 +16,20 @@ adamqqq
 This product is licensed under GPLv3.
 Copyright 2017 [adamqqq]
 
-лЛлщф╔еДдёдБфВ AI v1.1
+О©╫О©╫О©╫О©╫ф╔О©╫О©╫дёО©╫О©╫О©╫О©╫ AI v1.1
 
-╢С╪р╨цё╛нрйгadamqqqё╛╩╤с╜╢С╪рлТу╫нрцг╣д╩ЗфВхкё╛╠╬╫е╠╬ж╪тзй╣ож╦ък╝ф╫╣дхк╩Зсно╥╤т©╧║ёнрцг╣двНжуд©╠ЙйгдёдБлЛлщф╔еД╣дсно╥лЕяИё╗╧Ч╧Ч╧Чё╘║ё╠╬╫е╠╬╡©╥ж©ьжфак╩ЗфВхкс╒пшё╛фДсЮ╡©╥жсид╛хоЁлпРй╣ож║ёмФ╪р©ирт╢╕сзхнрБн╩жцё╛д╛хож╖Ёж5v5╣дсно╥║ёж╖Ёж60+с╒пш║ё
+О©╫О©╫р╨цёО©╫О©╫О©╫О©╫О©╫adamqqqО©╫О©╫О©╫О©╫с╜О©╫О©╫О©╫О©╫О©╫у╫О©╫О©╫О©╫г╣д╩О©╫О©╫О©╫О©╫кёО©╫О©╫О©╫О©╫е╠О©╫ж╪О©╫О©╫й╣О©╫ж╦О©╫к╝ф╫О©╫О©╫О©╫к╩О©╫О©╫О©╫о╥О©╫т©О©╫О©╫О©╫О©╫О©╫О©╫г╣О©╫О©╫О©╫О©╫О©╫д©О©╫О©╫О©╫О©╫дёО©╫О©╫О©╫О©╫О©╫О©╫ф╔О©╫О©╫О©╫О©╫О©╫о╥О©╫О©╫О©╫Иё╗О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫е╠О©╫О©╫О©╫О©╫ж©О©╫О©╫О©╫О©╫к╩О©╫О©╫О©╫О©╫О©╫с╒О©╫шёО©╫О©╫О©╫О©╫Ю╡©О©╫О©╫О©╫О©╫д╛О©╫оЁО©╫О©╫О©╫й╣О©╫ж║О©╫О©╫О©╫р©О©╫О©╫т╢О©╫О©╫О©╫О©╫О©╫О©╫О©╫н╩О©╫цёО©╫д╛О©╫О©╫ж╖О©╫О©╫5v5О©╫О©╫О©╫О©╫о╥О©╫О©╫ж╖О©╫О©╫60+с╒О©╫ш║О©╫
 
-дЗ©иртвтси╣ьтзхн╨н╥гилр╣оНд©иой╧сц╠╬ЁлпР╣д╢ЗбКё╛╡╒в╒цВт╜вВуъ║ё ╡╩р╙╫╚уБюО╣дхн╨ннд╪Чсцсзилр╣╩Р╡╩©╙т╢╣дЁлпР║ё
+О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫и╣О©╫О©╫О©╫О©╫н╨н╥О©╫О©╫О©╫р╣О©╫О©╫д©О©╫О©╫й╧О©╫ц╠О©╫О©╫О©╫О©╫О©╫д╢О©╫О©╫Кё╛О©╫О©╫в╒О©╫О©╫т╜О©╫О©╫О©╫ъ║О©╫ О©╫О©╫р╙О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫н╨О©╫О©╫д╪О©╫О©╫О©╫О©╫О©╫О©╫О©╫р╣О©╫Р╡╩©О©╫т╢О©╫дЁО©╫О©╫О©╫
 
-мф╪Жсно╥╥╫╥╗ё╨
-хц╠╬╫е╠╬©ьжфуШ╦Ж╤снИё╛х╩╨СмФ╪р╢╕сзаМр╩╠ъё╛уБяЫ©иртлЕяИ╣╫╠╬╫е╠╬╣двНг©й╣а╕║ё
+О©╫ф╪О©╫О©╫О©╫о╥О©╫О©╫О©╫О©╫О©╫О©╫
+О©╫ц╠О©╫О©╫е╠О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫Иё╛х╩О©╫О©╫О©╫О©╫р╢О©╫О©╫О©╫О©╫О©╫р╩О©╫ъёО©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫И╣╫О©╫О©╫О©╫е╠О©╫О©╫О©╫О©╫О©╫г©й╣О©╫О©╫О©╫О©╫
 
-тз╫е╠╬╦Эпб╨Сё╛©идэпХр╙жьпб╤╘тд╠╬╫е╠╬ртиЩ╪╤жавНпб╟Ф╠╬║ёхГ╧ШдЦтзсно╥жп╥╒ожхн╨н╢МнСё╛╩Руъспхн╨н╫╗рИё╛гКм╗╧Щ╣Гвссй╪ЧсКнра╙о╣:adamqqq@163.com
+О©╫з╫е╠О©╫О©╫О©╫О©╫б╨Сё╛©О©╫О©╫О©╫О©╫О©╫р╙О©╫О©╫О©╫б╤О©╫О©╫д╠О©╫О©╫е╠О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫б╟Ф╠╬О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫о╥О©╫п╥О©╫О©╫О©╫О©╫н╨н╢О©╫О©╫Сё╛╩О©╫О©╫О©╫О©╫О©╫О©╫н╨н╫О©╫О©╫Иё╛О©╫О©╫м╗О©╫О©╫О©╫О©╫О©╫О©╫О©╫й╪О©╫О©╫О©╫О©╫О©╫О©╫О©╫о╣:adamqqq@163.com
 
-╦пп╩PLATINUMё╛FURIOUSPUPPY╨мGXCё╛кШцг╣д╢ЗбК╟ОжЗакнр╨э╤Ю║ёвН╨СвёдЗсно╥сД©Лё║
+О©╫О©╫п╩PLATINUMО©╫О©╫FURIOUSPUPPYО©╫О©╫GXCО©╫О©╫О©╫О©╫О©╫г╣д╢О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫р╨э╤Ю║ёО©╫О©╫О©╫вёО©╫О©╫О©╫О©╫о╥О©╫О©╫Лё║
 adamqqq
 2017.2.3
 
-╠╬╡Зф╥╡исцGPLv3йзх╗║ё
+О©╫О©╫О©╫О©╫ф╥О©╫О©╫О©╫О©╫GPLv3О©╫О©╫х╗О©╫О©╫
 Copyright 2017 [adamqqq]

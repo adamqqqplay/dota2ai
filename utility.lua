@@ -484,5 +484,13 @@ function utilityModule.IsStuck(npcBot)
 end
 --------------------------------------------------------------------------
 
+local itemNameMetatable = {}
+function itemNameMetatable.__index(tb, s)
+	return "item_"..s 
+end
+local itemNametable = {}
+setmetatable(itemNametable, itemNameMetatable)
+utilityModule.items = itemNametable
+
 ---------------------------------------------------------------------------------------------------
 return utilityModule;

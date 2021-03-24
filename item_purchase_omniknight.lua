@@ -20,7 +20,7 @@ local ItemsToBuy =
 	"item_recipe_guardian_greaves", --卫士胫甲
 	"item_vladmir",
 	"item_pipe",
-	"item_ultimate_scepter_1", --蓝杖
+	"item_ultimate_scepter", --蓝杖
 	"item_lotus_orb", --清莲宝珠
 	"item_sheepstick" --羊刀
 }

@@ -11,7 +11,6 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
     
-	"item_boots", 
 	"item_tranquil_boots",
 	"item_magic_wand",
 	"item_aether_lens",

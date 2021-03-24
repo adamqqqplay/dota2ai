@@ -10,7 +10,7 @@ local ItemsToBuy =
 	"item_flask",
 	"item_quelling_blade",
 	"item_wraith_band",
-	"item_wraith_band",
+	-- "item_wraith_band",
 	"item_branches",
 	"item_branches",
 	"item_magic_stick",

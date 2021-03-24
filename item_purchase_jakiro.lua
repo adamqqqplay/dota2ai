@@ -15,7 +15,7 @@ local ItemsToBuy =
 	"item_force_staff", --推推7.14
 	"item_rod_of_atos", --阿托斯7.20
 	"item_cyclone", --风杖
-	"item_ultimate_scepter_1", --蓝杖
+	"item_ultimate_scepter", --蓝杖
 	"item_dragon_lance",
 	"item_recipe_hurricane_pike",
 	"item_mekansm",

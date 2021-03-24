@@ -16,10 +16,10 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
 	"item_boots",
 	"item_hand_of_midas", --点金
-	"item_energy_booster", --秘法鞋
+	"item_energy_booster",
 	"item_urn_of_shadows",
 	"item_blink",
-	"item_ultimate_scepter_1", --蓝杖
+	"item_ultimate_scepter", --蓝杖
 	"item_force_staff", --推推
 	"item_mekansm", --梅肯
 	"item_recipe_guardian_greaves", --卫士胫甲

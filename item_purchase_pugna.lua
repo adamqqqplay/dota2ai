@@ -18,11 +18,12 @@ local ItemsToBuy =
 	"item_recipe_null_talisman",
 	"item_circlet",
 	"item_recipe_null_talisman",
-	"item_energy_booster", --秘法鞋
+	"item_energy_booster",
 	"item_robe",
 	"item_staff_of_wizardry", --慧光
 	"item_void_stone",
-	"item_energy_booster",
+	--"item_energy_booster",
+	"item_arcane_boots"
 	"item_recipe_aether_lens", --以太之镜7.06
 	"item_point_booster",
 	"item_staff_of_wizardry",

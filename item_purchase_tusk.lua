@@ -21,7 +21,7 @@ local ItemsToBuy =
 	"item_vitality_booster",
 	"item_recipe_spirit_vessel", --大骨灰
 	"item_black_king_bar", --bkb
-	"item_ultimate_scepter_1", --蓝杖
+	"item_ultimate_scepter", --蓝杖
 	"item_ultimate_orb",
 	"item_recipe_silver_edge" --大隐刀
 }

@@ -9,6 +9,7 @@ local ItemsToBuy =
 	"item_tango",
 	"item_tango",
 	"item_quelling_blade", --补刀斧
+	"item_orb_of_corrosion",
 	"item_phase_boots", --相位7.21
 	"item_magic_wand", --大魔棒7.14
 	"item_armlet", --臂章
