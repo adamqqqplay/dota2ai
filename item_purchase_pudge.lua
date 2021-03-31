@@ -10,10 +10,10 @@ local ItemsToBuy =
 	"item_tango",
 	"item_clarity",
 	"item_flask",
-	"item_buckler",
-	"item_bracer",
 	"item_wind_lace",
 	"item_boots",
+	"item_buckler",
+	"item_bracer",
 	"item_magic_stick",
 	"item_ring_of_regen", --绿鞋
 	"item_urn_of_shadows",
