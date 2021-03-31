@@ -17,7 +17,7 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
-utility.PrintAbilityName(Abilities)
+-- utility.PrintAbilityName(Abilities)
 local abilityName =  { "tusk_ice_shards", "tusk_snowball", "tusk_tag_team", "tusk_walrus_kick", "tusk_frozen_sigil", "tusk_walrus_punch", "tusk_launch_snowball" }
 local abilityIndex = utility.ReverseTable(abilityName)
 

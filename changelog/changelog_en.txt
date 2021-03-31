@@ -326,3 +326,5 @@ v1.6f (2019.12.19)
 3. Fix courier related issues.
 4. Update the title of the professional teams in TI9.
 5. Refactor item building system to automatically adapt to recipe changes caused by game version.
+v1.7.0 (2021.03.24) Updated by AaronSong321
+1. Update to support 7.28c.
