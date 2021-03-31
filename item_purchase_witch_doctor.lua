@@ -13,8 +13,7 @@ local ItemsToBuy =
 	"item_buckler",
 	"item_boots",
 	"item_magic_stick",
-	--"item_energy_booster",
-	"item_arcane_boots"
+	"item_energy_booster",
 	"item_urn_of_shadows",
 	"item_glimmer_cape", --微光
 	"item_force_staff",

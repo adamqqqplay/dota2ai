@@ -45,7 +45,7 @@ local hero_pool = {
 	"npc_dota_hero_enigma",
 	"npc_dota_hero_faceless_void",
 	"npc_dota_hero_gyrocopter",
-	"npc_dota_hero_hoodwink"
+	"npc_dota_hero_hoodwink",
 	"npc_dota_hero_huskar",
 	"npc_dota_hero_invoker",
 	"npc_dota_hero_wisp",

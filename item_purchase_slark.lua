@@ -12,8 +12,10 @@ local ItemsToBuy =
 	"item_orb_of_venom",
 	"item_wraith_band",
 	"item_power_treads", --假腿7.21
+	"item_blight_stoe",
+	"item_flaffly_hat",
+	"item_recipe_orb_of_corrosion",
 	"item_magic_wand", --大魔棒7.14
-	"item_orb_of_corrosion",
 	"item_skadi",
 	"item_black_king_bar", --bkb
 	"item_diffusal_blade", --散失

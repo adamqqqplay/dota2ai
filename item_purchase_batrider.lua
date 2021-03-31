@@ -11,11 +11,10 @@ local ItemsToBuy =
 	"item_enchanted_mango",
 	"item_flask",
 	"item_wind_lace",
-	"item_null_talisman",
-	"item_buckler",
-	"item_null_talisman",
 	"item_magic_wand", --大魔棒7.14
 	"item_boots",
+	"item_null_talisman",
+	"item_buckler",
 	"item_ring_of_regen", --绿鞋
 	"item_blink", --跳刀
 	"item_force_staff", --推推7.14
@@ -23,7 +22,7 @@ local ItemsToBuy =
 	"item_cyclone", --风杖
 	"item_ultimate_scepter", --蓝杖
 	"item_lotus_orb",
-	"item_shivas_guard"
+	"item_shivas_guard",
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)

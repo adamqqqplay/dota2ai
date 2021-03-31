@@ -14,11 +14,14 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
 	"item_blades_of_attack",
 	"item_chainmail", --相位7.21
+	"item_blight_stoe",
+	"item_flaffly_hat",
+	"item_recipe_orb_of_corrosion",
 	"item_vladmir", --祭品7.21
 	"item_blink", --跳刀
 	"item_basher", --晕锤7.14
 	"item_black_king_bar", --bkb
-	-- "item_ultimate_scepter",
+	"item_ultimate_scepter",
 	"item_vanguard", --先锋
 	"item_recipe_abyssal_blade" --大晕锤
 }

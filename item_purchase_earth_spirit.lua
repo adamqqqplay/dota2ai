@@ -17,7 +17,7 @@ local ItemsToBuy =
 	"item_glimmer_cape",
 	"item_blink", --跳刀
 	"item_cyclone",	--风杖
-	-- "item_ultimate_scepter" --蓝杖
+	"item_ultimate_scepter" --蓝杖
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)

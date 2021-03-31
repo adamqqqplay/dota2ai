@@ -15,11 +15,8 @@ local ItemsToBuy =
 	"item_bracer",
 	"item_phase_boots",
 	"item_magic_stick",
-	"item_urn_of_shadows",
 	"item_invis_sword", --隐刀
 	"item_solar_crest",
-	"item_vitality_booster",
-	"item_recipe_spirit_vessel", --大骨灰
 	"item_black_king_bar", --bkb
 	"item_ultimate_scepter", --蓝杖
 	"item_ultimate_orb",

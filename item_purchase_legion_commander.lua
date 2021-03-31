@@ -13,6 +13,7 @@ local ItemsToBuy =
 	"item_bracer",
 	"item_magic_wand", --大魔棒7.14
 	"item_phase_boots", --相位7.21
+	"item_desolator",
 	"item_invis_sword", --隐刀
 	"item_blade_mail", --刃甲
 	"item_ultimate_orb",

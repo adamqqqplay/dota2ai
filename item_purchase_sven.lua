@@ -12,9 +12,9 @@ local ItemsToBuy =
 	"item_bracer",
 	"item_phase_boots",
 	"item_hand_of_midas",
-	-- "item_ultimate_scepter",
 	"item_black_king_bar", --bkb
 	"item_greater_crit", --大炮
+	"item_ultimate_scepter",
 	"item_blink",
 	"item_sange_and_yasha",
 	"item_assault" --强袭

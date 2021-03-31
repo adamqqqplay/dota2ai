@@ -9,8 +9,8 @@ local ItemsToBuy =
 	"item_tango",
 	"item_flask",
 	"item_quelling_blade", --补刀斧
-	"item_headdress",
 	"item_power_treads", --假腿7.21
+	"item_headdress",
 	"item_broadsword",
 	"item_crown",
 	"item_recipe_helm_of_the_dominator",

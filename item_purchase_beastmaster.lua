@@ -9,7 +9,6 @@ local ItemsToBuy =
 	"item_tango",
 	"item_flask",
 	"item_enchanted_mango",
-	"item_enchanted_mango",
 	"item_quelling_blade",
 	"item_bracer",
 	"item_buckler",

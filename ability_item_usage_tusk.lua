@@ -17,8 +17,8 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName = {}
+utility.PrintAbilityName(Abilities)
+local abilityName =  { "tusk_ice_shards", "tusk_snowball", "tusk_tag_team", "tusk_walrus_kick", "tusk_frozen_sigil", "tusk_walrus_punch", "tusk_launch_snowball" }
 local abilityIndex = utility.ReverseTable(abilityName)
 
 
@@ -29,19 +29,19 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[2],
 	Abilities[1],
-	Abilities[5],
+	Abilities[abilityIndex.tusk_walrus_punch],
 	Abilities[1],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[3],
-	Abilities[5],
+	Abilities[abilityIndex.tusk_walrus_punch],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
 	"nil",
-	Abilities[5],
+	Abilities[abilityIndex.tusk_walrus_punch],
 	"nil",
 	"talent",
 	"nil",
@@ -415,9 +415,9 @@ Consider[3]=function()
 	return BOT_ACTION_DESIRE_NONE, 0 
 end
 
-Consider[5]=function()
+Consider[abilityIndex.tusk_walrus_punch]=function()
 
-	local abilityNumber=5
+	local abilityNumber=abilityIndex.tusk_walrus_punch
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

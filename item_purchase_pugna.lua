@@ -22,8 +22,7 @@ local ItemsToBuy =
 	"item_robe",
 	"item_staff_of_wizardry", --慧光
 	"item_void_stone",
-	--"item_energy_booster",
-	"item_arcane_boots"
+	"item_energy_booster",
 	"item_recipe_aether_lens", --以太之镜7.06
 	"item_point_booster",
 	"item_staff_of_wizardry",
