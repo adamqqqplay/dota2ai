@@ -263,18 +263,20 @@ function M.ItemPurchase(ItemsToBuy)
 end
 
 function M.BuyCourier()
-	local npcBot=GetBot()
-	local courier=GetCourier(0)
-	if(courier==nil)
-	then
-		if(npcBot:GetGold()>=GetItemCost("item_courier"))
-		then
-			local info=npcBot:ActionImmediate_PurchaseItem("item_courier");
-			if info ==PURCHASE_ITEM_SUCCESS then
-				npcBot:ActionImmediate_Chat('I bought the courier 我买了鸡。',false);
-			end
-		end
-	end
+	-- no longer need to buy courier
+	
+	-- local npcBot=GetBot()
+	-- local courier=GetCourier(0)
+	-- if(courier==nil)
+	-- then
+	-- 	if(npcBot:GetGold()>=GetItemCost("item_courier"))
+	-- 	then
+	-- 		local info=npcBot:ActionImmediate_PurchaseItem("item_courier");
+	-- 		if info ==PURCHASE_ITEM_SUCCESS then
+	-- 			npcBot:ActionImmediate_Chat('I bought the courier 我买了鸡。',false);
+	-- 		end
+	-- 	end
+	-- end
 	--[[else
 		if DotaTime()>60*3 and npcBot:GetGold()>=GetItemCost("item_flying_courier") and (courier:GetMaxHealth()==75) then
 			local info=npcBot:ActionImmediate_PurchaseItem("item_flying_courier");

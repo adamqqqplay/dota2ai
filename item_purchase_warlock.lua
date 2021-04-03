@@ -37,6 +37,6 @@ ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
 
 function ItemPurchaseThink()
 	ItemPurchaseSystem.BuySupportItem()
-	ItemPurchaseSystem.BuyCourier()
+	-- ItemPurchaseSystem.BuyCourier()
 	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
 end

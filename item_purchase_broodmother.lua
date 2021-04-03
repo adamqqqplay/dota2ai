@@ -16,7 +16,7 @@ local ItemsToBuy =
 	"item_solar_crest", --大勋章7.20
 	"item_orchid", --紫苑
 	"item_black_king_bar", --bkb
-	"item_lesser_crit",
+	"item_hyperstone",
 	"item_recipe_bloodthorn", --血棘
 	"item_assault" --强袭
 }

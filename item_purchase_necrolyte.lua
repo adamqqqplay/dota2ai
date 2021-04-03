@@ -17,6 +17,7 @@ local ItemsToBuy =
 	"item_mekansm", --梅肯
 	"item_ultimate_scepter", --蓝杖
 	"item_point_booster",
+	"item_buckler",
 	"item_recipe_guardian_greaves", --卫士胫甲
 	"item_pipe", --笛子
 	"item_black_king_bar", --bkb

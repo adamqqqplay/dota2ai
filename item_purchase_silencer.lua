@@ -23,7 +23,7 @@ local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
 ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.BuyCourier() --购买信使
+	-- ItemPurchaseSystem.BuyCourier() --购买信使
 	ItemPurchaseSystem.BuySupportItem()
 	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

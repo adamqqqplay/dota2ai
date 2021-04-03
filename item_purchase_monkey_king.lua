@@ -11,7 +11,6 @@ local ItemsToBuy =
 	"item_flask",
 	"item_orb_of_venom",
 	"item_wraith_band", --系带
-	"item_wraith_band", --系带
 	"item_phase_boots",
 	"item_magic_wand", --大魔棒7.14
 	"item_maelstrom",

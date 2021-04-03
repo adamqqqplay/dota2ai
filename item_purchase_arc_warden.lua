@@ -22,7 +22,7 @@ local ItemsToBuy =
 	"item_recipe_silver_edge", --大隐刀
 	"item_orchid", --紫苑
 	"item_black_king_bar", --BKB
-	"item_lesser_crit", --水晶剑
+	"item_hyperstone",
 	"item_recipe_bloodthorn", --血棘
 	"item_butterfly" --蝴蝶
 }

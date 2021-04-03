@@ -10,7 +10,6 @@ local ItemsToBuy =
 	"item_tango",
 	"item_flask",
 	"item_enchanted_mango",
-	"item_enchanted_mango",
 	"item_buckler",
 	"item_boots",
 	"item_magic_wand", --大魔棒7.14
@@ -28,7 +27,7 @@ local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
 ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.BuyCourier()
+	-- ItemPurchaseSystem.BuyCourier()
 	ItemPurchaseSystem.ItemPurchase(Transfered)
 	ItemPurchaseSystem.BuySupportItem()
 end
