@@ -9,7 +9,6 @@ local ItemsToBuy =
 	"item_tango",
 	"item_wraith_band", --系带
 	"item_bottle",
-	"item_flask",
 	"item_magic_wand", --大魔棒7.14
 	"item_power_treads", --假腿7.21
 	"item_invis_sword", --隐刀

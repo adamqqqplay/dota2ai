@@ -9,7 +9,7 @@ local ItemsToBuy =
 	"item_tango",
 	"item_orb_of_venom",
 	"item_tango",
-	"item_flask",
+	"item_magic_stick",
 	"item_magic_wand", --大魔棒7.14
 	"item_bracer",
 	"item_bracer",

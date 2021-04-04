@@ -8,7 +8,6 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_wraith_band", --系带
-	"item_flask",
 	"item_magic_wand", --大魔棒7.14
 	"item_phase_boots", --相位7.21
 	"item_sange_and_yasha", --双刀

@@ -10,7 +10,7 @@ local ItemsToBuy =
 	"item_tango",
 	"item_tango",
 	"item_clarity",
-	"item_flask",
+	"item_magic_stick",
 	"item_ring_of_basilius",
 	"item_wind_lace",
 	"item_boots",

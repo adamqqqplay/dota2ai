@@ -8,7 +8,7 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_wraith_band", --系带
-	"item_flask",
+	"item_magic_stick",
 	"item_wraith_band", --系带
 	"item_power_treads", --假腿7.21
 	"item_maelstrom",

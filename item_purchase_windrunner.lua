@@ -9,7 +9,7 @@ local ItemsToBuy =
 	"item_tango",
 	"item_null_talisman",
 	"item_tango",
-	"item_flask",
+	"item_magic_stick",
 	"item_magic_stick",
 	"item_boots",
 	"item_javelin",

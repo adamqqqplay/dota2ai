@@ -10,9 +10,11 @@ local ItemsToBuy =
 	"item_wraith_band", --系带
 	"item_tango",
 	"item_tango",
-	"item_flask",
+	"item_magic_stick",
 	"item_wraith_band", --系带
-	"item_magic_wand", --大魔棒7.14
+	"item_branch",
+	"item_branch",
+	"item_recipe_magic_wand",
 	"item_power_treads", --假腿7.21
 	"item_desolator",
 	"item_greater_crit",

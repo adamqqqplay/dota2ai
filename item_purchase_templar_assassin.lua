@@ -9,9 +9,11 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_wraith_band", --系带
-	"item_flask",
+	"item_magic_stick",
 	"item_power_treads", --假腿7.21
-	"item_magic_wand", --大魔棒7.14
+	"item_branch",
+	"item_branch",
+	"item_recipe_magic_wand",
 	"item_desolator", --黯灭
 	"item_black_king_bar", --bkb
 	"item_orchid",

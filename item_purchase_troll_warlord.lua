@@ -9,11 +9,13 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_tango",
-	"item_flask",
+	"item_magic_stick",
 	"item_quelling_blade",
 	"item_wraith_band",
 	"item_wraith_band",
-	"item_magic_wand", --大魔棒7.14
+	"item_branch",
+	"item_branch",
+	"item_recipe_magic_wand",
 	"item_phase_boots", --相位7.21
 	"item_diffusal_blade", --散失刀
 	"item_sange_and_yasha", --双刀

@@ -9,7 +9,7 @@ local ItemsToBuy =
 	"item_tango",
 	"item_tango",
 	"item_quelling_blade", --补刀斧
-	"item_flask",
+	"item_magic_stick",
 	"item_wraith_band", --系带
 	"item_magic_stick",
 	"item_phase_boots",

@@ -15,7 +15,7 @@ function M.SellExtraItem(ItemsToBuy)
 			M.SellSpecifiedItem("item_faerie_fire")
 			M.SellSpecifiedItem("item_tango")
 			M.SellSpecifiedItem("item_clarity")
-			M.SellSpecifiedItem("item_flask")
+			M.SellSpecifiedItem("item_magic_stick")
 		end
 		if(GameTime()>25*60 or level>=10)
 		then
@@ -225,7 +225,7 @@ function M.ItemPurchase(ItemsToBuy)
 			M.SellSpecifiedItem("item_faerie_fire")
 			M.SellSpecifiedItem("item_tango")
 			M.SellSpecifiedItem("item_clarity")
-			M.SellSpecifiedItem("item_flask")
+			M.SellSpecifiedItem("item_magic_stick")
 		end
 		if(PurchaseResult==PURCHASE_ITEM_INVALID_ITEM_NAME or PurchaseResult==PURCHASE_ITEM_DISALLOWED_ITEM)	--????????????????????
 		then
@@ -443,7 +443,7 @@ function M.checkItemBuild(ItemsToBuy)
 		"item_clarity",
 		"item_faerie_fire",
 		"item_enchanted_mango",
-		"item_flask",
+		"item_magic_stick",
 	}
 
 	if(DotaTime()>0)

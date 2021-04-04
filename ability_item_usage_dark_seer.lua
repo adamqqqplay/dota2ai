@@ -30,16 +30,16 @@ local AbilityToLevelUp=
 	Abilities[3],
 	Abilities[2],
 	Abilities[1],
-	Abilities[4],
+	Abilities[5],
 	"talent",
 	Abilities[3],
-	Abilities[4],
+	Abilities[5],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[1],
 	"nil",
-	Abilities[4],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -440,8 +440,78 @@ Consider[3]=function()
 end
 
 Consider[4]=function()
-	
 	local abilityNumber=4
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber];
+	
+	if not ability:IsFullyCastable() then
+		return BOT_ACTION_DESIRE_NONE, 0;
+	end
+	
+	local CastRange = ability:GetCastRange();
+	local Damage = ability:GetAbilityDamage();
+	local Radius = ability:GetAOERadius()
+	local CastPoint = ability:GetCastPoint();
+	
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+
+	--------------------------------------
+	-- Global high-priorty usage
+	--------------------------------------
+	-- Check for a channeling enemy
+	for _,npcEnemy in pairs( enemys )
+	do
+		if ( npcEnemy:IsChanneling() ) 
+		then
+			return BOT_ACTION_DESIRE_HIGH, npcEnemy
+		end
+	end
+
+	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+	then
+		for _,npcEnemy in pairs( enemys )
+		do
+			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) 
+			then
+				if ( CanCast[abilityNumber]( npcEnemy ) ) 
+				then
+					return BOT_ACTION_DESIRE_LOW, npcEnemy;
+				end
+			end
+		end
+	end
+
+	-- If we're going after someone
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK) 
+	then
+		local npcEnemy = npcBot:GetTarget();
+
+		if ( npcEnemy ~= nil ) 
+		then
+			if ( CanCast[abilityNumber]( npcEnemy ) )
+			then
+				return BOT_ACTION_DESIRE_LOW, npcEnemy
+			end
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+	
+end
+
+Consider[5]=function()
+	
+	local abilityNumber=5
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

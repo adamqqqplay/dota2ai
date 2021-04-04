@@ -437,7 +437,7 @@ function M.UnImplementedItemUsage()
         end
     end
 
-    local ifl = IsItemAvailable("item_flask")
+    local ifl = IsItemAvailable("item_magic_stick")
     if ifl ~= nil and ifl:IsFullyCastable() and npcBot:DistanceFromFountain() > 1000 then
         if DotaTime() > 0 then
             local tableNearbyEnemyHeroes2 = npcBot:GetNearbyHeroes(650, true, BOT_MODE_NONE)

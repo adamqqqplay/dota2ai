@@ -8,10 +8,12 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_tango",
-	"item_flask",
+	"item_magic_stick",
 	"item_clarity",
 	"item_arcane_boots", --秘法
-	"item_magic_wand", --大魔棒7.14
+	"item_branch",
+	"item_branch",
+	"item_recipe_magic_wand",
 	"item_blink", --跳刀
 	"item_force_staff", --推推7.14
 	"item_cyclone", --风杖
