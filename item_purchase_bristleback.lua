@@ -13,7 +13,9 @@ local ItemsToBuy =
 	"item_quelling_blade",
 	"item_bracer",
 	"item_phase_boots", --相位
-	"item_magic_wand", --大魔棒7.14
+	"item_branch",
+	"item_branch",
+	"item_recipe_magic_wand",
 	"item_vanguard", --先锋
 	"item_pipe", --笛子
 	"item_helm_of_iron_will",

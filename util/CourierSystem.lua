@@ -218,7 +218,7 @@ if courierUtils.pIDInc < #pIDs + 1 and DotaTime() > -60 then
                         courierUtils.calibrateTime = DotaTime();
                         npcBot:ActionImmediate_Courier( cr, COURIER_ACTION_RETURN_STASH_ITEMS );	
                         return;
-                    else
+                    elseif npcBot.courierID ~= nil then
                         -- print("Failed to Assign Courier.");
                         npcBot.courierID = npcBot.courierID + 1;
                         checkCourier = false;

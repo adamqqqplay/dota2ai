@@ -12,9 +12,7 @@ local ItemsToBuy =
 	"item_wind_lace",
 	"item_boots",
 	"item_ring_of_regen", --绿鞋
-	"item_branch",
-	"item_branch",
-	"item_recipe_magic_wand",
+	"item_magic_stick",
 	"item_glimmer_cape",
 	"item_ultimate_scepter", --蓝杖
 	"item_spirit_vessel", --大骨灰7.07

@@ -9,7 +9,6 @@ local ItemsToBuy =
 	"item_tango",
 	"item_tango",
 	"item_enchanted_mango",
-	"item_enchanted_mango",
 	"item_quelling_blade",
 	"item_phase_boots", --相位
 	"item_magic_wand", --大魔棒7.14

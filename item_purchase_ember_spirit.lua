@@ -12,13 +12,14 @@ local ItemsToBuy =
 	"item_wraith_band",
 	"item_bottle",
 	"item_phase_boots",
+	"item_bfury",
 	"item_magic_wand", --大魔棒7.14
+	"item_black_king_bar",
+	"item_greater_crit",
 	"item_maelstrom", --电锤7.14
-	"item_sphere", --林肯
+	"item_octarine_core" --玲珑心
 	"item_hyperstone",
 	"item_recipe_mjollnir", --大雷锤
-	"item_black_king_bar",
-	"item_octarine_core" --玲珑心
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)

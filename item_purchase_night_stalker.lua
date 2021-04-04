@@ -14,9 +14,9 @@ local ItemsToBuy =
 	"item_branch",
 	"item_branch",
 	"item_recipe_magic_wand",
-	"item_ultimate_scepter",
 	"item_blink",
 	"item_black_king_bar", --bkb
+	"item_ultimate_scepter",
 	"item_assault", --强袭
 	"item_heart"
 }

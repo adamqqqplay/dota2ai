@@ -19,7 +19,7 @@ local ItemsToBuy =
 	"item_hood_of_defiance", --挑战
 	"item_dragon_lance", --魔龙枪
 	"item_force_staff", --推推7.14
-	"item_crown", --大推推7.20
+	"item_recipe_hurricane_pike", --大推推7.28
 	"item_ultimate_scepter", --蓝杖
 	"item_sheepstick", --羊刀
 	"item_monkey_king_bar" --金箍棒7.14
