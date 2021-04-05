@@ -17,15 +17,15 @@ local AbilitiesReal ={}
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
 -- utility.PrintAbilityName(Abilities)
-local abilityName = {}
+local abilityName =  { "life_stealer_rage", "life_stealer_feast", "life_stealer_ghoul_frenzy", "life_stealer_open_wounds", "life_stealer_infest", "life_stealer_consume" }
 local abilityIndex = utility.ReverseTable(abilityName)
 
 
 local AbilityToLevelUp=
 {
 	Abilities[2],
-	Abilities[3],
 	Abilities[1],
+	Abilities[3],
 	Abilities[1],
 	Abilities[1],
 	Abilities[5],
@@ -33,12 +33,12 @@ local AbilityToLevelUp=
 	Abilities[3],
 	Abilities[3],
 	"talent",
-	Abilities[3],
+	Abilities[2],
 	Abilities[5],
 	Abilities[2],
 	Abilities[2],
 	"talent",
-	Abilities[2],
+	Abilities[3],
 	"nil",
 	Abilities[5],
 	"nil",
@@ -158,9 +158,9 @@ Consider[1]=function()
 	
 end
 
-Consider[3]=function()
+Consider[abilityIndex.life_stealer_open_wounds]=function()
 
-	local abilityNumber=3
+	local abilityNumber=abilityIndex.life_stealer_open_wounds
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

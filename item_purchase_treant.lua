@@ -22,7 +22,7 @@ local ItemsToBuy =
 	"item_wind_lace",
 	"item_recipe_solar_crest", --大勋章7.20
 	"item_lotus_orb", --清莲宝珠
-	"item_ultimate_scepter_1", --蓝杖
+	"item_ultimate_scepter", --蓝杖
 	"item_ring_of_health",
 	"item_void_stone",
 	"item_ring_of_health",

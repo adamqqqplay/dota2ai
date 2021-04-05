@@ -19,7 +19,7 @@ local ItemsToBuy =
 	"item_black_king_bar",
 	"item_lesser_crit",
 	"item_recipe_bloodthorn", --血棘
-	"item_ultimate_scepter_1", --蓝杖
+	"item_ultimate_scepter", --蓝杖
 	"item_ultimate_orb",
 	"item_recipe_silver_edge" --大隐刀
 }

@@ -14,7 +14,6 @@ local ItemsToBuy =
 	"item_phase_boots", --相位
 	"item_magic_wand", --大魔棒7.14
 	"item_bracer",
-	"item_bracer", --护腕
 	"item_blink", --跳刀
 	"item_robe",
 	"item_chainmail",

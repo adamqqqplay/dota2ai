@@ -10,7 +10,6 @@ local ItemsToBuy =
 	"item_quelling_blade", --补刀斧
 	"item_boots",
 	"item_magic_wand", --大魔棒7.14
-	"item_soul_ring", --魂戒
 	"item_belt_of_strength",
 	"item_gloves", --假腿7.21
 	"item_pipe", --笛子

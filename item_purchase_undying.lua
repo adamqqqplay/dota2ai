@@ -14,7 +14,7 @@ local ItemsToBuy =
 	"item_buckler",
 	"item_boots",
 	"item_magic_wand", --大魔棒7.14
-	"item_energy_booster", --秘法
+	"item_energy_booster",
 	"item_blade_mail", --刃甲
 	"item_mekansm", --梅肯
 	"item_recipe_guardian_greaves", --卫士胫甲

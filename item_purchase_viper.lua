@@ -14,7 +14,7 @@ local ItemsToBuy =
 	"item_maelstrom",
 	"item_hurricane_pike", --大推推7.20
 	"item_black_king_bar", --bkb
-	"item_ultimate_scepter_1",
+	-- "item_ultimate_scepter",
 	"item_manta", --分身斧
 	"item_heart", --龙心7.20
 	"item_hyperstone",

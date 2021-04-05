@@ -22,7 +22,7 @@ local ItemsToBuy =
 	"item_recipe_manta", --分身
 	"item_abyssal_blade", --大晕锤
 	"item_butterfly", --蝴蝶
-	"item_ultimate_scepter_1"
+	-- "item_ultimate_scepter"
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)

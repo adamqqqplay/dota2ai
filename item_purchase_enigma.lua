@@ -16,9 +16,10 @@ local ItemsToBuy =
 	"item_recipe_guardian_greaves", --卫士胫甲
 	"item_black_king_bar", --bkb
 	"item_vitality_booster",
-	"item_energy_booster",
+	--"item_energy_booster",
+	"item_arcane_boots",
 	"item_recipe_aeon_disk", -- 永恒之盘
-	"item_ultimate_scepter_1", --蓝杖
+	"item_ultimate_scepter", --蓝杖
 	"item_octarine_core", --玲珑心
 	"item_refresher" --刷新球
 }

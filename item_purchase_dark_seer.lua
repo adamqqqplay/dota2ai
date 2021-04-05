@@ -13,7 +13,7 @@ local ItemsToBuy =
 	"item_soul_ring", --魂戒
 	"item_boots",
 	"item_magic_wand", --大魔棒7.14
-	"item_energy_booster", --秘法鞋
+	"item_energy_booster",
 	"item_pipe", --笛子
 	"item_mekansm", --梅肯
 	"item_recipe_guardian_greaves", --卫士胫甲

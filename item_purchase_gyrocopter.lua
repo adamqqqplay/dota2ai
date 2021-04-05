@@ -16,11 +16,11 @@ local ItemsToBuy =
 	"item_blades_of_attack",
 	"item_chainmail", --相位7.21
 	"item_ancient_janggo", --战鼓7.20
-	"item_sange_and_yasha", --双刀
+	"item_monkey_king_bar", --金箍棒7.14
 	"item_black_king_bar", --bkb
-	"item_hurricane_pike", --大推推7.20
+	"item_sange_and_yasha", --双刀
+	-- "item_hurricane_pike", --大推推7.20
 	"item_butterfly", --蝴蝶
-	"item_monkey_king_bar" --金箍棒7.14
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)

@@ -11,13 +11,14 @@ local ItemsToBuy =
 	"item_quelling_blade",
 	"item_orb_of_venom",
 	"item_wraith_band",
-	"item_wraith_band",
 	"item_power_treads", --假腿7.21
+	"item_blight_stoe",
+	"item_flaffly_hat",
+	"item_recipe_orb_of_corrosion",
 	"item_magic_wand", --大魔棒7.14
-	"item_ancient_janggo",
-	"item_diffusal_blade", --散失
-	"item_sange_and_yasha",
+	"item_skadi",
 	"item_black_king_bar", --bkb
+	"item_diffusal_blade", --散失
 	"item_abyssal_blade", --大晕锤
 	"item_butterfly"
 }

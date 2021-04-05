@@ -15,7 +15,7 @@ local ItemsToBuy =
 	"item_armlet", --臂章
 	"item_heavens_halberd", --天堂
 	"item_hurricane_pike", --大推推7.20
-	"item_ultimate_scepter_1", --蓝杖
+	"item_ultimate_scepter", --蓝杖
 	"item_satanic" --撒旦7.07
 }
 

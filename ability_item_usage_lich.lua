@@ -66,6 +66,11 @@ function AbilityLevelUpThink()
 	ability_item_usage_generic.AbilityLevelUpThink2(abilityTree, talentTree)
 end
 
+utility.PrintAbilityName(Abilities)
+local abilityName =  {}
+local abilityIndex = utility.ReverseTable(abilityName)
+
+
 --------------------------------------
 -- Ability Usage Thinking
 --------------------------------------

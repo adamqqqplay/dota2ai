@@ -12,7 +12,7 @@ local ItemsToBuy =
 	"item_boots",
 	"item_cyclone",
 	"item_black_king_bar",
-	"item_ultimate_scepter_1",
+	"item_ultimate_scepter",
 	"item_recipe_travel_boots",
 	"item_black_king_bar",
 	"item_sphere",

@@ -13,7 +13,7 @@ local ItemsToBuy =
 	"item_boots",
 	"item_magic_stick",
 	"item_recipe_magic_wand", --大魔棒7.14
-	"item_energy_booster", --秘法鞋
+	"item_energy_booster",
 	"item_ring_of_regen",
 	"item_recipe_headdress",
 	"item_branches",

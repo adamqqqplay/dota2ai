@@ -19,7 +19,7 @@ local ItemsToBuy =
 	"item_blink",
 	"item_black_king_bar",
 	"item_monkey_king_bar",
-	"item_ultimate_scepter_1",
+	"item_ultimate_scepter",
 	"item_sphere", --林肯
 	"item_hyperstone",
 	"item_recipe_mjollnir" --大雷锤
