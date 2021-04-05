@@ -13,7 +13,6 @@ local ItemsToBuy =
 	"item_buckler",
 	"item_wind_lace",
 	"item_boots",
-	"item_magic_stick",
 	"item_ring_of_regen", --绿鞋
 	"item_soul_ring",
 	"item_urn_of_shadows",

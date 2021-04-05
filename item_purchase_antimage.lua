@@ -13,7 +13,10 @@ local ItemsToBuy =
 	"item_wraith_band",
 	"item_power_treads", --假腿7.21
 	"item_orb_of_corrosion",
-	"item_bfury", --狂战7.14
+	"item_broadsword",
+	"item_ring_of_health",
+	"item_claymore",
+	"item_void_stone",
 	"item_manta", --分身
 	"item_basher", --晕锤7.14
 	"item_vanguard",

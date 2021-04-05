@@ -12,7 +12,10 @@ local ItemsToBuy =
 	"item_wraith_band",
 	"item_bottle",
 	"item_phase_boots",
-	"item_bfury",
+	"item_broadsword",
+	"item_ring_of_health",
+	"item_claymore",
+	"item_void_stone",
 	"item_magic_wand", --大魔棒7.14
 	"item_black_king_bar",
 	"item_greater_crit",
