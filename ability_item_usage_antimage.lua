@@ -7,6 +7,8 @@
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+
 
 local debugmode=false
 local npcBot = GetBot()
@@ -19,8 +21,6 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 -- utility.PrintAbilityName(Abilities)
 local abilityName = {}
 local abilityIndex = utility.ReverseTable(abilityName)
-
-
 
 
 local AbilityToLevelUp=
@@ -214,7 +214,7 @@ Consider[3]=function()
 				local incProj = npcBot:GetIncomingTrackingProjectiles()
 				for _,p in pairs(incProj)
 				do
-					if GetUnitToLocationDistance(npcBot, p.location) <= 300 and p.is_attack == false and p.is_dodgeable then -- ability (etc spectre_spectral_dagger) cannot be blocked
+					if GetUnitToLocationDistance(npcBot, p.location) <= 300 and p.is_attack == false and p.is_dodgeable and AbilityExtensions:Contains(AbilityExtensions.IgnoreAbilityBlockAbilities, p.ability:GetName()) then -- ability (etc spectre_spectral_dagger) cannot be blocked
 						return BOT_ACTION_DESIRE_HIGH
 					end
 				end
@@ -278,16 +278,14 @@ Consider[5]=function()
 	do
 		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy )) 
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy
+			return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 		end
 	end
 
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
 end
-
-local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
--- AbilityExtensions:AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock(npcBot, Consider, AbilitiesReal)
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
 function AbilityUsageThink()
 

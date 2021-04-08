@@ -619,10 +619,11 @@ consider[5] = function()
 	return BOT_ACTION_DESIRE_NONE, 0
 end
 
-local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
-AbilityExtensions:AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock(npcBot, consider, abilityHandles)
+
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, consider, abilityHandles)
 
 
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
 	-- Check if we're already using an ability
 	if (npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced()) then

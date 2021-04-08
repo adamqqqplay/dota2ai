@@ -13,7 +13,7 @@ local ItemsToBuy =
 	"item_power_treads",
 	"item_diffusal_blade", --散失刀
 	"item_sange_and_yasha", --双刀
-	"item_echo_sabre", --连击刀
+    "item_mage_slayer",
 	"item_black_king_bar", --bkb
 	"item_abyssal_blade" --大晕锤
 }

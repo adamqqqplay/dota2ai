@@ -7,6 +7,7 @@
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -19,7 +20,7 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 -- utility.PrintAbilityName(Abilities)
 local abilityName = { "alchemist_acid_spray", "alchemist_unstable_concoction", "alchemist_goblins_greed", "alchemist_berserk_potion", "alchemist_chemical_rage", "alchemist_unstable_concoction_throw" }
 local abilityIndex = utility.ReverseTable(abilityName)
-local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+
 
 
 local AbilityToLevelUp=
@@ -567,8 +568,7 @@ Consider[abilityIndex.alchemist_unstable_concoction_throw]=function()
 	end
 	return BOT_ACTION_DESIRE_NONE, 0
 end
-
--- AbilityExtensions:AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock(npcBot, Consider, AbilitiesReal)
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
 function AbilityUsageThink()
 

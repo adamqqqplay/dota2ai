@@ -20,6 +20,15 @@ M.Filter = function(self, tb, filter)
     end
     return g
 end
+M.FilterNot = function(self, tb, filter)
+    local g = {}
+    for k, v in pairs(tb) do
+        if not filter(v) then
+            g[k] = v
+        end
+    end
+    return g
+end
 
 M.Map = function(self, tb, transform)
     local g = {}
@@ -138,6 +147,36 @@ M.GetAbilityImportance = function(self, cooldown)
     return Trim(cooldown/120, 0, 1)
 end
 
+M.IsFarmingOrPushing = function(self, npcBot)
+    local mode = npcBot:GetActiveMode()
+    return mode==BOT_MODE_FARM or mode==BOT_MODE_PUSH_TOWER_BOT or mode==BOT_MODE_PUSH_TOWER_MID or mode==BOT_MODE_PUSH_TOWER_TOP
+end
+
+M.IsAttackingEnemies = function(self, npcBot)
+    local mode = npcBot:GetActiveMode()
+    return mode == BOT_MODE_ROAM or mode == BOT_MODE_TEAM_ROAM or mode == BOT_MODE_ATTACK or mode ==  BOT_MODE_DEFEND_ALLY
+end
+
+M.HasEnoughManaToUseAttackAttachedAbility = function(self, npcBot, ability)
+    local percent = self:GetManaPercent(npcBot)
+    if percent >= 0.8 and npcBot:GetMana() >= 650 then
+        return true
+    end
+    return percent >= 0.4 and npcBot:GetMana() >= 300 and npcBot:GetManaRegen() >= npcBot:GetAttacksPerSecond() * ability:GetManaCost() * 0.75
+end
+
+-- turn a function that returns true, false, nil to a function that decides whether to toggle the ability or not
+M.ToggleFunctionToAction = function(self, npcBot, oldConsider, ability)
+    return function()
+        local value = oldConsider()
+        if value == nil or value == ability:GetToggleState() then
+            return 0
+        else
+            return BOT_ACTION_DESIRE_HIGH
+        end
+    end
+end
+
 local GetOtherTeam = function(team)
     if team == TEAM_RADIANT then
         return TEAM_DIRE
@@ -149,6 +188,7 @@ end
 
 M.RadiantPlayerId = GetTeamPlayers(TEAM_RADIANT)
 M.DirePlayerId = GetTeamPlayers(TEAM_DIRE)
+
 M.GetTeamPlayers = function(self, team)
     if team == TEAM_RADIANT then
         return self.RadiantPlayerId
@@ -158,8 +198,10 @@ M.GetTeamPlayers = function(self, team)
 end
 
 M.MustBeIllusion = function(self, npcBot, target)
-    if npcBot:GetTeam() == target:GetTeam() and target:IsIllusion() then return true end
-    if not self:Contains(self:GetTeamPlayers(npcBot:GetTeam()), target:GetPlayerID()) then
+    if npcBot:GetTeam() == target:GetTeam() then
+        return target:IsIllusion()
+    end
+    if self:Contains(self:GetTeamPlayers(npcBot:GetTeam()), target:GetPlayerID()) then
         return true
     end
     return false
@@ -226,7 +268,7 @@ M.PreventEnemyTargetAbilityUsageAtAbilityBlock = function(self, npcBot, oldConsi
         local desire, target, targetTypeString = oldConsiderFunction()
         if desire == 0 or target == nil or target == 0 or self:IsVector(target) or targetTypeString == "Location" then
             if self:IsVector(target) then
-                print("npcBot "..npcBot:GetName().." lands target ability "..ability:GetName().." at location "..self:ToStringVector(target))
+                print("npcBot "..npcBot:GetUnitName().." lands target ability "..ability:GetName().." at location "..self:ToStringVector(target))
             end
             return desire, target, targetTypeString
         end
@@ -272,14 +314,15 @@ M.PreventEnemyTargetAbilityUsageAtAbilityBlock = function(self, npcBot, oldConsi
     return newConsider
 end
 
-M.AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock = function(self, npcBot, considers, abilitiesReal)
+M.AutoModifyConsiderFunction = function(self, npcBot, considers, abilitiesReal)
     for index, ability in pairs(abilitiesReal) do
         if not binlib.Test(ability:GetBehavior(), ABILITY_BEHAVIOR_PASSIVE) and considers[index] == nil then
             print("Missing consider function "..ability:GetName())
         elseif binlib.Test(ability:GetTargetTeam(), ABILITY_TARGET_TEAM_ENEMY) and binlib.Test(ability:GetTargetType(), binlib.Or(ABILITY_TARGET_TYPE_HERO, ABILITY_TARGET_TYPE_CREEP, ABILITY_TARGET_TYPE_BUILDING)) and binlib.Test(ability:GetBehavior(), ABILITY_BEHAVIOR_UNIT_TARGET) then
-            print("Modify ability to avoid spell block: "..ability:GetName())
+            print("Modify ability to prevent ability usage at illusion "..ability:GetName())
             considers[index] = self.PreventAbilityAtIllusion(self, npcBot, considers[index], ability)
             if not self:Contains(self.IgnoreAbilityBlockAbilities, ability:GetName()) then
+                print("Modify ability to avoid spell block: "..ability:GetName())
                 considers[index] = self.PreventEnemyTargetAbilityUsageAtAbilityBlock(self, npcBot, considers[index], ability)
             end
         end
@@ -288,6 +331,10 @@ end
 
 M.GetHealthPercent = function(self, npc)
     return npc:GetHealth() / npc:GetMaxHealth()
+end
+
+M.GetManaPercent = function(self, npc)
+    return npc:GetMana() / npc:GetMaxMana()
 end
 
 M.GetTargetHealAmplifyPercent = function(self, npc)
@@ -342,7 +389,7 @@ M.PURCHASE_ITEM_INSUFFICIENT_GOLD=63
 M.PURCHASE_ITEM_NOT_AT_SECRET_SHOP=62
 M.PURCHASE_ITEM_NOT_AT_HOME_SHOP=67
 M.PURCHASE_ITEM_SUCCESS=-1
--- invalid order(3) unrecognised item name
+-- invalid order(3) unrecognised order name
 -- invalid order(40) order not allowed for illusions
 -- attempt to purchase "item_energy_booster" failed code 68
 

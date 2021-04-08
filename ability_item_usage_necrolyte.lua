@@ -9,6 +9,7 @@ local utility = require( GetScriptDirectory().."/utility" )
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
+
 local debugmode=false
 local npcBot = GetBot()
 local Talents ={}
@@ -342,8 +343,7 @@ Consider[5]=function()
 
 	return BOT_ACTION_DESIRE_NONE, 0
 end
-
--- AbilityExtensions:AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock(npcBot, Consider, AbilitiesReal)
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
 function AbilityUsageThink()
 

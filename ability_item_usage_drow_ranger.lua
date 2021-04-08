@@ -7,6 +7,8 @@
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+
 
 local debugmode=false
 local npcBot = GetBot()
@@ -154,7 +156,7 @@ Consider[1]=function()
 	--------------------------------------
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if(CreepHealth>=300 and ManaPercentage>=0.5 and HealthPercentage>=0.6 and #creeps2<=1)
+		if AbilityExtensions:HasEnoughManaToUseAttackAttachedAbility(npcBot, AbilitiesReal[abilityNumber]) and #creeps2<=1
 		then
 			if (WeakestEnemy~=nil)
 			then
@@ -167,7 +169,7 @@ Consider[1]=function()
 	end
 	
 	-- If we're farming
-	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
+	if ( npcBot:GetActiveMode() == BOT_MODE_FARM and AbilityExtensions:HasEnoughManaToUseAttackAttachedAbility(npcBot, AbilitiesReal[abilityNumber]) )
 	then
 		if(WeakestCreep~=nil)
 		then
@@ -426,6 +428,7 @@ Consider[3]=function()
 	
 end
 
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability

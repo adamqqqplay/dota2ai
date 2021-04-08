@@ -20,7 +20,7 @@ local ItemsToBuy =
 	"item_black_king_bar",
 	"item_greater_crit",
 	"item_maelstrom", --电锤7.14
-	"item_octarine_core" --玲珑心
+	"item_octarine_core", --玲珑心
 	"item_hyperstone",
 	"item_recipe_mjollnir", --大雷锤
 }

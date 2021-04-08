@@ -9,8 +9,7 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_flask",
-	"item_orb_of_venom", -- 毒球
-	"item_null_talisman",
+    "item_orb_of_corrosion",
 	"item_null_talisman",
 	"item_phase_boots", --相位7.21
 	"item_invis_sword", --隐刀

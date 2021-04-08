@@ -2,6 +2,7 @@ local BotsInit = require("game/botsinit")
 local role = require(GetScriptDirectory() .. "/util/RoleUtility")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
+
 local M = BotsInit.CreateGeneric()
 
 local function CanCastOnTarget(npcTarget)

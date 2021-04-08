@@ -7,6 +7,7 @@
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -372,7 +373,7 @@ Consider[3]=function()
 
 	local locationAoE = npcBot:FindAoELocation( false, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 	if ( locationAoE.count >= 2 and AOESurge:IsTrained()==true ) then
-		return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+		return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc, "Location"
 	end
 	--------------------------------------
 	-- Mode based usage
@@ -383,9 +384,9 @@ Consider[3]=function()
 		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) ) 
 		then
 			if(AOESurge:IsTrained()==true) then
-				return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc;
+				return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc, "Location"
 			else
-				return BOT_ACTION_DESIRE_HIGH, npcBot;
+				return BOT_ACTION_DESIRE_HIGH, npcBot, "Target"
 			end
 		end
 	end
@@ -397,9 +398,9 @@ Consider[3]=function()
 		then
 			if(AOESurge:IsTrained()==true) then
 				local locationAoE = npcBot:FindAoELocation( false, true, ally:GetLocation(), CastRange, Radius, 0, 0 );
-				return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc;
+				return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc, "Location"
 			else
-				return BOT_ACTION_DESIRE_HIGH, ally;
+				return BOT_ACTION_DESIRE_HIGH, ally, "Target"
 			end
 		end
 	end
@@ -427,9 +428,9 @@ Consider[3]=function()
 				end
 				if(AOESurge:IsTrained()==true) then
 					local locationAoE = npcBot:FindAoELocation( false, true, ClosestBot:GetLocation(), CastRange, Radius, 0, 0 );
-					return BOT_ACTION_DESIRE_MODERATE, locationAoE.targetloc;
+					return BOT_ACTION_DESIRE_MODERATE, locationAoE.targetloc, "Location"
 				else
-					return BOT_ACTION_DESIRE_MODERATE, ClosestBot;
+					return BOT_ACTION_DESIRE_MODERATE, ClosestBot, "Target"
 				end
 			end
 		end
@@ -544,6 +545,7 @@ Consider[5]=function()
 	
 end
 
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability
