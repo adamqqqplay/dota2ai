@@ -7,7 +7,7 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 local ItemsToBuy =
 {
 	"item_tango",
-	"item_magic_stick",
+	"item_flask",
 	"item_branches",
 	"item_branches",
     

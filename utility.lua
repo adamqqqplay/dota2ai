@@ -25,6 +25,13 @@ function utilityModule.UCanCast( npcEnemy )--magic immune
 	return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable() and not utilityModule.HasImmuneDebuff(npcEnemy) and not npcEnemy:IsIllusion() and not npcEnemy:HasModifier("modifier_item_sphere") and not npcEnemy:HasModifier("modifier_item_sphere_target")
 end
 
+function utilityModule.CanCastNoTarget()
+    return true
+end
+function utilityModule.CanCastPassive()
+    return true
+end
+
 function utilityModule.IsRoshan(npcTarget)
 	return npcTarget ~= nil and npcTarget:IsAlive() and string.find(npcTarget:GetUnitName(), "roshan");
 end

@@ -9,16 +9,17 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_tango",
-	"item_magic_stick",
 	"item_quelling_blade",
 	"item_wraith_band",
 	"item_wraith_band",
-	"item_branch",
-	"item_branch",
-	"item_recipe_magic_wand",
+	"item_magic_wand",
 	"item_phase_boots", --相位7.21
-	"item_diffusal_blade", --散失刀
+    "item_broadsword",
+    "item_ring_of_health",
+    "item_claymore",
+    "item_void_stone",
 	"item_sange_and_yasha", --双刀
+    "item_diffusal_blade", --散失刀
 	"item_black_king_bar", --bkb
 	"item_butterfly",
 	"item_demon_edge",

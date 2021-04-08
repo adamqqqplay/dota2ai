@@ -8,11 +8,9 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_wraith_band", --系带
-	"item_magic_stick",
+	"item_flask",
 	"item_wraith_band", --系带
-	"item_branch",
-	"item_branch",
-	"item_recipe_magic_wand",
+	"item_magic_wand",
 	"item_boots",
 	"item_hand_of_midas", --点金
 	"item_maelstrom", --电锤7.14

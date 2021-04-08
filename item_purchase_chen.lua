@@ -11,7 +11,8 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	"item_boots",
-	"item_magic_stick",
+	"item_flask",
+    "item_magic_stick",
 	"item_recipe_magic_wand", --大魔棒7.14
 	"item_energy_booster",
 	"item_ring_of_regen",

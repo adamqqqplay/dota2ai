@@ -106,7 +106,7 @@ end
 
 local CanCast={CanCast1,CanCast2}
 
-Consider[1]=function()
+Consider[1]=function() -- TODO: lv 25 AOE mist coil
 	local abilityNumber=1
 	--------------------------------------
 	-- Generic Variable Setting
@@ -424,6 +424,9 @@ Consider[4]=function()
 
 	return BOT_ACTION_DESIRE_NONE
 end
+
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+-- AbilityExtensions:AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock(npcBot, Consider, AbilitiesReal)
 
 function AbilityUsageThink()
 

@@ -602,7 +602,6 @@ Consider[4]=function()		--A杖大
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
 
-
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability

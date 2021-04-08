@@ -76,7 +76,10 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={function(target) return (npcBot:GetLevel()>=25 and utility.UCanCast(target)) or utility.NCanCast(target) end,
+               utility.NCanCast,
+               utility.NCanCast,
+               utility.UCanCast,}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()

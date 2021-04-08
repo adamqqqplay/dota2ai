@@ -114,8 +114,7 @@ Consider[1]=function()
 	-- Check for a channeling enemy
 	for _,npcEnemy in pairs( enemys )
 	do
-		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy )) 
-		then
+		if npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy ) then -- TODO: left channel time long enough
 			return BOT_ACTION_DESIRE_HIGH, npcEnemy
 		end
 	end
@@ -547,6 +546,9 @@ Consider[5]=function()
 	return BOT_ACTION_DESIRE_NONE;
 
 end
+
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+-- AbilityExtensions:AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock(npcBot, Consider, AbilitiesReal)
 	
 function AbilityUsageThink()
 

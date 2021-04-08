@@ -7,12 +7,10 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 local ItemsToBuy =
 {
 	"item_tango",
-	"item_magic_stick",
+	"item_flask",
 	"item_quelling_blade",
 	"item_bracer",
-	"item_branch",
-	"item_branch",
-	"item_recipe_magic_wand",
+	"item_magic_wand",
 	"item_power_treads",
 	"item_blink", --跳刀
 	"item_echo_sabre", --连击刀

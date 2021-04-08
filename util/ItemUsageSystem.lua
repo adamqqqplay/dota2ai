@@ -1,5 +1,6 @@
 local BotsInit = require("game/botsinit")
 local role = require(GetScriptDirectory() .. "/util/RoleUtility")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
 local M = BotsInit.CreateGeneric()
 
@@ -53,7 +54,7 @@ local function GiveToMidLaner()
             local num_sts = GetItemCount(member, "item_tango_single")
             local num_ff = GetItemCount(member, "item_faerie_fire")
             local num_stg = GetItemCharges(member, "item_tango")
-            if num_sts + num_ff + num_stg <= 3 then
+            if num_sts + num_ff + num_stg <= 2 then
                 return member
             end
         end
@@ -437,7 +438,7 @@ function M.UnImplementedItemUsage()
         end
     end
 
-    local ifl = IsItemAvailable("item_magic_stick")
+    local ifl = IsItemAvailable("item_flask")
     if ifl ~= nil and ifl:IsFullyCastable() and npcBot:DistanceFromFountain() > 1000 then
         if DotaTime() > 0 then
             local tableNearbyEnemyHeroes2 = npcBot:GetNearbyHeroes(650, true, BOT_MODE_NONE)
@@ -677,6 +678,16 @@ function M.UnImplementedItemUsage()
         end
     end
 
+    local ghost = IsItemAvailable("item_ghost")
+    if ghost and ghost:IsFullyCastable() then
+        if npcBot:GetActiveMode() == BOT_MODE_ATTACK or npcBot:GetActiveMode() == BOT_MODE_RETREAT then
+            if npcBot:WasRecentlyDamagedByAnyHero(2.0) and npcBot:GetHealth()/npcBot:GetMaxHealth() <= 0.6 then -- TODO: get recent physical and magical damage
+                npcBot:Action_UseAbility(ghost)
+                return
+            end
+        end
+    end
+
     local glimer = IsItemAvailable("item_glimmer_cape")
     if glimer ~= nil and glimer:IsFullyCastable() then
         if
@@ -779,7 +790,7 @@ function M.UnImplementedItemUsage()
 		end
 	end
 
-	local mgs=IsItemAvailable("item_magic_stick");
+	local mgs=IsItemAvailable("item_flask");
 	if mgs~=nil and mgs:IsFullyCastable() then
 		if npcBot:GetMana()/npcBot:GetMaxMana() - npcBot:GetHealth()/npcBot:GetMaxHealth() <= 1 and mgs:GetCurrentCharges()>=8
 		then
@@ -787,16 +798,16 @@ function M.UnImplementedItemUsage()
 			return;
 		end
 	end]]
-    local stick = IsItemAvailable("item_magic_stick")
+    local stick = IsItemAvailable("item_flask")
     if stick ~= nil and stick:IsFullyCastable() then
         if DotaTime() > 0 then
             local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes(500, true, BOT_MODE_NONE)
             if
                 ((npcBot:GetHealth() / npcBot:GetMaxHealth() < 0.4 or npcBot:GetMana() / npcBot:GetMaxMana() < 0.2) and
                     #tableNearbyEnemyHeroes >= 1 and
-                    GetItemCharges(npcBot, "item_magic_stick") >= 1) or
+                    GetItemCharges(npcBot, "item_flask") >= 1) or
                     ((npcBot:GetHealth() / npcBot:GetMaxHealth() < 0.7 and npcBot:GetMana() / npcBot:GetMaxMana() < 0.7) and
-                        GetItemCharges(npcBot, "item_magic_stick") >= 7)
+                        GetItemCharges(npcBot, "item_flask") >= 7)
              then
                 npcBot:Action_UseAbility(stick)
                 return
@@ -811,11 +822,28 @@ function M.UnImplementedItemUsage()
             if
                 ((npcBot:GetHealth() / npcBot:GetMaxHealth() < 0.4 or npcBot:GetMana() / npcBot:GetMaxMana() < 0.2) and
                     #tableNearbyEnemyHeroes >= 1 and
-                    GetItemCharges(npcBot, "item_magic_stick") >= 1) or
+                    GetItemCharges(npcBot, "item_magic_wand") >= 1) or
                     ((npcBot:GetHealth() / npcBot:GetMaxHealth() < 0.7 and npcBot:GetMana() / npcBot:GetMaxMana() < 0.7) and
                         GetItemCharges(npcBot, "item_magic_wand") >= 12)
              then
                 npcBot:Action_UseAbility(wand)
+                return
+            end
+        end
+    end
+
+    local holyLocket = IsItemAvailable("item_holy_locket")
+    if holyLocket ~= nil and holyLocket:IsFullyCastable() then
+        if DotaTime() > 0 then
+            local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes(500, true, BOT_MODE_NONE)
+            if
+            ((npcBot:GetHealth() / npcBot:GetMaxHealth() < 0.4 or npcBot:GetMana() / npcBot:GetMaxMana() < 0.2) and
+                    #tableNearbyEnemyHeroes >= 1 and
+                    GetItemCharges(npcBot, "item_holy_locket") >= 1) or
+                    ((npcBot:GetHealth() / npcBot:GetMaxHealth() < 0.7 and npcBot:GetMana() / npcBot:GetMaxMana() < 0.7) and
+                            GetItemCharges(npcBot, "item_holy_locket") >= 12)
+            then
+                npcBot:Action_UseAbility(wand, npcBot)
                 return
             end
         end
@@ -840,13 +868,24 @@ function M.UnImplementedItemUsage()
     local cyclone = IsItemAvailable("item_cyclone")
     if cyclone ~= nil and cyclone:IsFullyCastable() then
         if
-            npcTarget ~= nil and
-                (npcTarget:HasModifier("modifier_teleporting") or
-                    npcTarget:HasModifier("modifier_abaddon_borrowed_time")) and
+            npcTarget ~= nil and npcTarget:IsChanneling() or
+                (npcTarget:HasModifier("modifier_teleporting") or AbilityExtensions:CannotKillNormally(npcTarget)) and
                 CanCastOnTarget(npcTarget) and
                 GetUnitToUnitDistance(npcBot, npcTarget) < 775
          then
             npcBot:Action_UseAbilityOnEntity(cyclone, npcTarget)
+            return
+        end
+    end
+
+    local windWaker = IsItemAvailable("item_wind_waker")
+    if windWaker ~= nil and windWaker:IsFullyCastable() then
+        if npcTarget and npcTarget:IsChanneling()
+                or (npcTarget:HasModifier("modifier_teleporting") or AbilityExtensions:CannotKillNormally(npcTarget)) and
+                CanCastOnTarget(npcTarget) and
+                GetUnitToUnitDistance(npcBot, npcTarget) < 775
+        then
+            npcBot:Action_UseAbilityOnEntity(windWaker, npcTarget)
             return
         end
     end
@@ -893,7 +932,7 @@ function M.UnImplementedItemUsage()
                 npcBot:GetActiveMode() == BOT_MODE_ATTACK)
          then
             if
-                npcTarget ~= nil and npcTarget:IsHero() and CanCastOnTarget(npcTarget) and
+                npcTarget ~= nil and npcTarget:IsHero() and AbilityExtensions:MayNotBeIllusion(npcBot, npcTarget) and CanCastOnTarget(npcTarget) and
                     GetUnitToUnitDistance(npcBot, npcTarget) < 900 and
                     npcTarget:HasModifier("modifier_item_spirit_vessel_damage") == false and
                     npcTarget:GetHealth() / npcTarget:GetMaxHealth() < 0.65
@@ -905,7 +944,7 @@ function M.UnImplementedItemUsage()
             local Allies = npcBot:GetNearbyHeroes(1150, false, BOT_MODE_NONE)
             for _, Ally in pairs(Allies) do
                 if
-                    Ally:HasModifier("modifier_item_spirit_vessel_heal") == false and CanCastOnTarget(Ally) and
+                    not Ally:IsIllusion() and Ally:HasModifier("modifier_item_spirit_vessel_heal") == false and CanCastOnTarget(Ally) and
                         Ally:GetHealth() / Ally:GetMaxHealth() < 0.35 and
                         #tableNearbyEnemyHeroes == 0 and
                         Ally:WasRecentlyDamagedByAnyHero(2.5) == false
@@ -917,8 +956,8 @@ function M.UnImplementedItemUsage()
         end
     end
 
-    local null = IsItemAvailable("item_nullifier")
-    if null ~= nil and null:IsFullyCastable() then
+    local nullifier = IsItemAvailable("item_nullifier")
+    if nullifier ~= nil and nullifier:IsFullyCastable() then
         if
             (npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
                 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
@@ -929,7 +968,7 @@ function M.UnImplementedItemUsage()
                     GetUnitToUnitDistance(npcBot, npcTarget) < 800 and
                     npcTarget:HasModifier("modifier_item_nullifier_mute") == false
              then
-                npcBot:Action_UseAbilityOnEntity(null, npcTarget)
+                npcBot:Action_UseAbilityOnEntity(nullifier, npcTarget)
                 return
             end
         end

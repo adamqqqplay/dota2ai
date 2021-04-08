@@ -501,6 +501,12 @@ Consider[4]=function()
 	
 end
 
+local enemyTargetAbilities = {1,2,3,4}
+
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+-- AbilityExtensions:AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock(npcBot, Consider, AbilitiesReal)
+
+
 function AbilityUsageThink()
 	local enemys = npcBot:GetNearbyHeroes(500,true,BOT_MODE_NONE)
 	if(AbilitiesReal[3]:IsInAbilityPhase()==true)

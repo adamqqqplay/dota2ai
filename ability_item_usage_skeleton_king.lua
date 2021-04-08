@@ -203,20 +203,23 @@ Consider[1]=function()
 end
 
 
---[[Consider[3]=function()
-	local abilityNumber=3
-	--------------------------------------
-	-- Generic Variable Setting
-	--------------------------------------
-	local ability=AbilitiesReal[abilityNumber];
-	
-	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
-	end
-	
+Consider[2]=function()
+    local abilityNumber=2
+    --------------------------------------
+    -- Generic Variable Setting
+    --------------------------------------
+    local ability=AbilitiesReal[abilityNumber]
+
+    if not ability:IsFullyCastable() then
+        return BOT_ACTION_DESIRE_NONE
+    end
+    if ability:GetManaCost() + AbilitiesReal[4]:GetManaCost() <= npcBot:GetMana() then
+        return BOT_ACTION_DESIRE_NONE
+    end
+
 	local CastRange = ability:GetCastRange()
 	local CastPoint = ability:GetCastPoint()
-	
+
 	local HeroHealth=10000
 	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
@@ -228,11 +231,11 @@ end
 	-- Global high-priorty usage
 	--------------------------------------
 	--Try to kill enemy hero
-	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
+	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT )
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) and npcBot:HasModifier("modifier_skeleton_king_mortal_strike") 
+			if ( CanCast[abilityNumber]( WeakestEnemy ) and npcBot:HasModifier("modifier_skeleton_king_mortal_strike")
 				and npcBot:GetModifierStackCount(npcBot:GetModifierByName("modifier_skeleton_king_mortal_strike"))> ability:GetLevel())
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or npcBot:GetMana()>ComboMana)
@@ -245,31 +248,31 @@ end
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-	
+
 	-- If we're farming and can hit 2+ creeps
-	--[[if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
+	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
-		if ( #creeps >= 2 and npcBot:HasModifier("modifier_skeleton_king_mortal_strike") 
-				and npcBot:GetModifierStackCount(npcBot:GetModifierByName("modifier_skeleton_king_mortal_strike"))> ability:GetLevel()) 
+		if ( #creeps >= 3 and npcBot:HasModifier("modifier_skeleton_king_vampiric_spirit")
+				and npcBot:GetModifierStackCount(npcBot:GetModifierByName("modifier_skeleton_king_vampiric_spirit"))> ability:GetLevel())
 		then
 			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or npcBot:GetMana()>ComboMana)
 			then
 				return BOT_ACTION_DESIRE_LOW
 			end
 		end
-	end]]
+	end
 
-	
-	--[[ If we're going after someone
+
+	--If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK )
 	then
 		local npcEnemy = npcBot:GetTarget();
 
-		if ( npcEnemy ~= nil and npcBot:HasModifier("modifier_skeleton_king_mortal_strike") 
-				and npcBot:GetModifierStackCount(npcBot:GetModifierByName("modifier_skeleton_king_mortal_strike"))> ability:GetLevel() + 2) 
+		if ( npcEnemy ~= nil and npcBot:HasModifier("modifier_skeleton_king_mortal_strike")
+				and npcBot:GetModifierStackCount(npcBot:GetModifierByName("modifier_skeleton_king_mortal_strike"))> ability:GetLevel() + 2)
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy) <= Radius-CastPoint* npcEnemy:GetCurrentMovementSpeed())
 			then
@@ -278,9 +281,9 @@ end
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
-	
-end]]
+	return BOT_ACTION_DESIRE_NONE
+
+end
 
 function AbilityUsageThink()
 

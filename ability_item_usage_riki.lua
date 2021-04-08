@@ -316,79 +316,284 @@ Consider[2]=function()
 	
 end
 
-Consider[abilityIndex.riki_backstab]=function()
+Consider[abilityIndex.riki_tricks_of_the_trade]=function()	--Target Ability Example
+    local abilityNumber=abilityIndex.riki_tricks_of_the_trade
+    --------------------------------------
+    -- Generic Variable Setting
+    --------------------------------------
+    local ability=AbilitiesReal[abilityNumber];
 
-	local abilityNumber=abilityIndex.riki_backstab
-	--------------------------------------
-	-- Generic Variable Setting
-	--------------------------------------
-	local ability=AbilitiesReal[abilityNumber];
-	
-	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
-	end
-	
-	local CastRange = ability:GetCastRange();
-	local Radius = ability:GetAOERadius()
-	
-	local HeroHealth=10000
-	local CreepHealth=10000
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
-	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local linears=GetLinearProjectiles()
-	if(npcBot:GetActiveMode() == BOT_MODE_RETREAT and #enemys>=1)
-	then
-		for _,linear in pairs(linears)
-		do
-			if(GetTeamForPlayer(linear.playerid)~=GetTeam() and GetUnitToLocationDistance(npcBot,linear.location)<=600)
-			then
-				return BOT_ACTION_DESIRE_HIGH+0.05
-			end
-		end
-	end
-	--------------------------------------
-	-- Global high-priorty usage
-	--------------------------------------
-	-- If we're in a teamfight, use it on the scariest enemy
-	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
-	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 
-	then
-		if ( #enemys+#allys >= 6-2*HealthPercentage and #enemys>=2) 
-		then
-			return BOT_ACTION_DESIRE_HIGH
-		end
-	end
-	
-	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
-	then
-		if ( npcBot:WasRecentlyDamagedByAnyHero(2) ) 
-		then
-			return BOT_ACTION_DESIRE_MODERATE-0.05
-		end
-	end
-	
-	-- If we're going after someone
-	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
-	then
-		local npcEnemy = npcBot:GetTarget();
+    if not ability:IsFullyCastable() then
+        return BOT_ACTION_DESIRE_NONE, 0;
+    end
 
-		if ( npcEnemy ~= nil ) 
-		then
-			if ( npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(npcBot:GetOffensivePower(),DAMAGE_TYPE_MAGICAL) and GetUnitToUnitDistance(npcEnemy,npcBot)<=Radius-200)
-			then
-				return BOT_ACTION_DESIRE_MODERATE
-			end
-		end
-	end
-	
-	return BOT_ACTION_DESIRE_NONE;
-	
+    local CastRange = ability:GetCastRange();
+    local Damage = ability:GetAbilityDamage();
+    local CastPoint = ability:GetCastPoint()
+    local Radius=ability:GetAOERadius()
+
+    local HeroHealth=10000
+    local CreepHealth=10000
+    local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+    local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+    local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+    --------------------------------------
+    -- Global high-priorty usage
+    --------------------------------------
+
+    --Try to kill enemy hero
+    if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT )
+    then
+        if (WeakestEnemy~=nil)
+        then
+            if ( CanCast[abilityNumber]( WeakestEnemy ) )
+            then
+                if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+                then
+                    return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetExtrapolatedLocation(CastPoint+0.5);
+                end
+            end
+        end
+    end
+
+    -- If we're in a teamfight, use it on the scariest enemy
+    local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
+    if ( #tableNearbyAttackingAlliedHeroes >= 2 )
+    then
+
+        local npcMostDangerousEnemy = nil;
+        local nMostDangerousDamage = 0;
+
+        for _,npcEnemy in pairs( enemys )
+        do
+            if ( CanCast[abilityNumber]( npcEnemy ) )
+            then
+                local Damage2 = npcEnemy:GetEstimatedDamageToTarget( false, npcBot, 3.0, DAMAGE_TYPE_ALL );
+                if ( Damage2 > nMostDangerousDamage )
+                then
+                    nMostDangerousDamage = Damage2;
+                    npcMostDangerousEnemy = npcEnemy;
+                end
+            end
+        end
+
+        if ( npcMostDangerousEnemy ~= nil )
+        then
+            return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy:GetExtrapolatedLocation(CastPoint+0.5);
+        end
+    end
+    --------------------------------------
+    -- Mode based usage
+    --------------------------------------
+
+    -- If we're going after someone
+    if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+            npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+            npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+            npcBot:GetActiveMode() == BOT_MODE_ATTACK )
+    then
+        local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
+        if ( locationAoE.count >= 2 )
+        then
+            return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
+        end
+
+        local npcEnemy = npcBot:GetTarget();
+
+        if ( npcEnemy ~= nil )
+        then
+            if ( enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
+            then
+                return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetExtrapolatedLocation(CastPoint+0.5);
+            end
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, 0;
+
 end
+
+Consider[abilityIndex.riki_poison_dart] = function()
+    -- copied from bane_nightmare
+    local abilityNumber=abilityIndex.riki_poison_dart
+    --------------------------------------
+    -- Generic Variable Setting
+    --------------------------------------
+    local ability=AbilitiesReal[abilityNumber];
+
+    if not ability:IsFullyCastable() then
+        return BOT_ACTION_DESIRE_NONE, 0;
+    end
+
+    local CastRange = ability:GetCastRange();
+    local Damage = ability:GetAbilityDamage();
+    local CastPoint = ability:GetCastPoint();
+
+    local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+    local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+    local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+    local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+    local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+    --------------------------------------
+    -- Global high-priorty usage
+    --------------------------------------
+    -- Check for a channeling enemy
+    for _,npcEnemy in pairs( enemys )
+    do
+        if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy ))
+        then
+            return BOT_ACTION_DESIRE_HIGH, npcEnemy
+        end
+    end
+
+    -- If we're in a teamfight, use it on the scariest enemy
+    local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
+    if ( #tableNearbyAttackingAlliedHeroes >= 2 )
+    then
+
+        local npcMostDangerousEnemy = nil;
+        local nMostDangerousDamage = 0;
+
+        for _,npcEnemy in pairs( enemys )
+        do
+            local allys2=npcEnemy:GetNearbyHeroes( 600, true,BOT_MODE_NONE );
+            if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and allys2~=nil and #allys2==0)
+            then
+                local Damage2 = npcEnemy:GetEstimatedDamageToTarget( false, npcBot, 3.0, DAMAGE_TYPE_ALL );
+                if ( Damage2 > nMostDangerousDamage )
+                then
+                    nMostDangerousDamage = Damage2;
+                    npcMostDangerousEnemy = npcEnemy;
+                end
+            end
+        end
+
+        if ( npcMostDangerousEnemy ~= nil )
+        then
+            return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy;
+        end
+    end
+    --------------------------------------
+    -- Mode based usage
+    --------------------------------------
+    -- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+    if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH )
+    then
+        for _,npcEnemy in pairs( enemys )
+        do
+            local allys2=npcEnemy:GetNearbyHeroes( 600, true ,BOT_MODE_NONE );
+            if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) and allys2~=nil and #allys2==0)
+            then
+                if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy))
+                then
+                    return BOT_ACTION_DESIRE_HIGH, npcEnemy;
+                end
+            end
+        end
+    end
+
+    -- If we're going after someone
+    if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+            npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+            npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+            npcBot:GetActiveMode() == BOT_MODE_ATTACK )
+    then
+        local npcEnemy = npcBot:GetTarget();
+        local allys2
+        local allys3
+        if ( npcEnemy ~= nil)
+        then
+            allys2=npcEnemy:GetNearbyHeroes( 600, true,BOT_MODE_NONE );
+            allys3=npcEnemy:GetNearbyHeroes( 1600, true,BOT_MODE_NONE );
+            if allys2 ==nil then allys2={} end
+            if allys3 ==nil then allys3={} end
+        end
+
+        if ( npcEnemy ~= nil and #allys2<#allys3)
+        then
+            if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
+            then
+                return BOT_ACTION_DESIRE_MODERATE, npcEnemy
+            end
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, 0
+end
+
+--Consider[abilityIndex.riki_backstab]=function()
+--
+--	local abilityNumber=abilityIndex.riki_backstab
+--	--------------------------------------
+--	-- Generic Variable Setting
+--	--------------------------------------
+--	local ability=AbilitiesReal[abilityNumber];
+--
+--	if not ability:IsFullyCastable() then
+--		return BOT_ACTION_DESIRE_NONE, 0;
+--	end
+--
+--	local CastRange = ability:GetCastRange();
+--	local Radius = ability:GetAOERadius()
+--
+--	local HeroHealth=10000
+--	local CreepHealth=10000
+--	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+--	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
+--	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+--	local linears=GetLinearProjectiles()
+--	if(npcBot:GetActiveMode() == BOT_MODE_RETREAT and #enemys>=1)
+--	then
+--		for _,linear in pairs(linears)
+--		do
+--			if(GetTeamForPlayer(linear.playerid)~=GetTeam() and GetUnitToLocationDistance(npcBot,linear.location)<=600)
+--			then
+--				return BOT_ACTION_DESIRE_HIGH+0.05
+--			end
+--		end
+--	end
+--	--------------------------------------
+--	-- Global high-priorty usage
+--	--------------------------------------
+--	-- If we're in a teamfight, use it on the scariest enemy
+--	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
+--	if ( #tableNearbyAttackingAlliedHeroes >= 2 )
+--	then
+--		if ( #enemys+#allys >= 6-2*HealthPercentage and #enemys>=2)
+--		then
+--			return BOT_ACTION_DESIRE_HIGH
+--		end
+--	end
+--
+--	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+--	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH )
+--	then
+--		if ( npcBot:WasRecentlyDamagedByAnyHero(2) )
+--		then
+--			return BOT_ACTION_DESIRE_MODERATE-0.05
+--		end
+--	end
+--
+--	-- If we're going after someone
+--	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+--		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+--		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+--		 npcBot:GetActiveMode() == BOT_MODE_ATTACK )
+--	then
+--		local npcEnemy = npcBot:GetTarget();
+--
+--		if ( npcEnemy ~= nil )
+--		then
+--			if ( npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(npcBot:GetOffensivePower(),DAMAGE_TYPE_MAGICAL) and GetUnitToUnitDistance(npcEnemy,npcBot)<=Radius-200)
+--			then
+--				return BOT_ACTION_DESIRE_MODERATE
+--			end
+--		end
+--	end
+--
+--	return BOT_ACTION_DESIRE_NONE;
+--
+--end
 
 function AbilityUsageThink()
 

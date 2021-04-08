@@ -528,6 +528,9 @@ Consider[4]=function()
 	
 end
 
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+-- AbilityExtensions:AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock(npcBot, Consider, AbilitiesReal)
+
 function AbilityUsageThink()
 
 	if npcBot == nil then npcBot = GetBot(); end

@@ -10,17 +10,18 @@ local ItemsToBuy =
 	"item_ring_of_basilius",
 	"item_tango",
 	"item_clarity",
-	"item_magic_stick",
+    "item_magic_stick",
 	"item_arcane_boots", --秘法鞋
 	"item_force_staff", --推推7.14
+    "item_ghost",
 	"item_rod_of_atos", --阿托斯7.20
 	"item_cyclone", --风杖
 	"item_ultimate_scepter", --蓝杖
-	"item_dragon_lance",
-	"item_recipe_hurricane_pike",
 	"item_mekansm",
 	"item_buckler",
-	"item_recipe_guardian_greaves"
+	"item_recipe_guardian_greaves",
+    "item_dragon_lance",
+    "item_recipe_hurricane_pike",
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)

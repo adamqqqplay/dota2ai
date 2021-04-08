@@ -281,7 +281,7 @@ Consider[3]=function()
 	-- If we're farming
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
-		if ( #creeps >= 1 and ManaPercentage>0.4 or npcBot:GetMana()>ComboMana) 
+		if ( #creeps >= 1 and ManaPercentage>0.6 or npcBot:GetMana()>ComboMana)
 		then
 			return BOT_ACTION_DESIRE_LOW, creeps[1];
 		end
@@ -402,6 +402,12 @@ Consider[6]=function()
 	
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
+
+local enemyTargetAbilities = {4}
+
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+---- AbilityExtensions:AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock(npcBot, Consider, AbilitiesReal)
+
 
 function AbilityUsageThink()
 

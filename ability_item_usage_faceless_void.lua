@@ -17,10 +17,8 @@ local AbilitiesReal ={}
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
 -- utility.PrintAbilityName(Abilities)
-local abilityName = {}
+local abilityName = {  "faceless_void_time_walk", "faceless_void_time_dilation", "faceless_void_time_lock",  "faceless_void_time_walk_reverse", "faceless_void_chronosphere",  }
 local abilityIndex = utility.ReverseTable(abilityName)
-
--- { 1 : faceless_void_time_walk, 2 : faceless_void_time_dilation, 3 : faceless_void_time_lock, 4 : faceless_void_time_walk_reverse, 5 : faceless_void_chronosphere,  }
 
 local AbilityToLevelUp=
 {
@@ -78,7 +76,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.CanCastNoTarget,utility.UCanCast,}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()

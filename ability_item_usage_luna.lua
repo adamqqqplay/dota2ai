@@ -237,7 +237,7 @@ Consider[4]=function()
 		end
 	end
 	
-	if(npcBot:HasScepter() or npcBot:HasModifier("modifier_-- item_ultimate_scepter"))
+	if(npcBot:HasScepter() or npcBot:HasModifier("modifier_item_ultimate_scepter"))
 	then
 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 		if(locationAoE.count-#creeps>=2)
@@ -309,6 +309,12 @@ Consider[4]=function()
 	
 	return BOT_ACTION_DESIRE_NONE;
 end
+
+local enemyTargetAbilities = {1}
+
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+-- AbilityExtensions:AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock(npcBot, Consider, AbilitiesReal)
+
 
 function AbilityUsageThink()
 

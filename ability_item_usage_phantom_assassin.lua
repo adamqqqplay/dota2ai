@@ -71,7 +71,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.CanCastNoTarget,utility.CanCastPassive}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -359,6 +359,12 @@ Consider[3]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 
 end
+
+local enemyTargetAbilities = {1,2}
+
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+-- AbilityExtensions:AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock(npcBot, Consider, AbilitiesReal)
+
 
 function AbilityUsageThink()
 

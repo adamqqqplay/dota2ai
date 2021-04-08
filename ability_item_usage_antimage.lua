@@ -79,7 +79,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.NCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -180,12 +180,10 @@ Consider[3]=function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 
-	local CastRange = ability:GetSpecialValueInt( "blink_range" );
-
 	local HeroHealth=10000
 	local CreepHealth=10000
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
+	local enemys = npcBot:GetNearbyHeroes(900,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local trees= npcBot:GetNearbyTrees(300)
 	
@@ -208,16 +206,16 @@ Consider[3]=function()
 		npcBot:GetActiveMode() == BOT_MODE_ATTACK or
 		(npcBot:GetActiveMode() == BOT_MODE_LANING and ManaPercentage >=0.4 ) )
 	then
-		local npcTarget = npcBot:GetTarget();
+		local npcTarget = npcBot:GetTarget()
 		if(npcTarget~=nil)
 		then
-			if CanCast[abilityNumber]( npcTarget ) and GetUnitToUnitDistance(npcBot,npcTarget)<600
+			if CanCast[abilityNumber]( npcTarget ) and GetUnitToUnitDistance(npcBot,npcTarget) < 600
 			then
 				local incProj = npcBot:GetIncomingTrackingProjectiles()
 				for _,p in pairs(incProj)
 				do
-					if GetUnitToLocationDistance(npcBot, p.location) <= 300 and p.is_attack == false then
-						return BOT_ACTION_DESIRE_HIGH;
+					if GetUnitToLocationDistance(npcBot, p.location) <= 300 and p.is_attack == false and p.is_dodgeable then -- ability (etc spectre_spectral_dagger) cannot be blocked
+						return BOT_ACTION_DESIRE_HIGH
 					end
 				end
 			end
@@ -287,6 +285,9 @@ Consider[5]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
 end
+
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+-- AbilityExtensions:AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock(npcBot, Consider, AbilitiesReal)
 
 function AbilityUsageThink()
 

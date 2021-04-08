@@ -10,10 +10,7 @@ local ItemsToBuy =
 	"item_mantle",
 	"item_circlet",
 	"item_mantle", --无用挂件
-	"item_branches",
-	"item_branches",
-	"item_magic_stick",
-	"item_recipe_magic_wand", --大魔棒7.14
+    "item_magic_wand",
 	"item_boots",
 	"item_recipe_null_talisman",
 	"item_circlet",
@@ -21,8 +18,8 @@ local ItemsToBuy =
 	"item_energy_booster",
 	"item_robe",
 	"item_staff_of_wizardry", --慧光
-	"item_void_stone",
 	"item_energy_booster",
+    "item_void_stone",
 	"item_recipe_aether_lens", --以太之镜7.06
 	"item_point_booster",
 	"item_staff_of_wizardry",

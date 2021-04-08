@@ -256,14 +256,14 @@ Consider[2]=function()
 	for _,npcTarget in pairs( allys )
 	do
 		local enemys2 = npcTarget:GetNearbyHeroes(600,true,BOT_MODE_NONE)
-		if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<=0.2+0.05*#enemys2)
+		if not npcTarget:IsIllusion() and (npcTarget:GetHealth()/npcTarget:GetMaxHealth()<=0.2+0.05*#enemys2) and npcTarget:WasRecentlyDamagedByAnyHero(3)
 		then
 			local Damage2=0
 			for _,npcEnemy in pairs( enemys2 )
 			do
 				Damage2 =Damage2 + npcEnemy:GetEstimatedDamageToTarget( true, npcBot, 2.0, DAMAGE_TYPE_ALL );
 			end
-			if(npcTarget:GetHealth()<Damage2*1.25 or npcTarget:GetHealth()/npcTarget:GetMaxHealth()<=0.3)
+			if not npcTarget:IsIllusion() and (npcTarget:GetHealth()<Damage2*1.25 or npcTarget:GetHealth()/npcTarget:GetMaxHealth()<=0.3)
 			then
 				return BOT_ACTION_DESIRE_HIGH+0.15, npcTarget
 			end
@@ -474,6 +474,12 @@ Consider[4]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
 end
+
+local enemyTargetAbilities = {1}
+
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+-- AbilityExtensions:AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock(npcBot, Consider, AbilitiesReal)
+
 
 function AbilityUsageThink()
 

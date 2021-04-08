@@ -250,6 +250,7 @@ Consider[2]=function()
 			return BOT_ACTION_DESIRE_HIGH, npcEnemy
 		end
 	end
+
 	
 	--Try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
@@ -431,6 +432,12 @@ Consider[4]=function()
 	
 	return BOT_ACTION_DESIRE_NONE;
 end
+
+local enemyTargetAbilities = {2}
+
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+-- AbilityExtensions:AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock(npcBot, Consider, AbilitiesReal)
+
 
 function AbilityUsageThink()
 

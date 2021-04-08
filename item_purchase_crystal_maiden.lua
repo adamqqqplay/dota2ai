@@ -8,12 +8,10 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_tango",
-	"item_magic_stick",
+	"item_flask",
 	"item_clarity",
 	"item_ring_of_basilius",
-	"item_branch",
-	"item_branch",
-	"item_recipe_magic_wand",
+	"item_magic_wand",
 	"item_boots",
 	"item_ring_of_regen", --绿鞋
 	"item_bracer",

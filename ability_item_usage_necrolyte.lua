@@ -7,6 +7,7 @@
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -76,7 +77,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -322,22 +323,27 @@ Consider[5]=function()
 			if ( CanCast[abilityNumber]( npcEnemy ) )
 			then
 				local Damage=(npcEnemy:GetMaxHealth()-npcEnemy:GetHealth())*DamagePercent
+                local n1 = npcEnemy:GetHealth()
+                local n2 = npcEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL)
+
 				if(npcBot:GetActiveMode() == BOT_MODE_ATTACK)
 				then
 					Damage=Damage*(1+0.05*#allys)
 				end
-				
-				if(npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
+				if npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) * (0.85+#allys*0.05)
+                        and (npcEnemy:GetHealth() >= (ability:GetLevel()*100+300)
+                        or AbilityExtensions:GetHealthPercent(npcEnemy) <= 0.45 and AbilityExtensions:GetHealthPercent(npcEnemy) >= 0.2)
 				then
-					return BOT_ACTION_DESIRE_HIGH,npcEnemy; 
+					return BOT_ACTION_DESIRE_HIGH,npcEnemy
 				end
 			end
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
-	
+	return BOT_ACTION_DESIRE_NONE, 0
 end
+
+-- AbilityExtensions:AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock(npcBot, Consider, AbilitiesReal)
 
 function AbilityUsageThink()
 

@@ -8,12 +8,10 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_tango",
-	"item_magic_stick",
+	"item_flask",
 	"item_quelling_blade", --补刀斧
 	"item_bracer",
-	"item_branch",
-	"item_branch",
-	"item_recipe_magic_wand",
+	"item_magic_wand",
 	"item_phase_boots", --相位7.21
 	"item_desolator",
 	"item_invis_sword", --隐刀

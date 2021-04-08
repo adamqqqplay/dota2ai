@@ -5,6 +5,7 @@
 --------------------------------------
 -- General Initialization
 --------------------------------------
+local utility = require( GetScriptDirectory().."/utility" )
 require(GetScriptDirectory() .. "/ability_item_usage_generic")
 local AbilityHelper = dofile(GetScriptDirectory() .. "/util/AbilityHelper")
 
@@ -19,22 +20,22 @@ ability_item_usage_generic.InitAbility(abilities, abilityHandles, talents)
 local abilityTree = {
 	abilities[2],
 	abilities[1],
-	abilities[1],
+	abilities[2],
 	abilities[3],
-	abilities[1],
-	abilities[4],
-	abilities[1],
 	abilities[2],
+	abilities[5],
 	abilities[2],
+	abilities[1],
+	abilities[1],
 	"talent",
-	abilities[2],
-	abilities[4],
+	abilities[1],
+	abilities[5],
 	abilities[3],
 	abilities[3],
 	"talent",
 	abilities[3],
 	"nil",
-	abilities[4],
+	abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -66,9 +67,9 @@ function AbilityLevelUpThink()
 	ability_item_usage_generic.AbilityLevelUpThink2(abilityTree, talentTree)
 end
 
-utility.PrintAbilityName(Abilities)
-local abilityName =  {}
-local abilityIndex = utility.ReverseTable(abilityName)
+--utility.PrintAbilityName(abilities)
+local abilityName =  { "lich_frost_nova","lich_frost_shield","lich_sinister_gaze","lich_ice_spire","lich_chain_frost"}
+local abilityIndexes = utility.ReverseTable(abilityName)
 
 
 --------------------------------------
@@ -466,9 +467,79 @@ consider[3] = function()
 	return BOT_ACTION_DESIRE_NONE, 0
 end
 
-consider[4] = function()
+-- copied from terrorblade_reflection
+
+consider[4]=function()
+
+    local abilityNumber=4
+    --------------------------------------
+    -- Generic Variable Setting
+    --------------------------------------
+    local ability=AbilitiesReal[abilityNumber];
+
+    if not ability:IsFullyCastable() then
+        return BOT_ACTION_DESIRE_NONE, 0;
+    end
+
+    local CastRange = ability:GetCastRange();
+    local Damage = ability:GetAbilityDamage();
+    local Radius = ability:GetAOERadius()
+    local CastPoint = ability:GetCastPoint();
+
+    local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+    local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+    local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+    local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+    local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+
+    --------------------------------------
+    -- Mode based usage
+    --------------------------------------
+
+    -- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+    if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH )
+    then
+        for _,npcEnemy in pairs( enemys )
+        do
+            if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) )
+            then
+                if ( CanCast[abilityNumber]( npcEnemy ) )
+                then
+                    return BOT_ACTION_DESIRE_LOW, npcEnemy:GetExtrapolatedLocation(CastPoint);
+                end
+            end
+        end
+    end
+
+    -- If we're going after someone
+    if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+            npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+            npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+            npcBot:GetActiveMode() == BOT_MODE_ATTACK)
+    then
+        local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+        if ( locationAoE.count >= 3 ) then
+            return BOT_ACTION_DESIRE_LOW+0.05, locationAoE.targetloc;
+        end
+
+        local npcEnemy = npcBot:GetTarget()
+
+        if ( npcEnemy ~= nil )
+        then
+            if ( CanCast[abilityNumber]( npcEnemy ) )
+            then
+                return BOT_ACTION_DESIRE_LOW, npcEnemy:GetExtrapolatedLocation(CastPoint);
+            end
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, 0
+
+end
+
+consider[5] = function()
 	--Target Ability Example
-	local abilityIndex = 4
+	local abilityIndex = 5
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -547,6 +618,10 @@ consider[4] = function()
 
 	return BOT_ACTION_DESIRE_NONE, 0
 end
+
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+AbilityExtensions:AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock(npcBot, consider, abilityHandles)
+
 
 function AbilityUsageThink()
 	-- Check if we're already using an ability

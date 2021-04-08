@@ -10,11 +10,9 @@ local ItemsToBuy =
 	"item_tango",
 	"item_tango",
 	"item_quelling_blade", --补刀斧
-	"item_magic_stick",
+	"item_flask",
 	"item_wraith_band",
-	"item_branch",
-	"item_branch",
-	"item_recipe_magic_wand",
+	"item_magic_wand",
 	"item_wraith_band",
 	"item_power_treads", --假腿7.21
 	"item_diffusal_blade", --散失刀

@@ -9,8 +9,6 @@ local ItemsToBuy =
 	"item_tango",
 	"item_tango",
 	"item_quelling_blade",
-	"item_branches",
-	"item_branches",
 	"item_wraith_band",
 	"item_magic_wand", --大魔棒7.14
 	"item_wraith_band",
@@ -22,7 +20,7 @@ local ItemsToBuy =
 	"item_recipe_manta", --分身
 	"item_abyssal_blade", --大晕锤
 	"item_butterfly", --蝴蝶
-	-- "item_ultimate_scepter"
+	"item_ultimate_scepter_2",
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)

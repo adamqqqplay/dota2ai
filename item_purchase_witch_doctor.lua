@@ -9,12 +9,13 @@ local ItemsToBuy =
 	"item_tango",
 	"item_tango",
 	"item_clarity",
-	"item_magic_stick",
-	"item_buckler",
+    "item_magic_stick",
+    "item_bracer",
 	"item_boots",
-	"item_magic_stick",
 	"item_energy_booster",
 	"item_urn_of_shadows",
+    "item_buckler",
+    "item_ghost",
 	"item_glimmer_cape", --微光
 	"item_force_staff",
 	"item_ultimate_scepter", --蓝杖

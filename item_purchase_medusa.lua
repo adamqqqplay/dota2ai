@@ -8,12 +8,10 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_wraith_band", --系带
-	"item_magic_stick",
+	"item_flask",
 	"item_wraith_band", --系带
 	"item_phase_boots", --相位7.21
-	"item_branch",
-	"item_branch",
-	"item_recipe_magic_wand",
+	"item_magic_wand",
 	"item_maelstrom",
 	"item_hurricane_pike", --大推推7.20
 	"item_manta",

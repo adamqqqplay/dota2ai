@@ -9,10 +9,12 @@ local ItemsToBuy =
 	"item_wraith_band", --系带
 	"item_tango",
 	"item_tango",
-	"item_magic_stick",
+    "item_magic_stick",
 	"item_wraith_band", --系带
 	"item_boots",
-	"item_magic_stick",
+    "item_branches",
+    "item_branches",
+    "item_recipe_magic_wand",
 	"item_energy_booster",
 	"item_veil_of_discord", --纷争7.20
 	"item_hurricane_pike", --大推推7.20

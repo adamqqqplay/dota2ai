@@ -322,7 +322,7 @@ Consider[1]=function()
 	--------------------------------------
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if(CreepHealth>=250 and ManaPercentage>=0.5 and HealthPercentage>=0.6 and #creeps2<=1)
+		if(CreepHealth>=250 and ManaPercentage>=0.8 and HealthPercentage>=0.6 and #creeps2<=1)
 		then
 			if (WeakestEnemy~=nil)
 			then
@@ -376,6 +376,12 @@ function AbilityUsageThink()
 	end
 	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
 end
+
+local enemyTargetAbilities = {2}
+
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+-- AbilityExtensions:AutoRegisterPreventEnemyTargetAbilityUsageAtAbilityBlock(npcBot, Consider, AbilitiesReal)
+
 
 function CourierUsageThink() 
 	ability_item_usage_generic.CourierUsageThink()

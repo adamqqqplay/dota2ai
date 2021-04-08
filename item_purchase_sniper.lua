@@ -9,7 +9,7 @@ local ItemsToBuy =
 	"item_tango",
 	"item_wraith_band", --系带
 	"item_tango",
-	"item_magic_stick",
+	"item_flask",
 	"item_phase_boots", --相位7.21
 	"item_maelstrom",
 	"item_desolator",

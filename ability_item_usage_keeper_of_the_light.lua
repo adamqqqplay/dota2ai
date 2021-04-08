@@ -36,17 +36,17 @@ local AbilityToLevelUp =
 {
 	Abilities[1],
 	Abilities[3],
-	Abilities[2],
-	Abilities[3],
 	Abilities[1],
+	Abilities[3],
+	Abilities[2],
 	Abilities[abilityIndex.keeper_of_the_light_spirit_form],
 	Abilities[3],
 	Abilities[1],
 	Abilities[3],
 	"talent",
 	Abilities[3],
+    Abilities[1],
 	Abilities[abilityIndex.keeper_of_the_light_spirit_form],
-	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
@@ -87,8 +87,19 @@ end
 -- Ability Usage Thinking
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
-local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.NCanCast,utility.NCanCast}
+local Consider = {}
+local CanCast= {
+        utility.NCanCast,
+        utility.NCanCast,
+        utility.UCanCast,
+        utility.NCanCast,
+        utility.NCanCast,
+        utility.UCanCast,
+        utility.NCanCast,
+        utility.NCanCast,
+        utility.UCanCast,
+        utility.UCanCast,
+}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -676,7 +687,7 @@ end
 
 -- copied from sven_strength_of_god
 Consider[abilityIndex.keeper_of_the_light_spirit_form]=function()
-	local abilityNumber=keeper_of_the_light_spirit_form
+	local abilityNumber=abilityIndex.keeper_of_the_light_spirit_form
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

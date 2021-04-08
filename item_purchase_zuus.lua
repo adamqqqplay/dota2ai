@@ -11,10 +11,7 @@ local ItemsToBuy =
 	"item_clarity",
 	"item_bottle",
 	"item_boots",
-	"item_magic_stick",
-	"item_branches",
-	"item_branches",
-	"item_recipe_magic_wand", --大魔棒7.14
+	"item_magic_wand", --大魔棒7.14
 	"item_null_talisman",
 	"item_energy_booster",
 	"item_veil_of_discord", --纷争
