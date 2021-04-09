@@ -623,7 +623,6 @@ end
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, consider, abilityHandles)
 
 
-AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
 	-- Check if we're already using an ability
 	if (npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced()) then

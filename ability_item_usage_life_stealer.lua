@@ -431,11 +431,9 @@ Consider[7]=function()
 	
 end
 
-<<<<<<< HEAD
-=======
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
->>>>>>> 233b6088b189a3f20acc4cb74373b150dfbc6b9e
+
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability
