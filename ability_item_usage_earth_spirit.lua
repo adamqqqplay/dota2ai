@@ -621,8 +621,8 @@ Consider[5]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
 
-Consider[6]=function()
-	local abilityNumber=6
+Consider[7]=function()
+	local abilityNumber=7
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

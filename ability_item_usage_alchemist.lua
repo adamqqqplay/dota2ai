@@ -318,7 +318,6 @@ end
 
 Consider[abilityIndex.alchemist_chemical_rage]=function()
  	local abilityNumber=abilityIndex.alchemist_chemical_rage
-    AbilityExtensions:GetTargetHealModifierPercent(npcBot)
  	--------------------------------------
  	-- Generic Variable Setting
  	--------------------------------------
