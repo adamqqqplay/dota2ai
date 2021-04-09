@@ -16,6 +16,7 @@ local ItemsToBuy =
 	"item_phase_boots", --相位
 	"item_recipe_magic_wand", --大魔棒7.14
 	"item_blade_mail", --刃甲
+    "item_orb_of_corrosion",
 	"item_sange_and_yasha",
 	"item_black_king_bar", --bkb
 	"item_basher", --晕锤7.14

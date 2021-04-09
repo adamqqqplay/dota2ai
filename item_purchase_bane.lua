@@ -20,6 +20,7 @@ local ItemsToBuy =
 	"item_ultimate_scepter", --蓝杖
 	"item_sheepstick", --羊刀
 	"item_mekansm", --梅肯
+	"item_buckler",
 	"item_recipe_guardian_greaves" --卫士胫甲
 }
 
@@ -28,6 +29,6 @@ ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
 	ItemPurchaseSystem.BuySupportItem()
-	ItemPurchaseSystem.BuyCourier()
+	-- ItemPurchaseSystem.BuyCourier()
 	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

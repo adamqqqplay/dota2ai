@@ -15,6 +15,9 @@ local ItemsToBuy =
 	"item_energy_booster",
 	"item_spirit_vessel", --大骨灰
 	"item_mekansm", --梅肯
+    "item_ghost",
+    "item_spirit_vessel", --大骨灰
+	"item_buckler",
 	"item_recipe_guardian_greaves", --卫士胫甲
 	"item_solar_crest", --大勋章7.20
 	"item_pipe",
@@ -26,6 +29,6 @@ ItemPurchaseSystem.checkItemBuild(Transfered) --检查装备列表
 
 function ItemPurchaseThink()
 	ItemPurchaseSystem.BuySupportItem() --购买辅助物品	对于辅助英雄保留这一行
-	ItemPurchaseSystem.BuyCourier() --购买信使		对于5号位保留这一行
+	-- ItemPurchaseSystem.BuyCourier() --购买信使		对于5号位保留这一行
 	ItemPurchaseSystem.ItemPurchase(Transfered) --购买装备
 end

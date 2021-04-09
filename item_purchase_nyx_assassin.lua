@@ -10,8 +10,8 @@ local ItemsToBuy =
 	"item_tango",
 	"item_enchanted_mango",
 	"item_flask",
-	"item_buckler",
 	"item_magic_wand", --大魔棒7.14
+	"item_buckler",
 	"item_boots",
 	"item_hand_of_midas", --点金
 	"item_energy_booster",
@@ -23,6 +23,7 @@ local ItemsToBuy =
 	"item_recipe_dagon",
 	"item_force_staff", --推推
 	"item_mekansm", --梅肯
+	"item_buckler",
 	"item_recipe_guardian_greaves", --卫士胫甲
 	"item_recipe_dagon",
 	"item_recipe_dagon",
@@ -35,7 +36,7 @@ local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
 ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.BuyCourier()
+	-- ItemPurchaseSystem.BuyCourier()
 	ItemPurchaseSystem.BuySupportItem()
 	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

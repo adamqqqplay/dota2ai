@@ -8,11 +8,12 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 local ItemsToBuy =
 {
 	"item_tango",
-	"item_magic_stick",
+	"item_flask",
+    "item_magic_stick",
 	"item_tranquil_boots",
 	"item_urn_of_shadows",
 	"item_solar_crest", --大勋章7.20
-	-- "item_ultimate_scepter",
+	"item_ultimate_scepter",
 	"item_guardian_greaves",
 	"item_pipe",
 	"item_lotus_orb", --清莲宝珠
@@ -36,7 +37,7 @@ local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
 ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.BuyCourier()
+	-- ItemPurchaseSystem.BuyCourier()
 	ItemPurchaseSystem.BuySupportItem()
 	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

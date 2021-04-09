@@ -7,6 +7,7 @@
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -27,10 +28,10 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[4],
 	Abilities[1],
-	Abilities[1],
 	Abilities[4],
 	Abilities[1],
 	Abilities[4],
+	Abilities[1],
 	Abilities[6],
 	"talent",
 	Abilities[5],

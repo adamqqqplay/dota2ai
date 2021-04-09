@@ -8,6 +8,7 @@
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -95,7 +96,7 @@ Consider[1]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if npcBot:IsIllusion() or not ability:IsFullyCastable() then -- destroyer's illusions (from illusion rune or from shadow_demon_disruption) can use the first ability
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -181,8 +182,61 @@ Consider[1]=function()
 	
 end
 
-Consider[2]=function()
+local dazzle_shadow_grave = function()
+    local abilityNumber=2
+    --------------------------------------
+    -- Generic Variable Setting
+    --------------------------------------
+    local ability=AbilitiesReal[abilityNumber];
 
+    if not ability:IsFullyCastable() then
+        return BOT_ACTION_DESIRE_NONE, 0;
+    end
+
+    local CastRange = ability:GetCastRange();
+    local Damage = ability:GetAbilityDamage();
+
+    local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
+    local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
+    local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+    local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+    local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+    local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+    --------------------------------------
+    -- Global high-priorty usage
+    --------------------------------------
+    -- If we're seriously retreating
+    if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH )
+    then
+        if(HealthPercentage<=0.3)
+        then
+            return BOT_ACTION_DESIRE_VERY_HIGH, npcBot
+        end
+    end
+
+    --protect teammate,save allys from control
+    for _,npcTarget in pairs( allys )
+    do
+        local enemys2 = npcTarget:GetNearbyHeroes(600,true,BOT_MODE_NONE)
+        if not npcTarget:IsIllusion() and (npcTarget:GetHealth()/npcTarget:GetMaxHealth()<=0.2+0.05*#enemys2) and npcTarget:WasRecentlyDamagedByAnyHero(3)
+        then
+            local Damage2=0
+            for _,npcEnemy in pairs( enemys2 )
+            do
+                Damage2 =Damage2 + npcEnemy:GetEstimatedDamageToTarget( true, npcBot, 2.0, DAMAGE_TYPE_ALL );
+            end
+            if not npcTarget:IsIllusion() and (npcTarget:GetHealth()<Damage2*1.25 or npcTarget:GetHealth()/npcTarget:GetMaxHealth()<=0.3) and npcTarget:WasRecentlyDamagedByAnyHero(3)
+            then
+                return BOT_ACTION_DESIRE_HIGH+0.15, npcTarget
+            end
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE, 0;
+
+end
+
+local oldConsider2 = function()
 	local abilityNumber=2
 	--------------------------------------
 	-- Generic Variable Setting
@@ -345,48 +399,57 @@ Consider[2]=function()
 	return BOT_ACTION_DESIRE_NONE, 0 
 end
 
-Consider[2]=function()
-
-	local abilityNumber=2
-	--------------------------------------
-	-- Generic Variable Setting
-	--------------------------------------
-	local ability=AbilitiesReal[abilityNumber];
-	
-	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
-	end
-	
-	local CastRange = ability:GetCastRange();
-	local Damage = ability:GetAbilityDamage();
-
-	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE )
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
-	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
-	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
-
-
-	-- If we're going after someone
-	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-		 npcBot:GetActiveMode() == BOT_MODE_ATTACK )
-	then
-		local npcEnemy = npcBot:GetTarget();
-		if ( npcEnemy ~= nil )
-		then
-			if ( CanCast[abilityNumber]( npcEnemy )  and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
-			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy;
-			end
-		end
-	end
-
-
-
-	return BOT_ACTION_DESIRE_NONE, 0 
+Consider[2] = function()
+    local d1,t1 = oldConsider2()
+    if d1 ~= 0 then
+        return d1,t1
+    else
+        return dazzle_shadow_grave()
+    end
 end
+
+--Consider[2]=function()
+--
+--	local abilityNumber=2
+--	--------------------------------------
+--	-- Generic Variable Setting
+--	--------------------------------------
+--	local ability=AbilitiesReal[abilityNumber];
+--
+--	if not ability:IsFullyCastable() then
+--		return BOT_ACTION_DESIRE_NONE, 0;
+--	end
+--
+--	local CastRange = ability:GetCastRange();
+--	local Damage = ability:GetAbilityDamage();
+--
+--	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE )
+--	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+--	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+--	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+--	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+--
+--
+--	-- If we're going after someone
+--	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+--		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+--		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+--		 npcBot:GetActiveMode() == BOT_MODE_ATTACK )
+--	then
+--		local npcEnemy = npcBot:GetTarget();
+--		if ( npcEnemy ~= nil )
+--		then
+--			if ( CanCast[abilityNumber]( npcEnemy )  and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
+--			then
+--				return BOT_ACTION_DESIRE_MODERATE, npcEnemy;
+--			end
+--		end
+--	end
+--
+--
+--
+--	return BOT_ACTION_DESIRE_NONE, 0
+--end
 
 Consider[4]=function()
 
@@ -452,6 +515,10 @@ Consider[4]=function()
 	return BOT_ACTION_DESIRE_NONE, 0
 end
 
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
+
+
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability

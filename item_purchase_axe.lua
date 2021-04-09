@@ -9,7 +9,6 @@ local ItemsToBuy =
 	"item_tango",
 	"item_tango",
 	"item_enchanted_mango",
-	"item_enchanted_mango",
 	"item_quelling_blade",
 	"item_phase_boots", --相位
 	"item_magic_wand", --大魔棒7.14
@@ -20,7 +19,8 @@ local ItemsToBuy =
 	"item_broadsword", --刃甲
 	"item_black_king_bar", --BKB
 	"item_heart", --龙心7.20
-	"item_lotus_orb" --清莲宝珠
+	"item_lotus_orb", --清莲宝珠,
+    "item_assault",
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)

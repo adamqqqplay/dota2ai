@@ -11,10 +11,10 @@ local ItemsToBuy =
 	"item_quelling_blade", --补刀斧
 	"item_bracer",
 	"item_phase_boots", --相位7.21
-	"item_magic_wand", --大魔棒7.14
-	-- "item_ultimate_scepter",
+	"item_magic_wand",
 	"item_blink",
 	"item_black_king_bar", --bkb
+	"item_ultimate_scepter",
 	"item_assault", --强袭
 	"item_heart"
 }
@@ -23,7 +23,7 @@ local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
 ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.BuyCourier()
+	-- ItemPurchaseSystem.BuyCourier()
 	ItemPurchaseSystem.BuySupportItem()
 	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

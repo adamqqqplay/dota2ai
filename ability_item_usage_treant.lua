@@ -7,6 +7,8 @@
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+
 
 local debugmode=false
 local npcBot = GetBot()
@@ -351,6 +353,7 @@ Consider[3]=function()
 	local allys = npcBot:GetNearbyHeroes( 1800, false, BOT_MODE_NONE );
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local allys2 = GetUnitList(UNIT_LIST_ALLIED_HEROES)
+    allys2 = AbilityExtensions:Filter(allys2, function(b) return not b:IsIllusion()  end)
 	local enemys = npcBot:GetNearbyHeroes(1800,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	--------------------------------------
@@ -377,7 +380,7 @@ Consider[3]=function()
 	then
 		if (WeakestAlly~=nil)
 		then
-			if(AllyHealth/WeakestAlly:GetMaxHealth()<0.3+0.4*ManaPercentage)
+			if(AllyHealth/WeakestAlly:GetMaxHealth()<0.3+0.4*ManaPercentage) and not WeakestAlly:IsIllusion()
 			then
 				return BOT_ACTION_DESIRE_MODERATE,WeakestAlly:GetLocation()
 			end
@@ -385,7 +388,7 @@ Consider[3]=function()
 			
 		for _,npcTarget in pairs( allys )
 		do
-			if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<(0.6+#enemys*0.05+0.2*ManaPercentage) or npcTarget:WasRecentlyDamagedByAnyHero(5.0))
+			if not npcTarget:IsIllusion() and (npcTarget:GetHealth()/npcTarget:GetMaxHealth()<(0.6+#enemys*0.05+0.2*ManaPercentage) or npcTarget:WasRecentlyDamagedByAnyHero(5.0))
 			then
 				if ( CanCast[abilityNumber]( npcTarget ) )
 				then
@@ -413,7 +416,7 @@ Consider[3]=function()
 		
 			if(HighestFactor>=0.4)
 			then
-				if ( CanCast[abilityNumber]( npcTarget ) )
+				if not WeakestAlly2:IsIllusion() and CanCast[abilityNumber]( npcTarget )
 				then
 					return BOT_ACTION_DESIRE_MODERATE, WeakestAlly2:GetLocation()
 				end
@@ -555,6 +558,7 @@ Consider[4]=function()
 	
 	return BOT_ACTION_DESIRE_NONE;
 end
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
 function AbilityUsageThink()
 

@@ -7,6 +7,7 @@
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" )
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -79,7 +80,7 @@ local ManaPercentage;
 local HealthPercentage;
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -426,6 +427,7 @@ Consider[5]=function()
 
 end
 
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability

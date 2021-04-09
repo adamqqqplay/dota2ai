@@ -12,13 +12,13 @@ local ItemsToBuy =
 	"item_enchanted_mango",
 	"item_bracer",
 	"item_phase_boots",
-	"item_magic_wand", --大魔棒7.14
+	"item_magic_wand",
 	"item_bracer",
 	"item_blink", --跳刀
 	"item_crimson_guard", --赤红甲
 	"item_pipe", --笛子
+    "item_heart", --龙心7.20
 	"item_ultimate_scepter", --蓝杖
-	"item_heart" --龙心7.20
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)

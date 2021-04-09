@@ -28,7 +28,7 @@ local ItemsToBuy =
 	"item_recipe_mjollnir", --大电锤
 	"item_vanguard",
 	"item_recipe_abyssal_blade", --大晕
-	"item_hyperstone",
+    "item_travel_boots",
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)

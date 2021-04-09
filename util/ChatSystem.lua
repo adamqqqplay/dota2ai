@@ -11,11 +11,11 @@ function M.SendVersionAnnouncement()
 					local npcBot = GetBot()
 					if (npcBot:GetPlayerID() == id) then
 						npcBot:ActionImmediate_Chat(
-							"Welcome to Ranked Matchmaking AI, the current version is 1.6f, updated on December 19, 2019. If you have any questions or feedback, please leave message on steam workshop https://steamcommunity.com/sharedfiles/filedetails/?id=855965029 or contact Dota2RMMAI@outlook.com",
+							"Welcome to Ranked Matchmaking AI. The current version is 1.6f, updated on December 19, 2019. If you have any questions or feedback, please leave message on steam workshop https://steamcommunity.com/sharedfiles/filedetails/?id=855965029 or contact Dota2RMMAI@outlook.com",
 							true
 						)
 						npcBot:ActionImmediate_Chat(
-							"Please use hard or unfair mode and do not play Monkey king. 请使用困难或疯狂难度，不要使用齐天大圣。",
+							"Please use hard or unfair mode and do not play as Monkey king. 请使用困难或疯狂难度，不要使用齐天大圣。",
 							true
 						)
 					end

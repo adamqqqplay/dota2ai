@@ -11,7 +11,7 @@ local ItemsToBuy =
 	"item_flask",
 	"item_clarity",
 	"item_ring_of_basilius",
-	"item_magic_wand", --大魔棒7.14
+	"item_magic_wand",
 	"item_boots",
 	"item_ring_of_regen", --绿鞋
 	"item_bracer",
@@ -28,6 +28,6 @@ ItemPurchaseSystem.checkItemBuild(Transfered) --检查装备列表
 
 function ItemPurchaseThink()
 	ItemPurchaseSystem.BuySupportItem() --购买辅助物品	对于辅助英雄保留这一行
-	ItemPurchaseSystem.BuyCourier() --购买信使		对于5号位保留这一行
+	-- ItemPurchaseSystem.BuyCourier() --购买信使		对于5号位保留这一行
 	ItemPurchaseSystem.ItemPurchase(Transfered) --购买装备
 end

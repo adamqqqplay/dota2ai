@@ -7,6 +7,8 @@
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+
 
 local debugmode=false
 local npcBot = GetBot()
@@ -285,7 +287,7 @@ Consider[1]=function()
 		local t=npcBot:GetAttackTarget()
 		if(t~=nil)
 		then
-			if (t:IsHero() or t:IsTower())
+			if (t:IsHero() or t:IsTower()) or AbilityExtensions:MustBeIllusions(npcBot, t) and (AbilityExtensions:GetManaPercent(npcBot) >= 0.8)
 			then
 				ability:ToggleAutoCast()
 				return BOT_ACTION_DESIRE_NONE, 0;
@@ -322,7 +324,7 @@ Consider[1]=function()
 	--------------------------------------
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if(CreepHealth>=250 and ManaPercentage>=0.5 and HealthPercentage>=0.6 and #creeps2<=1)
+		if AbilityExtensions:HasEnoughManaToUseAttackAttachedAbility(npcBot, AbilitiesReal[abilityNumber]) and #creeps2<=1
 		then
 			if (WeakestEnemy~=nil)
 			then
@@ -355,8 +357,8 @@ Consider[1]=function()
 	
 end
 
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
-
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then 
@@ -377,6 +379,6 @@ function AbilityUsageThink()
 	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
 end
 
-function CourierUsageThink() 
+function CourierUsageThink()
 	ability_item_usage_generic.CourierUsageThink()
 end

@@ -12,7 +12,7 @@ local ItemsToBuy =
 	"item_branches",
     
 	"item_tranquil_boots",
-	"item_magic_wand",
+	"item_recipe_magic_wand",
 	"item_aether_lens",
     "item_cyclone", 
     

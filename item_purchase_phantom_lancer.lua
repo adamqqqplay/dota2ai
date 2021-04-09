@@ -12,7 +12,7 @@ local ItemsToBuy =
 	"item_quelling_blade", --补刀斧
 	"item_flask",
 	"item_wraith_band",
-	"item_magic_wand", --大魔棒7.14
+	"item_magic_wand",
 	"item_wraith_band",
 	"item_power_treads", --假腿7.21
 	"item_diffusal_blade", --散失刀

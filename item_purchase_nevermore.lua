@@ -12,6 +12,7 @@ local ItemsToBuy =
 	"item_flask",
 	"item_magic_wand", --大魔棒7.14
 	"item_power_treads", --假腿7.21
+	"item_desolator",
 	"item_invis_sword", --隐刀
 	"item_black_king_bar", --bkb
 	"item_sange_and_yasha",

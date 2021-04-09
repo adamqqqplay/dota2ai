@@ -17,19 +17,18 @@ local ItemsToBuy =
 	"item_bracer",
 	"item_ancient_janggo",
 	"item_mekansm", --梅肯
+	"item_buckler",
 	"item_recipe_guardian_greaves", --卫士胫甲
-	"item_vladmir",
-	"item_pipe",
 	"item_ultimate_scepter", --蓝杖
+    "item_force_staff",
 	"item_lotus_orb", --清莲宝珠
-	"item_sheepstick" --羊刀
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
 ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.BuyCourier()
+	-- ItemPurchaseSystem.BuyCourier()
 	ItemPurchaseSystem.BuySupportItem()
 	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

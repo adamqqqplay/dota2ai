@@ -7,6 +7,7 @@
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -25,20 +26,20 @@ local AbilityToLevelUp=
 {
 	Abilities[1],
 	Abilities[3],
-	Abilities[1],
 	Abilities[2],
 	Abilities[1],
-	Abilities[4],
 	Abilities[1],
 	Abilities[3],
 	Abilities[3],
-	"talent",
 	Abilities[3],
 	Abilities[4],
-	Abilities[2],
-	Abilities[2],
 	"talent",
 	Abilities[2],
+	Abilities[2],
+	Abilities[2],
+	Abilities[4],
+	"talent",
+	Abilities[1],
 	"nil",
 	Abilities[4],
 	"nil",
@@ -256,14 +257,14 @@ Consider[2]=function()
 	for _,npcTarget in pairs( allys )
 	do
 		local enemys2 = npcTarget:GetNearbyHeroes(600,true,BOT_MODE_NONE)
-		if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<=0.2+0.05*#enemys2)
+		if not npcTarget:IsIllusion() and (npcTarget:GetHealth()/npcTarget:GetMaxHealth()<=0.2+0.05*#enemys2) and npcTarget:WasRecentlyDamagedByAnyHero(3)
 		then
 			local Damage2=0
 			for _,npcEnemy in pairs( enemys2 )
 			do
 				Damage2 =Damage2 + npcEnemy:GetEstimatedDamageToTarget( true, npcBot, 2.0, DAMAGE_TYPE_ALL );
 			end
-			if(npcTarget:GetHealth()<Damage2*1.25 or npcTarget:GetHealth()/npcTarget:GetMaxHealth()<=0.3)
+			if not npcTarget:IsIllusion() and (npcTarget:GetHealth()<Damage2*1.25 or npcTarget:GetHealth()/npcTarget:GetMaxHealth()<=0.3)
 			then
 				return BOT_ACTION_DESIRE_HIGH+0.15, npcTarget
 			end
@@ -474,6 +475,9 @@ Consider[4]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
 end
+
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
+
 
 function AbilityUsageThink()
 

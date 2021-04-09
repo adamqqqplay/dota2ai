@@ -16,6 +16,7 @@ local ItemsToBuy =
 	"item_energy_booster",
 	"item_pipe", --笛子
 	"item_mekansm", --梅肯
+	"item_buckler",
 	"item_recipe_guardian_greaves", --卫士胫甲
 	"item_blink", --跳刀
 	"item_lotus_orb", --清莲宝珠

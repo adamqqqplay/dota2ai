@@ -19,7 +19,7 @@ local ItemsToBuy =
 	"item_echo_sabre", --连击刀
 	"item_black_king_bar", --bkb
 	"item_assault", --强袭
-	-- "item_ultimate_scepter"
+	"item_ultimate_scepter"
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)

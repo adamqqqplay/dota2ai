@@ -8,6 +8,9 @@
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+
+
 
 local debugmode=false
 local npcBot = GetBot()
@@ -76,9 +79,17 @@ end
 --------------------------------------
 -- Ability Usage Thinking
 --------------------------------------
+
+local bristleback_viscous_nasal_goo_CanCast = function(enemy)
+    return npcBot:HasScepter() or utility.NCanCast(enemy)
+end
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={bristleback_viscous_nasal_goo_CanCast,
+               utility.NCanCast,
+               utility.NCanCast,
+               utility.UCanCast,}
+
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -301,13 +312,7 @@ Consider[2]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
 end
-
-
-
-
-
-
-
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
 function AbilityUsageThink()
 
