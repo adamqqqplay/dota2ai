@@ -328,3 +328,14 @@ v1.6f (2019.12.19)
 5. Refactor item building system to automatically adapt to recipe changes caused by game version.
 v1.7.0 (2021.03.24) Updated by AaronSong321
 1. Update to support 7.28c.
+v1.7.1 (2021.04.10)
+1. Decrease desire of target ability usage at targets with spell block;
+2. Prevent target ability usage at friend illusions;
+3. Decrease desire of passive toggle abilities to save mana;
+4. Fix terrorblade, dark_seer, antimage, necrolyte, kunkka et al. cannot use abilities;
+5. Add medusa split arrow; add medusa toggle shield off to save mana;
+6. Add item purchase (witch_blade, falcon_blade, holy_locket, gleipnir, wind_waker, ghost_sceptre);
+7. Remove courier purchase;
+8. Fix some heroes fail to add some of their abilities according to version 7.28; 
+9. Fix TA doesn't purchase any boots; 
+10. Change the ability usage of CM, AM, and Zeus.
