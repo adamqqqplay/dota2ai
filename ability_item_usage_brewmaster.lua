@@ -7,6 +7,7 @@
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 local role = require(GetScriptDirectory() .. "/util/RoleUtility")
 local AbilityHelper = dofile(GetScriptDirectory() .. "/util/AbilityHelper")
 
@@ -521,6 +522,7 @@ Consider[4]=function()
 	
 end
 
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability

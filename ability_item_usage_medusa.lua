@@ -7,6 +7,8 @@
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+
 
 local debugmode=false
 local npcBot = GetBot()
@@ -33,10 +35,10 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[1],
 	"talent",
-	Abilities[1],
+	Abilities[3],
 	Abilities[abilityIndex.medusa_stone_gaze],
 	Abilities[1],
-	Abilities[3],
+	Abilities[1],
 	"talent",
 	Abilities[3],
 	"nil",
@@ -58,7 +60,7 @@ local TalentTree={
 		return Talents[3]
 	end,
 	function()
-		return Talents[5]
+		return Talents[6]
 	end,
 	function()
 		return Talents[8]
@@ -77,7 +79,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.UCanCast,utility.NCanCast,utility.NCanCast,utility.CanCastPassive,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -87,6 +89,29 @@ end
 function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
+
+Consider[1] = function()
+    local ability = AbilitiesReal[1]
+    if not ability:IsFullyCastable() then
+        return
+    end
+
+    local enemies = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+    local enemiesInRange = npcBot:GetNearbyHeroes(CastRange, true, BOT_MODE_NONE)
+    local creeps = AbilityExtensions:GetNearbyCreeps(CastRange + 400, true, BOT_MODE_NONE)
+    if AbilityExtensions:IsFarmingOrPushing(npcBot) then
+        if #creeps >= 2 and #enemies == 0 then
+            return true
+        end
+    end
+    if AbilityExtensions:IsAttackingEnemies(npcBot) then
+        if #enemies > 0 and (#enemiesInRange >= 3 or #enemiesInRange == 2 and ability:GetLevel() >= 3 or #enemiesInRange >= 1 and #creeps >= 2) then
+            return true
+        end
+    end
+    return false
+end
+Consider[1] = AbilityExtensions:ToggleFunctionToAction(npcBot, Consider[1], AbilitiesReal[1])
 
 Consider[2]=function()
 	local abilityNumber=2
@@ -104,7 +129,9 @@ Consider[2]=function()
 	local CastPoint = ability:GetCastPoint();
 	
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local enemys = AbilityExtensions:FilterNot(npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE), function(enemy)
+        return enemy:HasModifier("modifier_medusa_stone_gaze_stone")
+    end)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
@@ -228,25 +255,25 @@ Consider[2]=function()
 end
 
 Consider[3]=function()
-	
 	local abilityNumber=3
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
-	local ability=AbilitiesReal[abilityNumber];
+	local ability=AbilitiesReal[abilityNumber]
 	
 	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
+		return false
 	end
+    local healthPercent = AbilityExtensions:GetHealthPercent(npcBot)
+    local manaPercent = AbilityExtensions:GetManaPercent(npcBot)
+    if healthPercent >= manaPercent + 0.3 and npcBot:GetHealth() >= 500 and healthPercent >= 0.7 then
+        return false
+    end
 
-	if(ability:GetToggleState()==false)
-	then
-		return BOT_ACTION_DESIRE_HIGH
-	end
-
-	return BOT_ACTION_DESIRE_NONE, 0;
-	
+    return true
 end
+
+Consider[3] = AbilityExtensions:ToggleFunctionToAction(npcBot, Consider[3], AbilitiesReal[3])
 
 Consider[abilityIndex.medusa_stone_gaze]=function()
 
@@ -301,6 +328,8 @@ Consider[abilityIndex.medusa_stone_gaze]=function()
 
 end
 
+
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability

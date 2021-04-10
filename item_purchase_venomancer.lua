@@ -9,14 +9,17 @@ local ItemsToBuy =
 	"item_wraith_band", --系带
 	"item_tango",
 	"item_tango",
-	"item_flask",
+    "item_magic_stick",
 	"item_wraith_band", --系带
 	"item_boots",
-	"item_magic_stick",
+    "item_branches",
+    "item_branches",
+    "item_recipe_magic_wand",
 	"item_energy_booster",
 	"item_veil_of_discord", --纷争7.20
 	"item_hurricane_pike", --大推推7.20
 	"item_mekansm", --梅肯
+	"item_buckler",
 	"item_recipe_guardian_greaves", --卫士胫甲
 	"item_ultimate_scepter", --蓝杖
 	"item_black_king_bar",
@@ -27,7 +30,7 @@ local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
 ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.BuyCourier()
+	-- ItemPurchaseSystem.BuyCourier()
 	ItemPurchaseSystem.BuySupportItem()
 	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

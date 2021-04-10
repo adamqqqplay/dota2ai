@@ -23,7 +23,6 @@ local ItemsToBuy =
 	"item_recipe_headdress",
 	"item_branches",
 	"item_recipe_pipe", --笛子
-	--"item_vladmir",			--祭品7.21
 	"item_recipe_guardian_greaves", --卫士胫甲
 	"item_lotus_orb", --清莲宝珠
 	--"item_radiance",			--辉耀

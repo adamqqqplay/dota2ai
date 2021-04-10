@@ -12,7 +12,7 @@ local ItemsToBuy =
 	"item_quelling_blade",
 	"item_bracer",
 	"item_phase_boots", --相位7.21
-	"item_magic_wand", --大魔棒7.14
+	"item_magic_wand",
 	"item_vladmir", --祭品7.21
 	"item_blink", --跳刀
 	"item_black_king_bar", --BKB

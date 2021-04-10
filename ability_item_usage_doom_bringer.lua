@@ -7,6 +7,7 @@
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -281,7 +282,7 @@ Consider[3]=function()
 	-- If we're farming
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
-		if ( #creeps >= 1 and ManaPercentage>0.4 or npcBot:GetMana()>ComboMana) 
+		if ( #creeps >= 1 and ManaPercentage>0.6 or npcBot:GetMana()>ComboMana)
 		then
 			return BOT_ACTION_DESIRE_LOW, creeps[1];
 		end
@@ -403,6 +404,10 @@ Consider[6]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
 
+--
+
+
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability

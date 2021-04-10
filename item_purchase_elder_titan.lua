@@ -8,7 +8,6 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_tango",
-	"item_flask",
 	"item_magic_wand", --大魔棒7.14
 	"item_bracer",
 	"item_tranquil_boots",
@@ -28,6 +27,6 @@ ItemPurchaseSystem.checkItemBuild(Transfered) --检查装备列表
 
 function ItemPurchaseThink()
 	ItemPurchaseSystem.BuySupportItem() --购买辅助物品	对于辅助英雄保留这一行
-	ItemPurchaseSystem.BuyCourier() --购买信使		对于5号位保留这一行
+	-- ItemPurchaseSystem.BuyCourier() --购买信使		对于5号位保留这一行
 	ItemPurchaseSystem.ItemPurchase(Transfered) --购买装备
 end

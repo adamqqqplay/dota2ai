@@ -1483,13 +1483,14 @@ X['invisHeroes'] = {
 	['npc_dota_hero_clinkz'] = 1,
 	['npc_dota_hero_mirana'] = 1,
 	['npc_dota_hero_riki'] = 1,
+    ["npc_dota_hero_rubic"] = 1,
 	['npc_dota_hero_nyx_assassin'] = 1,
 	['npc_dota_hero_bounty_hunter'] = 1,
 	['npc_dota_hero_invoker'] = 1,
 	['npc_dota_hero_sand_king'] = 1,
-	['npc_dota_hero_treant'] = 1,
-	['npc_dota_hero_broodmother'] = 1,
-	['npc_dota_hero_weaver'] = 1
+	['npc_dota_hero_slark'] = 1,
+	['npc_dota_hero_weaver'] = 1,
+    ["npc_dota_hero_wind_runner"] = 1,
 } 
 
 function X.IsCarry(hero)
@@ -1556,6 +1557,7 @@ X['off'] = {
 	'npc_dota_hero_beastmaster',
 	'npc_dota_hero_brewmaster',
 	'npc_dota_hero_bristleback',
+    'npc_dota_hero_broodmother',
 	'npc_dota_hero_centaur',
 	'npc_dota_hero_dark_seer',
 	'npc_dota_hero_doom_bringer',
@@ -1575,14 +1577,13 @@ X['off'] = {
 	'npc_dota_hero_tidehunter',
 	'npc_dota_hero_tusk',
 	'npc_dota_hero_venomancer',
-	'npc_dota_hero_windrunner'
+	'npc_dota_hero_windrunner',
 }
 
 X['mid'] = {
 	'npc_dota_hero_alchemist',
 	'npc_dota_hero_arc_warden',
 	'npc_dota_hero_bloodseeker',
-	'npc_dota_hero_broodmother',
 	'npc_dota_hero_clinkz',
 	'npc_dota_hero_death_prophet',
 	'npc_dota_hero_dragon_knight',
@@ -1590,7 +1591,6 @@ X['mid'] = {
 	'npc_dota_hero_huskar',
 	'npc_dota_hero_invoker',
 	'npc_dota_hero_kunkka',
-	'npc_dota_hero_leshrac',
 	'npc_dota_hero_lina',
 	'npc_dota_hero_lone_druid',
 	'npc_dota_hero_medusa',
@@ -1609,7 +1609,7 @@ X['mid'] = {
 	'npc_dota_hero_tinker',
 	'npc_dota_hero_tiny',
 	'npc_dota_hero_viper',
-	'npc_dota_hero_zuus'
+	'npc_dota_hero_zuus',
 }
 
 X['safe'] = {
@@ -1620,6 +1620,7 @@ X['safe'] = {
 	'npc_dota_hero_gyrocopter',
 	'npc_dota_hero_juggernaut',
 	'npc_dota_hero_life_stealer',
+    'npc_dota_hero_leshrac',
 	'npc_dota_hero_luna',
 	'npc_dota_hero_lycan',
 	'npc_dota_hero_monkey_king',
@@ -1635,7 +1636,7 @@ X['safe'] = {
 	'npc_dota_hero_terrorblade',
 	'npc_dota_hero_troll_warlord',
 	'npc_dota_hero_ursa',
-	'npc_dota_hero_weaver'
+	'npc_dota_hero_weaver',
 }
 
 X['supp'] = {

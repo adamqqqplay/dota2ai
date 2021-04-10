@@ -9,21 +9,25 @@ local ItemsToBuy =
 	"item_tango",
 	"item_tango",
 	"item_null_talisman",
-	"item_magic_stick",
+    "item_magic_stick",
 	"item_power_treads", --假腿7.21
+    "item_witch_blade",
 	"item_hurricane_pike", --大推推7.20
 	"item_rod_of_atos", --阿托斯7.20
 	"item_orchid",
-	"item_bloodthorn",
+    "item_hyperstone",
+	"item_recipe_bloodthorn",
+    "item_sheepstick", --羊刀
+    "item_maelstrom",
+    "item_recipe_gleipnir",
 	"item_ultimate_scepter", --蓝杖
-	"item_sheepstick" --羊刀
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
 ItemPurchaseSystem.checkItemBuild(Transfered)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.BuyCourier() --购买信使
+	-- ItemPurchaseSystem.BuyCourier() --购买信使
 	ItemPurchaseSystem.BuySupportItem()
 	ItemPurchaseSystem.ItemPurchase(Transfered)
 end

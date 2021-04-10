@@ -13,7 +13,7 @@ local ItemsToBuy =
 	"item_enchanted_mango",
 	"item_soul_ring",
 	"item_phase_boots",
-	"item_magic_wand", --大魔棒7.14
+	"item_magic_wand",
 	"item_vladmir",
 	"item_medallion_of_courage",
 	"item_pipe",

@@ -9,16 +9,16 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_null_talisman", --无用挂件
-	"item_null_talisman",
 	"item_power_treads", --假腿7.21
+    "item_witch_blade",
 	"item_dragon_lance", --魔龙枪
-	"item_force_staff", --推推7.14
-	"item_black_king_bar", --bkb
 	"item_orchid",
-	"item_yasha_and_kaya",
+    "item_black_king_bar", --bkb
+    "item_sheepstick", --羊刀
+    "item_force_staff", --推推7.14
 	"item_recipe_hurricane_pike", --大推推7.20
 	"item_sphere", --林肯
-	"item_sheepstick" --羊刀
+    "item_ultimate_scepter",
 }
 
 local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)

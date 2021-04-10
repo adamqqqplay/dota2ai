@@ -8,14 +8,18 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_tango",
+    "item_magic_stick",
 	"item_quelling_blade", --补刀斧
 	"item_orb_of_venom",
 	"item_phase_boots", --相位7.21
-	"item_blight_stoe",
-	"item_flaffly_hat",
+	"item_blight_stone",
+	"item_fluffy_hat",
 	"item_recipe_orb_of_corrosion",
-	"item_magic_wand", --大魔棒7.14
+    "item_branches",
+    "item_branches",
+	"item_recipe_magic_wand", --大魔棒7.14
 	"item_armlet", --臂章
+    --"item_scepter_shard",
 	"item_sange_and_yasha",
 	"item_desolator",
 	"item_abyssal_blade",

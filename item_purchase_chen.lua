@@ -11,7 +11,8 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	"item_boots",
-	"item_magic_stick",
+	"item_flask",
+    "item_magic_stick",
 	"item_recipe_magic_wand", --大魔棒7.14
 	"item_energy_booster",
 	"item_ring_of_regen",
@@ -40,6 +41,6 @@ ItemPurchaseSystem.checkItemBuild(Transfered) --检查装备列表
 
 function ItemPurchaseThink()
 	ItemPurchaseSystem.BuySupportItem() --购买辅助物品	对于辅助英雄保留这一行
-	ItemPurchaseSystem.BuyCourier() --购买信使		对于5号位保留这一行
+	-- ItemPurchaseSystem.BuyCourier() --购买信使		对于5号位保留这一行
 	ItemPurchaseSystem.ItemPurchase(Transfered) --购买装备
 end
