@@ -17,10 +17,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName = {  "faceless_void_time_walk", "faceless_void_time_dilation", "faceless_void_time_lock",  "faceless_void_time_walk_reverse", "faceless_void_chronosphere",  }
-local abilityIndex = utility.ReverseTable(abilityName)
-
 local AbilityToLevelUp=
 {
 	Abilities[1],

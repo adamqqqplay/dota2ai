@@ -16,70 +16,61 @@ local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
 
-ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
+ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
--- utility.PrintAbilityName(Abilities)
-local abilityName = {}
-local abilityIndex = utility.ReverseTable(abilityName)
-
-
-local AbilityToLevelUp=
-{
-	Abilities[3],
-	Abilities[2],
-	Abilities[3],
-	Abilities[1],
-	Abilities[3],
-	Abilities[4],
-	Abilities[3],
-	Abilities[2],
-	Abilities[2],
-	"talent",
-	Abilities[2],
-	Abilities[4],
-	Abilities[1],
-	Abilities[1],
-	"talent",
-	Abilities[1],
-	"nil",
-	Abilities[4],
-	"nil",
-	"talent",
-	"nil",
-	"nil",
-	"nil",
-	"nil",
-	"talent",
+local AbilityToLevelUp = {
+    Abilities[1],
+    Abilities[3],
+    Abilities[3],
+    Abilities[2],
+    Abilities[3],
+    Abilities[4],
+    Abilities[3],
+    Abilities[2],
+    Abilities[2],
+    "talent",
+    Abilities[2],
+    Abilities[4],
+    Abilities[1],
+    Abilities[1],
+    "talent",
+    Abilities[1],
+    "nil",
+    Abilities[4],
+    "nil",
+    "talent",
+    "nil",
+    "nil",
+    "nil",
+    "nil",
+    "nil",
+    "talent",
 }
 
-local TalentTree={
-	function()
-		return Talents[1]
-	end,
-	function()
-		return Talents[4]
-	end,
-	function()
-		return Talents[5]
-	end,
-	function()
-		return Talents[8]
-	end
+local TalentTree = {
+    function() return Talents[1]  end,
+    function() return Talents[3]  end,
+    function() return Talents[6]  end,
+    function() return Talents[7]  end,
+    function() return Talents[2]  end,
+    function() return Talents[4]  end,
+    function() return Talents[5]  end,
+    function() return Talents[8]  end,
 }
 
--- check skill build vs current level
 utility.CheckAbilityBuild(AbilityToLevelUp)
 
 function AbilityLevelUpThink()
-	ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp,TalentTree)
+    ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp,TalentTree)
 end
+
 
 --------------------------------------
 -- Ability Usage Thinking
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.UCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -91,6 +82,25 @@ function GetComboMana()
 end
 
 Consider[1]=function()
+    local function UseAtTarget(desire, target)
+        if target:IsMagicImmune() then
+            return desire, target:GetLocation(), "Location"
+        else
+            return desire, target, "Target"
+        end
+    end
+
+    local function BlockFriendMeleeHeroes(enemy)
+        local friends = enemy:GetNearbyHeroes(260, true, BOT_MODE_NONE)
+        return AbilityExtensions:Any(friends, function(p)
+            return AbilityExtensions:MayNotBeIllusion(npcBot, p)
+                    --and enemy:WasRecentlyDamagedByHero(p, 2)
+                    and (print("furion: might block "..p:GetUnitName()) or true)
+        end) or AbilityExtensions:Any(npcBot:GetNearbyHeroes(350, false, BOT_MODE_NONE), function(p)
+            return AbilityExtensions:MayNotBeIllusion(npcBot, p) and AbilityExtensions:IsMeleeHero(p)
+            and (print("furion: might block"..p:GetUnitName()) or true)
+        end)
+    end
 
 	local abilityNumber=1
 	--------------------------------------
@@ -104,9 +114,7 @@ Consider[1]=function()
 	
 	local CastRange = ability:GetCastRange();
 	local nCastRange=ability:GetCastPoint();
-	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -138,7 +146,7 @@ Consider[1]=function()
 
 		if ( npcMostDangerousEnemy ~= nil )
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy,"Target";
+			return UseAtTarget(BOT_ACTION_DESIRE_VERYHIGH, npcMostDangerousEnemy)
 		end
 	end
 	
@@ -149,7 +157,14 @@ Consider[1]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				return BOT_ACTION_DESIRE_HIGH,WeakestEnemy,"Target"; 
+                local tt = WeakestEnemy:GetNearbyHeroes(150, true, BOT_MODE_NONE)
+                if #tt > 0 then
+                    print("furion: dont block 1")
+                end
+                if BlockFriendMeleeHeroes(WeakestEnemy) then
+                    return 0
+                end
+				return UseAtTarget(BOT_ACTION_DESIRE_VERYHIGH, WeakestEnemy)
 			end
 		end
 	end
@@ -161,19 +176,19 @@ Consider[1]=function()
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
 		local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 150, true, BOT_MODE_NONE );
-		if ( npcBot:WasRecentlyDamagedByAnyHero( 5.0 ) and #tableNearbyEnemyHeroes==0) 
+
+		if ( npcBot:WasRecentlyDamagedByAnyHero( 5.0 ) and #tableNearbyEnemyHeroes==0)
 		then
-			return BOT_ACTION_DESIRE_VERYHIGH, npcBot,"Target";
+			return UseAtTarget(BOT_ACTION_DESIRE_VERYHIGH, npcBot)
 		end
 	end
 	
 	-- If we're low hp
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT) 
 	then
-		local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 150, true, BOT_MODE_NONE );
-		if (#tableNearbyEnemyHeroes==0) 
-		then
-			return BOT_ACTION_DESIRE_VERYHIGH, npcBot,"Target";
+		local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 200, true, BOT_MODE_NONE );
+		if #tableNearbyEnemyHeroes==0 and npcBot:WasRecentlyDamagedByAnyHero(3) then
+            return UseAtTarget(BOT_ACTION_DESIRE_VERYHIGH, npcBot)
 		end
 	end
 
@@ -183,18 +198,25 @@ Consider[1]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcTarget = npcBot:GetTarget();
+		local npcTarget = npcBot:GetTarget()
 
 		if ( npcTarget ~= nil ) 
 		then
 			if ( CanCast[abilityNumber]( npcTarget ) and not enemyDisabled(npcTarget) and GetUnitToUnitDistance(npcBot,npcTarget)< CastRange + 75*#allys)
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcTarget,"Target";
+                local tt = npcTarget:GetNearbyHeroes(150, true, BOT_MODE_NONE)
+                if #tt > 0 then
+                    print("furion: dont block 2")
+                end
+                if BlockFriendMeleeHeroes(npcTarget) then
+                    return 0
+                end
+                return UseAtTarget(BOT_ACTION_DESIRE_MODERATE, npcTarget)
 			end
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0 
+	return BOT_ACTION_DESIRE_NONE
 end
 
 

@@ -16,63 +16,54 @@ local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
 
-ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
-
--- utility.PrintAbilityName(Abilities)
-local abilityName = {}
-local abilityIndex = utility.ReverseTable(abilityName)
+ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 
-local AbilityToLevelUp=
-{
-	Abilities[1],
-	Abilities[2],
-	Abilities[3],
-	Abilities[1],
-	Abilities[1],
-	Abilities[5],
-	Abilities[2],
-	Abilities[2],
-	Abilities[1],
-	"talent",
-	Abilities[2],
-	Abilities[5],
-	Abilities[3],
-	Abilities[3],
-	"talent",
-	Abilities[3],
-	"nil",
-	Abilities[5],
-	"nil",
-	"talent",
-	"nil",
-	"nil",
-	"nil",
-	"nil",
-	"talent",
+local AbilityToLevelUp = {
+    Abilities[1],
+    Abilities[2],
+    Abilities[1],
+    Abilities[3],
+    Abilities[2],
+    Abilities[5],
+    Abilities[2],
+    Abilities[2],
+    Abilities[1],
+    "talent",
+    Abilities[1],
+    Abilities[5],
+    Abilities[3],
+    Abilities[3],
+    "talent",
+    Abilities[3],
+    "nil",
+    Abilities[5],
+    "nil",
+    "talent",
+    "nil",
+    "nil",
+    "nil",
+    "nil",
+    "talent",
 }
 
-local TalentTree={
-	function()
-		return Talents[2]
-	end,
-	function()
-		return Talents[4]
-	end,
-	function()
-		return Talents[6]
-	end,
-	function()
-		return Talents[7]
-	end
+local TalentTree = {
+    function() return Talents[1]  end,
+    function() return Talents[4]  end,
+    function() return Talents[6]  end,
+    function() return Talents[8]  end,
+    function() return Talents[2]  end,
+    function() return Talents[3]  end,
+    function() return Talents[5]  end,
+    function() return Talents[7]  end,
 }
 
--- check skill build vs current level
 utility.CheckAbilityBuild(AbilityToLevelUp)
 
 function AbilityLevelUpThink()
-	ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp,TalentTree)
+    ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp,TalentTree)
 end
+
 
 --------------------------------------
 -- Ability Usage Thinking
@@ -101,10 +92,7 @@ Consider[2]=function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
-	local CastRange = ability:GetSpecialValueInt( "blink_range" );
-	
-	local HeroHealth=10000
-	local CreepHealth=10000
+	local CastRange = ability:GetSpecialValueInt( "blink_range" )
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -180,8 +168,6 @@ Consider[3]=function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 
-	local HeroHealth=10000
-	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
 	local enemys = npcBot:GetNearbyHeroes(900,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -226,6 +212,23 @@ Consider[3]=function()
 
 end
 
+Consider[4] = function()
+    local abilityNumber=4
+    local ability=AbilitiesReal[abilityNumber]
+    if not ability:IsFullyCastable() then
+        return 0
+    end
+    local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
+    local enemies = AbilityExtensions:Filter(npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE), function(t) return GetUnitToUnitDistance(npcBot, t) >= 450 end)
+    local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemies)
+    if #enemies == 0 then
+        return 0
+    end
+    if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT and (#enemies >= 2 or enemies[1]:GetHealth() >= npcBot:GetHealth() * 1.5) then
+        return BOT_ACTION_DESIRE_MODERATE, WeakestEnemy:GetLocation()
+    end
+end
+
 Consider[5]=function()
 
 	local abilityNumber=5
@@ -241,9 +244,7 @@ Consider[5]=function()
 	local CastRange = ability:GetCastRange();
 	local DamagePercent = ability:GetSpecialValueFloat("mana_void_damage_per_mana")
 	local Radius = ability:GetAOERadius();
-	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)

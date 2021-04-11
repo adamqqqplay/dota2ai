@@ -4,28 +4,25 @@
 --  Contributor: zmcmcc Email:mengzhang@utexas.edu
 ----------------------------------------------------------------------------
 local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
-local ItemsToBuy =
-{
-	"item_tango",
-	"item_flask",
-    "item_orb_of_corrosion",
-	"item_null_talisman",
-	"item_phase_boots", --相位7.21
-	"item_invis_sword", --隐刀
-	"item_desolator", --黯灭
-	"item_orchid", --紫苑
-	"item_black_king_bar",
-	"item_hyperstone",
-	"item_recipe_bloodthorn", --血棘
-	"item_ultimate_scepter", --蓝杖
-	"item_ultimate_orb",
-	"item_recipe_silver_edge" --大隐刀
+
+local p = {
+    "item_tango",
+    "item_flask",
+    "item_blight_stone",
+    "item_null_talisman",
+    "item_power_treads",
+    "item_invis_sword",
+    "item_desolator",
+    "item_orchid",
+    "item_black_king_bar",
+    "item_bloodthorn",
+    "item_ultimate_scepter",
+    "item_silver_edge",
 }
-
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered)
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), p)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(Transfered)
+    ItemPurchaseSystem:ItemPurchaseExtend()
 end

@@ -3,6 +3,7 @@
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
 local utilityModule={}
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 ---------------------------------------------------------------------------------------------------
 ------This is global utility library,include some useful function.------
 ---------------------------------------------------------------------------------------------------
@@ -225,14 +226,44 @@ function utilityModule.IsItemAvailable(item_name)
     return nil;
 end
 
+utilityModule.FillInAbilities = function(npcBot, abilityTable)
+    local abilities = AbilityExtensions:GetAbilityNames(npcBot)
+    if #abilityTable == 25 then
+        table.insert(abilityTable, "nil")
+        for i = 27, 30 do
+            table.insert(abilityTable, "talent")
+        end
+    end
+    for i = 1, 30 do
+        if abilityTable[i] == "nil" then
+            abilityTable[i] = AbilityExtensions.SpecialBonusAttributes
+        elseif abilityTable[i] == "talent" then
+
+        elseif abilityTable[i] == nil then
+            print("Bot script "..npcBot:GetUnitName().." contains incorrect ability level "..i.." name: nil")
+            abilityTable[i] = AbilityExtensions.IncorrectAbilityName
+        elseif not AbilityExtensions:Contains(abilities, abilityTable[i]) then
+            print("Bot script "..npcBot:GetUnitName().." contains incorrect ability level "..i.." name: "..abilityTable[i])
+            abilityTable[i] = AbilityExtensions.IncorrectAbilityName
+        end
+    end
+    abilityTable.incorrectAbilityLevelUpNumber = AbilityExtensions:Count(abilityTable, function(abilityName, index)
+        if abilityName == "talent" then
+            return false
+        end
+        local ability = npcBot:GetAbilityByName(abilityName)
+        local result = index < npcBot:GetLevel() - npcBot:GetAbilityPoints() + 1 and (abilityName == AbilityExtensions.IncorrectAbilityName)
+        return result
+    end)
+    abilityTable.talentTreeIndex = AbilityExtensions:Count(abilityTable, function(abilityName, index)
+        return index < npcBot:GetLevel() - npcBot:GetAbilityPoints() + 1 - abilityTable.incorrectAbilityLevelUpNumber and abilityName == "talent"
+    end)
+end
+
 function utilityModule.CheckAbilityBuild(AbilityToLevelUp)
-	local npcBot=GetBot()
-	if #AbilityToLevelUp > 26-npcBot:GetLevel() then
-		for _=1, npcBot:GetLevel() do
-			print("remove"..AbilityToLevelUp[1])
-			table.remove(AbilityToLevelUp, 1)
-		end
-	end
+	local npcBot = GetBot()
+    utilityModule.FillInAbilities(npcBot, AbilityToLevelUp)
+    --AbilityExtensions:DebugLongTable(AbilityToLevelUp)
 end
 ----------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------
@@ -489,15 +520,6 @@ function utilityModule.IsStuck(npcBot)
 	end
 	return false
 end
---------------------------------------------------------------------------
 
-local itemNameMetatable = {}
-function itemNameMetatable.__index(tb, s)
-	return "item_"..s 
-end
-local itemNametable = {}
-setmetatable(itemNametable, itemNameMetatable)
-utilityModule.items = itemNametable
 
----------------------------------------------------------------------------------------------------
 return utilityModule;

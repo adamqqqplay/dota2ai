@@ -18,11 +18,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName = {}
-local abilityIndex = utility.ReverseTable(abilityName)
-
-
 local AbilityToLevelUp=
 {
 	Abilities[1],
@@ -210,7 +205,7 @@ local dazzle_shadow_grave = function()
     then
         if(HealthPercentage<=0.3)
         then
-            return BOT_ACTION_DESIRE_VERY_HIGH, npcBot
+            return BOT_ACTION_DESIRE_VERYHIGH, npcBot
         end
     end
 

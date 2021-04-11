@@ -17,11 +17,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName = {}
-local abilityIndex = utility.ReverseTable(abilityName)
-
-
 local AbilityToLevelUp=
 {
 	Abilities[2],
@@ -68,6 +63,7 @@ local TalentTree={
 
 -- check skill build vs current level
 utility.CheckAbilityBuild(AbilityToLevelUp)
+AbilityExtensions:DebugArray(AbilityToLevelUp)
 
 function AbilityLevelUpThink()
 	ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp,TalentTree)

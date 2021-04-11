@@ -29,19 +29,19 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[2],
 	Abilities[2],
-	Abilities[abilityIndex.zuus_thundergods_wrath],
+	Abilities[6],
 	Abilities[2],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[3],
-	Abilities[abilityIndex.zuus_thundergods_wrath],
+	Abilities[6],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
 	"nil",
-	Abilities[abilityIndex.zuus_thundergods_wrath],
+	Abilities[6],
 	"nil",
 	"talent",
 	"nil",
@@ -340,9 +340,9 @@ Consider[2]=function()
 	return BOT_ACTION_DESIRE_NONE, 0 ,"nil";
 end
 
-Consider[abilityIndex.zuus_thundergods_wrath]=function()
+Consider[6]=function()
 	
-	local ability=AbilitiesReal[abilityIndex.zuus_thundergods_wrath]
+	local ability=AbilitiesReal[6]
 	if not ability:IsFullyCastable() 
 	then
 		return BOT_ACTION_DESIRE_NONE

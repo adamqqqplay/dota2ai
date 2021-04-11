@@ -28,19 +28,19 @@ local AbilityToLevelUp=
 	Abilities[3],
 	Abilities[2],
 	Abilities[3],
-	Abilities[abilityIndex.jakiro_macropyre],
+	Abilities[5],
 	Abilities[3],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[1],
-	Abilities[abilityIndex.jakiro_macropyre],
+	Abilities[5],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
 	"nil",
-	Abilities[abilityIndex.jakiro_macropyre],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -465,8 +465,8 @@ Consider[3]=function()
 	
 end
 
-Consider[abilityIndex.jakiro_macropyre]=function()
-	local abilityNumber=abilityIndex.jakiro_macropyre
+Consider[5]=function()
+	local abilityNumber=5
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
