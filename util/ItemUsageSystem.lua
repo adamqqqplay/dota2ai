@@ -55,7 +55,7 @@ local function GiveToMidLaner()
             local num_sts = GetItemCount(member, "item_tango_single")
             local num_ff = GetItemCount(member, "item_faerie_fire")
             local num_stg = GetItemCharges(member, "item_tango")
-            if num_sts + num_ff + num_stg <= 2 then
+            if num_sts + num_ff + num_stg == 0 then
                 return member
             end
         end

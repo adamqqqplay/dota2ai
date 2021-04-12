@@ -3,7 +3,7 @@ local M = {}
 local binlib = require(GetScriptDirectory().."/util/BinDecHex")
 
 M.Contains = function(self, tb, value)
-    for _, v in pairs(tb) do
+    for _, v in ipairs(tb) do
         if v == value then
             return true
         end
@@ -13,18 +13,28 @@ end
 
 M.Filter = function(self, tb, filter)
     local g = {}
-    for k, v in pairs(tb) do
-        if filter(v) then
-            g[k] = v
+    for k, v in ipairs(tb) do
+        if filter(v, k) then
+            table.insert(g, v)
         end
     end
     return g
 end
 M.FilterNot = function(self, tb, filter)
     local g = {}
-    for k, v in pairs(tb) do
-        if not filter(v) then
-            g[k] = v
+    for k, v in ipairs(tb) do
+        if not filter(v, k) then
+            table.insert(g, v)
+        end
+    end
+    return g
+end
+
+M.Count = function(self, tb, filter)
+    local g = 0
+    for k, v in ipairs(tb) do
+        if filter == nil or filter(v, k) then
+            g = g + 1
         end
     end
     return g
@@ -32,22 +42,74 @@ end
 
 M.Map = function(self, tb, transform)
     local g = {}
-    for k,v in pairs(tb) do
+    for k, v in pairs(tb) do
         g[k] = transform(v)
     end
     return g
 end
 
 M.ForEach = function(self, tb, action)
-    for _, v in pairs(tb) do
-        action(v)
+    for k, v in pairs(tb) do
+        action(v, k)
     end
+end
+
+M.Any = function(self, tb, filter)
+    for k, v in pairs(tb) do
+        if filter == nil or filter(v, k) then
+            return true
+        end
+    end
+    return false
+end
+
+M.All = function(self, tb, filter)
+    for k, v in pairs(tb) do
+        if not filter(v, k) then
+            return false
+        end
+    end
+    return true
 end
 
 M.ShallowCopy = function(self, tb)
     local g = {}
     for k, v in pairs(tb) do
         g[k] = v
+    end
+    return g
+end
+
+M.First = function(self, tb, filter)
+    for k, v in ipairs(tb) do
+        if filter == nil or filter(v, k) then
+            return v
+        end
+    end
+end
+
+M.Skip = function(self, tb, number)
+    local g = {}
+    local i = 0
+    for _, v in ipairs(tb) do
+        i = i + 1
+        if i > number then
+            table.insert(g, v)
+        end
+    end
+    return g
+end
+
+M.Take = function(self, tb, number)
+    local g = {}
+    local i = 0
+    for _, v in ipairs(tb) do
+        i = i + 1
+        if i <= number then
+            table.insert(g, v)
+        else
+            break
+        end
     end
     return g
 end
@@ -76,9 +138,27 @@ M.Concat = function(self, a, b)
         return a..b
     end
     local g = self:ShallowCopy(a)
-    local f = #a
-    for k, v in ipairs(b) do
-        g[k+f] = v
+    for _, v in ipairs(b) do
+        table.insert(g, v)
+    end
+    return g
+end
+
+M.Remove = function(self, a, b)
+    local g = self:ShallowCopy(a)
+    for k,v in pairs(a) do
+        if v == b then
+            g[k] = nil
+        end
+    end
+    return g
+end
+M.RemoveAll = function(self, a, b)
+    local g = {}
+    for _,v in pairs(a) do
+        if not self:Contains(b, v) then
+            table.insert(g, v)
+        end
     end
     return g
 end
@@ -87,7 +167,71 @@ M.Prepend = function(self, a, b)
     return self:Concat(b, a)
 end
 
+M.SlowSort = function(self, tb, sort)
+    local g = self:ShallowCopy(tb)
+    local len = #g
+    if sort ~= nil then
+        for i = 1, len-1 do
+            for j = i+1, len do
+                if sort(g[i], g[j]) > 0 then
+                    g[i], g[j] = g[j], g[i]
+                end
+            end
+        end
+    else
+        for i = 1, len-1 do
+            for j = i+1, len do
+                if g[i] > g[j] then
+                    g[i], g[j] = g[j], g[i]
+                end
+            end
+        end
+    end
+    return g
+end
 
+M.QuickSort = function(self, tb, sort)
+    if sort == nil then
+        sort = function(a, b) return a-b end
+    end
+    local function Merge(a, b)
+        local g = {}
+        local aLen = #a
+        local bLen = #b
+        local i = 1
+        local j = 1
+        while i <= aLen and j <= bLen do
+            if sort(a[i], b[j]) > 0 then
+                table.insert(g, b[j])
+                j = j+1
+            else
+                table.insert(g, a[i])
+                i = i+1
+            end
+        end
+        if i < aLen then
+            for _ = i, aLen do
+                table.insert(g, a[i])
+            end
+        end
+        if j < bLen then
+            for _ = j, bLen do
+                table.insert(g, b[j])
+            end
+        end
+        return g
+    end
+    local function SortRec(tab)
+        local tableLength = #tab
+        local left = SortRec(self:Take(tab, tableLength/2))
+        local right = SortRec(self:Skip(tab, tableLength/2))
+        local merge = Merge(left, right)
+        return merge
+    end
+    return SortRec(tb)
+end
+
+M.Sort = M.SlowSort
 
 M.SeriouslyRetreatingStunSomeone = function(self, npcBot, abilityIndex, ability, targetType)
     if not ability:IsFullyCastable() then
@@ -157,12 +301,16 @@ M.IsAttackingEnemies = function(self, npcBot)
     return mode == BOT_MODE_ROAM or mode == BOT_MODE_TEAM_ROAM or mode == BOT_MODE_ATTACK or mode ==  BOT_MODE_DEFEND_ALLY
 end
 
+M.NotRetreating = function(self, npcBot)
+    return npcBot:GetActiveMode() ~= BOT_MODE_RETREAT
+end
+
 M.HasEnoughManaToUseAttackAttachedAbility = function(self, npcBot, ability)
     local percent = self:GetManaPercent(npcBot)
     if percent >= 0.8 and npcBot:GetMana() >= 650 then
         return true
     end
-    return percent >= 0.4 and npcBot:GetMana() >= 300 and npcBot:GetManaRegen() >= npcBot:GetAttacksPerSecond() * ability:GetManaCost() * 0.75
+    return percent >= 0.4 and npcBot:GetMana() >= 300 and npcBot:GetManaRegen() >= npcBot:GetAttackSpeed() / 100 * ability:GetManaCost() * 0.75
 end
 
 -- turn a function that returns true, false, nil to a function that decides whether to toggle the ability or not
@@ -208,29 +356,85 @@ M.MustBeIllusion = function(self, npcBot, target)
 end
 M.MayNotBeIllusion = function(self, npcBot, target) return not self:MustBeIllusion(npcBot, target) end
 
+M.GetNearbyNonIllusionHeroes = function(self, npcBot, range, getEnemy, additionalParameter)
+    local heroes = npcBot:GetNearbyHeroes(range, getEnemy, additionalParameter)
+    return self:Filter(heroes, function(t) return self:MayNotBeIllusion(npcBot, t) end)
+end
+
+M.GetEnemyHeroNumber = function(self, npcBot, enemies)
+    local p = self:Filter(enemies, function(t) self:MayNotBeIllusion(npcBot, t) end)
+    local readNames = {}
+    for _, enemy in pairs(p) do
+        local name = enemy:GetUnitName()
+        if not self:Contains(readNames, name) then
+            table.insert(readNames, name)
+        end
+    end
+    return #readNames
+end
+
+M.GetEmptyItemSlots = function(self, npc)
+    local g = 0
+    for i = 0, 8 do
+        if npc:GetItemInSlot(i) == nil then
+            g = g+1
+        end
+    end
+    return g
+end
+
+local heroNameTable = {}
+setmetatable(heroNameTable, {
+    __index = function(tb, s) return "npc_dota_hero_"..s  end
+})
+M.GetHeroFullName = function(self, s)
+    return "npc_dota_hero_"..s
+end
+
+M.IsMeleeHero = function(self, npc)
+    local range = npc:GetAttackRange()
+    local name = npc:GetUnitName()
+    return range <= 210 or name == self:GetHeroFullName("tiny") or name == self:GetHeroFullName("doom_bringer")
+end
+
+M.AttackPassiveAbilities = {
+    "doom_bringer_infernal_blade",
+    "drow_ranger_frost_arrows",
+    "clinkz_fire_arrows",
+    "viper_poison_attack",
+    "obsidian_destroyer_arcane_orb",
+}
+M.OtherIgnoreAbilityBlockAbilities = {
+    "batrider_flaming_lasso",
+    "gyrocopter_homing_missle",
+}
 M.IgnoreAbilityBlockAbilities = {
     "dark_seer_ion_shell",
     "grimstroke_soulbind",
     "rubick_spell_steal",
     "spectre_spectral_dagger",
     "morphling_morph",
-    "batrider_flaming_lasso",
     "urn_of_shadows_soul_release",
     "spirit_vessel_soul_release",
     "medallion_of_courage_valor",
     "solar_crest_armor_shine",
 }
 
+M.IgnoreAbilityBlock = function(self, ability)
+    local abilityName = ability:GetName()
+    return self:Contains(self.AttackPassiveAbilities, abilityName) or self:Contains(self.IgnoreAbilityBlockAbilities, abilityName) or self:Contains(self.OtherIgnoreAbilityBlockAbilities, abilityName)
+end
+
 M.DebugTable = function(self, tb)
     local msg = "{ "
     local DebugRec
-    DebugRec = function(tb)
-        for k,v in pairs(tb) do
+    DebugRec = function(tc)
+        for k,v in pairs(tc) do
             if type(v) == "number" or type(v) == "string" then
-                msg = msg..k.." = "..v
-                msg = msg..", "
-            end
-            if type(v) == "table" then
+                msg = msg..k.." = "..v..", "
+            elseif type(v) == "boolean" then
+                msg = msg..k.." = "..tostring(v)..", "
+            elseif type(v) == "table" then
                 msg = msg..k.." = ".."{ "
                 DebugRec(v)
                 msg = msg.."}, "
@@ -240,6 +444,130 @@ M.DebugTable = function(self, tb)
     DebugRec(tb)
     msg = msg.." }"
     print(msg)
+end
+
+M.DebugLongTable = function(self, tb)
+    for k,v in pairs(tb) do
+        if type(v) == "table" then
+            print(tostring(k).." = ")
+            self:DebugTable(v)
+        else
+            print(tostring(k).." = "..tostring(v))
+        end
+    end
+end
+
+M.DebugArray = function(self, tb)
+    for k,v in ipairs(tb) do
+        if type(v) == "table" then
+            self:DebugTable(v)
+        else
+            print(v)
+        end
+    end
+end
+
+M.PrintAbilities = function(self, npcBot)
+    local abilityNames = "{\n"
+    for i = 0,30 do
+        local abi = npcBot:GetAbilityInSlot(i)
+        if abi ~= nil and abi:GetName() ~= "generic_hidden" then
+            abilityNames = abilityNames.."\t\""..abi:GetName().."\",\n"
+        end
+    end
+    abilityNames = abilityNames.."}"
+    print(npcBot:GetUnitName())
+    print(abilityNames)
+end
+
+M.SpecialBonusAttributes = "special_bonus_attributes"
+M.TalentNamePrefix = "special_bonus_"
+M.IncorrectAbilityName = "incorrect_name"
+
+M.IsTalent = function(self, ability)
+    if ability == nil then
+        return false
+    end
+    if type(ability) ~= "string" then
+        ability = ability:GetName()
+    end
+    return ability ~= "special_bonus_attributes" and #ability >= #self.TalentNamePrefix and string.sub(ability, 1, #self.TalentNamePrefix) == self.TalentNamePrefix
+end
+
+M.GetAbilities = function(self, npcBot)
+    local g = {}
+    for i = 0,25 do
+        local abi = npcBot:GetAbilityInSlot(i)
+        if abi ~= nil and abi:GetName() ~= "generic_hidden" then
+            table.insert(g, abi)
+        end
+    end
+    return g
+end
+
+M.GetAbilityNames = function(self, npcBot)
+    return self:Map(self:GetAbilities(npcBot), function(t) return t:GetName() end)
+end
+
+M.GetTalents = function(self, npcBot)
+    return self:Filter(self:GetAbilities(npcBot), function(t) return self:IsTalent(t) end)
+end
+
+M.GetAbilityLevelUpIndex = function(self, npcBot)
+    return npcBot:GetLevel() - npcBot:GetAbilityPoints() + 1 + npcBot.abilityTable.incorrectAbilityLevelUpNumber
+end
+
+M.FillInAbilities = function(self, npcBot, abilityTable)
+    local abilities = self:GetAbilityNames(npcBot)
+    if #abilityTable == 19 then
+        table.insert(abilityTable, 17, self.SpecialBonusAttributes)
+        table.insert(abilityTable, 19, self.SpecialBonusAttributes)
+        table.insert(abilityTable, 21, self.SpecialBonusAttributes)
+        table.insert(abilityTable, 22, self.SpecialBonusAttributes)
+        table.insert(abilityTable, 23, self.SpecialBonusAttributes)
+        table.insert(abilityTable, 24, self.SpecialBonusAttributes)
+        table.insert(abilityTable, 26, self.SpecialBonusAttributes)
+    end
+    for i = 1, 26 do
+        if abilityTable[i] == "nil" then
+            abilityTable[i] = self.SpecialBonusAttributes
+        end
+        if not self:Contains(abilities, abilityTable[i]) and abilityTable[i] ~= "talent" then
+            print("Bot script "..npcBot:GetUnitName().." contains incorrect ability name: "..abilityTable[i])
+            abilityTable[i] = self.IncorrectAbilityName
+        end
+    end
+    if #abilityTable == 30 then
+        return
+    end
+
+    local talents = self:Map(self:GetTalents(npcBot), function(t) return t:GetName()  end)
+    local levelUpTalents = self:Filter(abilityTable, function(t) return self:IsTalent(t) end)
+    local g = self:Concat(abilityTable, self:RemoveAll(talents, levelUpTalents))
+    g.incorrectAbilityLevelUpNumber = self:Count(g, function(ability, index)
+        return index < npcBot:GetLevel() - npcBot:GetAbilityPoints() + 1 and (ability == nil or not ability:CanAbilityBeUpgraded() or ability:GetName() == self.IncorrectAbilityName)
+    end)
+    npcBot.abilityTable = g
+end
+
+M.ExecuteAbilityLevelUp = function(self, npcBot)
+    local abilityTable = npcBot.abilityTable
+    if abilityTable.justLevelUpAbility then
+        if abilityTable.abilityPoints == npcBot:GetAbilityPoints() then
+            abilityTable.incorrectAbilityLevelUpNumber = abilityTable.incorrectAbilityLevelUpNumber + 1
+        end
+        abilityTable.justLevelUpAbility = false
+    end
+    abilityTable.abilityPoints = npcBot:GetAbilityPoints()
+    if npcBot:GetAbilityPoints() < 1 + abilityTable.incorrectAbilityLevelUpNumber or GetGameState() ~= GAME_STATE_PRE_GAME and GetGameState() ~= GAME_STATE_GAME_IN_PROGRESS then
+        return
+    end
+    local abilityName = abilityTable[self:GetAbilityLevelUpIndex(npcBot)]
+    if abilityName == self.IncorrectAbilityName or abilityName == self.SpecialBonusAttributes then
+        abilityTable.incorrectAbilityLevelUpNumber = abilityTable.incorrectAbilityLevelUpNumber + 1
+    end
+    npcBot:ActionImmediate_LevelAbility(abilityName)
+    abilityTable.justLevelUpAbility = true
 end
 
 M.IsVector = function(self, object)
@@ -288,7 +616,9 @@ M.PreventEnemyTargetAbilityUsageAtAbilityBlock = function(self, npcBot, oldConsi
                 end
             end
             if target:HasModifier("modifier_item_sphere_target") then
-                if cooldown >= 30  then
+                if cooldown >= 60 then
+                    desire = 0
+                elseif cooldown >= 30  then
                     desire = desire - abilityImportance + 0.1
                 elseif cooldown <= 20 then
                     desire = desire + abilityImportance
@@ -298,7 +628,11 @@ M.PreventEnemyTargetAbilityUsageAtAbilityBlock = function(self, npcBot, oldConsi
                 end
             end
             if target:HasModifier("modifier_item_lotus_orb_active") then
-                desire = desire - abilityImportance/2
+                if npcBot:GetActiveMode() == BOT_MODE_RETREAT then
+                    desire = 0
+                else
+                    desire = desire - abilityImportance/2
+                end
             end
             if target:HasModifier("modifier_mirror_shield_delay") then
                 desire = desire - abilityImportance*1.5
@@ -319,10 +653,8 @@ M.AutoModifyConsiderFunction = function(self, npcBot, considers, abilitiesReal)
         if not binlib.Test(ability:GetBehavior(), ABILITY_BEHAVIOR_PASSIVE) and considers[index] == nil then
             print("Missing consider function "..ability:GetName())
         elseif binlib.Test(ability:GetTargetTeam(), ABILITY_TARGET_TEAM_ENEMY) and binlib.Test(ability:GetTargetType(), binlib.Or(ABILITY_TARGET_TYPE_HERO, ABILITY_TARGET_TYPE_CREEP, ABILITY_TARGET_TYPE_BUILDING)) and binlib.Test(ability:GetBehavior(), ABILITY_BEHAVIOR_UNIT_TARGET) then
-            print("Modify ability to prevent ability usage at illusion "..ability:GetName())
             considers[index] = self.PreventAbilityAtIllusion(self, npcBot, considers[index], ability)
-            if not self:Contains(self.IgnoreAbilityBlockAbilities, ability:GetName()) then
-                print("Modify ability to avoid spell block: "..ability:GetName())
+            if not self:IgnoreAbilityBlock(ability) then
                 considers[index] = self.PreventEnemyTargetAbilityUsageAtAbilityBlock(self, npcBot, considers[index], ability)
             end
         end
@@ -401,5 +733,18 @@ M.HasScepter = function(self, npc)
     return npc:HasScepter() or npc:HasModifier("modifier_wisp_tether_scepter")
 end
 
+M.CheckForBestTarget = function(self, npc, ability, targets, filter, map, sort, select)
+    local g = {}
+    for _, target in ipairs(targets) do
+        if filter(npc, ability, target) then
+            table.insert(g, map)
+        end
+    end
+    self:Sort(g, sort)
+    if g[1] == nil then
+        return nil
+    end
+    return select(g[1])
+end
 
 return M

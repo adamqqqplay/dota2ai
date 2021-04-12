@@ -17,9 +17,7 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName = {}
-local abilityIndex = utility.ReverseTable(abilityName)
+
 
 
 local AbilityToLevelUp=
@@ -123,7 +121,7 @@ local function IsStoneInPath(location, dist)
 end
 
 local function CanChainMag(target, radius)
-	local enemies = target:GetNearbyHeroes(radius, false, BOT_MODE_NONE);
+	local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(target,radius, false, BOT_MODE_NONE);
 	for _,enemy in pairs(enemies)
 	do
 		if not enemy:HasModifier('modifier_earth_spirit_magnetize') then
@@ -168,8 +166,8 @@ Consider[1]=function()
 
 	if nStoneCR > 1600 then nStoneCR = 1600 end
 
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, false, BOT_MODE_NONE );
+	local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot,1600,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(1600,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
@@ -365,8 +363,8 @@ Consider[2]=function()
 	local nRSpeed     = ability:GetSpecialValueInt('rock_speed');
 	local nDamage     = ability:GetSpecialValueInt('damage');
 
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, false, BOT_MODE_NONE );
+	local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot,1600,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(1600,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
@@ -433,8 +431,8 @@ Consider[2]=function()
 			then
 				if nStone >= 1 and (GetUnitToUnitDistance(npcTarget, npcBot) <= nStoneCR + 200)
 				then
-					local targetAlly  = npcTarget:GetNearbyHeroes(1000, false, BOT_MODE_NONE);
-					local targetEnemy = npcTarget:GetNearbyHeroes(1000, true, BOT_MODE_NONE);
+					local targetAlly  = AbilityExtensions:GetNearbyNonIllusionHeroes(npcTarget,1000, false, BOT_MODE_NONE);
+					local targetEnemy = AbilityExtensions:GetNearbyNonIllusionHeroes(npcTarget,1000, true, BOT_MODE_NONE);
 					if targetEnemy ~= nil and targetAlly ~= nil and #targetEnemy >= #targetAlly then
 						local loc = GetCorrectLoc(npcTarget, GetUnitToUnitDistance(npcBot, target)/nRSpeed)
 						if IsStoneInPath(loc, (nUnitCR/2)+200) then
@@ -477,8 +475,8 @@ Consider[3]=function()
 	local nManaCost   = ability:GetManaCost( );
 	local nDamage     = ability:GetSpecialValueInt('rock_damage');
 
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, false, BOT_MODE_NONE );
+	local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot,CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
@@ -555,8 +553,8 @@ Consider[3]=function()
 		then
 			if ( CanCast[abilityNumber]( npcTarget ) and not enemyDisabled(npcTarget) and GetUnitToUnitDistance(npcBot,npcTarget)< CastRange + 75*#allys)
 			then
-				local targetAlly  = npcTarget:GetNearbyHeroes(1000, false, BOT_MODE_NONE);
-				local targetEnemy = npcTarget:GetNearbyHeroes(1000, true, BOT_MODE_NONE);
+				local targetAlly  = AbilityExtensions:GetNearbyNonIllusionHeroes(npcTarget,1000, false, BOT_MODE_NONE);
+				local targetEnemy = AbilityExtensions:GetNearbyNonIllusionHeroes(npcTarget,1000, true, BOT_MODE_NONE);
 				if targetEnemy ~= nil and targetAlly ~= nil and #targetEnemy >= #targetAlly then
 					local loc = GetCorrectLoc(npcTarget, 2*nCastPoint)
 					local stoneNearby = IsStoneNearby(loc, nSearchRad);
@@ -582,17 +580,17 @@ Consider[4]=function()
 	local ability=AbilitiesReal[abilityNumber];
 	
 	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
+		return BOT_ACTION_DESIRE_NONE
 	end
 
 	if DotaTime() < stoneCast + stoneCastGap then
-		return BOT_ACTION_DESIRE_NONE, 0;
+		return BOT_ACTION_DESIRE_NONE
 	end
 
 	local nCastRange  = ability:GetCastRange( );
 	local nRadius     = AbilitiesReal[6]:GetSpecialValueInt('rock_search_radius');
 
-	local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( nCastRange - 200, true, BOT_MODE_NONE );
+	local tableNearbyEnemyHeroes = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, nCastRange - 200, true, BOT_MODE_NONE );
 	for _,npcEnemy in pairs( tableNearbyEnemyHeroes )
 	do
 		if npcEnemy:HasModifier('modifier_earth_spirit_magnetize') 
@@ -604,7 +602,7 @@ Consider[4]=function()
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0, false, false;
+	return BOT_ACTION_DESIRE_NONE
 end
 
 Consider[5]=function()
@@ -640,9 +638,9 @@ Consider[6]=function()
 	local nCastPoint = ability:GetCastPoint( );
 	local nManaCost  = ability:GetManaCost( );
 
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, false, BOT_MODE_NONE );
 		
-	local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE );
+	local tableNearbyEnemyHeroes = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, nRadius, true, BOT_MODE_NONE );
 
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH )

@@ -18,12 +18,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-
-
-local abilityName = {"kunkka_torrent", "kunkka_tidebringer", "kunkka_x_marks_the_spot", "kunkka_torrent_storm", "kunkka_tidal_wave", "kunkka_ghostship", "kunkka_return" }
-local abilityIndex = utility.ReverseTable(abilityName)
-
 local AbilityToLevelUp=
 {
 	Abilities[2],
@@ -97,6 +91,15 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
+local xMarkTarget
+local xMarkTime
+local xMarkLocation
+local useTorrentAtXMark
+local useTorrentAtXMarkTime
+local function XMarksEnemy()
+    return xMarkTarget ~= nil and xMarkTarget:GetTeam() ~= npcBot:GetTeam()
+end
+
 Consider[1]=function()
 	local abilityNumber=1
 	--------------------------------------
@@ -134,6 +137,10 @@ Consider[1]=function()
 			return BOT_ACTION_DESIRE_HIGH-0.1, npcEnemy:GetLocation();
 		end
 	end
+
+    if XMarksEnemy() and CanCast[1](xMarkTarget) and DotaTime()-xMarkTime <= 0.2 then
+        return BOT_ACTION_DESIRE_VERYHIGH, npcEnemy:GetLocation()
+    end
 
 	--try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
@@ -424,7 +431,30 @@ Consider[6]=function()
 	end
 
 	return BOT_ACTION_DESIRE_NONE, 0;
-	
+end
+
+--  this initialisation doesn't work, because ability values cannot be queried before they are learned
+--local torrentDelay = AbilitiesReal[1]:GetSpecialValueFloat("delay")
+--local xMarksReturnCastPoint = AbilitiesReal[1]:GetCastPoint()
+
+Consider[7] = function()
+    local abilityNumber=7
+    local ability=AbilitiesReal[abilityNumber]
+    if not ability:IsFullyCastable() or xMarkTarget == nil or not xMarkTarget:HasModifier("modifier_kunkka_x_marks_the_spot") then
+        return 0
+    end
+    if xMarkTarget:IsChanneling() then
+        return BOT_ACTION_DESIRE_VERYHIGH
+    end
+    if XMarksEnemy() and npcBot:GetActiveMode() ~= BOT_MODE_RETREAT and GetUnitToUnitDistance(npcBot, xMarkTarget) >= 1800 then
+        return BOT_ACTION_DESIRE_HIGH
+    end
+    if XMarksEnemy() and npcBot:GetActiveMode() == BOT_MODE_RETREAT and (GetUnitToUnitDistance(npcBot, xMarkTarget) <= 300 or npcBot:WasRecentlyDamagedByHero(xMarkTarget, 1)) and DotaTime() > 1 + xMarkTime and GetUnitToLocationDistance(xMarkTarget, xMarkLocation) then
+        return BOT_ACTION_DESIRE_HIGH
+    end
+    if XMarksEnemy() and useTorrentAtXMarkTime and useTorrentAtXMarkTime >= DotaTime() - AbilitiesReal[1]:GetSpecialValueFloat("delay") + AbilitiesReal[7]:GetCastPoint() + 0.1 then
+        return BOT_ACTION_DESIRE_VERYHIGH
+    end
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
@@ -447,7 +477,24 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+
+    if xMarkTime and (DotaTime() > xMarkTime + 8 or not npcBot:IsAlive() or not xMarkTarget:IsAlive()) then
+        xMarkTarget = nil
+        xMarkTime = nil
+        xMarkLocation = nil
+        useTorrentAtXMark = false
+        useTorrentAtXMarkTime = nil
+    end
+
+	local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+    if index == 3 then
+        xMarkTarget = target
+        xMarkTime = DotaTime()
+        xMarkLocation = target:GetLocation()
+    elseif index == 1 and xMarkTarget then
+        useTorrentAtXMark = true
+        useTorrentAtXMarkTime = DotaTime()
+    end
 end
 
 function CourierUsageThink() 

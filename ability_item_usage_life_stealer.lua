@@ -159,9 +159,9 @@ Consider[1]=function()
 	
 end
 
-Consider[abilityIndex.life_stealer_open_wounds]=function()
+Consider[4]=function()
 
-	local abilityNumber=abilityIndex.life_stealer_open_wounds
+	local abilityNumber=4
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

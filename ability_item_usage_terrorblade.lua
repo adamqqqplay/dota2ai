@@ -18,11 +18,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName = { "terrorblade_reflection", "terrorblade_conjure_image", "terrorblade_metamorphosis", "terrorblade_demon_zeal", "terrorblade_terror_wave", "terrorblade_sunder" }
-local abilityIndex = utility.ReverseTable(abilityName)
-
-
 local AbilityToLevelUp=
 {
 	Abilities[3],
@@ -30,19 +25,19 @@ local AbilityToLevelUp=
 	Abilities[3],
 	Abilities[1],
 	Abilities[3],
-	Abilities[abilityIndex.terrorblade_sunder],
+	Abilities[6],
 	Abilities[3],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
-	Abilities[abilityIndex.terrorblade_sunder],
+	Abilities[6],
 	Abilities[2],
 	Abilities[1],
 	"talent",
 	Abilities[1],
 	"nil",
-	Abilities[abilityIndex.terrorblade_sunder],
+	Abilities[6],
 	"nil",
 	"talent",
 	"nil",
@@ -89,8 +84,8 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
-Consider[abilityIndex.terrorblade_terror_wave]=function()
-	local abilityNumber=abilityIndex.terrorblade_terror_wave
+Consider[5]=function()
+	local abilityNumber=5
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -379,8 +374,8 @@ Consider[3]=function()
 	return BOT_ACTION_DESIRE_NONE, 0 
 end
 
-Consider[abilityIndex.terrorblade_sunder]=function()
-	local abilityNumber=abilityIndex.terrorblade_sunder
+Consider[6]=function()
+	local abilityNumber=6
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

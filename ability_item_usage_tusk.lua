@@ -30,19 +30,19 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[2],
 	Abilities[1],
-	Abilities[abilityIndex.tusk_walrus_punch],
+	Abilities[6],
 	Abilities[1],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[3],
-	Abilities[abilityIndex.tusk_walrus_punch],
+	Abilities[6],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
 	"nil",
-	Abilities[abilityIndex.tusk_walrus_punch],
+	Abilities[6],
 	"nil",
 	"talent",
 	"nil",
@@ -416,9 +416,9 @@ Consider[3]=function()
 	return BOT_ACTION_DESIRE_NONE, 0 
 end
 
-Consider[abilityIndex.tusk_walrus_punch]=function()
+Consider[6]=function()
 
-	local abilityNumber=abilityIndex.tusk_walrus_punch
+	local abilityNumber=6
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

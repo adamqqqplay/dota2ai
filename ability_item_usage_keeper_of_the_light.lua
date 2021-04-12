@@ -301,8 +301,8 @@ end
 
 -- copied from sven_storm_hammer
 
-Consider[abilityIndex.keeper_of_the_light_radiant_blind]=function()
-	local abilityNumber=abilityIndex.keeper_of_the_light_radiant_blind
+Consider[2]=function()
+	local abilityNumber=2
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -603,8 +603,8 @@ Consider[abilityIndex.keeper_of_the_light_blind_light] = function()
 
 end
 
-Consider[abilityIndex.keeper_of_the_light_will_o_wisp] = function()
-	local abilityNumber = abilityIndex.keeper_of_the_light_will_o_wisp
+Consider[5] = function()
+	local abilityNumber = 5
 	local ability = AbilitiesReal[abilityNumber]
 
 	if not ability:IsFullyCastable() then
@@ -687,8 +687,8 @@ Consider[abilityIndex.keeper_of_the_light_will_o_wisp] = function()
 end
 
 -- copied from sven_strength_of_god
-Consider[abilityIndex.keeper_of_the_light_spirit_form]=function()
-	local abilityNumber=abilityIndex.keeper_of_the_light_spirit_form
+Consider[6]=function()
+	local abilityNumber=6
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -733,7 +733,7 @@ Consider[abilityIndex.keeper_of_the_light_spirit_form]=function()
 	return BOT_ACTION_DESIRE_NONE, 0
 end
 
-Consider.keeper_of_the_light_spirit_form_illuminate = Consider.keeper_of_the_light_illuminate
+Consider[8] = Consider[1]
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()

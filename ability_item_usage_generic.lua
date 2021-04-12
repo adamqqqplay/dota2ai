@@ -9,6 +9,7 @@ local utility = require(GetScriptDirectory() .. "/utility")
 local Courier = dofile(GetScriptDirectory() .. "/util/CourierSystem")
 local ItemUsageSystem = dofile(GetScriptDirectory() .. "/util/ItemUsageSystem")
 local ChatSystem = dofile(GetScriptDirectory() .. "/util/ChatSystem")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
 local function ConsiderGlyph()
 	local Towers = {
@@ -74,38 +75,93 @@ function CourierUsageThink()
 	SecondaryOperation()
 end
 
+
+local ExecuteAbilityLevelUp = function(AbilityToLevelUp, TalentTree)
+    local GetAbilityLevelUpIndex = function(npcBot)
+        return npcBot:GetLevel() - npcBot:GetAbilityPoints() + 1 + AbilityToLevelUp.incorrectAbilityLevelUpNumber
+    end
+
+    local npcBot = GetBot()
+    local function GetNextTalent()
+        return AbilityExtensions:First(AbilityExtensions:GetTalents(npcBot), function(t)
+            return t:CanAbilityBeUpgraded()
+        end)
+    end
+
+    if AbilityToLevelUp.justLevelUpAbility then
+        if AbilityToLevelUp.abilityPoints == npcBot:GetAbilityPoints() then
+            AbilityToLevelUp.incorrectAbilityLevelUpNumber = AbilityToLevelUp.incorrectAbilityLevelUpNumber + 1
+        end
+        AbilityToLevelUp.justLevelUpAbility = false
+    end
+    AbilityToLevelUp.abilityPoints = npcBot:GetAbilityPoints()
+    if npcBot:GetAbilityPoints() < 1 + AbilityToLevelUp.incorrectAbilityLevelUpNumber or GetGameState() ~= GAME_STATE_PRE_GAME and GetGameState() ~= GAME_STATE_GAME_IN_PROGRESS then
+        return
+    end
+    local abilityName = AbilityToLevelUp[GetAbilityLevelUpIndex(npcBot)]
+    if abilityName == AbilityExtensions.IncorrectAbilityName or abilityName == AbilityExtensions.SpecialBonusAttributes then
+        AbilityToLevelUp.incorrectAbilityLevelUpNumber = AbilityToLevelUp.incorrectAbilityLevelUpNumber + 1
+        print(npcBot:GetUnitName()..": learn error ability: "..tostring(abilityName))
+    else
+        if abilityName == "talent" then
+            AbilityToLevelUp.talentTreeIndex = AbilityToLevelUp.talentTreeIndex + 1
+            if type(TalentTree[AbilityToLevelUp.talentTreeIndex]) == "function" then
+                abilityName = TalentTree[AbilityToLevelUp.talentTreeIndex]()
+            else
+                abilityName = GetNextTalent():GetName()
+            end
+        end
+        npcBot:ActionImmediate_LevelAbility(abilityName)
+        AbilityToLevelUp.justLevelUpAbility = true
+    end
+end
+
 function AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
-	local npcBot = GetBot()
-	if
-		(npcBot:GetAbilityPoints() < 1 or #AbilityToLevelUp == 0 or
-			(GetGameState() ~= GAME_STATE_PRE_GAME and GetGameState() ~= GAME_STATE_GAME_IN_PROGRESS))
-	 then
-		return
-	end
-
-	local abilityname = AbilityToLevelUp[1]
-	if abilityname == "nil" then
-		table.remove(AbilityToLevelUp, 1)
-		return
-	end
-	if abilityname == "talent" then
-		local level = npcBot:GetLevel()
-		for i, temp in pairs(AbilityToLevelUp) do
-			if temp == "talent" then
-				table.remove(AbilityToLevelUp, i)
-				table.insert(AbilityToLevelUp, i, TalentTree[1]())
-				table.remove(TalentTree, 1)
-				break
-			end
-		end
-	end
-
-	local ability = npcBot:GetAbilityByName(abilityname)
-
-	if ability ~= nil and ability:CanAbilityBeUpgraded() then
-		npcBot:ActionImmediate_LevelAbility(abilityname)
-		table.remove(AbilityToLevelUp, 1)
-	end
+    ExecuteAbilityLevelUp(AbilityToLevelUp, TalentTree)
+    return
+    --
+    --local npcBot = GetBot()
+    --if (npcBot:GetAbilityPoints() < 1 or #AbilityToLevelUp == 0 or
+    --        (GetGameState() ~= GAME_STATE_PRE_GAME and GetGameState() ~= GAME_STATE_GAME_IN_PROGRESS))
+    --then
+    --    return
+    --end
+    --
+    --local abilityname = AbilityToLevelUp[1]
+    --print(npcBot:GetUnitName()..": ability to learn "..tostring(abilityname))
+    --if abilityname == "nil" then
+    --    table.remove(AbilityToLevelUp, 1)
+    --    return
+    --end
+    --if abilityname == "talent" then
+    --    for i, temp in pairs(AbilityToLevelUp) do
+    --        if temp == "talent" then
+    --            table.remove(AbilityToLevelUp, i)
+    --            if #TalentTree >= 1 then
+    --                table.insert(AbilityToLevelUp, i, TalentTree[1]())
+    --            else
+    --
+    --            end
+    --            table.remove(TalentTree, 1)
+    --            break
+    --        end
+    --    end
+    --end
+    --
+    --local ability = npcBot:GetAbilityByName(abilityname)
+    --if ability == nil then
+    --    print(npcBot:GetUnitName()..": learn ability nil")
+    --elseif not ability:CanAbilityBeUpgraded() then
+    --    print(npcBot:GetUnitName()..": cannot learn ability "..abilityname)
+    --else
+    --    npcBot:ActionImmediate_Chat("learn ability "..abilityname, true)
+    --    print(npcBot:GetUnitName()..": learn ability "..abilityname)
+    --end
+    --if ability ~= nil and ability:CanAbilityBeUpgraded() then
+    --    npcBot:ActionImmediate_LevelAbility(abilityname)
+    --    IncrementIncorrectAbility(AbilityToLevelUp)
+    --end
+    --table.remove(AbilityToLevelUp, 1)
 end
 
 local function CanBuybackUpperRespawnTime(respawnTime)
@@ -209,6 +265,7 @@ function InitAbility(Abilities, AbilitiesReal, Talents)
 			end
 		end
 	end
+    npcBot.abilityInited = true -- set to true every time the scripts are reloaded
 end
 
 function GetComboMana(AbilitiesReal)
@@ -274,45 +331,38 @@ end
 
 function UseAbility(AbilitiesReal, cast)
 	local npcBot = GetBot()
-
 	local HighestDesire = 0
 	local HighestDesireAbility = 0
-	local HighestDesireAbilityBumber = 0
+	local HighestDesireAbilityNumber = 0
 	for i, ability in pairs(AbilitiesReal) do
 		if (cast.Desire[i] ~= nil and cast.Desire[i] > HighestDesire) then
 			HighestDesire = cast.Desire[i]
-			HighestDesireAbilityBumber = i
+			HighestDesireAbilityNumber = i
 		end
 	end
 	if (HighestDesire > 0) then
-		local j = HighestDesireAbilityBumber
+		local j = HighestDesireAbilityNumber
 		local ability = AbilitiesReal[j]
 		if (cast.Type[j] == nil) then
 			if (utility.CheckFlag(ability:GetBehavior(), ABILITY_BEHAVIOR_NO_TARGET)) then
 				npcBot:Action_UseAbility(ability)
-				return
 			elseif (utility.CheckFlag(ability:GetBehavior(), ABILITY_BEHAVIOR_POINT)) then
 				npcBot:Action_UseAbilityOnLocation(ability, cast.Target[j])
-				return
 			elseif (utility.CheckFlag(ability:GetTargetType(), ABILITY_TARGET_TYPE_TREE)) then
 				npcBot:Action_UseAbilityOnTree(ability, cast.Target[j])
-				return
 			else
 				npcBot:Action_UseAbilityOnEntity(ability, cast.Target[j])
-				return
 			end
 		else
 			if (cast.Type[j] == "Target") then
 				npcBot:Action_UseAbilityOnEntity(ability, cast.Target[j])
-				return
 			elseif (cast.Type[j] == "Location") then
 				npcBot:Action_UseAbilityOnLocation(ability, cast.Target[j])
-				return
 			else
 				npcBot:Action_UseAbility(ability)
-				return
 			end
 		end
+        return j, cast.Target[j], cast.Type[j]
 	end
 end
 

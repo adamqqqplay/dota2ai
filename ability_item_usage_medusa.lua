@@ -18,11 +18,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName = { "medusa_split_shot", "medusa_mystic_snake", "medusa_mana_shield", "medusa_cold_blooded", "medusa_stone_gaze" }
-local abilityIndex = utility.ReverseTable(abilityName)
-
-
 local AbilityToLevelUp=
 {
 	Abilities[2],
@@ -30,19 +25,19 @@ local AbilityToLevelUp=
 	Abilities[2],
 	Abilities[3],
 	Abilities[2],
-	Abilities[abilityIndex.medusa_stone_gaze],
+	Abilities[5],
 	Abilities[2],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[3],
-	Abilities[abilityIndex.medusa_stone_gaze],
+	Abilities[5],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[3],
 	"nil",
-	Abilities[abilityIndex.medusa_stone_gaze],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -275,9 +270,9 @@ end
 
 Consider[3] = AbilityExtensions:ToggleFunctionToAction(npcBot, Consider[3], AbilitiesReal[3])
 
-Consider[abilityIndex.medusa_stone_gaze]=function()
+Consider[5]=function()
 
-	local abilityNumber=abilityIndex.medusa_stone_gaze
+	local abilityNumber=5
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
