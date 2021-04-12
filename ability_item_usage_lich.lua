@@ -62,7 +62,7 @@ local talentTree = {
 }
 
 -- check skill build vs current level
-AbilityHelper.checkAbilityBuild(abilityTree)
+utility.CheckAbilityBuild(abilityTree)
 
 function AbilityLevelUpThink()
 	ability_item_usage_generic.AbilityLevelUpThink2(abilityTree, talentTree)

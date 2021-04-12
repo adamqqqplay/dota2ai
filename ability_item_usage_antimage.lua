@@ -81,8 +81,15 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
+local function GetIncomingDodgeableProjectiles()
+    local incProj = npcBot:GetIncomingTrackingProjectiles() or {}
+    return AbilityExtensions:Filter(incProj, function(t)
+        return not t.is_attack and not AbilityExtensions:IgnoreAbilityBlock(p.ability) and t.caster:GetTeam() ~= npcBot:GetTeam()
+    end)
+end
+
 Consider[2]=function()
-		local abilityNumber=2
+    local abilityNumber=2
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -153,6 +160,19 @@ Consider[2]=function()
 		end
 	end
 
+    -- use blink to dodge ability
+    local projectiles = GetIncomingDodgeableProjectiles()
+    local castPoint = ability:GetCastPoint()
+    local defaultProjectileVelocity = 1500
+    if #projectiles ~= 0 and not AbilityToLevelUp[3]:IsFullyCastable() then
+        for _, projectile in pairs(projectiles) do
+            if GetUnitToLocationDistance(npcBot, projectile.location) > castPoint * defaultProjectileVelocity then
+                local escapeLocation = utility.GetUnitsTowardsLocation(npcBot, projectile.location, 400)
+                return BOT_ACTION_DESIRE_MODERATE, escapeLocation
+            end
+        end
+    end
+
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
 end
@@ -179,7 +199,7 @@ Consider[3]=function()
 		local incProj = npcBot:GetIncomingTrackingProjectiles()
 		for _,p in pairs(incProj)
 		do
-			if GetUnitToLocationDistance(npcBot, p.location) <= 300 and p.is_attack == false then
+			if GetUnitToLocationDistance(npcBot, p.location) <= 300 and p.is_attack == false and not AbilityExtensions:IgnoreAbilityBlock(p.ability) then
 				return BOT_ACTION_DESIRE_HIGH;
 			end
 		end
@@ -200,7 +220,7 @@ Consider[3]=function()
 				local incProj = npcBot:GetIncomingTrackingProjectiles()
 				for _,p in pairs(incProj)
 				do
-					if GetUnitToLocationDistance(npcBot, p.location) <= 300 and p.is_attack == false and p.is_dodgeable and AbilityExtensions:Contains(AbilityExtensions.IgnoreAbilityBlockAbilities, p.ability:GetName()) then -- ability (etc spectre_spectral_dagger) cannot be blocked
+					if GetUnitToLocationDistance(npcBot, p.location) <= 300 and p.is_attack == false and not AbilityExtensions:IgnoreAbilityBlock(p.ability) then
 						return BOT_ACTION_DESIRE_HIGH
 					end
 				end
@@ -252,27 +272,68 @@ Consider[5]=function()
 	-- Global high-priorty usage
 	--------------------------------------
 	--Try to kill enemy hero
-	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
-	then
-		for i,npcEnemy in pairs(enemys)
-		do
-			if ( CanCast[abilityNumber]( npcEnemy ) )
-			then
-				local enemys = npcEnemy:GetNearbyHeroes(Radius,false,BOT_MODE_NONE)
-				local Damage=(npcEnemy:GetMaxMana()-npcEnemy:GetMana())*DamagePercent
-				local ManaPercentageEnemy=npcEnemy:GetMana()/npcEnemy:GetMaxMana()
-				if(enemys~=nil)
-				then
-					Damage=Damage*(1+0.2*#enemys)
-				end
-				
-				if(npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
-				then
-					return BOT_ACTION_DESIRE_HIGH,npcEnemy; 
-				end
-			end
-		end
-	end
+
+
+    if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
+        local targets = npcBot:GetNearbyHeroes(CastRange+400,true,BOT_MODE_NONE)
+        local filter = function(t) return CanCast[abilityNumber](t)  end
+        local goodTargets = {}
+        for _,t in pairs(targets) do
+            if AbilityExtensions:MustBeIllusion(npcBot, t) then
+                break
+            end
+            local g = {}
+            local enemies = AbilityExtensions:Filter(t:GetNearbyHeroes(Radius, false, BOT_MODE_NONE) or {}, function (tt) return AbilityExtensions:MayNotBeIllusion(npcBot, tt) end)
+            local rawDamage = (t:GetMaxMana() - t:GetMana()) * DamagePercent
+            g.totalDamage = rawDamage * (AbilityExtensions:GetEnemyHeroNumber(npcBot, enemies)+1)
+            g.totalKill = AbilityExtensions:Count(enemies, function(e)
+                return e:GetActualIncomingDamage(rawDamage, DAMAGE_TYPE_MAGICAL) >= e:GetHealth() and not AbilityExtensions:CannotBeKilledNormally(e)
+            end)
+            g.totalKillNames = AbilityExtensions:Map(AbilityExtensions:Filter(enemies, function(e)
+                return e:GetActualIncomingDamage(rawDamage, DAMAGE_TYPE_MAGICAL) >= e:GetHealth() and not AbilityExtensions:CannotBeKilledNormally(e)
+            end), function(e)
+                return e:GetUnitName()
+            end)
+            g.rate = g.totalKill + g.totalDamage * 600 / 10000 * npcBot:GetNetWorth()
+            g.target = t
+            table.insert(goodTargets, g)
+        end
+        if #goodTargets > 1 then
+        end
+        AbilityExtensions:Sort(goodTargets, function(a, b) return b.rate-a.rate  end)
+        local t = goodTargets[1]
+        if t ~= nil then
+            if t.totalDamage >= 600 / 10000 * npcBot:GetNetWorth() and (t.target:GetMaxMana() - t.target:GetMana()) >= 300 + DotaTime()/4 and (AbilityExtensions:GetManaPercent(t.target) <= 0.1 or npcBot:GetActiveMode() ~= BOT_MODE_RETREAT and GetUnitToUnitDistance(npcBot, t) <= npcBot:GetAttackRange()) then
+                return BOT_ACTION_DESIRE_HIGH, t.target
+            end
+            if t.totalKill >= 2
+                    or t.totalKill == 1 and not t.target:WasRecentlyDamagedByAnyHero(1) and #t.target:GetNearbyHeroes(350, true, BOT_MODE_NONE) == 0 then
+                return BOT_ACTION_DESIRE_HIGH, t.target
+            end
+        end
+    end
+
+	--if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT )
+	--then
+	--	for i,npcEnemy in pairs(enemys)
+	--	do
+	--		if ( CanCast[abilityNumber]( npcEnemy ) )
+	--		then
+	--			local enemys = npcEnemy:GetNearbyHeroes(Radius,false,BOT_MODE_NONE)
+	--			local Damage=(npcEnemy:GetMaxMana()-npcEnemy:GetMana())*DamagePercent
+	--			local ManaPercentageEnemy=npcEnemy:GetMana()/npcEnemy:GetMaxMana()
+	--			if(enemys~=nil)
+	--			then
+	--				Damage=Damage*(1+0.2*#enemys)
+	--			end
+	--
+	--			if(npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
+	--			then
+	--				return BOT_ACTION_DESIRE_HIGH,npcEnemy;
+	--			end
+	--		end
+	--	end
+	--end
 	
 	-- Check for a channeling enemy
 	for _,npcEnemy in pairs( enemys )

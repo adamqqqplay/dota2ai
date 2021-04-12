@@ -167,6 +167,72 @@ M.Prepend = function(self, a, b)
     return self:Concat(b, a)
 end
 
+M.SlowSort = function(self, tb, sort)
+    local g = self:ShallowCopy(tb)
+    local len = #g
+    if sort ~= nil then
+        for i = 1, len-1 do
+            for j = i+1, len do
+                if sort(g[i], g[j]) > 0 then
+                    g[i], g[j] = g[j], g[i]
+                end
+            end
+        end
+    else
+        for i = 1, len-1 do
+            for j = i+1, len do
+                if g[i] > g[j] then
+                    g[i], g[j] = g[j], g[i]
+                end
+            end
+        end
+    end
+    return g
+end
+
+M.QuickSort = function(self, tb, sort)
+    if sort == nil then
+        sort = function(a, b) return a-b end
+    end
+    local function Merge(a, b)
+        local g = {}
+        local aLen = #a
+        local bLen = #b
+        local i = 1
+        local j = 1
+        while i <= aLen and j <= bLen do
+            if sort(a[i], b[j]) > 0 then
+                table.insert(g, b[j])
+                j = j+1
+            else
+                table.insert(g, a[i])
+                i = i+1
+            end
+        end
+        if i < aLen then
+            for _ = i, aLen do
+                table.insert(g, a[i])
+            end
+        end
+        if j < bLen then
+            for _ = j, bLen do
+                table.insert(g, b[j])
+            end
+        end
+        return g
+    end
+    local function SortRec(tab)
+        local tableLength = #tab
+        local left = SortRec(self:Take(tab, tableLength/2))
+        local right = SortRec(self:Skip(tab, tableLength/2))
+        local merge = Merge(left, right)
+        return merge
+    end
+    return SortRec(tb)
+end
+
+M.Sort = M.SlowSort
+
 M.SeriouslyRetreatingStunSomeone = function(self, npcBot, abilityIndex, ability, targetType)
     if not ability:IsFullyCastable() then
 		return BOT_ACTION_DESIRE_NONE, 0
@@ -293,6 +359,18 @@ M.MayNotBeIllusion = function(self, npcBot, target) return not self:MustBeIllusi
 M.GetNearbyNonIllusionHeroes = function(self, npcBot, range, getEnemy, additionalParameter)
     local heroes = npcBot:GetNearbyHeroes(range, getEnemy, additionalParameter)
     return self:Filter(heroes, function(t) return self:MayNotBeIllusion(npcBot, t) end)
+end
+
+M.GetEnemyHeroNumber = function(self, npcBot, enemies)
+    local p = self:Filter(enemies, function(t) self:MayNotBeIllusion(npcBot, t) end)
+    local readNames = {}
+    for _, enemy in pairs(p) do
+        local name = enemy:GetUnitName()
+        if not self:Contains(readNames, name) then
+            table.insert(readNames, name)
+        end
+    end
+    return #readNames
 end
 
 M.GetEmptyItemSlots = function(self, npc)
@@ -656,6 +734,18 @@ M.HasScepter = function(self, npc)
     return npc:HasScepter() or npc:HasModifier("modifier_wisp_tether_scepter")
 end
 
-
+M.CheckForBestTarget = function(self, npc, ability, targets, filter, map, sort, select)
+    local g = {}
+    for _, target in ipairs(targets) do
+        if filter(npc, ability, target) then
+            table.insert(g, map)
+        end
+    end
+    self:Sort(g, sort)
+    if g[1] == nil then
+        return nil
+    end
+    return select(g[1])
+end
 
 return M
