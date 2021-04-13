@@ -368,6 +368,8 @@ Consider[2]=function()
 	
 end
 
+local freezingFieldHitSomeoneTimer = nil
+
 Consider[4]=function()
 	local abilityNumber=4
 	--------------------------------------
@@ -388,6 +390,24 @@ Consider[4]=function()
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+
+
+    if npcBot:HasModifier("modifier_crystal_maiden_freezing_field") then
+        local glimmer = AbilityExtensions:GetAvaiableItem("item_glimmer_cape")
+        if glimmer and glimmer:IsFullyCastable() then
+            npcBot:ActionImmediate_UseAbilityOnEntity(glimmer, npcBot)
+        end
+        if #enemys > 0 or freezingFieldHitSomeoneTimer == nil then
+            freezingFieldHitSomeoneTimer = DotaTime()
+        else
+            if DotaTime() - freezingFieldHitSomeoneTimer >= 1.5 and #allys > 0 then
+                npcBot:Action_MoveDirectly(npcBot:GetLocation() + RandomVector(50))
+            end
+        end
+    else
+        freezingFieldHitSomeoneTimer = nil
+    end
+
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
@@ -452,6 +472,7 @@ function AbilityUsageThink()
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
 	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+
 end
 
 function CourierUsageThink() 

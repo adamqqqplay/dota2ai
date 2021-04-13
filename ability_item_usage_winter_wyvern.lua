@@ -408,7 +408,7 @@ Consider[3]=function()
 			
 			if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<healingFactor and npcTarget:WasRecentlyDamagedByAnyHero(2.0) and npcTarget:GetActiveMode() ~= BOT_MODE_ATTACK)
 			then
-				if ( CanCast[abilityNumber]( npcTarget ) )
+				if ( CanCast[abilityNumber]( npcTarget ) and not npcTarget:IsChanneling())
 				then
 					return BOT_ACTION_DESIRE_MODERATE, npcTarget
 				end
@@ -429,7 +429,7 @@ Consider[3]=function()
 		do
 			if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<(0.35+0.4*ManaPercentage))
 			then
-				if ( CanCast[abilityNumber]( npcTarget ) )
+				if ( CanCast[abilityNumber]( npcTarget ) and not npcTarget:IsChanneling() )
 				then
 					return BOT_ACTION_DESIRE_MODERATE, npcTarget
 				end

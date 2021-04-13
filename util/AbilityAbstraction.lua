@@ -244,6 +244,16 @@ M.MergeSort = function(self, tb, sort)
 end
 
 M.Sort = M.SlowSort
+M.SortByMaxFirst = function(self, tb, map)
+    return self:Sort(tb, function(a, b)
+        return map(b) - map(a)
+    end)
+end
+M.SortByMinFirst = function(self, tb, map)
+    return self:Sort(tb, function(a, b)
+        return map(a) - map(b)
+    end)
+end
 
 M.SeriouslyRetreatingStunSomeone = function(self, npcBot, abilityIndex, ability, targetType)
     if not ability:IsFullyCastable() then
@@ -328,13 +338,38 @@ end
 -- turn a function that returns true, false, nil to a function that decides whether to toggle the ability or not
 M.ToggleFunctionToAction = function(self, npcBot, oldConsider, ability)
     return function()
-        local value = oldConsider()
+        local value, target, type = oldConsider()
+        if type(value) == "number" then
+            return value,target, type
+        end
         if value == nil or value == ability:GetToggleState() then
             return 0
         else
             return BOT_ACTION_DESIRE_HIGH
         end
     end
+end
+M.ToggleFunctionToAutoCast = function(self, npcBot, oldConsider, ability)
+    return function()
+        local value, target, castType = oldConsider()
+        if type(value) == "number" then
+            return value,target, castType
+        end
+        if value == nil or value == ability:GetToggleState() then
+
+        else
+            ability:ToggleAutoCast()
+        end
+        return 0
+    end
+end
+
+M.IsChannelingItem = function(self, npc)
+    return npc:HasModifier("modifier_item_meteor_hammer") or npcEnemy:npc("modifier_teleporting") or npc:HasModifier("modifier_boots_of_travel_incoming")
+end
+
+M.IsChannelingAbility = function(self, npc)
+    return npc:IsChanneling() and not self:IsChannelingItem(npc)
 end
 
 local GetOtherTeam = function(team)
@@ -373,16 +408,52 @@ M.GetNearbyNonIllusionHeroes = function(self, npcBot, range, getEnemy, additiona
     return self:Filter(heroes, function(t) return self:MayNotBeIllusion(npcBot, t) end)
 end
 
-M.GetEnemyHeroNumber = function(self, npcBot, enemies)
+M.GetEnemyHeroUnique = function(self, npcBot, enemies)
     local p = self:Filter(enemies, function(t) self:MayNotBeIllusion(npcBot, t) end)
+    local g = {}
     local readNames = {}
     for _, enemy in pairs(p) do
         local name = enemy:GetUnitName()
         if not self:Contains(readNames, name) then
             table.insert(readNames, name)
+            table.insert(g, enemy)
         end
     end
-    return #readNames
+    return g
+end
+
+M.GetModifierRemainingDuration = function(self, npc, modifierName)
+    local mod = npc:GetModifierByName(modifierName)
+    if mod ~= -1 then
+        return npc:GetModifierRemainingDuration(mod)
+    end
+    return nil
+end
+M.ImprisonmentModifier = {
+    "modifier_item_cyclone",
+    "modifier_item_wind_waker",
+    "modifier_shadow_demon_disruption",
+    "modifier_obsidian_destroyer_astral_imprisonment_prison",
+    "modifier_brewmaster_storm_cyclone",
+    "modifier_invoker_tornado",
+    --"modifier_x_marks_the_target",
+}
+M.GetImprisonmentRemainingDuration = function(self, npc)
+    return self:First(self:Map(self.ImprisonmentModifier, function(t) return self:GetModifierRemainingDuration(npc, t)  end), function(t) return t ~= nil  end)
+end
+
+M.GetEnemyHeroNumber = function(self, npcBot, enemies)
+    return #self:GetEnemyHeroUnique(npcBot, enemies)
+end
+
+M.GetAvailableItem = function(self, npc, itemName)
+    local g = 0
+    for i = 0,6 do
+        local item = npc:GetItemInSlot(i)
+        if item ~= nil and item:GetName() == itemName then
+            return item
+        end
+    end
 end
 
 M.GetEmptyItemSlots = function(self, npc)
@@ -667,9 +738,9 @@ M.PreventEnemyTargetAbilityUsageAtAbilityBlock = function(self, npcBot, oldConsi
         -- TODO: do we consider the base cooldown or the modified cooldown (arcane rune, octarine orb)? Will you crack a sphere's spell block with an ultimate ability when you're on arcane rune?
         local desire, target, targetTypeString = oldConsiderFunction()
         if desire == 0 or target == nil or target == 0 or self:IsVector(target) or targetTypeString == "Location" then
-            if self:IsVector(target) then
-                print("npcBot "..npcBot:GetUnitName().." lands target ability "..ability:GetName().." at location "..self:ToStringVector(target))
-            end
+            --if self:IsVector(target) then
+            --    print("npcBot "..npcBot:GetUnitName().." lands target ability "..ability:GetName().." at location "..self:ToStringVector(target))
+            --end
             return desire, target, targetTypeString
         end
         local oldDesire = desire

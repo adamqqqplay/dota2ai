@@ -74,7 +74,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -282,7 +282,7 @@ Consider[1]=function()
 		local t=npcBot:GetAttackTarget()
 		if(t~=nil)
 		then
-			if (t:IsHero() or t:IsTower()) or AbilityExtensions:MustBeIllusions(npcBot, t) and (AbilityExtensions:GetManaPercent(npcBot) >= 0.8)
+			if (t:IsHero() or t:IsTower()) or AbilityExtensions:MustBeIllusion(npcBot, t) and (AbilityExtensions:GetManaPercent(npcBot) >= 0.8)
 			then
 				ability:ToggleAutoCast()
 				return BOT_ACTION_DESIRE_NONE, 0;
@@ -352,7 +352,108 @@ Consider[1]=function()
 	
 end
 
+Consider[1] = function()
+    local abilityNumber=1
+    --------------------------------------
+    -- Generic Variable Setting
+    --------------------------------------
+    local ability=AbilitiesReal[abilityNumber];
+
+    if not ability:IsFullyCastable() then
+        return 0
+    end
+
+    local CastRange = ability:GetCastRange()
+    local enemys = npcBot:GetNearbyHeroes(CastRange+100,true,BOT_MODE_NONE)
+    local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+
+    local function UseAt(target)
+        print(target:GetUnitName())
+        if not CanCast[abilityNumber](target) then
+            print("enchantress: impetus 6")
+            return false
+        end
+        if npcBot:HasModifier("modifier_enchantress_bunny_hop") then
+            print("enchantress: impetus 7")
+            return true
+        end
+        if target:IsHero() then
+            if AbilityExtensions:MustBeIllusion(npcBot, target) then
+                print("enchantress: impetus 8")
+                return (AbilityExtensions:GetManaPercent(npcBot) >= 0.6 or AbilityExtensions:GetHealthPercent(target) <= 0.4) and GetUnitToUnitDistance(npcBot, target) >= 400
+            else
+                print("enchantress: impetus 4")
+                return AbilityExtensions:GetManaPercent(npcBot) >= 0.4 or GetUnitToUnitDistance(npcBot, target) >= 250
+            end
+        else
+            print("enchantress: impetus 5")
+            print(AbilityExtensions:GetManaPercent(npcBot))
+            return AbilityExtensions:GetManaPercent(npcBot) >= 0.8
+        end
+    end
+
+    if AbilityExtensions:NotRetreating(npcBot) then
+        local target = npcBot:GetAttackTarget()
+        if target == nil then
+            if WeakestEnemy ~= nil then
+                local b = UseAt(WeakestEnemy)
+                if b then
+                    print("enchantress: impetus 1")
+                    return BOT_ACTION_DESIRE_HIGH, WeakestEnemy
+                else
+                    print("enchantress: impetus 2")
+                    return nil
+                end
+            end
+        else
+            print("enchantress: impetus 3")
+            return UseAt(target)
+        end
+    end
+end
+Consider[1] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, Consider[1], AbilitiesReal[1])
+
+Consider[4] = function()
+    local abilityNumber = 4
+    local ability = AbilitiesReal[abilityNumber]
+    if not ability:IsFullyCastable() then
+        return BOT_ACTION_DESIRE_NONE
+    end
+
+    local function TrySproink(t)
+        if t == nil then
+            return false
+        end
+        local dis = GetUnitToUnitDistance(npcBot, t)
+        if dis <= npcBot:GetAttackRange() + ability:GetSpecialValueInt("impetus_attacks_range_buffer") - ability:GetSpecialValueInt("leap_distance") + 100 and npcBot:IsFacingLocation(t:GetLocation(), 40) then
+            return true
+        else
+            return false
+        end
+    end
+
+    if TrySproink(npcBot:GetAttackTarget()) then
+        if npcBot:WasRecentlyDamagedByHero(npcBot:GetAttackTarget(), 2) then
+            return BOT_ACTION_DESIRE_HIGH
+        else
+            return BOT_ACTION_DESIRE_LOW
+        end
+    end
+    local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, npcBot:GetAttackRange()+150, true, BOT_MODE_NONE)
+    if AbilityExtensions:Contains(enemies, npcBot:GetAttackTarget()) then
+
+    end
+    enemies = AbilityExtensions:SortByMinFirst(enemies, function(t) return GetUnitToUnitDistance(npcBot, t) end)
+    enemies = AbilityExtensions:Filter(enemies, function(t) return TrySproink(t)  end)
+    if AbilityExtensions:Any(enemies, function(t) return npcBot:WasRecentlyDamagedByHero(t, 2)  end) then
+        return BOT_ACTION_DESIRE_HIGH
+    else
+        return BOT_ACTION_DESIRE_LOW
+    end
+end
+
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
+
 function AbilityUsageThink()
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
