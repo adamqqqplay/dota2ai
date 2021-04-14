@@ -132,6 +132,15 @@ Consider[1]=function()
 	then
 		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange-200) + RandomVector(200);
 	end
+
+    -- try to dodge a projectile
+    local projectiles = npcBot:GetIncomingTrackingProjectiles()
+    for _,p in pairs(projectiles)
+    do
+        if GetUnitToLocationDistance(npcBot, p.location) <= 400 and p.is_attack == false and not AbilityExtensions:IgnoreAbilityBlock(p.ability) then
+            return BOT_ACTION_DESIRE_HIGH, AbilityExtensions:GetPointFromLineByDistance(npcBot:GetLocation(), p.location, 450)
+        end
+    end
 	
 	-- If we're seriously retreating
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT or npcBot.FacelessVoidSkill1.Hp-HealthPercentage>=0.25+0.05*#enemys) 

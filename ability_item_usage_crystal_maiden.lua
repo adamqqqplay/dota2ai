@@ -440,7 +440,7 @@ function AbilityUsageThink()
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then
         if npcBot:HasModifier("modifier_crystal_maiden_freezing_field") then
-            local glimmer = AbilityExtensions:GetAvailableItem("item_glimmer_cape")
+            local glimmer = AbilityExtensions:GetAvailableItem(npcBot, "item_glimmer_cape")
             if glimmer and glimmer:IsFullyCastable() then
                 npcBot:ActionImmediate_UseAbilityOnEntity(glimmer, npcBot)
             end

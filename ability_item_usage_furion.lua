@@ -90,14 +90,14 @@ Consider[1]=function()
     end
 
     local function BlockFriendMeleeHeroes(enemy)
-        local friends = enemy:GetNearbyHeroes(260, true, BOT_MODE_NONE)
+        local friends = enemy:GetNearbyHeroes(330, true, BOT_MODE_NONE)
         return AbilityExtensions:Any(friends, function(p)
             return AbilityExtensions:MayNotBeIllusion(npcBot, p)
-                    --and enemy:WasRecentlyDamagedByHero(p, 2)
-                    and (print("furion: might block "..p:GetUnitName()) or true)
+                    -- and enemy:WasRecentlyDamagedByHero(p, 1.5)
         end) or AbilityExtensions:Any(npcBot:GetNearbyHeroes(350, false, BOT_MODE_NONE), function(p)
-            return AbilityExtensions:MayNotBeIllusion(npcBot, p) and AbilityExtensions:IsMeleeHero(p)
-            and (print("furion: might block"..p:GetUnitName()) or true)
+            return AbilityExtensions:MayNotBeIllusion(npcBot, p) 
+			and AbilityExtensions:IsMeleeHero(p) 
+			-- and enemy:WasRecentlyDamagedByHero(p, 2)
         end)
     end
 

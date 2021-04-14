@@ -81,24 +81,34 @@ Consider[1] = function()
     if not ability:IsFullyCastable() then
         return 0
     end
-    local range = ability:GetCastRange()
-    local searchRadius = ability:GetSpecialValueInt("hook_search_radius")
+    local range = 1300
+    local searchRadius = ability:GetSpecialValueInt("hook_search_radius") or 100
     local allNearbyUnits = AbilityExtensions:GetNearbyAllUnits(npcBot, range)
 
-    local function NotBlockedByAnyUnit(line)
-        return AbilityExtensions:All(allNearbyUnits, function(t)
-            return AbilityExtensions:GetPointToLineDistance(t:GetLocation(), line) > searchRadius
+    local function NotBlockedByAnyUnit(line, target, distance)
+        return AbilityExtensions:All(AbilityExtensions:Remove(allNearbyUnits, target), function(t)
+            local f = AbilityExtensions:GetPointToLineDistance(t:GetLocation(), line) <= searchRadius and distance <= GetUnitToUnitDistance(npcBot, t)
+            if not f then
+                print("blocked by "..t:GetUnitName())
+            end
+            return f
         end)
     end
 
-    local function T(t)
-        local point = t:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, t) / 1450)
+    local function T(target)
+        local point = target:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, target) / 1450)
+        local distance = GetUnitToLocationDistance(npcBot, point)
         local line = AbilityExtensions:GetLine(npcBot:GetLocation(), point)
         if line == nil then
             print("pudge: line == nil")
             npcBot:ActionImmediate_Chat("pudge: line == nil", true)
         end
-        return GetUnitToLocationDistance(npcBot, point) <= range and NotBlockedByAnyUnit(line)
+        print("pudge: if I hook "..target:GetUnitName())
+        local result = GetUnitToLocationDistance(npcBot, point) <= range and NotBlockedByAnyUnit(line, target, distance)
+        if result then
+            print("pudge: I can hook "..target:GetUnitName())
+        end
+        return result
     end
 
     local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, true, BOT_MODE_NONE)
@@ -166,7 +176,7 @@ Consider[5] = function()
     if not ability:IsFullyCastable() then
         return nil
     end
-    local range = ability:GetCastRange()
+    local range = ability:GetCastRange() + 100
     local hookedEnemy = AbilityExtensions:First(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, true, BOT_MODE_NONE), function(t)
         return t:IsHero() and AbilityExtensions:MayNotBeIllusion(npcBot, t) and t:HasModifier("modifier_pudge_meat_hook")
     end)

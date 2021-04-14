@@ -412,7 +412,7 @@ end
 
 M.GetNearbyAllUnits = function(self, npcBot, range)
     local h1 = npcBot:GetNearbyHeroes(range, true, BOT_MODE_NONE)
-    local h2 = npcBot:GetNearbyHeroes(range, false, BOT_MODE_NONE)
+    local h2 = self:Remove(npcBot:GetNearbyHeroes(range, false, BOT_MODE_NONE), npcBot)
     local h3 = npcBot:GetNearbyCreeps(range, true)
     local h4 = npcBot:GetNearbyCreeps(range, false)
     return self:Concat(h1, h2, h3, h4)
@@ -831,17 +831,26 @@ end
 
 M.GetLine = function(self, a, b)
     if a.x == b.x then
-        return nil
+        return { a = 1, b = 0, c = -a.x }
     end
     local k = (a.y-b.y)/(a.x-b.x)
     local bb = a.y-k*a.x
-    return { k = k, b = bb }
+    return { a = k, b = -1, c = bb }
 end
 
 M.GetPointToLineDistance = function(self, point, line)
-    local up = math.abs(line.k*point.x-point.y+line.b)
-    local down = math.sqrt(line.k*line.k+1)
+    local up = math.abs(line.a*point.x+line.b*point.y+line.c)
+    local down = math.sqrt(line.a*line.a+line.b*line.b)
     return up/down
+end
+
+-- Get the location on the line determined by startPoint and endPoint, with distance from startPoint to the target location
+M.GetPointFromLineByDistance = function(self, startPoint, endPoint, distance)
+    local line = self:GetLine(startPoint, endPoint)
+    local distanceTo = math.sqrt(math.pow(startPoint.x-endPoint.x, 2)+math.pow(startPoint.y-endPoint.y, 2))
+    local divide = distanceTo / distance
+    local point = { x = startPoint.x + divide*(endPoint.x-startPoint.x), y = startPoint.y + divide*(endPoint.y-endPoint.x), z = 0 }
+    return point
 end
 
 M.GetTargetHealAmplifyPercent = function(self, npc)
