@@ -323,6 +323,9 @@ M.IsAttackingEnemies = function(self, npcBot)
     return mode == BOT_MODE_ROAM or mode == BOT_MODE_TEAM_ROAM or mode == BOT_MODE_ATTACK or mode ==  BOT_MODE_DEFEND_ALLY
 end
 
+M.IsRetreating = function(self, npcBot)
+    return npcBot:GetActiveMode() == BOT_MODE_RETREAT
+end
 M.NotRetreating = function(self, npcBot)
     return npcBot:GetActiveMode() ~= BOT_MODE_RETREAT
 end
@@ -338,14 +341,15 @@ end
 -- turn a function that returns true, false, nil to a function that decides whether to toggle the ability or not
 M.ToggleFunctionToAction = function(self, npcBot, oldConsider, ability)
     return function()
-        local value, target, type = oldConsider()
+        local value, target, castType = oldConsider()
         if type(value) == "number" then
-            return value,target, type
+            return value, target, castType
         end
-        if value == nil or value == ability:GetToggleState() then
-            return 0
-        else
+        if value ~= ability:GetToggleState() and ability:IsFullyCastable() then
+            print("in function ToggleFunctionToAction "..ability:GetName().." "..tostring(value).." "..tostring(ability:GetToggleState()))
             return BOT_ACTION_DESIRE_HIGH
+        else
+            return 0
         end
     end
 end
@@ -353,11 +357,9 @@ M.ToggleFunctionToAutoCast = function(self, npcBot, oldConsider, ability)
     return function()
         local value, target, castType = oldConsider()
         if type(value) == "number" then
-            return value,target, castType
+            return value, target, castType
         end
-        if value == nil or value == ability:GetToggleState() then
-
-        else
+        if ability:IsFullyCastable() and value ~= ability:GetAutoCastState() then
             ability:ToggleAutoCast()
         end
         return 0
@@ -408,6 +410,14 @@ M.GetNearbyNonIllusionHeroes = function(self, npcBot, range, getEnemy, additiona
     return self:Filter(heroes, function(t) return self:MayNotBeIllusion(npcBot, t) end)
 end
 
+M.GetNearbyAllUnits = function(self, npcBot, range)
+    local h1 = npcBot:GetNearbyHeroes(range, true, BOT_MODE_NONE)
+    local h2 = npcBot:GetNearbyHeroes(range, false, BOT_MODE_NONE)
+    local h3 = npcBot:GetNearbyCreeps(range, true)
+    local h4 = npcBot:GetNearbyCreeps(range, false)
+    return self:Concat(h1, h2, h3, h4)
+end
+
 M.GetEnemyHeroUnique = function(self, npcBot, enemies)
     local p = self:Filter(enemies, function(t) self:MayNotBeIllusion(npcBot, t) end)
     local g = {}
@@ -420,6 +430,13 @@ M.GetEnemyHeroUnique = function(self, npcBot, enemies)
         end
     end
     return g
+end
+
+M.GetMovementSpeedPercent = function(self, npc)
+    return npc:GetCurrentMovementSpeed() / npc:GetBaseMovementSpeed()
+end
+M.CanHardlyMove = function(self, npc)
+    return npc:IsStunned() or npc:IsRooted() or npc:GetCurrentMovementSpeed() <= 150
 end
 
 M.GetModifierRemainingDuration = function(self, npc, modifierName)
@@ -537,7 +554,7 @@ end
 M.IsMeleeHero = function(self, npc)
     local range = npc:GetAttackRange()
     local name = npc:GetUnitName()
-    return range <= 210 or name == self:GetHeroFullName("tiny") or name == self:GetHeroFullName("doom_bringer")
+    return range <= 210 or name == self:GetHeroFullName("tiny") or name == self:GetHeroFullName("doom_bringer") or name == self:GetHeroFullName("pudge")
 end
 
 M.AttackPassiveAbilities = {
@@ -810,6 +827,21 @@ end
 
 M.GetManaPercent = function(self, npc)
     return npc:GetMana() / npc:GetMaxMana()
+end
+
+M.GetLine = function(self, a, b)
+    if a.x == b.x then
+        return nil
+    end
+    local k = (a.y-b.y)/(a.x-b.x)
+    local bb = a.y-k*a.x
+    return { k = k, b = bb }
+end
+
+M.GetPointToLineDistance = function(self, point, line)
+    local up = math.abs(line.k*point.x-point.y+line.b)
+    local down = math.sqrt(line.k*line.k+1)
+    return up/down
 end
 
 M.GetTargetHealAmplifyPercent = function(self, npc)

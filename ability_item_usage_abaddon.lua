@@ -119,7 +119,7 @@ Consider[1]=function() -- TODO: lv 25 AOE mist coil
 	
 	local HeroHealth=10000
 	local CreepHealth=10000
-	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
+	local allys = npcBot:GetNearbyHeroes( CastRange+150, false, BOT_MODE_NONE );
 	for _,hero in pairs (allys)
 	do
 		if (hero==npcBot)
@@ -128,7 +128,7 @@ Consider[1]=function() -- TODO: lv 25 AOE mist coil
 		end
 	end
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local enemys = npcBot:GetNearbyHeroes(CastRange+150,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
@@ -149,18 +149,7 @@ Consider[1]=function() -- TODO: lv 25 AOE mist coil
 			end
 		end
 	end
-	
-	-- If we're seriously retreating, try to suicide
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
-	then
-		if ( #enemys>=1 and npcBot:WasRecentlyDamagedByAnyHero(2.0) and npcBot:GetHealth() <= SelfDamage) 
-		then
-			if ( CanCast[abilityNumber]( enemys[1] )) 
-			then
-				return BOT_ACTION_DESIRE_HIGH, enemys[1];
-			end
-		end
-	end
+
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
@@ -186,6 +175,12 @@ Consider[1]=function() -- TODO: lv 25 AOE mist coil
 			end
 		end
 	end
+
+    if npcBot:HasModifier("modifier_abaddon_borrowed_time") then
+        if WeakestEnemy ~= nil then
+            return BOT_ACTION_DESIRE_MODERATE, WeakestEnemy
+        end
+    end
 	
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or

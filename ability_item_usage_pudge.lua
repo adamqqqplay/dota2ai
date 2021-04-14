@@ -76,6 +76,121 @@ local Consider ={}
 local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
+Consider[1] = function()
+    local ability = AbilitiesReal[1]
+    if not ability:IsFullyCastable() then
+        return 0
+    end
+    local range = ability:GetCastRange()
+    local searchRadius = ability:GetSpecialValueInt("hook_search_radius")
+    local allNearbyUnits = AbilityExtensions:GetNearbyAllUnits(npcBot, range)
+
+    local function NotBlockedByAnyUnit(line)
+        return AbilityExtensions:All(allNearbyUnits, function(t)
+            return AbilityExtensions:GetPointToLineDistance(t:GetLocation(), line) > searchRadius
+        end)
+    end
+
+    local function T(t)
+        local point = t:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, t) / 1450)
+        local line = AbilityExtensions:GetLine(npcBot:GetLocation(), point)
+        if line == nil then
+            print("pudge: line == nil")
+            npcBot:ActionImmediate_Chat("pudge: line == nil", true)
+        end
+        return GetUnitToLocationDistance(npcBot, point) <= range and NotBlockedByAnyUnit(line)
+    end
+
+    local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, true, BOT_MODE_NONE)
+    enemies = AbilityExtensions:SortByMaxFirst(enemies, function(t) return GetUnitToUnitDistance(npcBot, t)  end)
+    enemies = AbilityExtensions:Filter(enemies, T)
+    if #enemies ~= 0 then
+        return BOT_MODE_DESIRE_HIGH, enemies[1]:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemies[1]) / 1450)
+    end
+
+    local allies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, false, BOT_MODE_NONE)
+    allies = AbilityExtensions:Filter(allies, function(t) return t:IsStunned() or t:IsRooted()  end)
+    allies = AbilityExtensions:Filter(allies, T)
+    if #allies ~= 0 then
+        return BOT_MODE_DESIRE_HIGH, allies[1]:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemies[1]) / 1450)
+    end
+
+    return 0
+end
+
+Consider[2] = function()
+    local ability = AbilitiesReal[2]
+    local radius = 250
+    if npcBot:HasScepter() then
+        radius = 475
+    end
+    if not ability:IsFullyCastable() then
+        return false
+    end
+    if AbilityExtensions:IsAttackingEnemies(npcBot) or AbilityExtensions:IsRetreating(npcBot) then
+        local nearbyEnemies = npcBot:GetNearbyHeroes(radius, true, BOT_MODE_NONE)
+        if #nearbyEnemies ~= 0 then
+            AbilityExtensions:DebugTable(nearbyEnemies, function(t) return t:GetUnitName()  end)
+            local p = AbilityExtensions:Filter(nearbyEnemies, function(t) npcBot:WasRecentlyDamagedByHero(t, 1.5) end) or AbilityExtensions:GetHealthPercent(npcBot) >= 0.3
+            AbilityExtensions:DebugTable(p, function(t) return t:GetUnitName()  end)
+            return #p > 0
+        end
+        return false
+    end
+    return false
+end
+Consider[2] = AbilityExtensions:ToggleFunctionToAction(npcBot, Consider[2], AbilitiesReal[2])
+
+local swallowingSomething
+local swallowTimer
+Consider[4] = function()
+    local ability = AbilitiesReal[4]
+    if not ability:IsFullyCastable() then
+        return 0
+    end
+    swallowingSomething =  npcBot:HasModifier("modifier_pudge_swallow") or npcBot:HasModifier("modifier_pudge_swallow_effect") or npcBot:HasModifier("modifier_pudge_swallow_hide")
+    if swallowingSomething then
+        if swallowTimer ~= nil then
+            if DotaTime() >= swallowTimer + 3 then
+                return BOT_MODE_DESIRE_VERYHIGH
+            end
+        else
+            swallowTimer = DotaTime()
+        end
+    end
+    return 0
+end
+
+Consider[5] = function()
+    local ability = AbilitiesReal[5]
+    if not ability:IsFullyCastable() then
+        return nil
+    end
+    local range = ability:GetCastRange()
+    local hookedEnemy = AbilityExtensions:First(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, true, BOT_MODE_NONE), function(t)
+        return t:IsHero() and AbilityExtensions:MayNotBeIllusion(npcBot, t) and t:HasModifier("modifier_pudge_meat_hook")
+    end)
+    if hookedEnemy ~= nil then
+        return BOT_MODE_DESIRE_VERYHIGH, hookedEnemy
+    end
+    local nearbyEnemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range+200, true, BOT_MODE_NONE)
+    if AbilityExtensions:IsAttackingEnemies(npcBot) then
+        local u = utility.GetWeakestUnit(nearbyEnemies)
+        if u ~= nil then
+            return BOT_MODE_DESIRE_HIGH, u
+        end
+    end
+    if AbilityExtensions:IsRetreating(npcBot) and #nearbyEnemies == 1 then
+        return BOT_MODE_DESIRE_MODERATE, nearbyEnemies[1]
+    end
+
+    local nearbyAllies = AbilityExtensions:Filter(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range+200, false, BOT_MODE_NONE), function(t) return AbilityExtensions:CanHardlyMove(t)  end)
+    nearbyAllies = AbilityExtensions:SortByMinFirst(nearbyAllies, function(t) return t:GetHealth()  end)
+    if #nearbyAllies ~= 0 then
+        return BOT_MODE_DESIRE_MODERATE, nearbyAllies[1]
+    end
+end
+
 function GetComboDamage()
 	return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
 end
@@ -86,4 +201,19 @@ end
 
 function CourierUsageThink() 
 	ability_item_usage_generic.CourierUsageThink()
+end
+
+function AbilityUsageThink()
+    if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
+    then
+        return
+    end
+
+
+    cast=ability_item_usage_generic.ConsiderAbility(AbilitiesReal,Consider)
+    ---------------------------------debug--------------------------------------------
+    if true then
+        --ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
+    end
+    ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
 end

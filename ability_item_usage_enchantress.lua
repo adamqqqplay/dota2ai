@@ -368,26 +368,19 @@ Consider[1] = function()
     local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 
     local function UseAt(target)
-        print(target:GetUnitName())
         if not CanCast[abilityNumber](target) then
-            print("enchantress: impetus 6")
             return false
         end
-        if npcBot:HasModifier("modifier_enchantress_bunny_hop") then
-            print("enchantress: impetus 7")
+        if npcBot:HasModifier("modifier_enchantress_bunny_hop") and target:IsHero() then
             return true
         end
         if target:IsHero() then
             if AbilityExtensions:MustBeIllusion(npcBot, target) then
-                print("enchantress: impetus 8")
                 return (AbilityExtensions:GetManaPercent(npcBot) >= 0.6 or AbilityExtensions:GetHealthPercent(target) <= 0.4) and GetUnitToUnitDistance(npcBot, target) >= 400
             else
-                print("enchantress: impetus 4")
                 return AbilityExtensions:GetManaPercent(npcBot) >= 0.4 or GetUnitToUnitDistance(npcBot, target) >= 250
             end
         else
-            print("enchantress: impetus 5")
-            print(AbilityExtensions:GetManaPercent(npcBot))
             return AbilityExtensions:GetManaPercent(npcBot) >= 0.8
         end
     end
@@ -398,18 +391,16 @@ Consider[1] = function()
             if WeakestEnemy ~= nil then
                 local b = UseAt(WeakestEnemy)
                 if b then
-                    print("enchantress: impetus 1")
                     return BOT_ACTION_DESIRE_HIGH, WeakestEnemy
                 else
-                    print("enchantress: impetus 2")
-                    return nil
+                    return false
                 end
             end
         else
-            print("enchantress: impetus 3")
             return UseAt(target)
         end
     end
+    return false
 end
 Consider[1] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, Consider[1], AbilitiesReal[1])
 
@@ -421,8 +412,11 @@ Consider[4] = function()
     end
 
     local function TrySproink(t)
-        if t == nil then
+        if t == nil or t:IsBuilding() then
             return false
+        end
+        if not t:IsHero() then
+            return AbilityExtensions:GetManaPercent(npcBot) >= 0.8
         end
         local dis = GetUnitToUnitDistance(npcBot, t)
         if dis <= npcBot:GetAttackRange() + ability:GetSpecialValueInt("impetus_attacks_range_buffer") - ability:GetSpecialValueInt("leap_distance") + 100 and npcBot:IsFacingLocation(t:GetLocation(), 40) then
@@ -447,9 +441,8 @@ Consider[4] = function()
     enemies = AbilityExtensions:Filter(enemies, function(t) return TrySproink(t)  end)
     if AbilityExtensions:Any(enemies, function(t) return npcBot:WasRecentlyDamagedByHero(t, 2)  end) then
         return BOT_ACTION_DESIRE_HIGH
-    else
-        return BOT_ACTION_DESIRE_LOW
     end
+    return 0
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)

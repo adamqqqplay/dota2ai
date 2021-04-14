@@ -226,9 +226,12 @@ Consider[1] = function()
             else
                 return AbilityExtensions:GetManaPercent(npcBot) >= 0.4 or AbilityExtensions:GetManaPercent(npcBot) >= 0.2 and (GetUnitToUnitDistance(npcBot, target) >= 300 or npcBot:GetLevel() < 6)
             end
+        elseif target:IsBuilding() then
+            return false
         else
             return AbilityExtensions:GetManaPercent(npcBot) >= 0.8
         end
+
     end
 
     if AbilityExtensions:NotRetreating(npcBot) then
@@ -239,13 +242,14 @@ Consider[1] = function()
                 if b then
                     return BOT_ACTION_DESIRE_HIGH, WeakestEnemy
                 else
-                    return nil
+                    return false
                 end
             end
         else
             return UseAt(target)
         end
     end
+    return false
 end
 Consider[1] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, Consider[1], AbilitiesReal[1])
 

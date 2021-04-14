@@ -368,7 +368,6 @@ Consider[2]=function()
 	
 end
 
-local freezingFieldHitSomeoneTimer = nil
 
 Consider[4]=function()
 	local abilityNumber=4
@@ -390,23 +389,6 @@ Consider[4]=function()
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-
-
-    if npcBot:HasModifier("modifier_crystal_maiden_freezing_field") then
-        local glimmer = AbilityExtensions:GetAvaiableItem("item_glimmer_cape")
-        if glimmer and glimmer:IsFullyCastable() then
-            npcBot:ActionImmediate_UseAbilityOnEntity(glimmer, npcBot)
-        end
-        if #enemys > 0 or freezingFieldHitSomeoneTimer == nil then
-            freezingFieldHitSomeoneTimer = DotaTime()
-        else
-            if DotaTime() - freezingFieldHitSomeoneTimer >= 1.5 and #allys > 0 then
-                npcBot:Action_MoveDirectly(npcBot:GetLocation() + RandomVector(50))
-            end
-        end
-    else
-        freezingFieldHitSomeoneTimer = nil
-    end
 
 	--------------------------------------
 	-- Global high-priorty usage
@@ -452,11 +434,34 @@ end
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
 
+local freezingFieldHitSomeoneTimer
 function AbilityUsageThink()
-
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
-	then 
+	then
+        if npcBot:HasModifier("modifier_crystal_maiden_freezing_field") then
+            local glimmer = AbilityExtensions:GetAvailableItem("item_glimmer_cape")
+            if glimmer and glimmer:IsFullyCastable() then
+                npcBot:ActionImmediate_UseAbilityOnEntity(glimmer, npcBot)
+            end
+            local enemies = npcBot:GetNearbyHeroes(AbilitiesReal[4]:GetAOERadius(), true, BOT_MODE_NONE)
+            if #enemies > 0 or freezingFieldHitSomeoneTimer == nil then
+                print("crystal ultimate hit:")
+                AbilityExtensions:DebugTable(enemies)
+                freezingFieldHitSomeoneTimer = DotaTime()
+            else
+                if DotaTime() - freezingFieldHitSomeoneTimer >= 1.5 and #npcBot:GetNearbyHeroes(AbilitiesReal[4]:GetAOERadius() + 200, false, BOT_MODE_NONE) > 0 then
+                    local location = npcBot:GetLocation() + RandomVector(50)
+                    print("crystal: move to ")
+                    print(AbilityExtensions:ToStringVector(location))
+                    npcBot:Action_MoveDirectly(location)
+                else
+                    print("crystal: "..freezingFieldHitSomeoneTimer..", "..DotaTime())
+                end
+            end
+        else
+            freezingFieldHitSomeoneTimer = nil
+        end
 		return
 	end
 	
