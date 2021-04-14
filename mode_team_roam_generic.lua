@@ -17,8 +17,10 @@ function GetDesire()
 	then
 		return 0
 	end
-	local ShrineDesire=GetShrineDesire()
+
+	--local ShrineDesire=GetShrineDesire()
 	--local TeamRoamDesire=GetTeamRoamDesire()
+	local ShrineDesire=0
 	local TeamRoamDesire=0
 
 	if(ShrineDesire>TeamRoamDesire)
