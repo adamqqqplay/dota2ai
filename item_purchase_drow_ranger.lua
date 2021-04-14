@@ -13,17 +13,18 @@ local ItemsToBuy =
 	"item_wraith_band", --系带
 	"item_dragon_lance", --魔龙枪
 	"item_yasha", --夜叉
+    "item_mjollnir",
+    "item_manta",
 	"item_hurricane_pike", --大推推7.20
-	"item_ultimate_orb",
-	"item_recipe_manta", --分身
-	"item_greater_crit", --大炮
 	"item_ultimate_scepter", --蓝杖
-	"item_monkey_king_bar" --金箍棒7.14
+	"item_monkey_king_bar",
+    "item_ultimate_scepter_2",
+    "item_black_king_bar",
 }
 
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered)
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(Transfered)
+    ItemPurchaseSystem:ItemPurchaseExtend()
 end
+

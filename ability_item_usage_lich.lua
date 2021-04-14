@@ -6,8 +6,9 @@
 -- General Initialization
 --------------------------------------
 local utility = require( GetScriptDirectory().."/utility" )
+local AbilityHelper = dofile(GetScriptDirectory().."/util/AbilityHelper")
 require(GetScriptDirectory() .. "/ability_item_usage_generic")
-local AbilityHelper = dofile(GetScriptDirectory() .. "/util/AbilityHelper")
+local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 
 local enableDebug = true
 local npcBot = GetBot()
@@ -61,7 +62,7 @@ local talentTree = {
 }
 
 -- check skill build vs current level
-AbilityHelper.checkAbilityBuild(abilityTree)
+utility.CheckAbilityBuild(abilityTree)
 
 function AbilityLevelUpThink()
 	ability_item_usage_generic.AbilityLevelUpThink2(abilityTree, talentTree)
@@ -91,6 +92,7 @@ local canCast = {
 	AbilityHelper.normalCanCast,
 	AbilityHelper.normalCanCast,
 	AbilityHelper.normalCanCast,
+    AbilityHelper.normalCanCast,
 	AbilityHelper.ultimateCanCast
 }
 local isDisabled = AbilityHelper.isDisabled
@@ -475,7 +477,7 @@ consider[4]=function()
     --------------------------------------
     -- Generic Variable Setting
     --------------------------------------
-    local ability=AbilitiesReal[abilityNumber];
+    local ability=abilityHandles[abilityNumber];
 
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE, 0;

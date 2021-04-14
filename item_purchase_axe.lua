@@ -14,18 +14,16 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
 	"item_bracer",
 	"item_blink", --跳刀
-	"item_robe",
-	"item_chainmail",
-	"item_broadsword", --刃甲
+    "item_blade_mail",
 	"item_black_king_bar", --BKB
 	"item_heart", --龙心7.20
 	"item_lotus_orb", --清莲宝珠,
     "item_assault",
 }
 
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered)
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(Transfered)
+    ItemPurchaseSystem:ItemPurchaseExtend()
 end
+

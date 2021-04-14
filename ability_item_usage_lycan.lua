@@ -17,11 +17,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName = { "lycan_summon_wolves", "lycan_howl", "lycan_feral_impulse", "lycan_wolf_bite", "lycan_shapeshift" }
-local abilityIndex = utility.ReverseTable(abilityName)
-
-
 local AbilityToLevelUp=
 {
 	Abilities[3],
@@ -29,19 +24,19 @@ local AbilityToLevelUp=
 	Abilities[3],
 	Abilities[1],
 	Abilities[1],
-	Abilities[abilityIndex.lycan_shapeshift],
+	Abilities[5],
 	Abilities[1],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[2],
-	Abilities[abilityIndex.lycan_shapeshift],
+	Abilities[5],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
 	"nil",
-	Abilities[abilityIndex.lycan_shapeshift],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -78,7 +73,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -266,9 +261,9 @@ Consider[2]=function()
 
 end
 
-Consider[abilityIndex.lycan_shapeshift]=function()
+Consider[5]=function()
 
-	local abilityNumber=abilityIndex.lycan_shapeshift
+	local abilityNumber=5
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

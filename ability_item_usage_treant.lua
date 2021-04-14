@@ -18,10 +18,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName = { "treant_natures_grasp", "treant_leech_seed", "treant_living_armor", "treant_eyes_in_the_forest", "treant_natures_guise", "treant_overgrowth" }
-local abilityIndex = utility.ReverseTable(abilityName)
-
 local AbilityToLevelUp=
 {
 	Abilities[1],

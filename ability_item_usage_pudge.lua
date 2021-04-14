@@ -17,10 +17,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName = { "pudge_meat_hook", "pudge_rot", "pudge_flesh_heap", "pudge_eject", "pudge_dismember" }
-local abilityIndex = utility.ReverseTable(abilityName)
-
 local AbilityToLevelUp=
 {
 	Abilities[1],

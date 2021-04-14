@@ -17,12 +17,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName = { "alchemist_acid_spray", "alchemist_unstable_concoction", "alchemist_goblins_greed", "alchemist_berserk_potion", "alchemist_chemical_rage", "alchemist_unstable_concoction_throw" }
-local abilityIndex = utility.ReverseTable(abilityName)
-
-
-
 local AbilityToLevelUp=
 {
 	Abilities[3],
@@ -316,9 +310,8 @@ function Consider2()
 	
 end
 
-Consider[abilityIndex.alchemist_chemical_rage]=function()
- 	local abilityNumber=abilityIndex.alchemist_chemical_rage
-    AbilityExtensions:GetTargetHealModifierPercent(npcBot)
+Consider[5]=function()
+ 	local abilityNumber=5
  	--------------------------------------
  	-- Generic Variable Setting
  	--------------------------------------
@@ -381,8 +374,8 @@ Consider[abilityIndex.alchemist_chemical_rage]=function()
  	return BOT_ACTION_DESIRE_NONE
 end
 
-Consider[abilityIndex.alchemist_berserk_potion]=function()
-    local abilityNumber=abilityIndex.alchemist_berserk_potion
+Consider[4]=function()
+    local abilityNumber=4
     --------------------------------------
     -- Generic Variable Setting
     --------------------------------------
@@ -400,7 +393,7 @@ Consider[abilityIndex.alchemist_berserk_potion]=function()
     -- use at myself when chemical rage is not available
     local useTable = {}
     if not npcBot:HasModifier("modifier_alchemist_chemical_rage") and not npcBot:HasModifier("modifier_alchemist_berserk_potion") then
-        local useChemicalRageDesire = Consider[abilityIndex.alchemist_chemical_rage]()
+        local useChemicalRageDesire = Consider[5]()
         if useChemicalRageDesire ~= 0 then
             table.insert(useTable, {useChemicalRageDesire, npcBot})
         end
@@ -466,8 +459,8 @@ Consider[abilityIndex.alchemist_berserk_potion]=function()
     end
 end
 
-Consider[abilityIndex.alchemist_unstable_concoction_throw]=function()
-	local abilityNumber=abilityIndex.alchemist_unstable_concoction_throw
+Consider[6]=function()
+	local abilityNumber=6
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

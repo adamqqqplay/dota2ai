@@ -21,10 +21,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
-local abilityName = { "arc_warden_flux", "arc_warden_magnetic_field",  "arc_warden_spark_wraith", "arc_warden_tempest_double" }
-local abilityIndex = utility.ReverseTable(abilityName)
-
--- utility.PrintAbilityName(Abilities)
 
 
 local AbilityToLevelUp=

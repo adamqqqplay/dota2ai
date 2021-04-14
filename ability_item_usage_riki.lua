@@ -29,19 +29,19 @@ local AbilityToLevelUp=
 	Abilities[3],
 	Abilities[1],
 	Abilities[3],
-	Abilities[abilityIndex.riki_backstab],
+	Abilities[5],
 	Abilities[3],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
-	Abilities[abilityIndex.riki_backstab],
+	Abilities[5],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[1],
 	"nil",
-	Abilities[abilityIndex.riki_backstab],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -317,8 +317,8 @@ Consider[2]=function()
 	
 end
 
-Consider[abilityIndex.riki_tricks_of_the_trade]=function()	--Target Ability Example
-    local abilityNumber=abilityIndex.riki_tricks_of_the_trade
+Consider[3]=function()	--Target Ability Example
+    local abilityNumber=3
     --------------------------------------
     -- Generic Variable Setting
     --------------------------------------
@@ -414,9 +414,9 @@ Consider[abilityIndex.riki_tricks_of_the_trade]=function()	--Target Ability Exam
 
 end
 
-Consider[abilityIndex.riki_poison_dart] = function()
+Consider[4] = function()
     -- copied from bane_nightmare
-    local abilityNumber=abilityIndex.riki_poison_dart
+    local abilityNumber=4
     --------------------------------------
     -- Generic Variable Setting
     --------------------------------------
@@ -522,9 +522,9 @@ Consider[abilityIndex.riki_poison_dart] = function()
     return BOT_ACTION_DESIRE_NONE, 0
 end
 
---Consider[abilityIndex.riki_backstab]=function()
+--Consider[5]=function()
 --
---	local abilityNumber=abilityIndex.riki_backstab
+--	local abilityNumber=5
 --	--------------------------------------
 --	-- Generic Variable Setting
 --	--------------------------------------

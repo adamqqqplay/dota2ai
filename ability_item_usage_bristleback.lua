@@ -20,12 +20,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-
-local abilityName = { "bristleback_viscous_nasal_goo", "bristleback_quill_spray", "bristleback_bristleback", "bristleback_hairball", "bristleback_warpath" }
-local abilityIndex = utility.ReverseTable(abilityName)
-
-
 local AbilityToLevelUp=
 {
 	Abilities[2],
@@ -33,19 +27,19 @@ local AbilityToLevelUp=
 	Abilities[2],
 	Abilities[1],
 	Abilities[2],
-	Abilities[abilityIndex.bristleback_warpath],
+	Abilities[5],
 	Abilities[2],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
-	Abilities[abilityIndex.bristleback_warpath],
+	Abilities[5],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[1],
 	"nil",
-	Abilities[abilityIndex.bristleback_warpath],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
