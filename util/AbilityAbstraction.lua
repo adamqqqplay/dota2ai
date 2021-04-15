@@ -540,7 +540,7 @@ M.SwapCheapestItemToBackpack = function(self, npc)
         print(npc:GetUnitName()..": only have shoes in inventory")
         return false
     end
-    return self:SwapItemToBackpack(npc, cheapestItem.itemIndex)
+    return self:SwapItemToBackpack(npc, cheapestItem.slotIndex)
 end
 
 local heroNameTable = {}
