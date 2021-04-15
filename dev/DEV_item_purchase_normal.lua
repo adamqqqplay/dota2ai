@@ -52,8 +52,7 @@ ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
 function ItemPurchaseThink()
 	--购买辅助物品	对于辅助英雄保留这一行
 	ItemPurchaseSystem.BuySupportItem()
-	--购买信使		对于5号位保留这一行
-	-- ItemPurchaseSystem.BuyCourier()	
+	--购买信使		对于5号位保留这一行	
 	--购买装备
 	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
 end

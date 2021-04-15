@@ -138,7 +138,7 @@ Consider[2]=function()
 	if(ManaPercentage>=0.4)
 	then
 		for k,creep in pairs(creepsNeutral) do
-			if(IsGoodNeutralCreeps(creep) or (creep:IsAncientCreep() and npcBot:HasScepter()))
+			if(IsGoodNeutralCreeps(creep) and not creep:WasRecentlyDamagedByAnyHero(1.5) or (creep:IsAncientCreep() and npcBot:HasScepter()))
 			then
 				return BOT_ACTION_DESIRE_MODERATE, creep;
 			end

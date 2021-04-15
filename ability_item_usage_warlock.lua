@@ -538,6 +538,24 @@ Consider[4]=function()
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
+
+local upheavelTimer
+local upheavelLocation
+local upheavelRadius
+
+local function GetSpellImmuneRemainingTime(target)
+    local spellImmuneModifiers = {
+        "modifier_black_king_bar_immune",
+        "modifier_minotaur_horn_immune",
+        "modifier_life_stealer_rage",
+    }
+    local c = AbilityExtensions:Map(spellImmuneModifiers, function(t) return AbilityExtensions:GetModifierRemainingDuration(t)  end)
+    c = AbilityExtensions:Filter(c, function(t) return t ~= nil  end)
+    c = AbilityExtensions:SortByMaxFirst(c, function(t) return t  end)
+    c = c[1] or 0
+    return c
+end
+
 function AbilityUsageThink()
 
 	local enemys = npcBot:GetNearbyHeroes(500,true,BOT_MODE_NONE)
@@ -550,8 +568,28 @@ function AbilityUsageThink()
 	end
 	
 	-- Check if we're already using an ability
-	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
-	then 
+	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() ) then
+        if npcBot:IsChanneling() and npcBot:GetCurrentActiveAbility() == AbilitiesReal[3] then
+            if upheavelTimer == nil then
+                upheavelTimer = DotaTime()
+            else
+                local enemies = npcBot:GetNearbyHeroes(1500, true, BOT_MODE_NONE)
+                enemies = AbilityExtensions:Count(enemies, function(t)
+                    return t:HasModifier("modifier_warlock_upheavel")
+                            or GetUnitToLocationDistance(t, upheavelLocation) <= upheavelRadius and GetSpellImmuneRemainingTime(t) <= 1
+                end)
+                if enemies == 0 then
+                    if DotaTime() > upheavelTimer + 1.5 then
+                        npcBot:Action_ClearActions()
+                        upheavelTimer = nil
+                    end
+                else
+                    upheavelTimer = DotaTime()
+                end
+            end
+        else
+            upheavelTimer = nil
+        end
 		return
 	end
 	
@@ -566,7 +604,11 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+    if index == 3 then
+        upheavelLocation = target
+        upheavelRadius = AbilitiesReal[3]:GetAOERadius()
+    end
 end
 
 function CourierUsageThink() 

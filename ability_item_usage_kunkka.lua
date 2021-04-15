@@ -232,6 +232,12 @@ Consider[1]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
 
+-- Consider[4] = function()
+-- 	return 0
+-- end
+-- Consider[5] = function()
+-- 	return 0
+-- end
 
 Consider[3]=function()
 

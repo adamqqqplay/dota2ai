@@ -67,7 +67,7 @@ utility.CheckAbilityBuild(AbilityToLevelUp)
 function AbilityLevelUpThink()
 	ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp,TalentTree)
 end
-
+-- npc_dota_witch_doctor_death_ward
 --------------------------------------
 -- Ability Usage Thinking
 --------------------------------------

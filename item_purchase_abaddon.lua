@@ -10,7 +10,6 @@ local ItemsToBuy =
 	"item_tango",
 	"item_quelling_blade",
 	"item_enchanted_mango",
-	"item_enchanted_mango",
 	"item_branches",
 	"item_branches",
 	"item_magic_stick",
@@ -30,11 +29,11 @@ local ItemsToBuy =
 	"item_ultimate_scepter", --蓝杖
 	"item_lotus_orb" --清莲宝珠
 }
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered)
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
+
 
 function ItemPurchaseThink()
-	-- ItemPurchaseSystem.BuyCourier()
 	ItemPurchaseSystem.BuySupportItem()
-	ItemPurchaseSystem.ItemPurchase(Transfered)
+	ItemPurchaseSystem:ItemPurchaseExtend()
+
 end

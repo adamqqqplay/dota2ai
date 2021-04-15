@@ -20,12 +20,14 @@ local ItemsToBuy =
 	"item_recipe_manta", --分身
 	"item_abyssal_blade", --大晕锤
 	"item_butterfly", --蝴蝶
-	"item_ultimate_scepter_2",
+    "item_ultimate_scepter",
+    "item_recipe_ultimate_scepter",
 }
 
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered)
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
+
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(Transfered)
+	ItemPurchaseSystem:ItemPurchaseExtend()
+
 end

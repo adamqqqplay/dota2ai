@@ -14,13 +14,13 @@ local p =
 	"item_phase_boots", --相位
 	"item_magic_wand",
 	"item_vanguard", --先锋
-	"item_pipe", --笛子
     "item_crimson_guard",
-	"item_black_king_bar", --BKB
     "item_heart", --龙心7.20
+	"item_black_king_bar", --BKB
 	"item_lotus_orb",
     "item_shivas_guard",
-    "item_ultimate_scepter_2",
+    "item_ultimate_scepter",
+    "item_recipe_ultimate_scepter",
 }
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), p)
 

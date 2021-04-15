@@ -595,7 +595,7 @@ function M.BuySupportItem()
 					npcBot:ActionImmediate_PurchaseItem( "item_dust" );
 				end
 
-				if (DotaTime()>=30*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1) and AbilityExtensions:GetEmptyItemSlots(npcBot) >= 1
+				if (DotaTime()>=25*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1) and AbilityExtensions:GetEmptyItemSlots(npcBot) >= 1
 				then
                     if AbilityExtensions:GetEmptyItemSlots(npcBot) >= 1 and AbilityExtensions:GetEmptyBackpackSlots(npcBot) == 0 then
                         npcBot:ActionImmediate_PurchaseItem( "item_gem" )

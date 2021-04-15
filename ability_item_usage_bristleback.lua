@@ -118,7 +118,25 @@ Consider[1]=function()
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	
-	
+	if npcBot:HasScepter() then
+		local enemies = npcBot:GetNearbyHeroes(CastRange, true, BOT_MODE_NONE)
+		enemies = AbilityExtensions:Filter(enemies, function(t) 
+			local m = t:GetModifierByName("modifier_bristleback_viscous_nasal_goo")
+			if m ~= -1 and t:GetModifierStackCount(m) >= 6 and t:GetModifierRemainingDuration(m) >= 2.5 then
+				return false
+			end
+			return true
+		end)
+		if AbilityExtensions:IsAttackingEnemies(npcBot) or AbilityExtensions:IsRetreating(npcBot) then
+			if #enemies == 0 then
+				return 0
+			end
+			return #enemies >= 2 and AbilityExtensions:GetManaPercent(npcBot) >= 0.3
+				or #enemies == 1 and AbilityExtensions:GetManaPercent(npcBot) >= 0.6
+				or npcBot:WasRecentlyDamagedByAnyHero(1.5)
+		return 0
+	end
+
 	-- If we're in a teamfight, use it on the scariest enemy
 	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
 	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 

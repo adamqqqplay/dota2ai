@@ -23,11 +23,11 @@ local ItemsToBuy =
 	"item_ultimate_scepter", --蓝杖
 }
 
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered)
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
 
-function ItemPurchaseThink()
-	-- ItemPurchaseSystem.BuyCourier() --购买信使
+
+function ItemPurchaseThink() --购买信使
 	ItemPurchaseSystem.BuySupportItem()
-	ItemPurchaseSystem.ItemPurchase(Transfered)
+	ItemPurchaseSystem:ItemPurchaseExtend()
+
 end

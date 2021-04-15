@@ -11,9 +11,10 @@ M.Range = function(self, min, max, step)
     return g
 end
 
-M.Contains = function(self, tb, value)
+M.Contains = function(self, tb, value, compare)
+    compare = compare or function(a, b) return a == b end
     for _, v in ipairs(tb) do
-        if v == value then
+        if compare(v, value) then
             return true
         end
     end
@@ -79,6 +80,13 @@ M.All = function(self, tb, filter)
         end
     end
     return true
+end
+
+M.Aggregate = function(self, seed, tb, aggregate)
+    for k, v in pairs(tb) do
+        seed = aggregate(seed, v, k)
+    end
+    return seed
 end
 
 M.ShallowCopy = function(self, tb)
@@ -174,6 +182,95 @@ end
 
 M.Prepend = function(self, a, b)
     return self:Concat(b, a)
+end
+
+M.Distinct = function(self, tb, compare)
+    compare = compare or function(a, b) return a == b end
+    local g = {}
+    for _, v in pairs(tb) do
+        if not self:Contains(tb, v, compare) then
+            table.insert(g, v)
+        end
+    end
+    return g
+end
+
+M.Reverse = function(self, tb) 
+    local g = {}
+    for i = #tb, 1, -1 do
+        table.insert(g, tb[i])
+    end
+    return g
+end
+
+M.Last = function(self, tb, filter)
+    return self:First(self:Reverse(tb), filter)
+end
+
+M.Repeat = function(self, element, count)
+    local g = {}
+    for i = 1, count do
+        table.insert(g, element)
+    end
+    return g 
+end
+
+M.Select = M.Map
+M.SelectMany = function(self, tb, map, filter)
+    local g = {}
+    for _, source in ipairs(tb) do
+        local collection = map(source)
+        for index, value in ipairs(collection) do
+            if filter == nil or filter(value, index) then
+                table.insert(g, value)
+            end
+        end
+    end
+    return g
+end
+
+M.SkipLast = function(self, tb, number)
+    return self:Skip(self:Reverse(tb), number)
+end
+
+M.Zip2 = function(self, tb1, tb2, map) 
+    if map == nil then
+        map = function(a, b)
+            return {a, b}
+        end
+    end
+    local g = {}
+    for i = 1, #tb1 do
+        table.insert(g, map(tb1[i], tb2[i]))
+    end
+    return g
+end
+
+M.ForEach2 = function(self, tb1, tb2, func)
+    for i = 1, #tb1 do
+        func(tb1[i], tb2[i])
+    end
+end
+
+M.Map2 = function(self, tb1, tb2, map)
+    local g = {}
+    for i = 1, #tb1 do
+        table.insert(g, map(tb1[i], tb2[i], i))
+    end
+    return g 
+end
+
+M.Filter2 = function(self, tb1, tb2, filter, map)
+    if map == nil then
+        map = function(a,b,c) return {a,b,c} end
+    end
+    local g = {}
+    for i = 1, #tb1 do
+        if filter(tb1[i], tb2[i], i) then
+            table.insert(map(tb1[i], tb2[i], i))
+        end
+    end
+    return g 
 end
 
 M.SlowSort = function(self, tb, sort)
@@ -367,7 +464,7 @@ M.ToggleFunctionToAutoCast = function(self, npcBot, oldConsider, ability)
 end
 
 M.IsChannelingItem = function(self, npc)
-    return npc:HasModifier("modifier_item_meteor_hammer") or npcEnemy:npc("modifier_teleporting") or npc:HasModifier("modifier_boots_of_travel_incoming")
+    return npc:HasModifier("modifier_item_meteor_hammer") or npc:HasModifier("modifier_teleporting") or npc:HasModifier("modifier_boots_of_travel_incoming")
 end
 
 M.IsChannelingAbility = function(self, npc)
@@ -464,13 +561,24 @@ M.GetEnemyHeroNumber = function(self, npcBot, enemies)
 end
 
 M.GetAvailableItem = function(self, npc, itemName)
-    local g = 0
     for i = 0,6 do
         local item = npc:GetItemInSlot(i)
         if item ~= nil and item:GetName() == itemName then
             return item
         end
     end
+end
+
+M.GetAvailableBlink = function(self, npc)
+    local blinks = {
+        "item_blink",
+        "item_overwhelming_blink",
+        "item_swift_blink",
+        "item_arcane_blink",
+    }
+    return self:Aggregate(nil, blinks, function(a, blinkName)
+        return a or self:GetAvailableItem(blinkName)
+    end)
 end
 
 M.GetEmptyItemSlots = function(self, npc)
@@ -543,6 +651,10 @@ M.SwapCheapestItemToBackpack = function(self, npc)
     return self:SwapItemToBackpack(npc, cheapestItem.slotIndex)
 end
 
+M.SuitableForSilence = function(self, npc, target)
+    return self:MayNotBeIllusion(npc, target) and not target:IsMagicImmune() and not target:IsInvulnerable()
+end
+
 local heroNameTable = {}
 setmetatable(heroNameTable, {
     __index = function(tb, s) return "npc_dota_hero_"..s  end
@@ -583,6 +695,16 @@ M.IgnoreAbilityBlockAbilities = {
 M.IgnoreAbilityBlock = function(self, ability)
     local abilityName = ability:GetName()
     return self:Contains(self.AttackPassiveAbilities, abilityName) or self:Contains(self.IgnoreAbilityBlockAbilities, abilityName) or self:Contains(self.OtherIgnoreAbilityBlockAbilities, abilityName)
+end
+
+M.AbilityRetargetModifiers = {
+    "modifier_antimage_counterspell",
+    "modifier_item_lotus_orb_active",
+    "modifier_nyx_assassin_spiked_carapace",
+    "modifier_item_blade_mail",
+}
+M.HasAbilityRetargetModifier = function(self, npc)
+    return self:Any(self.AbilityRetargetModifiers, function(t) return npc:HasModifier(t)  end)
 end
 
 M.DebugTable = function(self, tb)
@@ -819,6 +941,18 @@ M.AutoModifyConsiderFunction = function(self, npcBot, considers, abilitiesReal)
             end
         end
     end
+end
+
+M.CanMove = function(self, npc)
+    return not npc:IsStunned() and not npc:IsRooted()
+end
+
+M.IsSeverlyDisabled = function(self, npc)
+    return npc:IsStunned() or npc:IsHexed() or npc:IsRooted() or self:GetMovementSpeedPercent(npc) <= 0.4 or npc:IsNightmared()
+end
+
+M.IsPhysicalOutputDisabled = function(self, npc)
+    return npc:IsDisarmed() or npc:IsBlind()
 end
 
 M.GetHealthPercent = function(self, npc)

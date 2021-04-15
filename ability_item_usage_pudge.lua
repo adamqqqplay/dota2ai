@@ -81,27 +81,25 @@ Consider[1] = function()
     if not ability:IsFullyCastable() then
         return 0
     end
-    local range = 1300
-    local searchRadius = ability:GetSpecialValueInt("hook_search_radius") or 100
+    local castPoint = 0.3
+    local range = ability:GetSpecialValueInt("hook_distance")
+    local searchRadius = ability:GetSpecialValueInt("hook_width")
+    local hookSpeed = ability:GetSpecialValueFloat("hook_speed")
     local allNearbyUnits = AbilityExtensions:GetNearbyAllUnits(npcBot, range)
 
     local function NotBlockedByAnyUnit(line, target, distance)
         return AbilityExtensions:All(AbilityExtensions:Remove(allNearbyUnits, target), function(t)
             local f = AbilityExtensions:GetPointToLineDistance(t:GetLocation(), line) <= searchRadius and distance <= GetUnitToUnitDistance(npcBot, t)
-            if not f then
-                print("blocked by "..t:GetUnitName())
-            end
             return f
         end)
     end
 
     local function T(target)
-        local point = target:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, target) / 1450)
+        local point = target:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, target) / hookSpeed + castPoint)
         local distance = GetUnitToLocationDistance(npcBot, point)
         local line = AbilityExtensions:GetLine(npcBot:GetLocation(), point)
         if line == nil then
             print("pudge: line == nil")
-            npcBot:ActionImmediate_Chat("pudge: line == nil", true)
         end
         print("pudge: if I hook "..target:GetUnitName())
         local result = GetUnitToLocationDistance(npcBot, point) <= range and NotBlockedByAnyUnit(line, target, distance)
@@ -140,10 +138,7 @@ Consider[2] = function()
     if AbilityExtensions:IsAttackingEnemies(npcBot) or AbilityExtensions:IsRetreating(npcBot) then
         local nearbyEnemies = npcBot:GetNearbyHeroes(radius, true, BOT_MODE_NONE)
         if #nearbyEnemies ~= 0 then
-            AbilityExtensions:DebugTable(nearbyEnemies, function(t) return t:GetUnitName()  end)
-            local p = AbilityExtensions:Filter(nearbyEnemies, function(t) npcBot:WasRecentlyDamagedByHero(t, 1.5) end) or AbilityExtensions:GetHealthPercent(npcBot) >= 0.3
-            AbilityExtensions:DebugTable(p, function(t) return t:GetUnitName()  end)
-            return #p > 0
+            return AbilityExtensions:Any(nearbyEnemies, function(t) npcBot:WasRecentlyDamagedByHero(t, 1.5) end) or AbilityExtensions:GetHealthPercent(npcBot) >= 0.3
         end
         return false
     end
@@ -183,7 +178,7 @@ Consider[5] = function()
     if hookedEnemy ~= nil then
         return BOT_MODE_DESIRE_VERYHIGH, hookedEnemy
     end
-    local nearbyEnemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range+200, true, BOT_MODE_NONE)
+    local nearbyEnemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 900, true, BOT_MODE_NONE)
     if AbilityExtensions:IsAttackingEnemies(npcBot) then
         local u = utility.GetWeakestUnit(nearbyEnemies)
         if u ~= nil then
@@ -191,7 +186,10 @@ Consider[5] = function()
         end
     end
     if AbilityExtensions:IsRetreating(npcBot) and #nearbyEnemies == 1 then
-        return BOT_MODE_DESIRE_MODERATE, nearbyEnemies[1]
+        local loneEnemy = nearbyEnemies[1]
+        if not AbilityExtensions:HasAbilityRetargetModifier(loneEnemy) then
+            return BOT_MODE_DESIRE_MODERATE, loneEnemy
+        end
     end
 
     local nearbyAllies = AbilityExtensions:Filter(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range+200, false, BOT_MODE_NONE), function(t) return AbilityExtensions:CanHardlyMove(t)  end)

@@ -17,6 +17,7 @@ local Abilities ={}
 local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
+AbilityExtensions:PrintAbilities(npcBot)
 
 local AbilityToLevelUp=
 {
@@ -233,7 +234,7 @@ Consider[2]=function()
 	
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
-	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(AbilityExtensions:Filter(enemys, function(t) return not AbilityExtensions:HasAbilityRetargetModifier(t) end))
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	--------------------------------------
@@ -454,7 +455,7 @@ Consider[4]=function()
 	-- Check for a channeling enemy
 	for _,npcEnemy in pairs( enemys )
 	do
-		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy )) 
+		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy ) and not AbilityExtensions:HasAbilityRetargetModifier(npcEnemy)) 
 		then
 			return BOT_ACTION_DESIRE_HIGH, npcEnemy
 		end
@@ -523,6 +524,10 @@ Consider[4]=function()
 			end
 		end
 	end]]
+
+	if AbilityExtensions:IsRetreating(npcBot) and #enemys == 0 and not AbilityExtensions:HasAbilityRetargetModifier(enemys[1]) then
+		return BOT_ACTION_DESIRE_HIGH, enemys[0]
+	end
 	
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
@@ -541,12 +546,46 @@ Consider[4]=function()
 		end
 	end
 
+	local disabledAllies = AbilityExtensions:Filter(allys, function(t) return AbilityExtensions:IsSeverlyDisabled(t) and not t:IsChanneling() end)
+	disabledAllies = AbilityExtensions:SortByMinFirst(disabledAllies, function(t) return t:GetHealth() end)
+	if #disabledAllies ~= 0 then
+		return BOT_ACTION_DESIRE_MODERATE, disabledAllies[1]
+	end
+
+	disabledAllies = AbilityExtensions:Filter(allys, function(t) 
+		local b = t:GetIncomingTrackingProjectiles()
+		return AbilityExtensions:Any(b, function(s)
+			return GetUnitToLocationDistance(t, s.location) <= 400 and not s.is_attack
+		end)
+	end)
+	if disabledAllies ~= 0 then
+		disabledAllies = AbilityExtensions:SortByMinFirst(disabledAllies, function(t) return t:GetHealth() end)
+		return BOT_ACTION_DESIRE_MODERATE, disabledAllies[1]
+	end
+
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
 end
 
 Consider[5]=function()
-	return BOT_ACTION_DESIRE_NONE, 0;
+	local enemies = npcBot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+	local nightmaredEnemies = AbilityExtensions:Filter(enemies, function(t) return t:HasModifier("modifier_bane_nightmare"))
+	local friends = AbilityExtensions:GetNearbyNonIllusionHeroes(1200, false, BOT_MODE_NONE)
+	local nightmaredFriends = AbilityExtensions:Filter(friends, function(t) return t:HasModifier("modifier_bane_nightmare"))
+	if #nightmaredEnemies ~= 0 then
+		if #enemies == 1 and #friends >= 2 and AbilityExtensions:GetModifierRemainingDuration("modifier_bane_nightmare") <= 4 
+		or AbilityExtensions:All(nightmaredEnemies, function(t) return AbilityExtensions:GetHealthPercent(t) <= 0.3 and AbilityExtensions:GetModifierRemainingDuration("modifier_bane_nightmare") <= 4 end) and AbilityExtensions:All(friends, function(t) return AbilityExtensions:GetHealthPercent(t) >= 0.5) then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+	if #nightmaredFriends ~= 0 then
+		if nightmaredFriends = AbilityExtensions:All(nightmaredFriends, function(t)
+			return AbilityExtensions:GetHealthPercent(t) >= 0.3 and #t:GetIncomingTrackingProjectiles() == 0
+		end) or #enemies == 0 then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+	return BOT_ACTION_DESIRE_NONE
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
