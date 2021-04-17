@@ -32,11 +32,11 @@ local ItemsToBuy =
 	"item_recipe_dagon" --红杖
 }
 
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered)
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
+
 
 function ItemPurchaseThink()
-	-- ItemPurchaseSystem.BuyCourier()
 	ItemPurchaseSystem.BuySupportItem()
-	ItemPurchaseSystem.ItemPurchase(Transfered)
+	ItemPurchaseSystem:ItemPurchaseExtend()
+
 end

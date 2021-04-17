@@ -249,6 +249,16 @@ Consider[2]=function()
 			end
 		end
 	end
+
+    local imprisonedEnemy = AbilityExtensions:Map(npcBot:GetNearbyHeroes(CastRange+100,true,BOT_MODE_NONE), function(t) return { t, AbilityExtensions:GetImprisonmentRemainingDuration(t) } end)
+    imprisonedEnemy = AbilityExtensions:First(imprisonedEnemy, function(t) return t[2] ~= nil  end)
+    if imprisonedEnemy ~= nil then
+        local timer = imprisonedEnemy[2] - ability:GetSpecialValueFloat("effect_delay") - ability:GetCastPoint() - 0.1
+        if timer >= 0 then
+            return BOT_ACTION_DESIRE_VERYHIGH, imprisonedEnemy[1]:GetLocation()
+        end
+    end
+
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------

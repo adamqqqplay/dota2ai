@@ -12,7 +12,7 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
 	"item_belt_of_strength",
 	"item_gloves", --假腿7.21
-	"item_pipe", --笛子
+	"item_soul_ring",
 	"item_solar_crest", --大勋章7.20
 	"item_orchid", --紫苑
 	"item_black_king_bar", --bkb
@@ -21,9 +21,10 @@ local ItemsToBuy =
 	"item_assault" --强袭
 }
 
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered)
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
+
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(Transfered)
+	ItemPurchaseSystem:ItemPurchaseExtend()
+
 end

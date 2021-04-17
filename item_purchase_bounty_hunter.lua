@@ -18,14 +18,13 @@ local ItemsToBuy =
 	"item_black_king_bar", --BKB
 	"item_lotus_orb", --清莲宝珠
 	"item_sheepstick",
-	--"item_pipe" --笛子
 }
 
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered)
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
+
 
 function ItemPurchaseThink()
-	-- ItemPurchaseSystem.BuyCourier()
 	ItemPurchaseSystem.BuySupportItem()
-	ItemPurchaseSystem.ItemPurchase(Transfered)
+	ItemPurchaseSystem:ItemPurchaseExtend()
+
 end

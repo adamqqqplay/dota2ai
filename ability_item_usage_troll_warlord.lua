@@ -74,7 +74,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.NCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -400,8 +400,8 @@ Consider[3]=function()
 	
 end
 
-Consider[5]=function()
-	local abilityNumber=5
+Consider[6]=function()
+	local abilityNumber=6
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

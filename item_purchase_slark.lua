@@ -12,20 +12,20 @@ local ItemsToBuy =
 	"item_orb_of_venom",
 	"item_wraith_band",
 	"item_power_treads", --假腿7.21
-	"item_blight_stone",
-	"item_fluffy_hat",
-	"item_recipe_orb_of_corrosion",
+	"item_orb_of_corrosion",
 	"item_magic_wand",
 	"item_skadi",
+	"item_basher",
 	"item_black_king_bar", --bkb
 	"item_diffusal_blade", --散失
 	"item_abyssal_blade", --大晕锤
-	"item_butterfly"
+	"item_butterfly",
 }
 
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered)
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
+
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(Transfered)
+	ItemPurchaseSystem:ItemPurchaseExtend()
+
 end

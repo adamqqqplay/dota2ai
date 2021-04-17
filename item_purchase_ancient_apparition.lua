@@ -24,11 +24,11 @@ local ItemsToBuy =
 	"item_lotus_orb" --清莲宝珠
 }
 
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered)
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
+
 
 function ItemPurchaseThink()
 	ItemPurchaseSystem.BuySupportItem()
-	-- ItemPurchaseSystem.BuyCourier()
-	ItemPurchaseSystem.ItemPurchase(Transfered)
+	ItemPurchaseSystem:ItemPurchaseExtend()
+
 end

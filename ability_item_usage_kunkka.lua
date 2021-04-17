@@ -139,7 +139,7 @@ Consider[1]=function()
 	end
 
     if XMarksEnemy() and CanCast[1](xMarkTarget) and DotaTime()-xMarkTime <= 0.2 then
-        return BOT_ACTION_DESIRE_VERYHIGH, npcEnemy:GetLocation()
+        return BOT_ACTION_DESIRE_VERYHIGH, xMarkTarget:GetLocation()
     end
 
 	--try to kill enemy hero
@@ -232,6 +232,12 @@ Consider[1]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
 
+-- Consider[4] = function()
+-- 	return 0
+-- end
+-- Consider[5] = function()
+-- 	return 0
+-- end
 
 Consider[3]=function()
 

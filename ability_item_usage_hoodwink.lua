@@ -73,7 +73,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -232,11 +232,11 @@ Consider[2]=function()
 			for _,myFriend in pairs(allys) do
 				if ( GetUnitToUnitDistance( myFriend, npcBot  ) < CastRange and not myFriend:HasModifier(modifierName) ) 
 				then
-					return BOT_ACTION_DESIRE_MODERATE, myFriend;
+					return BOT_ACTION_DESIRE_MODERATE, myFriend, "Target"
 				end
 			end	
 			if not npcBot:HasModifier(modifierName) then
-				return BOT_ACTION_DESIRE_MODERATE, npcBot;
+				return BOT_ACTION_DESIRE_MODERATE, npcBot, "Target"
 			end
 		end
 	end
@@ -248,12 +248,12 @@ Consider[2]=function()
 		do
 			if ( not ally:HasModifier(modifierName) ) 
 			then
-				return BOT_ACTION_DESIRE_MODERATE,ally;
+				return BOT_ACTION_DESIRE_MODERATE,ally, "Target"
 			end
 		end
 		
 		if not npcBot:HasModifier(modifierName) then
-			return BOT_ACTION_DESIRE_MODERATE, npcBot;
+			return BOT_ACTION_DESIRE_MODERATE, npcBot, "Target"
 		end
 		
 	end
@@ -292,7 +292,7 @@ Consider[3]=function()
 	do
 		if ( npcEnemy:IsChanneling() ) 
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation();
+			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation(), "Location"
 		end
 	end
 
@@ -304,7 +304,7 @@ Consider[3]=function()
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 
 		if ( locationAoE.count >= 3 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc, "Location"
 		end
 	end
 
@@ -313,7 +313,7 @@ Consider[3]=function()
 	then
 		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) )
 		then
-			return BOT_ACTION_DESIRE_HIGH, utility.Fountain(GetTeam());
+			return BOT_ACTION_DESIRE_HIGH, utility.Fountain(GetTeam()), "Location"
 		end
 	end
 
@@ -325,7 +325,7 @@ Consider[3]=function()
 	then
 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 		if ( locationAoE.count >= 2 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc, "Location"
 		end
 	
 		local npcEnemy = npcBot:GetTarget();
@@ -334,7 +334,7 @@ Consider[3]=function()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) )
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetExtrapolatedLocation(CastPoint);
+				return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetExtrapolatedLocation(CastPoint), "Location"
 			end
 		end
 	end
@@ -343,8 +343,8 @@ Consider[3]=function()
 	
 end
 
-Consider[4]=function()
-	local abilityNumber=4
+Consider[6]=function()
+	local abilityNumber=6
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

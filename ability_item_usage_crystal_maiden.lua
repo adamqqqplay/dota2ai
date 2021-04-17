@@ -368,6 +368,7 @@ Consider[2]=function()
 	
 end
 
+
 Consider[4]=function()
 	local abilityNumber=4
 	--------------------------------------
@@ -388,6 +389,7 @@ Consider[4]=function()
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
@@ -432,11 +434,30 @@ end
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
 
+local freezingFieldHitSomeoneTimer
 function AbilityUsageThink()
-
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
-	then 
+	then
+        if npcBot:IsChanneling() and npcBot:GetCurrentActiveAbility() == AbilitiesReal[4] then
+        --if npcBot:HasModifier("modifier_crystal_maiden_freezing_field") then
+            local glimmer = AbilityExtensions:GetAvailableItem(npcBot, "item_glimmer_cape")
+            if glimmer and glimmer:IsFullyCastable() then
+                npcBot:ActionImmediate_UseAbilityOnEntity(glimmer, npcBot)
+            end
+            local enemies = npcBot:GetNearbyHeroes(AbilitiesReal[4]:GetAOERadius(), true, BOT_MODE_NONE)
+            if #enemies > 0 or freezingFieldHitSomeoneTimer == nil then
+                freezingFieldHitSomeoneTimer = DotaTime()
+            else
+                if DotaTime() - freezingFieldHitSomeoneTimer >= 1.5 and #npcBot:GetNearbyHeroes(AbilitiesReal[4]:GetAOERadius() + 200, false, BOT_MODE_NONE) > 0 then
+                    local location = npcBot:GetLocation() + RandomVector(50)
+                    npcBot:Action_ClearActions(true)
+                else
+                end
+            end
+        else
+            freezingFieldHitSomeoneTimer = nil
+        end
 		return
 	end
 	
@@ -452,6 +473,7 @@ function AbilityUsageThink()
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
 	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+
 end
 
 function CourierUsageThink() 

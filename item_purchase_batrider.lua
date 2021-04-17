@@ -25,9 +25,10 @@ local ItemsToBuy =
 	"item_shivas_guard",
 }
 
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered) --检查装备列表
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
+ --检查装备列表
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(Transfered) --购买装备
+	ItemPurchaseSystem:ItemPurchaseExtend()
+ --购买装备
 end
