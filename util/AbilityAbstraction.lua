@@ -1178,6 +1178,7 @@ M.GetNetWorth = function(self, npc, isEnemy)
     else
         return npc:GetNetWorth()
     end
+end
 
 M.GetHeroGroupNetWorth = function(self, heroes, isEnemy)
     local function A(tb)
