@@ -461,25 +461,25 @@ function M.UnImplementedItemUsage()
         end
     end
 
-    local irt = IsItemAvailable("item_iron_talon")
-    if irt ~= nil and irt:IsFullyCastable() then
-        if npcBot:GetActiveMode() == BOT_MODE_FARM then
-            local neutrals = npcBot:GetNearbyNeutralCreeps(500)
-            local maxHP = 0
-            local target = nil
-            for _, c in pairs(neutrals) do
-                local cHP = c:GetHealth()
-                if cHP > maxHP and not c:IsAncientCreep() then
-                    maxHP = cHP
-                    target = c
-                end
-            end
-            if target ~= nil then
-                npcBot:Action_UseAbilityOnEntity(irt, target)
-                return
-            end
-        end
-    end
+    -- local irt = IsItemAvailable("item_iron_talon")
+    -- if irt ~= nil and irt:IsFullyCastable() then
+    --     if npcBot:GetActiveMode() == BOT_MODE_FARM then
+    --         local neutrals = npcBot:GetNearbyNeutralCreeps(500)
+    --         local maxHP = 0
+    --         local target = nil
+    --         for _, c in pairs(neutrals) do
+    --             local cHP = c:GetHealth()
+    --             if cHP > maxHP and not c:IsAncientCreep() then
+    --                 maxHP = cHP
+    --                 target = c
+    --             end
+    --         end
+    --         if target ~= nil then
+    --             npcBot:Action_UseAbilityOnEntity(irt, target)
+    --             return
+    --         end
+    --     end
+    -- end
 
     local msh = IsItemAvailable("item_moon_shard")
     if msh ~= nil and msh:IsFullyCastable() then

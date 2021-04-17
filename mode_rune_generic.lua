@@ -33,62 +33,62 @@ function GetDesire()
 		bot.lastPlayerChat = nil;
 	end]]--
 
-	if GetGameMode() == GAMEMODE_1V1MID then
-		return BOT_MODE_DESIRE_NONE;
-	end
+	-- if GetGameMode() == GAMEMODE_1V1MID then
+	-- 	return BOT_MODE_DESIRE_NONE;
+	-- end
 	
-	if GetGameMode() == GAMEMODE_MO and DotaTime() <= 0 then
-		return BOT_MODE_DESIRE_NONE;
-	end
+	-- if GetGameMode() == GAMEMODE_MO and DotaTime() <= 0 then
+	-- 	return BOT_MODE_DESIRE_NONE;
+	-- end
 	
-	if teamPlayers == nil then teamPlayers = GetTeamPlayers(GetTeam()) end
+	-- if teamPlayers == nil then teamPlayers = GetTeamPlayers(GetTeam()) end
 	
-	if bot:IsIllusion() or bot:IsInvulnerable() or not bot:IsHero() or bot:HasModifier("modifier_arc_warden_tempest_double") or
-       bot:IsUsingAbility() or bot:IsChanneling() or bot:GetCurrentActionType() == BOT_ACTION_TYPE_IDLE or 
-	   GetUnitToUnitDistance(bot, GetAncient(GetTeam())) < 2500 or  GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) < 2500 
-	then
-		return BOT_MODE_DESIRE_NONE;
-	end
+	-- if bot:IsIllusion() or bot:IsInvulnerable() or not bot:IsHero() or bot:HasModifier("modifier_arc_warden_tempest_double") or
+    --    bot:IsUsingAbility() or bot:IsChanneling() or bot:GetCurrentActionType() == BOT_ACTION_TYPE_IDLE or 
+	--    GetUnitToUnitDistance(bot, GetAncient(GetTeam())) < 2500 or  GetUnitToUnitDistance(bot, GetAncient(GetOpposingTeam())) < 2500 
+	-- then
+	-- 	return BOT_MODE_DESIRE_NONE;
+	-- end
 
-	minute = math.floor(DotaTime() / 60)
-	sec = DotaTime() % 60
+	-- minute = math.floor(DotaTime() / 60)
+	-- sec = DotaTime() % 60
 	
-	if not IsSuitableToPick() then
-		return BOT_MODE_DESIRE_NONE;
-	end	
+	-- if not IsSuitableToPick() then
+	-- 	return BOT_MODE_DESIRE_NONE;
+	-- end	
 	
-	if DotaTime() < 0 and not bot:WasRecentlyDamagedByAnyHero(5.0) then 
-		return BOT_MODE_DESIRE_MODERATE;
-	end	
+	-- if DotaTime() < 0 and not bot:WasRecentlyDamagedByAnyHero(5.0) then 
+	-- 	return BOT_MODE_DESIRE_MODERATE;
+	-- end	
 	
-	closestRune, closestDist = GetBotClosestRune();
-	if closestRune ~= -1 then
-		if closestRune == RUNE_BOUNTY_1 or closestRune == RUNE_BOUNTY_2 or closestRune == RUNE_BOUNTY_3 or closestRune == RUNE_BOUNTY_4 then
-			runeStatus = GetRuneStatus( closestRune );
-			if runeStatus == RUNE_STATUS_AVAILABLE then
-				return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, 3000);
-			elseif runeStatus == RUNE_STATUS_UNKNOWN and closestDist <= ProxDist then
-				return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, ProxDist);
-			elseif runeStatus == RUNE_STATUS_MISSING and DotaTime() > 60 and ( minute % 4 == 0 and sec > 52 ) and closestDist <= ProxDist then
-				return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, ProxDist);
-			elseif IsTeamMustSaveRune(closestRune) and runeStatus == RUNE_STATUS_UNKNOWN then
-				return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, 5000);
-			end
-		else
-			runeStatus = GetRuneStatus( closestRune );
-			if runeStatus == RUNE_STATUS_AVAILABLE then
-				return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, 5000);
-			elseif runeStatus == RUNE_STATUS_UNKNOWN and closestDist <= ProxDist then
-				return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, ProxDist);
-			elseif runeStatus == RUNE_STATUS_MISSING and DotaTime() > 60 and ( minute % 2 == 1 and sec > 52 ) and closestDist <= ProxDist then
-				return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, ProxDist);
-			elseif IsTeamMustSaveRune(closestRune) and runeStatus == RUNE_STATUS_UNKNOWN then
-				return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, 5000);
-			end
-		end	
-	end
+	-- closestRune, closestDist = GetBotClosestRune();
+	-- if closestRune ~= -1 then
+	-- 	if closestRune == RUNE_BOUNTY_1 or closestRune == RUNE_BOUNTY_2 or closestRune == RUNE_BOUNTY_3 or closestRune == RUNE_BOUNTY_4 then
+	-- 		runeStatus = GetRuneStatus( closestRune );
+	-- 		if runeStatus == RUNE_STATUS_AVAILABLE then
+	-- 			return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, 3000);
+	-- 		elseif runeStatus == RUNE_STATUS_UNKNOWN and closestDist <= ProxDist then
+	-- 			return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, ProxDist);
+	-- 		elseif runeStatus == RUNE_STATUS_MISSING and DotaTime() > 60 and ( minute % 4 == 0 and sec > 52 ) and closestDist <= ProxDist then
+	-- 			return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, ProxDist);
+	-- 		elseif IsTeamMustSaveRune(closestRune) and runeStatus == RUNE_STATUS_UNKNOWN then
+	-- 			return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, 5000);
+	-- 		end
+	-- 	else
+	-- 		runeStatus = GetRuneStatus( closestRune );
+	-- 		if runeStatus == RUNE_STATUS_AVAILABLE then
+	-- 			return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, 5000);
+	-- 		elseif runeStatus == RUNE_STATUS_UNKNOWN and closestDist <= ProxDist then
+	-- 			return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, ProxDist);
+	-- 		elseif runeStatus == RUNE_STATUS_MISSING and DotaTime() > 60 and ( minute % 2 == 1 and sec > 52 ) and closestDist <= ProxDist then
+	-- 			return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, ProxDist);
+	-- 		elseif IsTeamMustSaveRune(closestRune) and runeStatus == RUNE_STATUS_UNKNOWN then
+	-- 			return CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, 5000);
+	-- 		end
+	-- 	end	
+	-- end
 	
-	return BOT_MODE_DESIRE_NONE;
+	-- return BOT_MODE_DESIRE_NONE;
 end
 
 function OnStart()

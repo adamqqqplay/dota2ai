@@ -475,18 +475,24 @@ Consider[4]=function()
 	local CastPoint = ability:GetCastPoint();
 	
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local enemys = npcBot:GetNearbyHeroes(800,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+	local creeps = npcBot:GetNearbyCreeps(800,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
+
+	-- Stop making a huge bounty for the enemy
+	if (npcBot:GetHealth() <= 450 or HealthPercentage <= 0.3) and (npcBot:WasRecentlyDamagedByAnyHero(1.5) or AbilityExtensions:CanHardlyMove(npcBot) or not AbilityExtensions:CanMove(npcBot)) and not AbilityExtensions:Outnumber(allys, enemys) then
+		return 0
+	end
+
 	-- If we're in a teamfight, use it on the scariest enemy
 	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
 	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 
 	then
-		return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy;
+		return BOT_ACTION_DESIRE_HIGH
 	end
 	--------------------------------------
 	-- Mode based usage

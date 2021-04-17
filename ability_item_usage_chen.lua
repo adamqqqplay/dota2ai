@@ -147,105 +147,105 @@ Consider[1]=function()
 	
 end
 
-Consider[2]=function()
-	local abilityNumber=2
-	--------------------------------------
-	-- Generic Variable Setting
-	--------------------------------------
-	local ability=AbilitiesReal[abilityNumber];
+-- Consider[2]=function()
+-- 	local abilityNumber=2
+-- 	--------------------------------------
+-- 	-- Generic Variable Setting
+-- 	--------------------------------------
+-- 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
-	end
+-- 	if not ability:IsFullyCastable() then
+-- 		return BOT_ACTION_DESIRE_NONE, 0;
+-- 	end
 	
-	local CastRange = ability:GetCastRange();
-	--local Damage = (ability:GetSpecialValueInt("damage_max")+ability:GetSpecialValueInt("damage_min"))*0.5
-	local Heal = (ability:GetSpecialValueInt("heal_max")+ability:GetSpecialValueInt("heal_min"))*0.5
+-- 	local CastRange = ability:GetCastRange();
+-- 	--local Damage = (ability:GetSpecialValueInt("damage_max")+ability:GetSpecialValueInt("damage_min"))*0.5
+-- 	local Heal = (ability:GetSpecialValueInt("heal_max")+ability:GetSpecialValueInt("heal_min"))*0.5
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
-	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
-	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
-	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
-	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
-	--------------------------------------
-	-- Global high-priorty usage
-	--------------------------------------
+-- 	local HeroHealth=10000
+-- 	local CreepHealth=10000
+-- 	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
+-- 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
+-- 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+-- 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+-- 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+-- 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+-- 	--------------------------------------
+-- 	-- Global high-priorty usage
+-- 	--------------------------------------
 	
-	--------------------------------------
-	-- Mode based usage
-	--------------------------------------
-	-- If we're seriously retreating
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
-	then
-		if ( HealthPercentage<=0.5 and npcBot:WasRecentlyDamagedByAnyHero(2.0)) 
-		then
-			if ( CanCast[abilityNumber]( npcBot )) 
-			then
-				return BOT_ACTION_DESIRE_HIGH, npcBot
-			end
-		end
-	end
+-- 	--------------------------------------
+-- 	-- Mode based usage
+-- 	--------------------------------------
+-- 	-- If we're seriously retreating
+-- 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+-- 	then
+-- 		if ( HealthPercentage<=0.5 and npcBot:WasRecentlyDamagedByAnyHero(2.0)) 
+-- 		then
+-- 			if ( CanCast[abilityNumber]( npcBot )) 
+-- 			then
+-- 				return BOT_ACTION_DESIRE_HIGH, npcBot
+-- 			end
+-- 		end
+-- 	end
 	
-	--teamfightUsing
-	if(	npcBot:GetActiveMode() == BOT_MODE_ROAM or
-		npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-		npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-		npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
-	then
-		if (WeakestAlly~=nil)
-		then
-			if(AllyHealth/WeakestAlly:GetMaxHealth()<0.3+0.2*ManaPercentage)
-			then
-				return BOT_ACTION_DESIRE_MODERATE,WeakestAlly
-			end
-		end
+-- 	--teamfightUsing
+-- 	if(	npcBot:GetActiveMode() == BOT_MODE_ROAM or
+-- 		npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+-- 		npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+-- 		npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+-- 	then
+-- 		if (WeakestAlly~=nil)
+-- 		then
+-- 			if(AllyHealth/WeakestAlly:GetMaxHealth()<0.3+0.2*ManaPercentage)
+-- 			then
+-- 				return BOT_ACTION_DESIRE_MODERATE,WeakestAlly
+-- 			end
+-- 		end
 			
-		for _,npcTarget in pairs( allys )
-		do
-			local enemys2 = npcTarget:GetNearbyHeroes(600,true,BOT_MODE_NONE)
-			local healingFactor=0.2+#enemys2*0.05+0.2*ManaPercentage
-			if(enemyDisabled(npcTarget))
-			then
-				healingFactor=healingFactor+0.1
-			end
+-- 		for _,npcTarget in pairs( allys )
+-- 		do
+-- 			local enemys2 = npcTarget:GetNearbyHeroes(600,true,BOT_MODE_NONE)
+-- 			local healingFactor=0.2+#enemys2*0.05+0.2*ManaPercentage
+-- 			if(enemyDisabled(npcTarget))
+-- 			then
+-- 				healingFactor=healingFactor+0.1
+-- 			end
 			
-			if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<healingFactor and npcTarget:WasRecentlyDamagedByAnyHero(2.0) )
-			then
-				if ( CanCast[abilityNumber]( npcTarget ) )
-				then
-					return BOT_ACTION_DESIRE_MODERATE, npcTarget
-				end
-			end
-		end
-	end
+-- 			if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<healingFactor and npcTarget:WasRecentlyDamagedByAnyHero(2.0) )
+-- 			then
+-- 				if ( CanCast[abilityNumber]( npcTarget ) )
+-- 				then
+-- 					return BOT_ACTION_DESIRE_MODERATE, npcTarget
+-- 				end
+-- 			end
+-- 		end
+-- 	end
 	
-	-- If we're going after someone
-	if ( npcBot:GetActiveMode() == BOT_MODE_LANING or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT) 
-	then
-		for _,npcTarget in pairs( allys )
-		do
-			if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<(0.35+0.4*ManaPercentage))
-			then
-				if ( CanCast[abilityNumber]( npcTarget ) )
-				then
-					return BOT_ACTION_DESIRE_MODERATE, npcTarget
-				end
-			end
-		end
-	end
+-- 	-- If we're going after someone
+-- 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING or
+-- 		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
+-- 		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+-- 		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
+-- 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+-- 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
+-- 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT) 
+-- 	then
+-- 		for _,npcTarget in pairs( allys )
+-- 		do
+-- 			if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<(0.35+0.4*ManaPercentage))
+-- 			then
+-- 				if ( CanCast[abilityNumber]( npcTarget ) )
+-- 				then
+-- 					return BOT_ACTION_DESIRE_MODERATE, npcTarget
+-- 				end
+-- 			end
+-- 		end
+-- 	end
 	
-	return BOT_ACTION_DESIRE_NONE, 0;
+-- 	return BOT_ACTION_DESIRE_NONE, 0;
 	
-end
+-- end
 
 local goodNeutral=
 {
@@ -271,8 +271,8 @@ function IsGoodNeutralCreeps(npcCreep)
 	return false;
 end
 
-Consider[3]=function()
-	local abilityNumber=3
+Consider[2]=function()
+	local abilityNumber=2
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -308,32 +308,33 @@ Consider[3]=function()
 	end
 
 	-- If we're in a teamfight, use it on the scariest enemy
-	local lowHpAlly = nil;
-	local nLowestHealth = 10000;
+	-- local lowHpAlly = nil;
+	-- local nLowestHealth = 10000;
 
-	for _,npcAlly in pairs( allys )
-	do
-		if (  CanCast[abilityNumber]( npcAlly ) and npcAlly:GetUnitName() ~= npcBot:GetUnitName() )
+	-- for _,npcAlly in pairs( allys )
+	-- do
+	-- 	if (  CanCast[abilityNumber]( npcAlly ) and npcAlly:GetUnitName() ~= npcBot:GetUnitName() )
+	-- 	then
+	-- 		local nAllyHP = npcAlly:GetHealth();
+	-- 		if  nAllyHP < nLowestHealth and npcAlly:GetHealth() / npcAlly:GetMaxHealth() < 0.25 and npcAlly:WasRecentlyDamagedByAnyHero(3.0)  
+	-- 		then
+	-- 			nLowestHealth = nAllyHP;
+	-- 			lowHpAlly = npcAlly;
+	-- 		end
+	-- 	end
+	-- end
+	-- if ( lowHpAlly ~= nil )
+	-- then
+	-- 	return BOT_ACTION_DESIRE_MODERATE, lowHpAlly;
+	-- end
+	
+	if npcBot:HasScepter() then
+		local desire,targetloc=ConsiderRecall()
+		if(desire>0)
 		then
-			local nAllyHP = npcAlly:GetHealth();
-			if  nAllyHP < nLowestHealth and npcAlly:GetHealth() / npcAlly:GetMaxHealth() < 0.25 and npcAlly:WasRecentlyDamagedByAnyHero(3.0)  
-			then
-				nLowestHealth = nAllyHP;
-				lowHpAlly = npcAlly;
-			end
+			return desire,targetloc
 		end
 	end
-	if ( lowHpAlly ~= nil )
-	then
-		return BOT_ACTION_DESIRE_MODERATE, lowHpAlly;
-	end
-	
-	local desire,targetloc=ConsiderRecall()
-	if(desire>0)
-	then
-		return desire,targetloc
-	end
-
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
 end

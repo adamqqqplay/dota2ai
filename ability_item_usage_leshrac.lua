@@ -129,7 +129,7 @@ Consider[1]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL)*1.8 or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetExtrapolatedLocation(CastPoint); 
 				end
@@ -254,7 +254,7 @@ Consider[2]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL)*1.8 or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
 					return BOT_ACTION_DESIRE_HIGH
 				end
@@ -361,7 +361,7 @@ Consider[3]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL)*1.8 or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
 				end
@@ -436,6 +436,33 @@ Consider[3]=function()
 	
 end
 
+Consider[4] = function()
+	local abilityNumber=4
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber]
+	
+	if not ability:IsFullyCastable() then
+		return BOT_ACTION_DESIRE_NONE
+	end
+	
+	local Damage = ability:GetAbilityDamage()
+	local Radius = ability:GetAOERadius()
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
+	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local creeps = npcBot:GetNearbyCreeps(Radius,true)
+	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+	if #enemys >= 2 and (AbilitiesReal[1]:IsFullyCastable() or AbilitiesReal[3]:IsFullyCastable() or AbilitiesReal[5]:GetToggleState()) then
+		return BOT_MODE_DESIRE_MODERATE
+	end
+	if HealthPercentage <= 0.3 and #enemys >= 1 then
+		return BOT_MODE_DESIRE_HIGH
+	end
+	return 0
+end
+
 Consider[5]=function()
 	local abilityNumber=5
 	--------------------------------------
@@ -476,7 +503,7 @@ Consider[5]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ))
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL)*1.8 or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
 					return BOT_ACTION_DESIRE_HIGH
 				end

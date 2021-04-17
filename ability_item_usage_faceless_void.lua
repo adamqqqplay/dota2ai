@@ -264,6 +264,20 @@ Consider[2]=function()
 	
 end
 
+-- Consider[4] = function()
+-- 	local abilityNumber=4
+-- 	--------------------------------------
+-- 	-- Generic Variable Setting
+-- 	--------------------------------------
+-- 	local ability=AbilitiesReal[abilityNumber];
+	
+-- 	if not ability:IsFullyCastable() then
+-- 		return BOT_ACTION_DESIRE_NONE, 0;
+-- 	end
+
+-- 	return 0
+-- end
+
 Consider[5]=function()
 	local abilityNumber=5
 	--------------------------------------

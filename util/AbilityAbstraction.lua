@@ -505,7 +505,7 @@ end
 
 M.MustBeIllusion = function(self, npcBot, target)
     if npcBot:GetTeam() == target:GetTeam() then
-        return target:IsIllusion()
+        return target:IsIllusion() and not target:HasModifier("modifier_skeleton_king_reincarnation_active")
     end
     if self:Contains(self:GetTeamPlayers(npcBot:GetTeam()), target:GetPlayerID()) then
         return true
@@ -514,8 +514,9 @@ M.MustBeIllusion = function(self, npcBot, target)
 end
 M.MayNotBeIllusion = function(self, npcBot, target) return not self:MustBeIllusion(npcBot, target) end
 
-M.GetNearbyNonIllusionHeroes = function(self, npcBot, range, getEnemy, additionalParameter)
-    local heroes = npcBot:GetNearbyHeroes(range, getEnemy, additionalParameter)
+M.GetNearbyNonIllusionHeroes = function(self, npcBot, range, getEnemy, botModeMask)
+    botModeMask = botModeMask or BOT_MODE_NONE
+    local heroes = npcBot:GetNearbyHeroes(range, getEnemy, botModeMask)
     return self:Filter(heroes, function(t) return self:MayNotBeIllusion(npcBot, t) end)
 end
 
@@ -673,6 +674,9 @@ setmetatable(heroNameTable, {
 })
 M.GetHeroFullName = function(self, s)
     return "npc_dota_hero_"..s
+end
+M.GetHeroShortName = function(self, s)
+    return string.sub(s, 12)
 end
 
 M.IsMeleeHero = function(self, npc)
@@ -1103,6 +1107,7 @@ M.IgnoreDamageModifiers = {
     "modifier_aeon_disk",
     "modifier_winter_wyvern_winters_curse",
     "modifier_winter_wyvern_winters_curse_aura",
+    "modifier_skeleton_king_reincarnation_scepter_active",
 }
 
 M.IgnorePhysicalDamageModifiers = {
@@ -1111,6 +1116,98 @@ M.IgnorePhysicalDamageModifiers = {
 M.IgnoreMagicalDamageModifiers = {
     "modifier_oracle_fates_edict",
 }
+
+M.LastForAtLeastSeconds = function(self, predicate, time, infoTable)
+    if infoTable.lastTrueTime == nil then
+        infoTable.lastTrueTime = DotaTime()
+    end
+    if predicate() then
+        if DotaTime() - infoTable.lastTrueTime >= time then
+            return true
+        else
+            return false
+        end
+    else
+        infoTable.lastTrueTime = nil
+        return false
+    end
+end
+
+M.GoodIllusionHero = {
+    "antimage","spectre","terrorblade","naga_siren",
+}
+M.ModerateIllusionHero = {
+    "abaddon","axe","chaos_knight","arc_warden","juggernaut","luna","medusa","morphling","phantom_lancer","sniper","wraith_king","phantom_assassin",
+}
+M.GetIllusionBattlePower = function(self, npc)
+    local name = self:GetHeroShortName(npc:GetUnitName())
+    if npc:HasModifier("modifier_arc_warden_tempest_double") or npc:HasModifier("modifier_skeleton_king_reincarnation_active") then
+        return 0.8
+    end
+    local t = 0.1
+    if self:Contains(self.GoodIllusionHero, name) then
+        t = 0.25
+    elseif self:Contains(self.ModerateIllusionHero, name) then
+        t = 0.4
+    elseif t:IsRanged() then
+        t = t + t:GetAttackRange() / 600
+    end
+    local inventory = self:Map(self:GetInventoryItems(npc), function(t) return t:GetName() end)
+    if self:Contains(inventory, "item_radiance") then
+        t = t+0.07
+    end
+    if self:Contains(inventory, "item_diffusal_blade") then
+        t = t+0.05
+    end
+    if self:Contains(inventory, "item_lesser_crit") then
+        t = t+0.04
+    end
+    if self:Contains(inventory, "item_greater_crit") then
+        t = t+0.08
+    end
+    if npc:HasModifier("modifier_special_bonus_mana_break") then-- mirana talent[5]
+        t = t+0.04
+    end
+    return t 
+end
+
+M.GetNetWorth = function(self, npc, isEnemy)
+    if isEnemy then
+        local itemCost = self:Map(self:GetInventoryItems(npc), function(t) return GetItemCost(t:GetName()) end)
+        return self:Aggregate(0, itemCost, function(a, b) return a+b end)
+    else
+        return npc:GetNetWorth()
+    end
+
+M.GetHeroGroupNetWorth = function(self, heroes, isEnemy)
+    local function A(tb)
+        tb = self:SortByMaxFirst(tb, function(t) return t:GetNetWorth() end)
+        local f = self:Map(tb, function(t, index) return t:GetNetWorth() * 1.15-0.15*index end)
+        local g = {}
+        for _,v in ipairs(f) do
+            g[v:GetUnitName()] = v 
+        end
+        return g
+    end
+    local enemyNetWorthMap = A(self:GetEnemyHeroUnique(heroes))
+    local netWorth = 0
+    local readNames = {}
+    for _, enemy in pairs(heroes) do
+        local name = enemy:GetUnitName()
+        if not self:Contains(readNames, name) then
+            table.insert(readNames, name)
+            netWorth = netWorth + enemyNetWorthMap[name]
+        else
+            netWorth = netWorth + enemyNetWorthMap[name] * self:GetIllusionBattlePower(enemy)
+        end
+    end
+    return netWorth
+end
+
+M.Outnumber = function(self, friends, enemies)
+    return self:GetHeroGroupNetWorth(friends, false) >= self:GetHeroGroupNetWorth(enemies, true) * 1.8
+end
+
 
 M.CannotBeKilledNormally = function(self, target)
     return target:IsInvulnerable() or self:Any(self.IgnoreDamageModifiers, function(t) target:HasModifier(t) end) or target:HasModifier("modifier_dazzle_shallow_grave")
