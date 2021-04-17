@@ -11,7 +11,7 @@ function M.SendVersionAnnouncement()
 					local npcBot = GetBot()
 					if (npcBot:GetPlayerID() == id) then
 						npcBot:ActionImmediate_Chat(
-							"Welcome to Ranked Matchmaking AI. The current version is 1.7.1, updated on April 10, 2021. If you have any questions or feedback, please leave message on steam workshop https://steamcommunity.com/sharedfiles/filedetails/?id=855965029 or contact Dota2RMMAI@outlook.com",
+							"Welcome to Ranked Matchmaking AI. The current version is 1.7.2, updated on April 14, 2021. If you have any questions or feedback, please leave message on steam workshop https://steamcommunity.com/sharedfiles/filedetails/?id=855965029 or contact Dota2RMMAI@outlook.com",
 							true
 						)
 						npcBot:ActionImmediate_Chat(

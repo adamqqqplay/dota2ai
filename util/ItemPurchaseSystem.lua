@@ -595,9 +595,17 @@ function M.BuySupportItem()
 					npcBot:ActionImmediate_PurchaseItem( "item_dust" );
 				end
 
-				if(DotaTime()>=28*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1)
+				if (DotaTime()>=30*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1) and AbilityExtensions:GetEmptyItemSlots(npcBot) >= 1
 				then
-					npcBot:ActionImmediate_PurchaseItem( "item_gem" );
+                    if AbilityExtensions:GetEmptyItemSlots(npcBot) >= 1 and AbilityExtensions:GetEmptyBackpackSlots(npcBot) == 0 then
+                        npcBot:ActionImmediate_PurchaseItem( "item_gem" )
+                    elseif AbilityExtensions:GetEmptyBackpackSlots(npcBot) >= 1 then
+                        if AbilityExtensions:SwapCheapestItemToBackpack(npcBot) then
+                            npcBot:ActionImmediate_PurchaseItem( "item_gem" )
+                        end
+                    else
+
+                    end
 				end
 
 				-- if ( item_ward_observer==nil and item_dust==nil and item_ward_sentry==nil and M.IsItemSlotsFull()==false and npcBot:GetGold() >= 2*GetItemCost("item_ward_sentry") ) then
@@ -616,7 +624,7 @@ function M.BuySupportItem()
 			npcBot:ActionImmediate_PurchaseItem( "item_ward_observer" );
 		end
 
-		if(item_smoke==nil and npcBot:GetGold() >= GetItemCost("item_smoke_of_deceit"))
+		if(item_smoke==nil and GetItemStockCount("item_smoke_of_deceit")>=1 and npcBot:GetGold() >= GetItemCost("item_smoke_of_deceit"))
 		then
 			npcBot:ActionImmediate_PurchaseItem("item_smoke_of_deceit");
 		end
@@ -886,11 +894,21 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
         end
     end
 
-
     if GetGameState() == DOTA_GAMERULES_STATE_POSTGAME then
         return
     end
     local npcBot = GetBot();
+
+    local function RemoveInvisibleItemsWhenBountyHunter()
+        local enemies = AbilityExtensions:Filter(GetBot():GetNearbyHeroes(1500, true, BOT_MODE_NONE), function(t)
+            return AbilityExtensions:MayNotBeIllusion(GetBot(), t)
+        end)
+        if AbilityExtensions:Any(enemies, function(t)
+            return t:GetUnitName() == AbilityExtensions:GetHeroFullName("bounty_hunter") or t:GetUnitName() == AbilityExtensions:GetHeroFullName("slardar") or t:GetUnitName() == AbilityExtensions:GetHeroFullName("rattletrap") and t:GetLevel() >= 18
+        end) then
+            M:RemoveInvisibleItemPurchase(GetBot())
+        end
+    end
 
     if npcBot:IsIllusion() then
         return
@@ -904,6 +922,7 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
         return
     end
 
+    RemoveInvisibleItemsWhenBountyHunter()
     local sNextItem = GetTopItemToBuy()
     if sNextItem == nil then
         print(npcBot:GetUnitName()..": ".."purchase a nil item")
@@ -970,6 +989,28 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
         npcBot.secretShopMode = false;
     end
 
+end
+
+M.RemoveItemPurchase = function(self, itemTable, itemName)
+    local num = #itemTable
+    local i = 1
+    while i <= num do
+        if itemTable[i].name == itemName then
+            table.remove(itemTable, i)
+            num = num - 1
+        end
+    end
+end
+
+M.InvisibleItemList = {
+    "item_invis_sword",
+    "item_silver_edge",
+    "item_glimmer_cape",
+}
+M.RemoveInvisibleItemPurchase = function(self, itemTable)
+    AbilityExtensions:ForEach(self.InvisibleItemList, function(t)
+        self:RemoveItemPurchase(itemTable, t)
+    end)
 end
 
 return M

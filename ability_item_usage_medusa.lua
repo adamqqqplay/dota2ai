@@ -91,16 +91,17 @@ Consider[1] = function()
         return
     end
 
-    local enemies = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
-    local enemiesInRange = npcBot:GetNearbyHeroes(CastRange, true, BOT_MODE_NONE)
-    local creeps = AbilityExtensions:GetNearbyCreeps(CastRange + 400, true, BOT_MODE_NONE)
+    local attackRange = npcBot:GetAttackRange()
+    local enemies = npcBot:GetNearbyHeroes(attackRange+300,true,BOT_MODE_NONE)
+    local enemiesInRange = npcBot:GetNearbyHeroes(attackRange, true, BOT_MODE_NONE)
+    local creeps = npcBot:GetNearbyCreeps(attackRange, true)
     if AbilityExtensions:IsFarmingOrPushing(npcBot) then
         if #creeps >= 2 and #enemies == 0 then
             return true
         end
     end
     if AbilityExtensions:IsAttackingEnemies(npcBot) then
-        if #enemies > 0 and (#enemiesInRange >= 3 or #enemiesInRange == 2 and ability:GetLevel() >= 3 or #enemiesInRange >= 1 and #creeps >= 2) then
+        if #enemies > 0 and (#enemiesInRange >= 3 or #enemiesInRange == 2 and ability:GetLevel() >= 3 or #enemiesInRange >= 1 and #creeps >= 2 and ability:GetLevel() >= 2) then
             return true
         end
     end
@@ -261,7 +262,8 @@ Consider[3]=function()
 	end
     local healthPercent = AbilityExtensions:GetHealthPercent(npcBot)
     local manaPercent = AbilityExtensions:GetManaPercent(npcBot)
-    if healthPercent >= manaPercent + 0.3 and npcBot:GetHealth() >= 500 and healthPercent >= 0.7 then
+    if healthPercent >= manaPercent + 0.3 and npcBot:GetHealth() >= 500 and healthPercent >= 0.7
+            and (not npcBot:WasRecentlyDamagedByAnyHero(1.5) or #npcBot:GetNearbyHeroes(300, true, BOT_MODE_NONE) == 0) then
         return false
     end
 

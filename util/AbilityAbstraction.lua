@@ -2,6 +2,15 @@ local M = {}
 
 local binlib = require(GetScriptDirectory().."/util/BinDecHex")
 
+M.Range = function(self, min, max, step)
+    if step == nil then step = 1 end
+    local g = {}
+    for i = min, max, step do
+        table.insert(g, i)
+    end
+    return g
+end
+
 M.Contains = function(self, tb, value)
     for _, v in ipairs(tb) do
         if v == value then
@@ -190,7 +199,7 @@ M.SlowSort = function(self, tb, sort)
     return g
 end
 
-M.QuickSort = function(self, tb, sort)
+M.MergeSort = function(self, tb, sort)
     if sort == nil then
         sort = function(a, b) return a-b end
     end
@@ -209,12 +218,12 @@ M.QuickSort = function(self, tb, sort)
                 i = i+1
             end
         end
-        if i < aLen then
+        if i <= aLen then
             for _ = i, aLen do
                 table.insert(g, a[i])
             end
         end
-        if j < bLen then
+        if j <= bLen then
             for _ = j, bLen do
                 table.insert(g, b[j])
             end
@@ -223,6 +232,9 @@ M.QuickSort = function(self, tb, sort)
     end
     local function SortRec(tab)
         local tableLength = #tab
+        if tableLength == 1 then
+            return tab
+        end
         local left = SortRec(self:Take(tab, tableLength/2))
         local right = SortRec(self:Skip(tab, tableLength/2))
         local merge = Merge(left, right)
@@ -381,6 +393,66 @@ M.GetEmptyItemSlots = function(self, npc)
         end
     end
     return g
+end
+
+M.GetEmptyBackpackSlots = function(self, npc)
+    local g = 0
+    for i = 6, 8 do
+        if npc:GetItemInSlot(i) == nil then
+            g = g+1
+        end
+    end
+    return g
+end
+
+M.SwapItemToBackpack = function(self, npc, itemIndex)
+    for i = 6,8 do
+        if npc:GetItemInSlot(i) == nil then
+            npc:ActionImmediate_SwapItems(itemIndex, i)
+            return true
+        end
+    end
+    return false
+end
+
+M.GetCarriedItems = function(self, npc)
+    local g = {}
+    for i = 0, 8 do
+        local item = npc:GetItemInSlot(i)
+        if item ~= nil then
+            item.slotIndex = i
+            table.insert(g, item)
+        end
+    end
+    return g
+end
+
+M.GetInventoryItems = function(self, npc)
+    local g = {}
+    for i = 0, 6 do
+        local item = npc:GetItemInSlot(i)
+        if item ~= nil then
+            item.slotIndex = i
+            table.insert(g, item)
+        end
+    end
+    return g
+end
+
+M.IsBoots = function(self, item)
+    if type(item) ~= "string" then
+        item = item:GetName()
+    end
+    return string.match(item, "boots") or item == "item_guardian_greaves"
+end
+
+M.SwapCheapestItemToBackpack = function(self, npc)
+    local cheapestItem = self:First(self:Sort(self:Filter(self:GetInventoryItems(npc), function(t) return not self:IsBoots(t) end), function(a, b) return GetItemCost(a:GetName()) - GetItemCost(b:GetName()) end))
+    if cheapestItem == nil then
+        print(npc:GetUnitName()..": only have shoes in inventory")
+        return false
+    end
+    return self:SwapItemToBackpack(npc, cheapestItem.itemIndex)
 end
 
 local heroNameTable = {}
