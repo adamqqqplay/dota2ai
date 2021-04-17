@@ -89,7 +89,7 @@ Consider[1] = function()
 
     local function NotBlockedByAnyUnit(line, target, distance)
         return AbilityExtensions:All(AbilityExtensions:Remove(allNearbyUnits, target), function(t)
-            local f = AbilityExtensions:GetPointToLineDistance(t:GetLocation(), line) <= searchRadius and distance <= GetUnitToUnitDistance(npcBot, t)
+            local f = AbilityExtensions:GetPointToLineDistance(t:GetLocation(), line) <= searchRadius + target:GetBoundingRadius() and distance <= GetUnitToUnitDistance(npcBot, t)
             return f
         end)
     end

@@ -9,6 +9,15 @@ local utility = require( GetScriptDirectory().."/utility" )
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
+-- for k,v in pairs(GetUnitList(UNIT_LIST_ALLIED_WARDS)) do
+-- 	print("unit: "..v:GetUnitName()..", "..AbilityExtensions:ToStringVector(v:GetLocation()))
+-- end
+-- for k,v in pairs(GetUnitList(UNIT_LIST_ENEMY_WARDS)) do
+-- 	print("unit: "..v:GetUnitName()..", "..AbilityExtensions:ToStringVector(v:GetLocation()))
+-- end
+-- for k,v in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES)) do
+-- 	print("unit: "..v:GetUnitName()..", "..AbilityExtensions:ToStringVector(v:GetLocation()))
+-- end
 
 local debugmode=false
 local npcBot = GetBot()

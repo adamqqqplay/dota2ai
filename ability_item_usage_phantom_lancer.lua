@@ -250,6 +250,24 @@ Consider[2]=function()
 	
 end
 
+Consider[3] = function()
+	if not AbilitiesReal[3]:IsFullyCastable() then
+		return 0
+	end
+	if npcBot:GetActiveMode() == BOT_MODE_LANING then
+		local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+		local enemys = npcBot:GetNearbyHeroes(1200,true,BOT_MODE_NONE)
+		local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+		local creeps = npcBot:GetNearbyCreeps(1200, true)
+		local weakestCreep, creepHealth = utility.GetWeakestUnit(creeps)
+		if creepHealth <= weakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage()*1.05, DAMAGE_TYPE_PHYSICAL) and GetUnitToUnitDistance(npcBot, weakestCreep) <= 250 then
+			return true
+		end
+	end
+	return false
+end
+Consider[3] = AbilityExtensions:ToggleFunctionToAction(npcBot, Consider[3], AbilitiesReal[3])
+
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
 function AbilityUsageThink()

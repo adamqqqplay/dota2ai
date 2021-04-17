@@ -16,8 +16,7 @@ local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
 
-ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
-AbilityExtensions:PrintAbilities(npcBot)
+ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 local AbilityToLevelUp=
 {
@@ -568,20 +567,20 @@ Consider[4]=function()
 end
 
 Consider[5]=function()
-	local enemies = npcBot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-	local nightmaredEnemies = AbilityExtensions:Filter(enemies, function(t) return t:HasModifier("modifier_bane_nightmare"))
-	local friends = AbilityExtensions:GetNearbyNonIllusionHeroes(1200, false, BOT_MODE_NONE)
-	local nightmaredFriends = AbilityExtensions:Filter(friends, function(t) return t:HasModifier("modifier_bane_nightmare"))
+	local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, true, BOT_MODE_NONE)
+	local nightmaredEnemies = AbilityExtensions:Filter(enemies, function(t) return t:IsNightmared() end)
+	local friends = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, false, BOT_MODE_NONE)
+	local nightmaredFriends = AbilityExtensions:Filter(friends, function(t) return t:IsNightmared() end)
 	if #nightmaredEnemies ~= 0 then
-		if #enemies == 1 and #friends >= 2 and AbilityExtensions:GetModifierRemainingDuration("modifier_bane_nightmare") <= 4 
-		or AbilityExtensions:All(nightmaredEnemies, function(t) return AbilityExtensions:GetHealthPercent(t) <= 0.3 and AbilityExtensions:GetModifierRemainingDuration("modifier_bane_nightmare") <= 4 end) and AbilityExtensions:All(friends, function(t) return AbilityExtensions:GetHealthPercent(t) >= 0.5) then
+		if #enemies == 1 and #friends >= 2 and AbilityExtensions:GetModifierRemainingDuration(nightmaredFriends[1], "modifier_bane_nightmare") <= 4 
+		or AbilityExtensions:All(nightmaredEnemies, function(t) return AbilityExtensions:GetHealthPercent(t) <= 0.3 and AbilityExtensions:GetModifierRemainingDuration(nightmaredFriends[1], "modifier_bane_nightmare") <= 4 end) and AbilityExtensions:All(friends, function(t) return AbilityExtensions:GetHealthPercent(t) >= 0.5 end) then
 			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 	if #nightmaredFriends ~= 0 then
-		if nightmaredFriends = AbilityExtensions:All(nightmaredFriends, function(t)
-			return AbilityExtensions:GetHealthPercent(t) >= 0.3 and #t:GetIncomingTrackingProjectiles() == 0
-		end) or #enemies == 0 then
+		if AbilityExtensions:All(nightmaredFriends, function(t)
+			return AbilityExtensions:GetHealthPercent(t) >= 0.3
+		end) or AbilityExtensions:All(nightmaredFriends, function(t) return #t:GetIncomingTrackingProjectiles() == 0 end) and #enemies == 0 then
 			return BOT_ACTION_DESIRE_HIGH
 		end
 	end

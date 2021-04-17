@@ -236,6 +236,9 @@ Consider[2]=function()
 	
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
+	if HealthPercentage <= 0.2 + npcBot:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) then
+		return 0
+	end
 	
 	local HeroHealth=10000
 	local CreepHealth=10000

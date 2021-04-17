@@ -233,6 +233,18 @@ M.SkipLast = function(self, tb, number)
     return self:Skip(self:Reverse(tb), number)
 end
 
+M.Replace = function(self, tb, filter, map)
+    local g = {}
+    for k, v in ipairs(tb) do
+        if filter(v, k) then
+            table.insert(g, map(v, k))
+        else
+            table.insert(g, v)
+        end
+    end
+    return g
+end
+
 M.Zip2 = function(self, tb1, tb2, map) 
     if map == nil then
         map = function(a, b)
@@ -930,6 +942,30 @@ M.PreventEnemyTargetAbilityUsageAtAbilityBlock = function(self, npcBot, oldConsi
     return newConsider
 end
 
+M.GetUsedAbilityInfo = function(self, ability, abilityInfoTable, considerTarget)
+    abilityInfoTable.lastUsedTime = DotaTime()
+    abilityInfoTable.lastUsedCharge = ability:GetCurrentCharges()
+    abilityInfoTable.lastUsedTarget = considerTarget
+    abilityInfoTable.lastUsedRemainingCooldown = ability:GetCooldownTimeRemaining()
+end
+
+M.AddCooldownToChargeAbility = function(self, oldConsider, ability, abilityInfoTable, additionalCooldown)
+    return function()
+        if abilityInfoTable.lastUsedTime == nil then
+            abilityInfoTable.lastUsedTime = DotaTime()
+        end
+        if not (ability:GetCurrentCharges() > 0 and ability:IsFullyCastable()) then
+            return 0
+        end
+        if DotaTime() <= abilityInfoTable.lastUsedTime + additionalCooldown and abilityInfoTable.lastUsedCharge >= ability:GetCurrentCharges() and abilityInfoTable.lastUsedRemainingCooldown <= ability:GetCooldownTimeRemaining() then
+            return 0
+        end
+        return oldConsider()
+    end
+end
+
+        
+
 M.AutoModifyConsiderFunction = function(self, npcBot, considers, abilitiesReal)
     for index, ability in pairs(abilitiesReal) do
         if not binlib.Test(ability:GetBehavior(), ABILITY_BEHAVIOR_PASSIVE) and considers[index] == nil then
@@ -951,8 +987,27 @@ M.IsSeverlyDisabled = function(self, npc)
     return npc:IsStunned() or npc:IsHexed() or npc:IsRooted() or self:GetMovementSpeedPercent(npc) <= 0.4 or npc:IsNightmared()
 end
 
+M.EtherealModifiers = {
+    "modifier_ghost_state",
+    "modifier_item_ethereal_blade_slow",
+    "modifier_necrolyte_death_seeker",
+    "modifier_necrylte_sadist_active",
+    "modifier_pugna_decrepify",
+}
+M.IsEthereal = function(self, npc)
+    return self:Any(self.EtherealModifiers, function(t) return npc:HasModifier(t) end)
+end
+
+M.CannotBeAttacked = function(self, npc)
+    return self:IsEthereal() or self:IsInvulnerable()
+end
+
+M.ShouldNotBeAttacked = function(self, npc)
+    return self:CannotBeAttacked(npc) or self:Any(self.IgnoreDamageModifiers, function(t) return npc:HasModifier(t) end) or self:Any(self.IgnorePhysicalDamageModifiers, function(t) return npc:HasModifier(t) end)
+end
+
 M.IsPhysicalOutputDisabled = function(self, npc)
-    return npc:IsDisarmed() or npc:IsBlind()
+    return npc:IsDisarmed() or npc:IsBlind() or self:IsEthereal(npc)
 end
 
 M.GetHealthPercent = function(self, npc)
@@ -1043,26 +1098,26 @@ M.PURCHASE_ITEM_SUCCESS=-1
 -- invalid order(40) order not allowed for illusions
 -- attempt to purchase "item_energy_booster" failed code 68
 
+M.IgnoreDamageModifiers = {
+    "modifier_abaddon_borrowed_time",
+    "modifier_aeon_disk",
+    "modifier_winter_wyvern_winters_curse",
+    "modifier_winter_wyvern_winters_curse_aura",
+}
+
+M.IgnorePhysicalDamageModifiers = {
+    "modifier_winter_wyvern_cold_embrace",
+}
+M.IgnoreMagicalDamageModifiers = {
+    "modifier_oracle_fates_edict",
+}
+
 M.CannotBeKilledNormally = function(self, target)
-    return target:IsInvulnerable() or target:HasModifier("modifier_abaddon_borrowed_time") or target:HasModifier("modifier_dazzle_shallow_grave") or target:HasModifier("modifier_aeon_disk")
+    return target:IsInvulnerable() or self:Any(self.IgnoreDamageModifiers, function(t) target:HasModifier(t) end) or target:HasModifier("modifier_dazzle_shallow_grave")
 end
 
 M.HasScepter = function(self, npc)
     return npc:HasScepter() or npc:HasModifier("modifier_wisp_tether_scepter")
-end
-
-M.CheckForBestTarget = function(self, npc, ability, targets, filter, map, sort, select)
-    local g = {}
-    for _, target in ipairs(targets) do
-        if filter(npc, ability, target) then
-            table.insert(g, map)
-        end
-    end
-    self:Sort(g, sort)
-    if g[1] == nil then
-        return nil
-    end
-    return select(g[1])
 end
 
 return M

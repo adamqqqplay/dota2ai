@@ -378,6 +378,19 @@ Consider[2]=function()
 	
 end
 
+Consider[4] = function()
+	local ability = AbilitiesReal[4]
+	if not ability:IsFullyCastable() or AbilityExtensions:IsPhysicalOutputDisabled(npcBot) then
+		return false
+	end
+
+	if AbilityExtensions:NotRetreating(npcBot) then
+		local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 400, true, BOT_MODE_NONE)
+		enemies = AbilityExtensions:Filter(enemies, function(t) return AbilityExtensions:CannotBeAttacked(t) end)
+	return false
+end
+Consider[4] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, Consider[4], AbilitiesReal[4])
+
 Consider[5]=function()
 
 	local abilityNumber=5

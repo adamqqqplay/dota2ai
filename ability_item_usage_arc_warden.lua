@@ -149,17 +149,17 @@ Consider[1]=function()
 	--------------------------------------
 	--protect myself
 	local enemys2 = npcBot:GetNearbyHeroes( 400, true, BOT_MODE_NONE );
-	--[[ If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) or #enemys2>0) 
-	then
-		for _,npcEnemy in pairs( enemys )
-		do
-			if ( (npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) and CanCast[abilityNumber]( npcEnemy )) or GetUnitToUnitDistance(npcBot,npcEnemy)<400) 
-			then
-				return BOT_ACTION_DESIRE_HIGH, npcEnemy;
-			end
-		end
-	end]]
+	-- --[[ If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	-- if ( (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) or #enemys2>0) 
+	-- then
+	-- 	for _,npcEnemy in pairs( enemys )
+	-- 	do
+	-- 		if ( (npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) and CanCast[abilityNumber]( npcEnemy )) or GetUnitToUnitDistance(npcBot,npcEnemy)<400) 
+	-- 		then
+	-- 			return BOT_ACTION_DESIRE_HIGH, npcEnemy;
+	-- 		end
+	-- 	end
+	-- end]]
 	
 	-- If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 

@@ -204,7 +204,7 @@ Consider[1] = function()
     --------------------------------------
     local ability=AbilitiesReal[abilityNumber];
 
-    if not ability:IsFullyCastable() then
+    if not ability:IsFullyCastable() or AbilityExtensions:IsPhysicalOutputDisabled(npcBot) then
         return 0
     end
 

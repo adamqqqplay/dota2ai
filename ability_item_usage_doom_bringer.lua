@@ -117,21 +117,18 @@ Consider[1]=function()
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	local StrongstCreep,CreepHealth=utility.GetStrongestUnit(creeps)
 	
-	if ( not npcBot:HasModifier("modifier_doom_bringer_devour") ) 
+	if(CanCast[abilityNumber]( StrongstCreep ))
 	then
-		if(CanCast[abilityNumber]( StrongstCreep ))
+		return BOT_ACTION_DESIRE_HIGH, StrongstCreep
+	end
+	
+	for _,npcEnemy in pairs( creeps )
+	do
+		if ( CanCast[abilityNumber]( npcEnemy ) ) 
 		then
-			return BOT_ACTION_DESIRE_HIGH, StrongstCreep;
+			return BOT_ACTION_DESIRE_HIGH, npcEnemy
 		end
-		
-		for _,npcEnemy in pairs( creeps )
-		do
-			if ( CanCast[abilityNumber]( npcEnemy ) ) 
-			then
-				return BOT_ACTION_DESIRE_HIGH, npcEnemy;
-			end
-		end
-	end	
+	end
 	
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
@@ -211,7 +208,7 @@ Consider[3]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or AbilityExtensions:IsPhysicalOutputDisabled(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
