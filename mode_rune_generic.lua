@@ -26,6 +26,8 @@ local ListRune = {
 
 function GetDesire()
 
+	return 0
+
 	--[[if bot.lastPlayerChat ~= nil and string.find(bot.lastPlayerChat.text, "rune") then
 		bot:ActionImmediate_Chat("Catch this in mode_rune_generic", false);
 		bot.lastPlayerChat = nil;
