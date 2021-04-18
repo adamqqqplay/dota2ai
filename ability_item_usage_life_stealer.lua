@@ -436,7 +436,7 @@ local lastInfestTarget
 local lastInfestTable = {}
 Consider[6] = function()
 	local ability = AbilitiesReal[6]
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or ability:IsHidden() or lastInfestTarget == nil then
 		return 0
 	end
 	if lastInfestTarget ~= nil and not lastInfestTarget:IsAlive() then
@@ -455,10 +455,10 @@ Consider[6] = function()
 			return BOT_ACTION_DESIRE_MODERATE
 		end
 	end
-	if infest3() and (#enemies == 0 or AbilityExtensions:Outnumber(friends, enemies)) then
+	if infest3 and (#enemies == 0 or AbilityExtensions:Outnumber(friends, enemies)) then
 		return BOT_ACTION_DESIRE_HIGH
 	end
-	if infest10() then
+	if infest10 then
 		return BOT_ACTION_DESIRE_VERYHIGH
 	end
 	return 0

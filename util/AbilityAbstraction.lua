@@ -2,6 +2,8 @@ local M = {}
 
 local binlib = require(GetScriptDirectory().."/util/BinDecHex")
 
+-- LINQ functions
+
 M.Range = function(self, min, max, step)
     if step == nil then step = 1 end
     local g = {}
@@ -364,6 +366,8 @@ M.SortByMinFirst = function(self, tb, map)
     end)
 end
 
+-- bot mode behaviour
+
 M.SeriouslyRetreatingStunSomeone = function(self, npcBot, abilityIndex, ability, targetType)
     if not ability:IsFullyCastable() then
 		return BOT_ACTION_DESIRE_NONE, 0
@@ -447,6 +451,8 @@ M.HasEnoughManaToUseAttackAttachedAbility = function(self, npcBot, ability)
     return percent >= 0.4 and npcBot:GetMana() >= 300 and npcBot:GetManaRegen() >= npcBot:GetAttackSpeed() / 100 * ability:GetManaCost() * 0.75
 end
 
+-- function generator
+
 -- turn a function that returns true, false, nil to a function that decides whether to toggle the ability or not
 M.ToggleFunctionToAction = function(self, npcBot, oldConsider, ability)
     return function()
@@ -455,7 +461,6 @@ M.ToggleFunctionToAction = function(self, npcBot, oldConsider, ability)
             return value, target, castType
         end
         if value ~= ability:GetToggleState() and ability:IsFullyCastable() then
-            print("in function ToggleFunctionToAction "..ability:GetName().." "..tostring(value).." "..tostring(ability:GetToggleState()))
             return BOT_ACTION_DESIRE_HIGH
         else
             return 0
@@ -474,6 +479,8 @@ M.ToggleFunctionToAutoCast = function(self, npcBot, oldConsider, ability)
         return 0
     end
 end
+
+-- unit function
 
 M.IsChannelingItem = function(self, npc)
     return npc:HasModifier("modifier_item_meteor_hammer") or npc:HasModifier("modifier_teleporting") or npc:HasModifier("modifier_boots_of_travel_incoming")
@@ -648,6 +655,32 @@ M.GetInventoryItems = function(self, npc)
     return g
 end
 
+function M:GetCourierItems()
+    local courier = GetCourier(0)
+    if courier ~= nil then
+        for i = 0, 8 do
+            local item = courier:GetItemInSlot(i)
+            if item then
+                table.insert(g, item)
+            end
+        end
+    end
+    return g
+end
+
+M.GetAllBoughtItems = function(self)
+    local g = {}
+    local npcBot = GetBot()
+    for i = 0, 15 do
+        local item = npcBot:GetItemInSlot(i)
+        if item then
+            table.insert(g, item)
+        end
+    end
+    g = self:Concat(g, self:GetCourierItems())
+    return g
+end
+
 M.IsBoots = function(self, item)
     if type(item) ~= "string" then
         item = item:GetName()
@@ -723,6 +756,8 @@ M.HasAbilityRetargetModifier = function(self, npc)
     return self:Any(self.AbilityRetargetModifiers, function(t) return npc:HasModifier(t)  end)
 end
 
+-- debug functions
+
 M.DebugTable = function(self, tb)
     local msg = "{ "
     local DebugRec
@@ -777,6 +812,8 @@ M.PrintAbilities = function(self, npcBot)
     print(npcBot:GetUnitName())
     print(abilityNames)
 end
+
+-- ability function
 
 M.SpecialBonusAttributes = "special_bonus_attributes"
 M.TalentNamePrefix = "special_bonus_"
@@ -1216,6 +1253,16 @@ end
 
 M.HasScepter = function(self, npc)
     return npc:HasScepter() or npc:HasModifier("modifier_wisp_tether_scepter")
+end
+
+
+-- Courier system
+
+M.CourierUsageThink = function(self)
+    local npcBot = GetBot()
+    local courier = GetCourier(0)
+    local items = self:GetCourierItems()
+    
 end
 
 return M

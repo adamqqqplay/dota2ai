@@ -380,14 +380,48 @@ end
 
 Consider[4] = function()
 	local ability = AbilitiesReal[4]
-	if not ability:IsFullyCastable() or AbilityExtensions:IsPhysicalOutputDisabled(npcBot) then
-		return false
-	end
+    if not ability:IsFullyCastable() or AbilityExtensions:IsPhysicalOutputDisabled(npcBot) then
+        return 0
+    end
 
-	if AbilityExtensions:NotRetreating(npcBot) then
-		local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 400, true, BOT_MODE_NONE)
-		enemies = AbilityExtensions:Filter(enemies, function(t) return AbilityExtensions:CannotBeAttacked(t) end)
-	return false
+    local CastRange = ability:GetCastRange()
+    local enemys = npcBot:GetNearbyHeroes(CastRange+100,true,BOT_MODE_NONE)
+    local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+
+    local function UseAt(target)
+        if not CanCast[abilityNumber](target) then
+            return false
+        end
+        if target:IsHero() then
+            if AbilityExtensions:MustBeIllusion(npcBot, target) then
+                return AbilityExtensions:GetManaPercent(npcBot) >= 0.8 or AbilityExtensions:GetHealthPercent(target) <= 0.4
+            else
+                return AbilityExtensions:GetManaPercent(npcBot) >= 0.4 or AbilityExtensions:GetManaPercent(npcBot) >= 0.2
+            end
+        elseif target:IsBuilding() then
+            return false
+        else
+            return AbilityExtensions:GetManaPercent(npcBot) >= 0.8
+        end
+
+    end
+
+    if AbilityExtensions:NotRetreating(npcBot) then
+        local target = npcBot:GetAttackTarget()
+        if target == nil then
+            if WeakestEnemy ~= nil then
+                local b = UseAt(WeakestEnemy)
+                if b then
+                    return BOT_ACTION_DESIRE_HIGH, WeakestEnemy
+                else
+                    return false
+                end
+            end
+        else
+            return UseAt(target)
+        end
+    end
+    return false
 end
 Consider[4] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, Consider[4], AbilitiesReal[4])
 

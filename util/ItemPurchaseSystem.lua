@@ -701,7 +701,7 @@ M.GetAllBoughtItems = function(self)
     end
     local courier = GetCourier(0)
     if courier ~= nil then
-        for i = 0, 5 do
+        for i = 0, 8 do
             local item = courier:GetItemInSlot(i)
             if item then
                 table.insert(g, item)
