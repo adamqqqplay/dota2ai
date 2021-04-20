@@ -49,9 +49,10 @@ end
 local function GiveToMidLaner()
     local teamPlayers = GetTeamPlayers(GetTeam())
     --local target = nil
+    if DotaTime() <= 0 then return nil end
     for k, _ in pairs(teamPlayers) do
         local member = GetTeamMember(k)
-        if member ~= nil and not member:IsIllusion() and member:IsAlive() then
+        if member ~= nil and not member:IsIllusion() and member:IsAlive() and member:GetMaxHealth()-member:GetHealth() >= 150 then
             local num_sts = GetItemCount(member, "item_tango_single")
             local num_ff = GetItemCount(member, "item_faerie_fire")
             local num_stg = GetItemCharges(member, "item_tango")

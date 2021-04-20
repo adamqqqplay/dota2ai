@@ -134,6 +134,16 @@ Consider[2]=function()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
+
+	-- dispell
+	local buffedEnemies = AbilityExtensions:Filter(enemys, function(t) return CanCast[2](t) end)
+	buffedEnemies = AbilityExtensions:Map(enemys, function(t) return {t, AbilityExtensions:IndexOfBasicDispellablePositiveModifier(t)} end)
+	buffedEnemies = AbilityExtensions:Filter(buffedEnemies, function(t) return t[2] ~= -1 end)
+	buffedEnemies = AbilityExtensions:SortByMinFirst(buffedEnemies, function(t) return t[2] end)
+	if AbilityExtensions:Any(buffedEnemies) then
+		return BOT_ACTION_DESIRE_MODERATE, buffedEnemies[1][1]
+	end
+
 	-- Find neural creeps
 	if(ManaPercentage>=0.4)
 	then

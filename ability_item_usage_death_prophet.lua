@@ -217,6 +217,7 @@ local abilityNumber=2
 	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	enemys = AbilityExtensions:Filter(enemys, function(t) return not t:IsStunned() and not t:IsSilenced() and not t:IsInvulnerable() and not t:IsMagicImmune() end)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
@@ -471,6 +472,8 @@ Consider[4]=function()
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
+local lastAbilityIndex
+local lastAbilityTarget
 
 function AbilityUsageThink()
 
@@ -479,6 +482,8 @@ function AbilityUsageThink()
 	then 
 		return
 	end
+	lastAbilityIndex = nil
+	lastAbilityTarget = nil
 	
 	ComboMana=GetComboMana()
 	AttackRange=npcBot:GetAttackRange()
@@ -491,7 +496,7 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	lastAbilityIndex, lastAbilityTarget = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
 end
 
 function CourierUsageThink() 

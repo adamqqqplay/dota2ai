@@ -399,7 +399,7 @@ Consider[4]=function()
 	local count=#enemys+#creeps
 	local Damage = ability:GetSpecialValueInt("AbilityDamage")+count*ability:GetSpecialValueInt("echo_slam_echo_damage")
 	
-	local checkIfThereAreManyEnemies = AbilityExtensions:Filter(enemys, function(t) return AbilityExtensions:MayNotBeIllusion(t) end)
+	local checkIfThereAreManyEnemies = AbilityExtensions:Filter(enemys, function(t) return AbilityExtensions:MayNotBeIllusion(npcBot, t) end)
 	if #checkIfThereAreManyEnemies >= 3 then
 		return #checkIfThereAreManyEnemies*0.2
 	end

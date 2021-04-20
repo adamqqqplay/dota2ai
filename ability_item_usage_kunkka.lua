@@ -94,9 +94,15 @@ end
 local xMarkTarget
 local xMarkTime
 local xMarkLocation
+local xMarkDuration
 local useTorrentAtXMark
 local useTorrentAtXMarkTime
 local function XMarksEnemy()
+	if xMarkTarget ~= nil then
+		print(xMarkTarget:GetUnitName())
+		print(AbilityExtensions:ToStringVector(xMarkLocation))
+		AbilityExtensions:DebugTable(xMarkTarget)
+	end
     return xMarkTarget ~= nil and xMarkTarget:GetTeam() ~= npcBot:GetTeam()
 end
 
@@ -111,7 +117,7 @@ Consider[1]=function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
-	local CastRange = 1600;
+	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	local Radius = ability:GetAOERadius()
 	local CastPoint = 2;
@@ -138,7 +144,8 @@ Consider[1]=function()
 		end
 	end
 
-    if XMarksEnemy() and CanCast[1](xMarkTarget) and DotaTime()-xMarkTime <= 0.2 then
+    if XMarksEnemy() and CanCast[1](xMarkTarget) and DotaTime()-xMarkTime <= 0.8 and CastRange >= GetUnitToUnitDistance(npcBot, xMarkTarget) then
+		print("Torrent on x marked target: "..xMarkTarget:GetUnitName().." at location "..AbilityExtensions:ToStringVector(xMarkLocation).." at "..DotaTime())
         return BOT_ACTION_DESIRE_VERYHIGH, xMarkTarget:GetLocation()
     end
 
@@ -286,7 +293,7 @@ Consider[3]=function()
 	then
 		if(CanCast[3]( npcTarget ))
 		then
-			if (GetComboDamage() > npcTarget:GetHealth() and GetUnitToUnitDistance( npcTarget, npcBot ) < ( CastRange + 200 ) )
+			if (GetComboDamage()*(0.85+0.15*#allys) > npcTarget:GetHealth() and GetUnitToUnitDistance( npcTarget, npcBot ) < ( CastRange + 200 ) )
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcTarget;
 			end
@@ -446,7 +453,7 @@ end
 Consider[7] = function()
     local abilityNumber=7
     local ability=AbilitiesReal[abilityNumber]
-    if not ability:IsFullyCastable() or xMarkTarget == nil or not xMarkTarget:HasModifier("modifier_kunkka_x_marks_the_spot") then
+    if not ability:IsFullyCastable() or ability:IsHidden() or xMarkTarget == nil or not xMarkTarget:HasModifier("modifier_kunkka_x_marks_the_spot") then
         return 0
     end
     if xMarkTarget:IsChanneling() then
@@ -484,7 +491,7 @@ function AbilityUsageThink()
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
 
-    if xMarkTime and (DotaTime() > xMarkTime + 8 or not npcBot:IsAlive() or not xMarkTarget:IsAlive()) then
+    if xMarkTarget ~= nil and (DotaTime() > xMarkTime + xMarkDuration or not npcBot:IsAlive() or not xMarkTarget:IsAlive() or not xMarkTarget:HasModifier("modifier_kunkka_x_marks_the_target")) then
         xMarkTarget = nil
         xMarkTime = nil
         xMarkLocation = nil
@@ -493,10 +500,16 @@ function AbilityUsageThink()
     end
 
 	local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
-    if index == 3 then
+    if index == 3 and target ~= nil then
         xMarkTarget = target
         xMarkTime = DotaTime()
         xMarkLocation = target:GetLocation()
+		if target:GetTeam() == npcBot:GetTeam() then
+			xMarkDuration = AbilitiesReal[3]:GetSpecialValueFloat("allied_duration")
+		else
+			xMarkDuration = AbilitiesReal[3]:GetSpecialValueFloat("duration")
+		end
+
     elseif index == 1 and xMarkTarget then
         useTorrentAtXMark = true
         useTorrentAtXMarkTime = DotaTime()

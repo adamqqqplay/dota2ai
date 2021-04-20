@@ -335,7 +335,7 @@ function UnitPushLaneThink(npcBot,lane)
 		--print(getCurrentFileName().." "..getShortName(npcBot).." situation is not good");
 	elseif npcBot:WasRecentlyDamagedByTower(1) then		--if I'm under attck of tower, then try to avoid attack
 		if not TransferHatred( npcBot ) or (enemys~=nil and #enemys>=1) or AbilityExtensions:Any(npcBot:GetNearbyTowers(700, true), function(t)
-			return t:GetAttackTarget() == npcBot() and t:HasModifier("modifier_fountain_glyph")
+			return t:GetAttackTarget() == npcBot and t:HasModifier("modifier_fountain_glyph")
 		end)
 		then
 			StepBack( npcBot )

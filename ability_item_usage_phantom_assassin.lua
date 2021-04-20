@@ -374,7 +374,7 @@ Consider[4] = function()
 	local ability=AbilitiesReal[abilityNumber];
 
 	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
+		return BOT_ACTION_DESIRE_NONE
 	end
 
 	local CastRange = ability:GetAOERadius();

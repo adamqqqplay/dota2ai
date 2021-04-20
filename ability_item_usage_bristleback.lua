@@ -134,6 +134,7 @@ Consider[1]=function()
 			return #enemies >= 2 and AbilityExtensions:GetManaPercent(npcBot) >= 0.3
 				or #enemies == 1 and AbilityExtensions:GetManaPercent(npcBot) >= 0.6
 				or npcBot:WasRecentlyDamagedByAnyHero(1.5)
+		end
 		return 0
 	end
 

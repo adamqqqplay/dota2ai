@@ -739,7 +739,7 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable)
     end
     local function TranslateToEquivalentItem(tb)
         local k = "item_power_treads"
-        tb = AbilityExtensions:Replace(tb, function(t) 
+        tb = AbilityExtensions:Replace(tb, function(t)
             return #t > #k and string.sub(t, 1, #k) == k
         end, function(t) 
             return k

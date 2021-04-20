@@ -54,20 +54,20 @@ end
 
 M.Map = function(self, tb, transform)
     local g = {}
-    for k, v in pairs(tb) do
+    for k, v in ipairs(tb) do
         g[k] = transform(v)
     end
     return g
 end
 
 M.ForEach = function(self, tb, action)
-    for k, v in pairs(tb) do
+    for k, v in ipairs(tb) do
         action(v, k)
     end
 end
 
 M.Any = function(self, tb, filter)
-    for k, v in pairs(tb) do
+    for k, v in ipairs(tb) do
         if filter == nil or filter(v, k) then
             return true
         end
@@ -76,7 +76,7 @@ M.Any = function(self, tb, filter)
 end
 
 M.All = function(self, tb, filter)
-    for k, v in pairs(tb) do
+    for k, v in ipairs(tb) do
         if not filter(v, k) then
             return false
         end
@@ -85,7 +85,7 @@ M.All = function(self, tb, filter)
 end
 
 M.Aggregate = function(self, seed, tb, aggregate)
-    for k, v in pairs(tb) do
+    for k, v in ipairs(tb) do
         seed = aggregate(seed, v, k)
     end
     return seed
@@ -245,6 +245,22 @@ M.Replace = function(self, tb, filter, map)
         end
     end
     return g
+end
+
+M.IndexOf = function(self, tb, filter)
+    local g = {}
+    for k, v in ipairs(tb) do
+        if type(filter) == "function" then
+            if filter(v, k) then
+                return k
+            end
+        elseif filter ~= nil then
+            if v == filter then
+                return k 
+            end
+        end
+    end
+    return -1
 end
 
 M.Zip2 = function(self, tb1, tb2, map) 
@@ -467,6 +483,7 @@ M.ToggleFunctionToAction = function(self, npcBot, oldConsider, ability)
         end
     end
 end
+
 M.ToggleFunctionToAutoCast = function(self, npcBot, oldConsider, ability)
     return function()
         local value, target, castType = oldConsider()
@@ -480,7 +497,146 @@ M.ToggleFunctionToAutoCast = function(self, npcBot, oldConsider, ability)
     end
 end
 
+M.PreventAbilityAtIllusion = function(self, npcBot, oldConsiderFunction, ability)
+    return function()
+        local desire, target, targetTypeString = oldConsiderFunction()
+        if desire == 0 or target == nil or target == 0 or self:IsVector(target) or targetTypeString == "Location" then
+            return desire, target, targetTypeString
+        end
+        if self:MustBeIllusion(npcBot, target) then
+            return 0
+        end
+        return desire, target, targetTypeString
+    end
+end
+
+M.PreventEnemyTargetAbilityUsageAtAbilityBlock = function(self, npcBot, oldConsiderFunction, ability)
+    local newConsider = function()
+        -- TODO: do we consider the base cooldown or the modified cooldown (arcane rune, octarine orb)? Will you crack a sphere's spell block with an ultimate ability when you're on arcane rune?
+        local desire, target, targetTypeString = oldConsiderFunction()
+        if desire == 0 or target == nil or target == 0 or self:IsVector(target) or targetTypeString == "Location" then
+            --if self:IsVector(target) then
+            --    print("npcBot "..npcBot:GetUnitName().." lands target ability "..ability:GetName().." at location "..self:ToStringVector(target))
+            --end
+            return desire, target, targetTypeString
+        end
+        local oldDesire = desire
+        if npcBot:GetTeam() ~= target:GetTeam() then -- some ability can cast to both allies and enemies (abbadon_mist_coil, etc)
+            local cooldown = ability:GetCooldown()
+            local abilityImportance = self:GetAbilityImportance(cooldown)
+
+            if target:HasModifier("modifier_antimage_counterspell") then
+                return 0
+            end
+            if target:HasModifier "modifier_item_sphere" or target:HasModifier("modifier_roshan_spell_block") or target:HasModifier("modifier_special_bonus_spell_block") then -- qop lv 25
+                if cooldown >= 30 then
+                    desire = desire - abilityImportance
+                elseif cooldown <= 20 then
+                    desire = desire + abilityImportance
+                end
+            end
+            if target:HasModifier("modifier_item_sphere_target") then
+                if cooldown >= 60 then
+                    desire = 0
+                elseif cooldown >= 30  then
+                    desire = desire - abilityImportance + 0.1
+                elseif cooldown <= 20 then
+                    desire = desire + abilityImportance
+                    if abilityImportance > 0.1 then
+                        desire = desire - 0.1
+                    end
+                end
+            end
+            if target:HasModifier("modifier_item_lotus_orb_active") then
+                if npcBot:GetActiveMode() == BOT_MODE_RETREAT then
+                    desire = 0
+                else
+                    desire = desire - abilityImportance/2
+                end
+            end
+            if target:HasModifier("modifier_mirror_shield_delay") then
+                desire = desire - abilityImportance*1.5
+            end
+
+            desire = self:TrimDesire(desire)
+        end
+        if desire ~= oldDesire then
+            print("desire modified from "..oldDesire.." to "..desire)
+        end
+        return desire, target, targetTypeString
+    end
+    return newConsider
+end
+
+M.GetUsedAbilityInfo = function(self, ability, abilityInfoTable, considerTarget)
+    abilityInfoTable.lastUsedTime = DotaTime()
+    abilityInfoTable.lastUsedCharge = ability:GetCurrentCharges()
+    abilityInfoTable.lastUsedTarget = considerTarget
+    abilityInfoTable.lastUsedRemainingCooldown = ability:GetCooldownTimeRemaining()
+end
+
+M.AddCooldownToChargeAbility = function(self, oldConsider, ability, abilityInfoTable, additionalCooldown)
+    return function()
+        if abilityInfoTable.lastUsedTime == nil then
+            abilityInfoTable.lastUsedTime = DotaTime()
+        end
+        if not (ability:GetCurrentCharges() > 0 and ability:IsFullyCastable()) then
+            return 0
+        end
+        if DotaTime() <= abilityInfoTable.lastUsedTime + additionalCooldown and abilityInfoTable.lastUsedCharge >= ability:GetCurrentCharges() and abilityInfoTable.lastUsedRemainingCooldown <= ability:GetCooldownTimeRemaining() then
+            return 0
+        end
+        return oldConsider()
+    end
+end
+
+        
+
+M.AutoModifyConsiderFunction = function(self, npcBot, considers, abilitiesReal)
+    for index, ability in pairs(abilitiesReal) do
+        if not binlib.Test(ability:GetBehavior(), ABILITY_BEHAVIOR_PASSIVE) and considers[index] == nil then
+            print("Missing consider function "..ability:GetName())
+        elseif binlib.Test(ability:GetTargetTeam(), ABILITY_TARGET_TEAM_ENEMY) and binlib.Test(ability:GetTargetType(), binlib.Or(ABILITY_TARGET_TYPE_HERO, ABILITY_TARGET_TYPE_CREEP, ABILITY_TARGET_TYPE_BUILDING)) and binlib.Test(ability:GetBehavior(), ABILITY_BEHAVIOR_UNIT_TARGET) then
+            considers[index] = self.PreventAbilityAtIllusion(self, npcBot, considers[index], ability)
+            if not self:IgnoreAbilityBlock(ability) then
+                considers[index] = self.PreventEnemyTargetAbilityUsageAtAbilityBlock(self, npcBot, considers[index], ability)
+            end
+        end
+    end
+end
+
 -- unit function
+
+M.GetTargetHealAmplifyPercent = function(self, npc)
+    local modifiers = npc:FindAllModifiers()
+    local amplify = 1
+    for i, modifier in pairs(modifiers) do
+        local a = (modifier:GetModifierHealAmplify_PercentageSource())
+        if a ~= 0 then
+            print("modifier: "..modifier:GetName()..", heal amplify source:"..a..", target:"..modifier:GetModifierHealAmplify_PercentageTarget())
+        end
+        local modifierName = modifier:GetName()
+        if modifierName == "modifier_ice_blast" then
+            return 0
+        end
+        if modifierName == "modifier_item_spirit_vessel_damage" then
+            amplify = amplify - 0.45
+        end
+        if modifierName == "modifier_holy_blessing" then
+            amplify = amplify + 0.3
+        end
+        if modifierName == "modifier_necrolyte_sadist_active" then -- ghost shroud
+            amplify = amplify + 0.75
+        end
+        if modifierName == "modifier_wisp_tether_haste" then
+            amplify = amplify + 0.6 -- 0.8/1/1.2
+        end
+        if modifierName == "modifier_oracle_false_promise" then
+            amplify = amplify + 1
+        end
+    end
+    return amplify
+end
 
 M.IsChannelingItem = function(self, npc)
     return npc:HasModifier("modifier_item_meteor_hammer") or npc:HasModifier("modifier_teleporting") or npc:HasModifier("modifier_boots_of_travel_incoming")
@@ -525,6 +681,14 @@ M.GetNearbyNonIllusionHeroes = function(self, npcBot, range, getEnemy, botModeMa
     botModeMask = botModeMask or BOT_MODE_NONE
     local heroes = npcBot:GetNearbyHeroes(range, getEnemy, botModeMask)
     return self:Filter(heroes, function(t) return self:MayNotBeIllusion(npcBot, t) end)
+end
+
+function M:GetNearbyAttackableCreeps(npcBot, range, getEnemy) 
+    local creeps = npcBot:GetNearbyCreeps(range, getEnemy)
+    if getEnemy then
+        creeps = self:Filter(creeps, function(t) return t:HasModifier("modifier_fountain_glyph") end)
+    end
+    return creeps
 end
 
 M.GetNearbyAllUnits = function(self, npcBot, range)
@@ -655,8 +819,7 @@ M.GetInventoryItems = function(self, npc)
     return g
 end
 
-function M:GetCourierItems()
-    local courier = GetCourier(0)
+function M:GetCourierItems(courier)
     if courier ~= nil then
         for i = 0, 8 do
             local item = courier:GetItemInSlot(i)
@@ -677,7 +840,7 @@ M.GetAllBoughtItems = function(self)
             table.insert(g, item)
         end
     end
-    g = self:Concat(g, self:GetCourierItems())
+    g = self:Concat(g, self:GetCourierItems(GetCourier(0)))
     return g
 end
 
@@ -754,6 +917,78 @@ M.AbilityRetargetModifiers = {
 }
 M.HasAbilityRetargetModifier = function(self, npc)
     return self:Any(self.AbilityRetargetModifiers, function(t) return npc:HasModifier(t)  end)
+end
+
+M.CanMove = function(self, npc)
+    return not npc:IsStunned() and not npc:IsRooted()
+end
+
+M.IsSeverlyDisabled = function(self, npc)
+    return npc:IsStunned() or npc:IsHexed() or npc:IsRooted() or self:GetMovementSpeedPercent(npc) <= 0.4 or npc:IsNightmared()
+end
+
+M.EtherealModifiers = {
+    "modifier_ghost_state",
+    "modifier_item_ethereal_blade_slow",
+    "modifier_necrolyte_death_seeker",
+    "modifier_necrylte_sadist_active",
+    "modifier_pugna_decrepify",
+}
+M.IsEthereal = function(self, npc)
+    return self:Any(self.EtherealModifiers, function(t) return npc:HasModifier(t) end)
+end
+
+M.CannotBeAttacked = function(self, npc)
+    return self:IsEthereal() or self:IsInvulnerable()
+end
+
+M.ShouldNotBeAttacked = function(self, npc)
+    return self:CannotBeAttacked(npc) or self:Any(self.IgnoreDamageModifiers, function(t) return npc:HasModifier(t) end) or self:Any(self.IgnorePhysicalDamageModifiers, function(t) return npc:HasModifier(t) end)
+end
+
+M.IsPhysicalOutputDisabled = function(self, npc)
+    return npc:IsDisarmed() or npc:IsBlind() or self:IsEthereal(npc)
+end
+
+M.GetHealthPercent = function(self, npc)
+    return npc:GetHealth() / npc:GetMaxHealth()
+end
+
+M.GetManaPercent = function(self, npc)
+    return npc:GetMana() / npc:GetMaxMana()
+end
+
+M.BasicDispellablePositiveModifiers = {
+    "modifier_ember_spirit_flame_guard",
+    "modifier_legion_commander_press_the_attack",
+    "modifier_windrunner_windrun",
+    "modifier_lich_frost_shield",
+    "modifier_oracle_purifying_flames",
+    "modifier_treant_living_armor",
+    "modifier_mirana_leap_buff",
+    "modifier_necrolyte_death_seeker",
+    "modifier_necrylte_sadist_active",
+    "modifier_pugna_decrepify",
+    "modifier_ghost_state",
+    "modifier_spirit_breaker_bulldoze",
+}
+
+function M:IndexOfBasicDispellablePositiveModifier(npc)
+    return self:Aggregate(nil, self.BasicDispellablePositiveModifiers, function(seed, modifier, index)
+        if seed then
+            return seed
+        end
+        local b = npc:HasModifier(modifier)
+        if b then
+            return index
+        else
+            return nil
+        end
+    end) or -1
+end
+
+function M:HasBasicDispellablePositiveModifier(npc)
+    return self:Any(self.BasicDispellablePositiveModifiers, function(t) return t:HasModifier(t) end)
 end
 
 -- debug functions
@@ -905,158 +1140,13 @@ M.ExecuteAbilityLevelUp = function(self, npcBot)
     abilityTable.justLevelUpAbility = true
 end
 
+-- geometry
+
 M.IsVector = function(self, object)
     return type(object)=="userdata" and type(object.x)=="number" and type(object.y)=="number" and type(object.z)=="number" and type(object.Length) == "function"
 end
 M.ToStringVector = function(self, object)
     return string.format("(%d,%d,%d)",object.x,object.y,object.z)
-end
-
-M.PreventAbilityAtIllusion = function(self, npcBot, oldConsiderFunction, ability)
-    return function()
-        local desire, target, targetTypeString = oldConsiderFunction()
-        if desire == 0 or target == nil or target == 0 or self:IsVector(target) or targetTypeString == "Location" then
-            return desire, target, targetTypeString
-        end
-        if self:MustBeIllusion(npcBot, target) then
-            return 0
-        end
-        return desire, target, targetTypeString
-    end
-end
-
-M.PreventEnemyTargetAbilityUsageAtAbilityBlock = function(self, npcBot, oldConsiderFunction, ability)
-    local newConsider = function()
-        -- TODO: do we consider the base cooldown or the modified cooldown (arcane rune, octarine orb)? Will you crack a sphere's spell block with an ultimate ability when you're on arcane rune?
-        local desire, target, targetTypeString = oldConsiderFunction()
-        if desire == 0 or target == nil or target == 0 or self:IsVector(target) or targetTypeString == "Location" then
-            --if self:IsVector(target) then
-            --    print("npcBot "..npcBot:GetUnitName().." lands target ability "..ability:GetName().." at location "..self:ToStringVector(target))
-            --end
-            return desire, target, targetTypeString
-        end
-        local oldDesire = desire
-        if npcBot:GetTeam() ~= target:GetTeam() then -- some ability can cast to both allies and enemies (abbadon_mist_coil, etc)
-            local cooldown = ability:GetCooldown()
-            local abilityImportance = self:GetAbilityImportance(cooldown)
-
-            if target:HasModifier("modifier_antimage_counterspell") then
-                return 0
-            end
-            if target:HasModifier "modifier_item_sphere" or target:HasModifier("modifier_roshan_spell_block") or target:HasModifier("modifier_special_bonus_spell_block") then -- qop lv 25
-                if cooldown >= 30 then
-                    desire = desire - abilityImportance
-                elseif cooldown <= 20 then
-                    desire = desire + abilityImportance
-                end
-            end
-            if target:HasModifier("modifier_item_sphere_target") then
-                if cooldown >= 60 then
-                    desire = 0
-                elseif cooldown >= 30  then
-                    desire = desire - abilityImportance + 0.1
-                elseif cooldown <= 20 then
-                    desire = desire + abilityImportance
-                    if abilityImportance > 0.1 then
-                        desire = desire - 0.1
-                    end
-                end
-            end
-            if target:HasModifier("modifier_item_lotus_orb_active") then
-                if npcBot:GetActiveMode() == BOT_MODE_RETREAT then
-                    desire = 0
-                else
-                    desire = desire - abilityImportance/2
-                end
-            end
-            if target:HasModifier("modifier_mirror_shield_delay") then
-                desire = desire - abilityImportance*1.5
-            end
-
-            desire = self:TrimDesire(desire)
-        end
-        if desire ~= oldDesire then
-            print("desire modified from "..oldDesire.." to "..desire)
-        end
-        return desire, target, targetTypeString
-    end
-    return newConsider
-end
-
-M.GetUsedAbilityInfo = function(self, ability, abilityInfoTable, considerTarget)
-    abilityInfoTable.lastUsedTime = DotaTime()
-    abilityInfoTable.lastUsedCharge = ability:GetCurrentCharges()
-    abilityInfoTable.lastUsedTarget = considerTarget
-    abilityInfoTable.lastUsedRemainingCooldown = ability:GetCooldownTimeRemaining()
-end
-
-M.AddCooldownToChargeAbility = function(self, oldConsider, ability, abilityInfoTable, additionalCooldown)
-    return function()
-        if abilityInfoTable.lastUsedTime == nil then
-            abilityInfoTable.lastUsedTime = DotaTime()
-        end
-        if not (ability:GetCurrentCharges() > 0 and ability:IsFullyCastable()) then
-            return 0
-        end
-        if DotaTime() <= abilityInfoTable.lastUsedTime + additionalCooldown and abilityInfoTable.lastUsedCharge >= ability:GetCurrentCharges() and abilityInfoTable.lastUsedRemainingCooldown <= ability:GetCooldownTimeRemaining() then
-            return 0
-        end
-        return oldConsider()
-    end
-end
-
-        
-
-M.AutoModifyConsiderFunction = function(self, npcBot, considers, abilitiesReal)
-    for index, ability in pairs(abilitiesReal) do
-        if not binlib.Test(ability:GetBehavior(), ABILITY_BEHAVIOR_PASSIVE) and considers[index] == nil then
-            print("Missing consider function "..ability:GetName())
-        elseif binlib.Test(ability:GetTargetTeam(), ABILITY_TARGET_TEAM_ENEMY) and binlib.Test(ability:GetTargetType(), binlib.Or(ABILITY_TARGET_TYPE_HERO, ABILITY_TARGET_TYPE_CREEP, ABILITY_TARGET_TYPE_BUILDING)) and binlib.Test(ability:GetBehavior(), ABILITY_BEHAVIOR_UNIT_TARGET) then
-            considers[index] = self.PreventAbilityAtIllusion(self, npcBot, considers[index], ability)
-            if not self:IgnoreAbilityBlock(ability) then
-                considers[index] = self.PreventEnemyTargetAbilityUsageAtAbilityBlock(self, npcBot, considers[index], ability)
-            end
-        end
-    end
-end
-
-M.CanMove = function(self, npc)
-    return not npc:IsStunned() and not npc:IsRooted()
-end
-
-M.IsSeverlyDisabled = function(self, npc)
-    return npc:IsStunned() or npc:IsHexed() or npc:IsRooted() or self:GetMovementSpeedPercent(npc) <= 0.4 or npc:IsNightmared()
-end
-
-M.EtherealModifiers = {
-    "modifier_ghost_state",
-    "modifier_item_ethereal_blade_slow",
-    "modifier_necrolyte_death_seeker",
-    "modifier_necrylte_sadist_active",
-    "modifier_pugna_decrepify",
-}
-M.IsEthereal = function(self, npc)
-    return self:Any(self.EtherealModifiers, function(t) return npc:HasModifier(t) end)
-end
-
-M.CannotBeAttacked = function(self, npc)
-    return self:IsEthereal() or self:IsInvulnerable()
-end
-
-M.ShouldNotBeAttacked = function(self, npc)
-    return self:CannotBeAttacked(npc) or self:Any(self.IgnoreDamageModifiers, function(t) return npc:HasModifier(t) end) or self:Any(self.IgnorePhysicalDamageModifiers, function(t) return npc:HasModifier(t) end)
-end
-
-M.IsPhysicalOutputDisabled = function(self, npc)
-    return npc:IsDisarmed() or npc:IsBlind() or self:IsEthereal(npc)
-end
-
-M.GetHealthPercent = function(self, npc)
-    return npc:GetHealth() / npc:GetMaxHealth()
-end
-
-M.GetManaPercent = function(self, npc)
-    return npc:GetMana() / npc:GetMaxMana()
 end
 
 M.GetLine = function(self, a, b)
@@ -1083,35 +1173,68 @@ M.GetPointFromLineByDistance = function(self, startPoint, endPoint, distance)
     return point
 end
 
-M.GetTargetHealAmplifyPercent = function(self, npc)
-    local modifiers = npc:FindAllModifiers()
-    local amplify = 1
-    for i, modifier in pairs(modifiers) do
-        local a = (modifier:GetModifierHealAmplify_PercentageSource())
-        if a ~= 0 then
-            print("modifier: "..modifier:GetName()..", heal amplify source:"..a..", target:"..modifier:GetModifierHealAmplify_PercentageTarget())
+M.MinValue = function(self, coefficients, min, max)
+    max = max or 10000
+    min = min or -10000
+    local function Differential(coefficients)
+        local g = {}
+        for index, coefficient in pairs(coefficients) do
+            g[index-1] = coefficient*index
         end
-        local modifierName = modifier:GetName()
-        if modifierName == "modifier_ice_blast" then
-            return 0
-        end
-        if modifierName == "modifier_item_spirit_vessel_damage" then
-            amplify = amplify - 0.45
-        end
-        if modifierName == "modifier_holy_blessing" then
-            amplify = amplify + 0.3
-        end
-        if modifierName == "modifier_necrolyte_sadist_active" then -- ghost shroud
-            amplify = amplify + 0.75
-        end
-        if modifierName == "modifier_wisp_tether_haste" then
-            amplify = amplify + 0.6 -- 0.8/1/1.2
-        end
-        if modifierName == "modifier_oracle_false_promise" then
-            amplify = amplify + 1
-        end
+        return g 
     end
-    return amplify
+    local function Y(coefficients, x)
+        local g = 0
+        for index, coefficient in pairs(coefficients) do
+            g = g + coefficient * x ^ index
+        end
+        return g 
+    end
+
+    local differential = Differential(coefficients)
+    if differential[1] ~= nil and differential[1] ~= 0 then
+        local zeroPoint = -differential[0]/differential[1]
+        if Y(coefficients, zeroPoint+0.1)>0 then
+            if zeroPoint > max then
+                return Y(coefficients, max)
+            elseif zeroPoint < min then
+                return Y(coefficients, min)
+            else
+                return Y(coefficients, zeroPoint)
+            end
+        else
+            if zeroPoint > max then
+                return Y(coefficients, min)
+            elseif zeroPoint < min then
+                return Y(coefficients, max)
+            else
+                local val1 = Y(coefficients, min)
+                local val2 = Y(coefficients, min)
+                return math.min(val1, val2)
+            end
+        end
+    else 
+        return Y(coefficients, min)
+    end
+end
+
+M.MaxValue = function(self, coefficients, min, max)
+    local g = {}
+    for index, coefficient in coefficients do
+        g[index] = -coefficient
+    end
+    return self:MinValue(g, -max, -min)
+end
+
+M.GetCollapseInfo = function(self, obj1, obj2, timeLimit)
+    local x1 = obj1.location.x-obj2.location.x
+    local x2 = obj1.velocity.x-obj2.velocity.x
+    local coefficient0 = x1^2
+    local coefficient1 = 2*x1*x2
+    local coefficient3 = x2^2
+    x1 = obj1.location.y-obj2.location.y 
+    x2 = obj2.velocity.y-obj2.velocity.y
+    coefficient0 = coefficient0
 end
 
 M.PreventHealAtHealSuppressTarget = function(self, npcBot, oldConsiderFunction, ability)

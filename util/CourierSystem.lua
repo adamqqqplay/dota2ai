@@ -93,13 +93,13 @@ end
 
 local function GetBotCourier(npcBot)
 	local BotCourier = GetCourier(0)
-	local numPlayer = GetTeamPlayers(GetTeam())
-	for i = 1, #numPlayer do
-        local member = GetTeamMember(i)
-        if member ~= nil and member:GetUnitName() == npcBot:GetUnitName() then
-            BotCourier = GetCourier(i-1)
-		end
-    end
+	-- local numPlayer = GetTeamPlayers(GetTeam())
+	-- for i = 1, #numPlayer do
+    --     local member = GetTeamMember(i)
+    --     if member ~= nil and member:GetUnitName() == npcBot:GetUnitName() then
+    --         BotCourier = GetCourier(i-1)
+	-- 	end
+    -- end
 	return BotCourier
 end
 
@@ -240,7 +240,7 @@ function M.CourierUsageThink()
                         local cst = GetCourierState(cr);
                         -- print(npcBot:GetUnitName());
                         if cst == COURIER_STATE_MOVING then
-                            courierUtils.pIDInc = courierUtils.pIDInc + 1;
+                            courierUtils.pIDInc = courierUtils.pIDInc-- + 1;
                             print(npcBot:GetUnitName().." : Courier Successfully Assigned ."..tostring(npcBot.courierID));
                             checkCourier = false;
                             npcBot.courierAssigned = true;
@@ -249,7 +249,7 @@ function M.CourierUsageThink()
                             return;
                         elseif npcBot.courierID ~= nil then
                              print(npcBot:GetUnitName().. ": Failed to Assign Courier.");
-                            npcBot.courierID = npcBot.courierID + 1;
+                            npcBot.courierID = npcBot.courierID-- + 1;
                             checkCourier = false;
                             courierUtils.calibrateTime = DotaTime();
                         end
@@ -260,7 +260,7 @@ function M.CourierUsageThink()
                     end
                 end
         else
-            courierUtils.pIDInc = courierUtils.pIDInc + 1;
+            courierUtils.pIDInc = courierUtils.pIDInc-- + 1;
         end
     end
 
