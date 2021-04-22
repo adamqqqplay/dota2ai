@@ -73,7 +73,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.CanCastNoTarget}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.CanCastNoTarget,utility.NCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -109,7 +109,9 @@ Consider[1]=function()
 	--------------------------------------
 	
 	local ability=AbilitiesReal[abilityNumber];
-	
+	if not ability:IsFullyCastable() then
+		return 0
+	end
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	local Radius = ability:GetAOERadius()

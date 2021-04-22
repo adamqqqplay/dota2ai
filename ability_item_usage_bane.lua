@@ -568,9 +568,9 @@ end
 
 Consider[5]=function()
 	local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, true, BOT_MODE_NONE)
-	local nightmaredEnemies = AbilityExtensions:Filter(enemies, function(t) return t:IsNightmared() end)
+	local nightmaredEnemies = AbilityExtensions:Filter(enemies, function(t) return t:HasModifier("modifier_bane_nightmare") end)
 	local friends = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, false, BOT_MODE_NONE)
-	local nightmaredFriends = AbilityExtensions:Filter(friends, function(t) return t:IsNightmared() end)
+	local nightmaredFriends = AbilityExtensions:Filter(friends, function(t) return t:HasModifier("modifier_bane_nightmare") end)
 	if #nightmaredEnemies ~= 0 then
 		if #enemies == 1 and #friends >= 2 and AbilityExtensions:GetModifierRemainingDuration(nightmaredFriends[1], "modifier_bane_nightmare") <= 4 
 		or AbilityExtensions:All(nightmaredEnemies, function(t) return AbilityExtensions:GetHealthPercent(t) <= 0.3 and AbilityExtensions:GetModifierRemainingDuration(nightmaredFriends[1], "modifier_bane_nightmare") <= 4 end) and AbilityExtensions:All(friends, function(t) return AbilityExtensions:GetHealthPercent(t) >= 0.5 end) then

@@ -116,7 +116,7 @@ Consider[1]=function()
 	-- Check for a channeling enemy
 	for _,npcEnemy in pairs( enemys )
 	do
-		if ( npcEnemy:IsChanneling() ) 
+		if ( npcEnemy:IsChanneling() and CanCast[1](npcEnemy)) 
 		then
 			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation();
 		end

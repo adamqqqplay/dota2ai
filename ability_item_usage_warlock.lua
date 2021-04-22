@@ -122,6 +122,11 @@ Consider[1]=function()
 	-- Global high-priorty usage
 	--------------------------------------
 	--Try to kill enemy hero
+
+	if #enemys + #creeps <= 1 then
+		return 0
+	end
+	
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
 	then
 		if (WeakestEnemy~=nil)
@@ -481,9 +486,9 @@ Consider[4]=function()
 	-- Check for a channeling enemy
 	for _,npcEnemy in pairs( enemys )
 	do
-		if ( npcEnemy:IsChanneling() ) 
+		if npcEnemy:IsChanneling() and not npcEnemy:IsInvulnerable()
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation();
+			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation()
 		end
 	end
 
@@ -499,24 +504,6 @@ Consider[4]=function()
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetExtrapolatedLocation(CastPoint); 
 				end
 			end
-		end
-	end
-	--------------------------------------
-	-- Mode based usage
-	--------------------------------------
-	-- If we're pushing or defending a lane and can hit 4+ creeps, go for it
-	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
-	then
-		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
-
-		if ( locationAoE.count >= 3 ) 
-		then
-			return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc;
 		end
 	end
 

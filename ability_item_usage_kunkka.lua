@@ -144,9 +144,9 @@ Consider[1]=function()
 		end
 	end
 
-    if XMarksEnemy() and CanCast[1](xMarkTarget) and DotaTime()-xMarkTime <= 0.8 and CastRange >= GetUnitToUnitDistance(npcBot, xMarkTarget) then
+    if XMarksEnemy() and CanCast[1](xMarkTarget) and DotaTime()-xMarkTime <= 0.8 then
 		print("Torrent on x marked target: "..xMarkTarget:GetUnitName().." at location "..AbilityExtensions:ToStringVector(xMarkLocation).." at "..DotaTime())
-        return BOT_ACTION_DESIRE_VERYHIGH, xMarkTarget:GetLocation()
+        return BOT_ACTION_DESIRE_VERYHIGH, xMarkLocation
     end
 
 	--try to kill enemy hero
@@ -238,6 +238,30 @@ Consider[1]=function()
 
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
+
+-- Consider[2] = function()
+-- 	local ability=AbilitiesReal[3];
+	
+-- 	if not ability:IsFullyCastable() then
+-- 		return 0
+-- 	end
+	
+-- 	local CastRange = ability:GetCastRange();
+-- 	local Damage = ability:GetAbilityDamage();
+	
+-- 	local HeroHealth=10000
+-- 	local CreepHealth=10000
+-- 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+-- 	local enemys = npcBot:GetNearbyHeroes(CastRange,true,BOT_MODE_NONE)
+-- 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	
+-- 	if npcBot:GetActiveMode() == BOT_MODE_LANING then
+-- 		if ability:GetAutoCastState() then
+-- 			ability:ToggleAutoCast()
+-- 		end
+		
+-- end
+-- Consider[2] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, Consider[2], AbilitiesReal[2])
 
 -- Consider[4] = function()
 -- 	return 0
@@ -383,7 +407,7 @@ Consider[6]=function()
 			then
 				if (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 				then
-					if not AbilitiesReal[1]:IsCooldownReady() or WeakestEnemy:GetModifierRemainingDuration( WeakestEnemy:GetModifierByName('modifier_kunkka_x_marks_the_spot') )< 1.2
+					if not AbilitiesReal[1]:IsFullyCastable() or WeakestEnemy:GetModifierRemainingDuration( WeakestEnemy:GetModifierByName('modifier_kunkka_x_marks_the_spot') )< 1.2
 					then
 						return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetExtrapolatedLocation(-2.9); 
 					end
@@ -435,7 +459,7 @@ Consider[6]=function()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ))
 			then
-				if not AbilitiesReal[1]:IsCooldownReady() or npcEnemy:GetModifierRemainingDuration( npcEnemy:GetModifierByName('modifier_kunkka_x_marks_the_spot') )< 1.2
+				if not AbilitiesReal[1]:IsFullyCastable() or npcEnemy:GetModifierRemainingDuration( npcEnemy:GetModifierByName('modifier_kunkka_x_marks_the_spot') )< 1.2
 				then
 					return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation(-2.9);
 				end
@@ -502,7 +526,7 @@ function AbilityUsageThink()
 	local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
     if index == 3 and target ~= nil then
         xMarkTarget = target
-        xMarkTime = DotaTime()
+        xMarkTime = DotaTime()+AbilitiesReal[3]:GetCastPoint()
         xMarkLocation = target:GetLocation()
 		if target:GetTeam() == npcBot:GetTeam() then
 			xMarkDuration = AbilitiesReal[3]:GetSpecialValueFloat("allied_duration")
@@ -512,7 +536,7 @@ function AbilityUsageThink()
 
     elseif index == 1 and xMarkTarget then
         useTorrentAtXMark = true
-        useTorrentAtXMarkTime = DotaTime()
+        useTorrentAtXMarkTime = DotaTime()+AbilitiesReal[1]:GetCastPoint()
     end
 end
 
