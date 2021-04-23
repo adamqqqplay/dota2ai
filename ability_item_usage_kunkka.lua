@@ -489,8 +489,12 @@ Consider[7] = function()
     if XMarksEnemy() and npcBot:GetActiveMode() == BOT_MODE_RETREAT and (GetUnitToUnitDistance(npcBot, xMarkTarget) <= 300 or npcBot:WasRecentlyDamagedByHero(xMarkTarget, 1)) and DotaTime() > 1 + xMarkTime and GetUnitToLocationDistance(xMarkTarget, xMarkLocation) then
         return BOT_ACTION_DESIRE_HIGH
     end
-    if XMarksEnemy() and useTorrentAtXMarkTime and useTorrentAtXMarkTime >= DotaTime() - AbilitiesReal[1]:GetSpecialValueFloat("delay") + AbilitiesReal[7]:GetCastPoint() + 0.1 then
-        return BOT_ACTION_DESIRE_VERYHIGH
+	if XMarksEnemy() and useTorrentAtXMark then
+		local timing = useTorrentAtXMarkTime + AbilitiesReal[1]:GetSpecialValueFloat("delay") - AbilitiesReal[7]:GetCastPoint()
+		print("Kunkka return: "..DotaTime().." "..timing)
+		if DotaTime() >= timing-0.1 and DotaTime() <= timing+AbilitiesReal[1]:GetAOERadius()/xMarkTarget:GetVelocity() then
+			return BOT_ACTION_DESIRE_VERYHIGH
+		end
     end
 end
 

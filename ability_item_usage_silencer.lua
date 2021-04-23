@@ -498,8 +498,7 @@ Consider[4]=function()
 	-- Check for a channeling enemy
 	for _,npcEnemy in pairs( enemys )
 	do
-		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy ) and not npcEnemy:HasModifier("modifier_teleporting")) 
-		then
+		if AbilityExtensions:IsChannelingAbility(npcEnemy) and CanCast[abilityNumber]( npcEnemy ) then
 			return BOT_ACTION_DESIRE_HIGH, npcEnemy
 		end
 	end

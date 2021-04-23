@@ -308,6 +308,28 @@ Consider[4]=function()
 	
 end
 
+Consider[5] = function()
+	local abilityNumber=5
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber]
+	
+	if not ability:IsFullyCastable() then
+		return BOT_ACTION_DESIRE_NONE
+	end
+	local Radius = ability:GetAOERadius()
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
+	local enemys = npcBot:GetNearbyHeroes(1500,true,BOT_MODE_NONE)
+	if AbilityExtensions:Outnumber(allys, enemys) and HealthPercentage>=0.5 and not npcBot:WasRecentlyDamagedByAnyHero(1.5) then
+		return BOT_ACTION_DESIRE_HIGH
+	end
+	if #enemys == 0 and not npcBot:WasRecentlyDamagedByAnyHero(1.5) then
+		return BOT_ACTION_DESIRE_HIGH
+	end
+	return 0
+end
+
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
 function AbilityUsageThink()
