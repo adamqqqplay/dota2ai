@@ -2,6 +2,7 @@ _G._savedEnv = getfenv()
 module("PushUtility", package.seeall)
 
 local role = require(GetScriptDirectory() ..  "/util/RoleUtility")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
 function GetLane( nTeam ,hHero )
         local vBot = GetLaneFrontLocation(nTeam, LANE_BOT, 0)
@@ -333,7 +334,9 @@ function UnitPushLaneThink(npcBot,lane)
 		StepBack( npcBot )
 		--print(getCurrentFileName().." "..getShortName(npcBot).." situation is not good");
 	elseif npcBot:WasRecentlyDamagedByTower(1) then		--if I'm under attck of tower, then try to avoid attack
-		if(not TransferHatred( npcBot ) or (enemys~=nil and #enemys>=1))
+		if not TransferHatred( npcBot ) or (enemys~=nil and #enemys>=1) or AbilityExtensions:Any(npcBot:GetNearbyTowers(700, true), function(t)
+			return t:GetAttackTarget() == npcBot and t:HasModifier("modifier_fountain_glyph")
+		end)
 		then
 			StepBack( npcBot )
 			--print(getCurrentFileName().." "..getShortName(npcBot).." attacked");
@@ -655,6 +658,34 @@ function StepBack( unit )
 
 	local targetloc = Normalized(spawnloc - unit:GetLocation()) * 500 + unit:GetLocation()
 	unit:Action_MoveToLocation(targetloc+RandomVector( 100 ) )
+end
+
+function StepBackCreeps(unit)
+	if not NotNilOrDead(unit) then
+		return
+	end
+	local tower = unit:GetNearbyTowers(700, true)
+	tower = AbilityExtensions:First(tower, function(t) return t:GetAttackTarget() == unit end)
+	if tower == nil then
+		return
+	end
+
+	local friends = unit:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+	local enemies = unit:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
+	local friendCreeps = tower:GetNearbyCreeps(tower:GetAttackRange(), true)
+	friendCreeps = AbilityExtensions:SortByMinFirst(friendCreeps, function(t) return GetUnitToUnitDistance(t, tower) end)
+	if #friendCreeps == 0 then
+		if AbilityExtensions:GetHealthPercent(unit) >= 0.75 or #friends >= #enemies + 1 and AbilityExtensions:GetHealthPercent(unit) >= 0.6 then
+			if tower:HasModifier("modifier_fountain_glyph") then
+				unit:Action_MoveDirectly(AbilityExtensions:GetPointFromLineByDistance(tower:GetLocation(), unit:GetLocation(), tower:GetAttackRange() + 10))
+			end
+		end
+	else
+		local g = GetUnitToUnitDistance(tower, friendCreeps[1]) + 10
+		unit:Action_MoveDirectly(AbilityExtensions:GetPointFromLineByDistance(tower:GetLocation(), unit:GetLocation(), g))
+		coroutine.yield(g)
+		TransferHatred(unit)
+	end
 end
 	
 function Normalized(vector)

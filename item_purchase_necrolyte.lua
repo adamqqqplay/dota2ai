@@ -24,9 +24,10 @@ local ItemsToBuy =
 	"item_black_king_bar", --bkb
 }
 
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered)
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
+
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(Transfered)
+	ItemPurchaseSystem:ItemPurchaseExtend()
+
 end

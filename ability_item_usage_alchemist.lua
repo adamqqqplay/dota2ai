@@ -73,7 +73,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.CanCastNoTarget}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.CanCastNoTarget,utility.NCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -109,7 +109,9 @@ Consider[1]=function()
 	--------------------------------------
 	
 	local ability=AbilitiesReal[abilityNumber];
-	
+	if not ability:IsFullyCastable() then
+		return 0
+	end
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	local Radius = ability:GetAOERadius()
@@ -518,7 +520,7 @@ Consider[6]=function()
 		for _,npcEnemy in pairs( enemys )do
 			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) then
 				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy)) then
-					if (GetUnitToUnitDistance(npcBot,npcEnemy)>CastRange-100 and GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange) or (TimeSinceCast>3 and TimeSinceCast<5)
+					if (GetUnitToUnitDistance(npcBot,npcEnemy)>CastRange-100 and GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange) or (TimeSinceCast>2 and TimeSinceCast<5)
                             or npcEnemy:GetHealth()/npcEnemy:GetMaxHealth() <= 0.2 then
 						return BOT_ACTION_DESIRE_HIGH,npcEnemy
 					end

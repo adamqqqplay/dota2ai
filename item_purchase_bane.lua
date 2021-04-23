@@ -24,11 +24,11 @@ local ItemsToBuy =
 	"item_recipe_guardian_greaves" --卫士胫甲
 }
 
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered)
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
+
 
 function ItemPurchaseThink()
 	ItemPurchaseSystem.BuySupportItem()
-	-- ItemPurchaseSystem.BuyCourier()
-	ItemPurchaseSystem.ItemPurchase(Transfered)
+	ItemPurchaseSystem:ItemPurchaseExtend()
+
 end

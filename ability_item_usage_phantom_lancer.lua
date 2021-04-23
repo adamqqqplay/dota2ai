@@ -202,9 +202,11 @@ Consider[2]=function()
 		if (WeakestEnemy~=nil)
 		then
 			local enemys2= WeakestEnemy:GetNearbyHeroes(900,true,BOT_MODE_NONE)
-			if ( CanCast[abilityNumber]( WeakestEnemy ) and #enemys2<=2)
+			-- TODO: don't know why, but enemys2 can be null
+			
+			if CanCast[abilityNumber]( WeakestEnemy ) and (enemys ~= nil or #enemys2<=2)
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) or npcBot:GetMana()>ComboMana)
+				if npcBot:GetMana()>ComboMana*1.5
 				then
 					return BOT_ACTION_DESIRE_MODERATE,utility.GetUnitsTowardsLocation(npcBot,WeakestEnemy,CastRange); 
 				end
@@ -249,6 +251,24 @@ Consider[2]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
 end
+
+Consider[3] = function()
+	if not AbilitiesReal[3]:IsFullyCastable() then
+		return 0
+	end
+	if npcBot:GetActiveMode() == BOT_MODE_LANING then
+		local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+		local enemys = npcBot:GetNearbyHeroes(1200,true,BOT_MODE_NONE)
+		local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+		local creeps = npcBot:GetNearbyCreeps(1200, true)
+		local weakestCreep, creepHealth = utility.GetWeakestUnit(creeps)
+		if weakestCreep ~= nil and creepHealth <= weakestCreep:GetActualIncomingDamage(npcBot:GetAttackDamage()*1.05, DAMAGE_TYPE_PHYSICAL) and GetUnitToUnitDistance(npcBot, weakestCreep) <= 250 then
+			return true
+		end
+	end
+	return false
+end
+Consider[3] = AbilityExtensions:ToggleFunctionToAction(npcBot, Consider[3], AbilitiesReal[3])
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 

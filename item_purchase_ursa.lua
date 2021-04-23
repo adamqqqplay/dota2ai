@@ -26,9 +26,10 @@ local ItemsToBuy =
 	"item_recipe_abyssal_blade" --大晕锤
 }
 
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered)
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
+
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(Transfered)
+	ItemPurchaseSystem:ItemPurchaseExtend()
+
 end

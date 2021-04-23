@@ -25,9 +25,10 @@ local ItemsToBuy =
 	"item_monkey_king_bar" --金箍棒7.14
 }
 
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered)
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
+
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(Transfered)
+	ItemPurchaseSystem:ItemPurchaseExtend()
+
 end

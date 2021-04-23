@@ -595,7 +595,7 @@ function M.BuySupportItem()
 					npcBot:ActionImmediate_PurchaseItem( "item_dust" );
 				end
 
-				if (DotaTime()>=30*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1) and AbilityExtensions:GetEmptyItemSlots(npcBot) >= 1
+				if (DotaTime()>=25*60 and npcBot:GetGold() >= GetItemCost("item_gem") and GetItemStockCount("item_gem") >= 1) and AbilityExtensions:GetEmptyItemSlots(npcBot) >= 1
 				then
                     if AbilityExtensions:GetEmptyItemSlots(npcBot) >= 1 and AbilityExtensions:GetEmptyBackpackSlots(npcBot) == 0 then
                         npcBot:ActionImmediate_PurchaseItem( "item_gem" )
@@ -701,7 +701,7 @@ M.GetAllBoughtItems = function(self)
     end
     local courier = GetCourier(0)
     if courier ~= nil then
-        for i = 0, 5 do
+        for i = 0, 8 do
             local item = courier:GetItemInSlot(i)
             if item then
                 table.insert(g, item)
@@ -710,6 +710,8 @@ M.GetAllBoughtItems = function(self)
     end
     return g
 end
+
+
 
 M.CreateItemInformationTable = function(self, npcBot, itemTable)
     local function ExpandFirstLevel(item)
@@ -735,8 +737,18 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable)
         item.recipe = g
         return expandSomething
     end
+    local function TranslateToEquivalentItem(tb)
+        local k = "item_power_treads"
+        tb = AbilityExtensions:Replace(tb, function(t)
+            return #t > #k and string.sub(t, 1, #k) == k
+        end, function(t) 
+            return k
+        end)
+        return tb
+    end
     local function RemoveBoughtItems() -- used only when reloading scripts in game
-        local boughtItems = AbilityExtensions:Map(self:GetAllBoughtItems(), function(t) return t:GetName()  end)
+        local boughtItems = AbilityExtensions:Map(self:GetAllBoughtItems(), function(t) return t:GetName() end)
+        boughtItems = TranslateToEquivalentItem(boughtItems)
         local function TryRemoveItem(itemName, tbToRemoveFirst)
             if DotaTime() > -60 and self:IsConsumableItem(itemName) then
                 table.remove(tbToRemoveFirst, 1)

@@ -269,7 +269,7 @@ Consider[3]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or not AbilityExtensions:CanMove(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -341,6 +341,44 @@ Consider[3]=function()
 
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
+end
+
+Consider[4] = function()
+	local abilityNumber=4
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber]
+	
+	if not ability:IsFullyCastable() then
+		return BOT_ACTION_DESIRE_NONE, 0;
+	end
+	local radius = ability:GetSpecialValueInt("radius")
+	local pullAngle = ability:GetSpecialValueInt("pull_angle") / 2
+	local CastPoint = ability:GetCastPoint()
+	local function CanToss(target)
+		local loc = target:GetExtrapolatedLocation(CastPoint)
+		return GetUnitToLocationDistance(npcBot, loc) <= radius and npcBot:IsFacingLocation(loc, pullAngle)
+	end
+	local f = AbilityExtensions:Filter(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 500, true), CanToss)
+	f = AbilityExtensions:GetEnemyHeroNumber(f)
+	if AbilityExtensions:NotRetreating(npcBot) and f >= 2 or f == 1 and #AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, true) == 1 then
+		return BOT_MODE_DESIRE_HIGH
+	end
+
+	local function CanTossAfterTurnBack(target)
+		local loc = target:GetExtrapolatedLocation(CastPoint)
+		return GetUnitToLocationDistance(npcBot, loc) <= radius and not npcBot:IsFacingLocation(loc, 180-pullAngle)
+	end
+	f = AbilityExtensions:Filter(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 500, true), CanTossAfterTurnBack)
+	f = AbilityExtensions:GetEnemyHeroNumber(f)
+	if AbilityExtensions:NotRetreating(npcBot) and f >= 1 then
+		npcBot:Action_MoveDirectly(utility.GetUnitsTowardsLocation(npcBot, f[1]:GetLocation(), 10))
+		npcBot:ActionQueue_UseAbility(ability)
+		return 0
+	end
+
+	return 0
 end
 
 Consider[5]=function()

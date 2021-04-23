@@ -196,6 +196,63 @@ Consider[1]=function()
 	
 end
 
+-- copied and modified from enchantress_impetus
+Consider[1] = function()
+    local abilityNumber=1
+    --------------------------------------
+    -- Generic Variable Setting
+    --------------------------------------
+    local ability=AbilitiesReal[abilityNumber];
+
+    if not ability:IsFullyCastable() or AbilityExtensions:IsPhysicalOutputDisabled(npcBot) then
+        return 0
+    end
+
+    local CastRange = ability:GetCastRange()
+    local enemys = npcBot:GetNearbyHeroes(CastRange+100,true,BOT_MODE_NONE)
+    local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+
+    local function UseAt(target)
+        if not CanCast[abilityNumber](target) then
+            return false
+        end
+        if target:IsHero() then
+            local modifier = target:GetModifierByName("modifier_drow_ranger_frost_arrows_slow")
+            if modifier ~= nil and target:GetModifierRemainingDuration(modifier) > npcBot:GetAttackSpeed()/100*0.7/1.7 + 0.2 then
+                return AbilityExtensions:GetManaPercent(npcBot) >= 0.8
+            end
+            if AbilityExtensions:MustBeIllusion(npcBot, target) then
+                return (AbilityExtensions:GetManaPercent(npcBot) >= 0.8 or AbilityExtensions:GetHealthPercent(target) <= 0.4) and (GetUnitToUnitDistance(npcBot, target) >= 300 or npcBot:GetLevel() < 6)
+            else
+                return AbilityExtensions:GetManaPercent(npcBot) >= 0.4 or AbilityExtensions:GetManaPercent(npcBot) >= 0.2 and (GetUnitToUnitDistance(npcBot, target) >= 300 or npcBot:GetLevel() < 6)
+            end
+        elseif target:IsBuilding() then
+            return false
+        else
+            return AbilityExtensions:GetManaPercent(npcBot) >= 0.8
+        end
+
+    end
+
+    if AbilityExtensions:NotRetreating(npcBot) then
+        local target = npcBot:GetAttackTarget()
+        if target == nil then
+            if WeakestEnemy ~= nil then
+                local b = UseAt(WeakestEnemy)
+                if b then
+                    return BOT_ACTION_DESIRE_HIGH, WeakestEnemy
+                else
+                    return false
+                end
+            end
+        else
+            return UseAt(target)
+        end
+    end
+    return false
+end
+Consider[1] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, Consider[1], AbilitiesReal[1])
+
 Consider[2]=function()
 	local abilityNumber=2
 	--------------------------------------

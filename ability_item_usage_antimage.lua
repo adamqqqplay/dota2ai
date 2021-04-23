@@ -9,6 +9,15 @@ local utility = require( GetScriptDirectory().."/utility" )
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
+-- for k,v in pairs(GetUnitList(UNIT_LIST_ALLIED_WARDS)) do
+-- 	print("unit: "..v:GetUnitName()..", "..AbilityExtensions:ToStringVector(v:GetLocation()))
+-- end
+-- for k,v in pairs(GetUnitList(UNIT_LIST_ENEMY_WARDS)) do
+-- 	print("unit: "..v:GetUnitName()..", "..AbilityExtensions:ToStringVector(v:GetLocation()))
+-- end
+-- for k,v in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES)) do
+-- 	print("unit: "..v:GetUnitName()..", "..AbilityExtensions:ToStringVector(v:GetLocation()))
+-- end
 
 local debugmode=false
 local npcBot = GetBot()
@@ -95,7 +104,7 @@ Consider[2]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or not AbilityExtensions:CanMove(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	

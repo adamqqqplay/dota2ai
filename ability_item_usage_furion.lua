@@ -43,7 +43,6 @@ local AbilityToLevelUp = {
     "nil",
     "nil",
     "nil",
-    "nil",
     "talent",
 }
 
@@ -91,14 +90,14 @@ Consider[1]=function()
     end
 
     local function BlockFriendMeleeHeroes(enemy)
-        local friends = enemy:GetNearbyHeroes(260, true, BOT_MODE_NONE)
+        local friends = enemy:GetNearbyHeroes(330, true, BOT_MODE_NONE)
         return AbilityExtensions:Any(friends, function(p)
             return AbilityExtensions:MayNotBeIllusion(npcBot, p)
-                    --and enemy:WasRecentlyDamagedByHero(p, 2)
-                    and (print("furion: might block "..p:GetUnitName()) or true)
+                    -- and enemy:WasRecentlyDamagedByHero(p, 1.5)
         end) or AbilityExtensions:Any(npcBot:GetNearbyHeroes(350, false, BOT_MODE_NONE), function(p)
-            return AbilityExtensions:MayNotBeIllusion(npcBot, p) and AbilityExtensions:IsMeleeHero(p)
-            and (print("furion: might block"..p:GetUnitName()) or true)
+            return AbilityExtensions:MayNotBeIllusion(npcBot, p) 
+			and AbilityExtensions:IsMeleeHero(p) 
+			-- and enemy:WasRecentlyDamagedByHero(p, 2)
         end)
     end
 
@@ -133,7 +132,7 @@ Consider[1]=function()
 		local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( CastRange, true, BOT_MODE_NONE );
 		for _,npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
-			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy))
+			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and not AbilityExtensions:GetAvailableItem("item_quelling_blade") and not AbilityExtensions:GetAvailableItem("bfury"))
 			then
 				local Damage2 = npcEnemy:GetEstimatedDamageToTarget( false, npcBot, 3.0, DAMAGE_TYPE_ALL );
 				if ( Damage2 > nMostDangerousDamage )
@@ -155,12 +154,9 @@ Consider[1]=function()
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) )
+			if ( CanCast[abilityNumber]( WeakestEnemy ) and not AbilityExtensions:GetAvailableItem(WeakestEnemy, "item_quelling_blade") and not AbilityExtensions:GetAvailableItem(WeakestEnemy, "bfury") )
 			then
                 local tt = WeakestEnemy:GetNearbyHeroes(150, true, BOT_MODE_NONE)
-                if #tt > 0 then
-                    print("furion: dont block 1")
-                end
                 if BlockFriendMeleeHeroes(WeakestEnemy) then
                     return 0
                 end
@@ -177,7 +173,7 @@ Consider[1]=function()
 	then
 		local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 150, true, BOT_MODE_NONE );
 
-		if ( npcBot:WasRecentlyDamagedByAnyHero( 5.0 ) and #tableNearbyEnemyHeroes==0)
+		if ( npcBot:WasRecentlyDamagedByAnyHero(3) and #tableNearbyEnemyHeroes==0)
 		then
 			return UseAtTarget(BOT_ACTION_DESIRE_VERYHIGH, npcBot)
 		end
@@ -205,9 +201,6 @@ Consider[1]=function()
 			if ( CanCast[abilityNumber]( npcTarget ) and not enemyDisabled(npcTarget) and GetUnitToUnitDistance(npcBot,npcTarget)< CastRange + 75*#allys)
 			then
                 local tt = npcTarget:GetNearbyHeroes(150, true, BOT_MODE_NONE)
-                if #tt > 0 then
-                    print("furion: dont block 2")
-                end
                 if BlockFriendMeleeHeroes(npcTarget) then
                     return 0
                 end
@@ -227,7 +220,7 @@ Consider[2]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or not AbilityExtensions:CanMove(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	

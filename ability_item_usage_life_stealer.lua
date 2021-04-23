@@ -431,6 +431,40 @@ Consider[7]=function()
 	
 end
 
+local lastInfestTime
+local lastInfestTarget
+local lastInfestTable = {}
+Consider[6] = function()
+	local ability = AbilitiesReal[6]
+	if not ability:IsFullyCastable() or ability:IsHidden() or lastInfestTarget == nil then
+		return 0
+	end
+	if lastInfestTarget ~= nil and not lastInfestTarget:IsAlive() then
+		lastInfestTarget = nil
+		lastInfestTime = nil
+	end
+	local infest3 = AbilityExtensions:LastForAtLeastSeconds(function() return lastInfestTarget ~= nil end, 3, lastInfestTable)
+	local infest10 = AbilityExtensions:LastForAtLeastSeconds(function() return lastInfestTarget ~= nil end, 10, lastInfestTable)
+	
+	local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1000, true)
+	local friends = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, false)
+
+	if AbilityExtensions:IsAttackingEnemies(npcBot) then
+		local nearbyEnemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, ability:GetAOERadius(), true)
+		if #nearbyEnemies >= 3 or AbilityExtensions:IsSeverlyDisabled(lastInfestTarget) and #nearbyEnemies <= 2 then
+			return BOT_ACTION_DESIRE_MODERATE
+		end
+	end
+	if infest3 and (#enemies == 0 or AbilityExtensions:Outnumber(friends, enemies)) then
+		return BOT_ACTION_DESIRE_HIGH
+	end
+	if infest10 then
+		return BOT_ACTION_DESIRE_VERYHIGH
+	end
+	return 0
+end
+
+
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
 
@@ -453,7 +487,11 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	if index == 5 then
+		lastInfestTime = DotaTime()
+		lastInfestTarget = target
+	end
 end
 
 function CourierUsageThink() 

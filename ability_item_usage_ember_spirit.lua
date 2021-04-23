@@ -311,7 +311,7 @@ Consider[2]=function()		--Target AOE Ability Example
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or not AbilityExtensions:CanMove(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -515,7 +515,7 @@ Consider[4]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or not AbilityExtensions:CanMove(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	

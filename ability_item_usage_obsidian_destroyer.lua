@@ -91,7 +91,7 @@ Consider[1]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if npcBot:IsIllusion() or not ability:IsFullyCastable() then -- destroyer's illusions (from illusion rune or from shadow_demon_disruption) can use the first ability
+	if npcBot:IsIllusion() or not ability:IsFullyCastable() or AbilityExtensions:IsPhysicalOutputDisabled(npcBot) then -- destroyer's illusions (from illusion rune or from shadow_demon_disruption) can use the first ability
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -112,7 +112,7 @@ Consider[1]=function()
 		local t=npcBot:GetAttackTarget()
 		if(t~=nil)
 		then
-			if (ManaPercentage > 0.35 and npcBot:GetLevel()>=7)
+			if npcBot:GetLevel()>=7
 			then
 				ability:ToggleAutoCast()
 				return BOT_ACTION_DESIRE_NONE, 0;

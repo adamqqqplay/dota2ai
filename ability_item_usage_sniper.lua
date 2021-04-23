@@ -117,6 +117,8 @@ Consider[1]=function()
 		return desire,templocation
 	end
 end
+local ability1InfoTable = {}
+Consider[1] = AbilityExtensions:AddCooldownToChargeAbility(Consider[1], AbilitiesReal[1], ability1InfoTable, 0.8)
 
 function Consider1()
 
@@ -350,7 +352,10 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
+	if index == 1 then
+		AbilityExtensions:GetUsedAbilityInfo(AbilitiesReal[1], ability1InfoTable, target)
+	end
 end
 
 function CourierUsageThink() 

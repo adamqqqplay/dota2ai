@@ -331,7 +331,12 @@ Consider[3]=function()
 	-- Mode based usage
 	--------------------------------------
 	--protect myself
-	if(npcBot:WasRecentlyDamagedByAnyHero(5) or
+	if npcBot:GetActiveMode() == BOT_MODE_LANING then 
+		if HealthPercentage >= 0.6 or HealthPercentage >= 0.3 and ManaPercentage <= 0.3 then
+			return 0
+		end
+	end
+	if(npcBot:WasRecentlyDamagedByAnyHero(2.5) or
 		(npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_MODERATE))
 	then
 		if (#enemys==0)
@@ -359,6 +364,33 @@ Consider[3]=function()
 
 	return BOT_ACTION_DESIRE_NONE, 0;
 
+end
+
+Consider[4] = function()
+	local abilityNumber=4
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber];
+
+	if not ability:IsFullyCastable() then
+		return BOT_ACTION_DESIRE_NONE
+	end
+
+	local CastRange = ability:GetAOERadius();
+
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, true)
+	local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange-100, false)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local creeps = npcBot:GetNearbyCreeps(CastRange,true)
+	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+
+	if AbilityExtensions:IsAttackingEnemies(npcBot) then
+		if #enemys >= 2 or #enemys == 1 and #allys == 0 then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+	return 0
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)

@@ -122,6 +122,11 @@ Consider[1]=function()
 	-- Global high-priorty usage
 	--------------------------------------
 	--Try to kill enemy hero
+
+	if #enemys + #creeps <= 1 then
+		return 0
+	end
+	
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
 	then
 		if (WeakestEnemy~=nil)
@@ -481,9 +486,9 @@ Consider[4]=function()
 	-- Check for a channeling enemy
 	for _,npcEnemy in pairs( enemys )
 	do
-		if ( npcEnemy:IsChanneling() ) 
+		if npcEnemy:IsChanneling() and not npcEnemy:IsInvulnerable()
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation();
+			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation()
 		end
 	end
 
@@ -499,24 +504,6 @@ Consider[4]=function()
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetExtrapolatedLocation(CastPoint); 
 				end
 			end
-		end
-	end
-	--------------------------------------
-	-- Mode based usage
-	--------------------------------------
-	-- If we're pushing or defending a lane and can hit 4+ creeps, go for it
-	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
-	then
-		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
-
-		if ( locationAoE.count >= 3 ) 
-		then
-			return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc;
 		end
 	end
 
@@ -538,6 +525,24 @@ Consider[4]=function()
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
+
+local upheavelTimer
+local upheavelLocation
+local upheavelRadius
+
+local function GetSpellImmuneRemainingTime(target)
+    local spellImmuneModifiers = {
+        "modifier_black_king_bar_immune",
+        "modifier_minotaur_horn_immune",
+        "modifier_life_stealer_rage",
+    }
+    local c = AbilityExtensions:Map(spellImmuneModifiers, function(t) return AbilityExtensions:GetModifierRemainingDuration(t)  end)
+    c = AbilityExtensions:Filter(c, function(t) return t ~= nil  end)
+    c = AbilityExtensions:SortByMaxFirst(c, function(t) return t  end)
+    c = c[1] or 0
+    return c
+end
+
 function AbilityUsageThink()
 
 	local enemys = npcBot:GetNearbyHeroes(500,true,BOT_MODE_NONE)
@@ -550,8 +555,28 @@ function AbilityUsageThink()
 	end
 	
 	-- Check if we're already using an ability
-	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
-	then 
+	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() ) then
+        if npcBot:IsChanneling() and npcBot:GetCurrentActiveAbility() == AbilitiesReal[3] then
+            if upheavelTimer == nil then
+                upheavelTimer = DotaTime()
+            else
+                local enemies = npcBot:GetNearbyHeroes(1500, true, BOT_MODE_NONE)
+                enemies = AbilityExtensions:Count(enemies, function(t)
+                    return t:HasModifier("modifier_warlock_upheavel")
+                            or GetUnitToLocationDistance(t, upheavelLocation) <= upheavelRadius and GetSpellImmuneRemainingTime(t) <= 1
+                end)
+                if enemies == 0 then
+                    if DotaTime() > upheavelTimer + 1.5 then
+                        npcBot:Action_ClearActions()
+                        upheavelTimer = nil
+                    end
+                else
+                    upheavelTimer = DotaTime()
+                end
+            end
+        else
+            upheavelTimer = nil
+        end
 		return
 	end
 	
@@ -566,7 +591,11 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+    if index == 3 then
+        upheavelLocation = target
+        upheavelRadius = AbilitiesReal[3]:GetAOERadius()
+    end
 end
 
 function CourierUsageThink() 

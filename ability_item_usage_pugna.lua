@@ -20,21 +20,21 @@ ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 local AbilityToLevelUp=
 {
 	Abilities[1],
-	Abilities[2],
-	Abilities[1],
 	Abilities[3],
 	Abilities[1],
+	Abilities[2],
+	Abilities[1],
 	Abilities[4],
 	Abilities[1],
-	Abilities[2],
-	Abilities[2],
-	"talent",
-	Abilities[2],
-	Abilities[4],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
+	Abilities[4],
+	Abilities[2],
+	Abilities[2],
+	"talent",
+	Abilities[2],
 	"nil",
 	Abilities[4],
 	"nil",
@@ -442,8 +442,8 @@ Consider[4]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() or ability:GetCurrentCharges()==0 then
-		return BOT_ACTION_DESIRE_NONE, 0;
+	if not ability:IsFullyCastable() then
+		return BOT_ACTION_DESIRE_NONE
 	end
 	
 	local CastRange = ability:GetCastRange();
@@ -452,6 +452,9 @@ Consider[4]=function()
 	
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	enemys = AbilityExtensions:Filter(enemys, function(t) 
+		return not t:HasModifier("modifier_pudge_life_drain")
+	end)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
@@ -465,7 +468,7 @@ Consider[4]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(WeakestEnemy:GetHealth()/WeakestEnemy:GetMaxHealth() < 0.5 or WeakestEnemy:HasModifier("modifier_pugna_decrepify"))
+				if(WeakestEnemy:GetHealth()/WeakestEnemy:GetMaxHealth() < 0.8 or WeakestEnemy:HasModifier("modifier_pugna_decrepify"))
 				 and GetUnitToUnitDistance(npcBot,WeakestEnemy) < CastRange - 200
 				then
 					return BOT_ACTION_DESIRE_LOW,WeakestEnemy; 

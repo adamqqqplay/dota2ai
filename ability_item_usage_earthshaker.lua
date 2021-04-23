@@ -250,7 +250,7 @@ Consider[2]=function()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-	if(npcBot:HasScepter() or npcBot:HasModifier("modifier_-- item_ultimate_scepter"))
+	if(npcBot:HasScepter() or npcBot:HasModifier("modifier_item_ultimate_scepter"))
 	then
 		-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 		if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
@@ -399,7 +399,10 @@ Consider[4]=function()
 	local count=#enemys+#creeps
 	local Damage = ability:GetSpecialValueInt("AbilityDamage")+count*ability:GetSpecialValueInt("echo_slam_echo_damage")
 	
-	
+	local checkIfThereAreManyEnemies = AbilityExtensions:Filter(enemys, function(t) return AbilityExtensions:MayNotBeIllusion(npcBot, t) end)
+	if #checkIfThereAreManyEnemies >= 3 then
+		return #checkIfThereAreManyEnemies*0.2
+	end
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
@@ -428,7 +431,7 @@ Consider[4]=function()
 			then
 				if ( CanCast[abilityNumber]( WeakestEnemy ))
 				then
-					if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetUltDamage(WeakestEnemy),DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+					if (#enemys > 1 or not WeakestEnemy:WasRecentlyDamagedByAnyHero(1.5)) and (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetUltDamage(WeakestEnemy),DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 					then
 						npcBot:Action_UseAbilityOnLocation( blink,WeakestEnemy:GetLocation() );
 						return 0
@@ -447,7 +450,7 @@ Consider[4]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
+				if (#enemys > 1 or not WeakestEnemy:WasRecentlyDamagedByAnyHero(1.5)) and (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
 				then
 					return BOT_ACTION_DESIRE_MODERATE
 				end

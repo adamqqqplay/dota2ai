@@ -49,9 +49,10 @@ end
 local function GiveToMidLaner()
     local teamPlayers = GetTeamPlayers(GetTeam())
     --local target = nil
+    if DotaTime() <= 0 then return nil end
     for k, _ in pairs(teamPlayers) do
         local member = GetTeamMember(k)
-        if member ~= nil and not member:IsIllusion() and member:IsAlive() then
+        if member ~= nil and not member:IsIllusion() and member:IsAlive() and member:GetMaxHealth()-member:GetHealth() >= 150 then
             local num_sts = GetItemCount(member, "item_tango_single")
             local num_ff = GetItemCount(member, "item_faerie_fire")
             local num_stg = GetItemCharges(member, "item_tango")
@@ -80,7 +81,7 @@ local function IsItemAvailable(item_name)
     for i = 0, 5 do
         local item = npcBot:GetItemInSlot(i)
         if (item ~= nil) then
-            if (item:GetName() == item_name) then
+            if (item:GetName() == item_name) and item:IsFullyCastable() then
                 return item
             end
         end
@@ -296,24 +297,60 @@ function M.UnImplementedItemUsage()
         end
     end
 
+    local function GetWantedPowerTreadsAttribute()
+        if mode == BOT_MODE_RETREAT and npcBot:WasRecentlyDamagedByAnyHero(3) then
+            return ATTRIBUTE_STRENGTH
+        elseif AbilityExtensions:IsAttackingEnemies(npcBot) then
+            local name = npcBot:GetUnitName()
+            name = AbilityExtensions:GetHeroShortName(name)
+            if AbilityExtensions:Contains({"obsidian_destroyer","enchantress","silencer"}, name) then
+                return npcBot:GetPrimaryAttribute()
+            else
+                return ATTRIBUTE_AGILITY
+            end
+        elseif mode == BOT_MODE_LANING then
+            return npcBot:GetPrimaryAttribute()
+        else
+            return npcBot:GetPrimaryAttribute()
+        end
+    end
+    local function UsePowerTreads(treads)
+        if math.floor(DotaTime()) / 4 ~= 0 then
+            return 
+        end
+        if npcBot:IsInvisible() and npcBot:UsingItemBreakInvisibility() then
+            if npcBot:HasModifier("modifier_item_dust") then
+                npcBot:Action_UseAbility(treads)
+                return true
+            end
+            return
+        end
+        if GetWantedPowerTreadsAttribute() ~= treads:GetPowerTreadsStat() then
+            print(npcBot:GetUnitName()..": power treads attribute "..treads:GetPowerTreadsStat()..", but I want "..GetWantedPowerTreadsAttribute())
+            npcBot:Action_UseAbility(treads)
+            return true
+        end
+    end
+
     local pt = IsItemAvailable("item_power_treads")
     if pt ~= nil and pt:IsFullyCastable() then
-        if
-            mode == BOT_MODE_RETREAT and pt:GetPowerTreadsStat() ~= ATTRIBUTE_STRENGTH and
-                npcBot:WasRecentlyDamagedByAnyHero(5.0)
-         then
-            npcBot:Action_UseAbility(pt)
-            return
-        elseif mode == BOT_MODE_ATTACK and CanSwitchPTStat(pt) then
-            npcBot:Action_UseAbility(pt)
-            return
-        else
-            local enemies = npcBot:GetNearbyHeroes(1300, true, BOT_MODE_NONE)
-            if #enemies == 0 and mode ~= BOT_MODE_RETREAT and CanSwitchPTStat(pt) then
-                npcBot:Action_UseAbility(pt)
-                return
-            end
-        end
+        UsePowerTreads(pt)
+        -- if
+        --     mode == BOT_MODE_RETREAT and pt:GetPowerTreadsStat() ~= ATTRIBUTE_STRENGTH and
+        --         npcBot:WasRecentlyDamagedByAnyHero(5.0)
+        --  then
+        --     npcBot:Action_UseAbility(pt)
+        --     return
+        -- elseif mode == BOT_MODE_ATTACK and CanSwitchPTStat(pt) then
+        --     npcBot:Action_UseAbility(pt)
+        --     return
+        -- else
+        --     local enemies = npcBot:GetNearbyHeroes(1300, true, BOT_MODE_NONE)
+        --     if #enemies == 0 and mode ~= BOT_MODE_RETREAT and CanSwitchPTStat(pt) then
+        --         npcBot:Action_UseAbility(pt)
+        --         return
+        --     end
+        -- end
     end
 
     local bas = IsItemAvailable("item_ring_of_basilius")
@@ -362,11 +399,6 @@ function M.UnImplementedItemUsage()
          then
             local target = GiveToMidLaner()
             if target ~= nil then
-                --[[npcBot:ActionImmediate_Chat(string.gsub(npcBot:GetUnitName(),"npc_dota_hero_","")..
-						" giving tango to "..
-						string.gsub(target:GetUnitName(),"npc_dota_hero_","")..
-						"Don't ask why we only give you one tango. We are poor. 别问我们为什么只给一颗吃树了，我们穷。"
-						, false);]]
                 npcBot:Action_UseAbilityOnEntity(itg, target)
                 giveTime = DotaTime()
                 return
@@ -461,25 +493,25 @@ function M.UnImplementedItemUsage()
         end
     end
 
-    local irt = IsItemAvailable("item_iron_talon")
-    if irt ~= nil and irt:IsFullyCastable() then
-        if npcBot:GetActiveMode() == BOT_MODE_FARM then
-            local neutrals = npcBot:GetNearbyNeutralCreeps(500)
-            local maxHP = 0
-            local target = nil
-            for _, c in pairs(neutrals) do
-                local cHP = c:GetHealth()
-                if cHP > maxHP and not c:IsAncientCreep() then
-                    maxHP = cHP
-                    target = c
-                end
-            end
-            if target ~= nil then
-                npcBot:Action_UseAbilityOnEntity(irt, target)
-                return
-            end
-        end
-    end
+    -- local irt = IsItemAvailable("item_iron_talon")
+    -- if irt ~= nil and irt:IsFullyCastable() then
+    --     if npcBot:GetActiveMode() == BOT_MODE_FARM then
+    --         local neutrals = npcBot:GetNearbyNeutralCreeps(500)
+    --         local maxHP = 0
+    --         local target = nil
+    --         for _, c in pairs(neutrals) do
+    --             local cHP = c:GetHealth()
+    --             if cHP > maxHP and not c:IsAncientCreep() then
+    --                 maxHP = cHP
+    --                 target = c
+    --             end
+    --         end
+    --         if target ~= nil then
+    --             npcBot:Action_UseAbilityOnEntity(irt, target)
+    --             return
+    --         end
+    --     end
+    -- end
 
     local msh = IsItemAvailable("item_moon_shard")
     if msh ~= nil and msh:IsFullyCastable() then
@@ -508,7 +540,7 @@ function M.UnImplementedItemUsage()
     if ff ~= nil and ff:IsFullyCastable() then
         if
             npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH and
-                (npcBot:GetHealth() / npcBot:GetMaxHealth()) < 0.15
+                (npcBot:GetHealth() / npcBot:GetMaxHealth()) < 0.15 and npcBot:WasRecentlyDamagedByAnyHero(3)
          then
             npcBot:Action_UseAbility(ff)
             return
@@ -534,7 +566,7 @@ function M.UnImplementedItemUsage()
     if bst ~= nil and bst:IsFullyCastable() then
         if
             npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH and
-                (npcBot:GetHealth() / npcBot:GetMaxHealth()) < 0.10
+                (npcBot:GetHealth() / npcBot:GetMaxHealth()) < 0.2
          then
             npcBot:Action_UseAbilityOnLocation(bst, npcBot:GetLocation())
             return
@@ -1007,7 +1039,7 @@ function M.UnImplementedItemUsage()
     end
 
     local sentry = IsItemAvailable("item_ward_sentry")
-    if sentry ~= nil and sentry:IsFullyCastable() then
+    if sentry ~= nil and sentry:IsFullyCastable() and sentry:IsCooldownReady() then
         local NearbyTowers = npcBot:GetNearbyTowers(1600, true)
         local NearbyTowers2 = npcBot:GetNearbyTowers(800, true)
         local NearbyTowers3 = npcBot:GetNearbyTowers(800, false)

@@ -19,11 +19,11 @@ local ItemsToBuy =
 	"item_heart" --龙心7.20
 }
 
-local Transfered = ItemPurchaseSystem.Transfer(ItemsToBuy)
-ItemPurchaseSystem.checkItemBuild(Transfered)
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
+
 
 function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchase(Transfered)
-	-- ItemPurchaseSystem.BuyCourier()
+	ItemPurchaseSystem:ItemPurchaseExtend()
+
 	ItemPurchaseSystem.BuySupportItem()
 end

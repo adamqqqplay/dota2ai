@@ -541,7 +541,7 @@ function AbilityUsageThink()
 		return
 	end
 
-	if(npcBot:HasScepter() or npcBot:HasModifier("modifier_-- item_ultimate_scepter"))
+	if(npcBot:HasScepter() or npcBot:HasModifier("modifier_item_ultimate_scepter"))
 	then
 		Consider[1]=Consider1New;
 	end
