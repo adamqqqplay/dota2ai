@@ -367,6 +367,9 @@ Consider[3]=function()
 	
 	local HeroHealth=10000
 	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
+    allys = AbilityExtensions:Filter(allys, function(t)
+        return AbilityExtensions:MayNotBeIllusion(npcBot, t) and not AbilityExtensions:CannotBeTargetted(t) and not AbilityExtensions:IsInvulnerable(t) and not AbilityExtensions:CannotBeKilledNormally(t)
+    end)
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local allys2 = GetUnitList(UNIT_LIST_ALLIED_HEROES)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
@@ -427,7 +430,7 @@ Consider[3]=function()
 	then
 		for _,npcTarget in pairs( allys )
 		do
-			if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<(0.35+0.4*ManaPercentage))
+			if npcTarget:GetHealth()/npcTarget:GetMaxHealth()<(0.35+0.4*ManaPercentage) and npcTarget:WasRecentlyDamagedByAnyHero(3)
 			then
 				if ( CanCast[abilityNumber]( npcTarget ) and not npcTarget:IsChanneling() )
 				then

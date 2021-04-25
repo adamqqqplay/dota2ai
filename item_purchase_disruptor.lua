@@ -10,9 +10,9 @@ local ItemsToBuy =
 	"item_tango",
 	"item_clarity",
 	"item_wind_lace",
+    "item_magic_stick",
 	"item_boots",
 	"item_ring_of_regen", --绿鞋
-	"item_flask",
 	"item_glimmer_cape",
 	"item_ultimate_scepter", --蓝杖
 	"item_force_staff", --推推7.14

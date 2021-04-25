@@ -24,19 +24,19 @@ local AbilityToLevelUp=
 	Abilities[1], --3
 	Abilities[3], --4
 	Abilities[1], --5
-    Abilities[4], --6
+    Abilities[6], --6
 	Abilities[1], --7
 	Abilities[3], --8
 	Abilities[3], --9
 	Abilities[2], --10
 	"talent", --11
-	Abilities[4], --12
+	Abilities[6], --12
 	Abilities[2], --13
 	Abilities[2], --14
 	"talent", --15
     Abilities[2], --16
     "nil", --17
-	Abilities[4], --18
+	Abilities[6], --18
 	"nil", --19
 	"talent", --20
 	"nil", --21
@@ -117,7 +117,7 @@ Consider[1]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetLocation(); 
+					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetLocation(),"Location"
 				end
 			end
 		end
@@ -134,7 +134,7 @@ Consider[1]=function()
 			then
 				local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 				if ( locationAoE.count >= 1 ) then
-					return BOT_ACTION_DESIRE_LOW-0.02, locationAoE.targetloc;
+					return BOT_ACTION_DESIRE_LOW-0.02, locationAoE.targetloc,"Location"
 				end
 			end		
 		end
@@ -146,7 +146,7 @@ Consider[1]=function()
 		then
 			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 			if ( locationAoE.count >= 2 ) then
-				return BOT_ACTION_DESIRE_LOW-0.01, locationAoE.targetloc;
+				return BOT_ACTION_DESIRE_LOW-0.01, locationAoE.targetloc,"Location"
 			end
 		end
 	end
@@ -156,7 +156,7 @@ Consider[1]=function()
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 
 		if ( locationAoE.count >= 3 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc,"Location"
 		end
 	end
 
@@ -172,7 +172,7 @@ Consider[1]=function()
 
 		if ( locationAoE.count >= 4 ) 
 		then
-			return BOT_ACTION_DESIRE_LOW+0.01, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_LOW+0.01, locationAoE.targetloc,"Location"
 		end
 	end
 
@@ -188,7 +188,7 @@ Consider[1]=function()
 		then
 			if ( CanCast[abilityNumber]( npcTarget ) )
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcTarget:GetLocation();
+				return BOT_ACTION_DESIRE_MODERATE, npcTarget:GetLocation(),"Location"
 			end
 		end
 	end

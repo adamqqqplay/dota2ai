@@ -14,9 +14,8 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
 	"item_blink", --跳刀
 	"item_force_staff", --推推7.14
-	"item_cyclone", --风杖
 	"item_ultimate_scepter", --蓝杖
-	"item_black_king_bar"
+	"item_black_king_bar",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

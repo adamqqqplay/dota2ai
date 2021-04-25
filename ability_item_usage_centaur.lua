@@ -134,7 +134,7 @@ Consider[1]=function()
 	do
 		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy )) 
 		then
-			return BOT_ACTION_DESIRE_HIGH,npcEnemy
+			return BOT_ACTION_DESIRE_HIGH--,npcEnemy
 		end
 	end
 	
@@ -147,7 +147,7 @@ Consider[1]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and GetUnitToUnitDistance(npcBot,WeakestEnemy) <= Radius-CastPoint* WeakestEnemy:GetCurrentMovementSpeed())
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy
+					return BOT_ACTION_DESIRE_HIGH--,WeakestEnemy
 				end
 			end
 		end
@@ -162,7 +162,7 @@ Consider[1]=function()
 		do
 			if ( CanCast[abilityNumber]( npcEnemy ) )
 			then
-				return BOT_ACTION_DESIRE_HIGH,"immediately"
+				return BOT_ACTION_DESIRE_HIGH--,"immediately"
 			end
 		end
 	end
@@ -178,7 +178,7 @@ Consider[1]=function()
 				then
 					if(GetUnitToUnitDistance(npcBot,WeakestEnemy)<Radius-CastPoint*WeakestEnemy:GetCurrentMovementSpeed())
 					then
-						return BOT_ACTION_DESIRE_LOW,WeakestEnemy
+						return BOT_ACTION_DESIRE_LOW--,WeakestEnemy
 					end
 				end
 			end
@@ -190,9 +190,9 @@ Consider[1]=function()
 	then
 		if ( #creeps >= 2 ) 
 		then
-			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
+			if CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and ManaPercentage >= 0.8 + ability:GetManaCost() and #enemys == 0
 			then
-				return BOT_ACTION_DESIRE_LOW,WeakestCreep
+				return BOT_ACTION_DESIRE_LOW--,WeakestCreep
 			end
 		end
 	end
@@ -210,12 +210,12 @@ Consider[1]=function()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy) <= Radius-CastPoint* npcEnemy:GetCurrentMovementSpeed())
 			then
-				return BOT_ACTION_DESIRE_MODERATE,npcEnemy
+				return BOT_ACTION_DESIRE_MODERATE--,npcEnemy
 			end
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
+	return BOT_ACTION_DESIRE_NONE
 	
 end
 

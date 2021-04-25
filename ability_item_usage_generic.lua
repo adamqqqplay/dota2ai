@@ -71,7 +71,8 @@ local function SecondaryOperation()
 end
 
 function CourierUsageThink()
-	Courier.CourierUsageThink()
+	AbilityExtensions:TickFromDota()
+	--Courier.CourierUsageThink()
 	SecondaryOperation()
 end
 
@@ -354,13 +355,15 @@ function UseAbility(AbilitiesReal, cast)
 				npcBot:Action_UseAbilityOnEntity(ability, cast.Target[j])
 			end
 		else
-			if (cast.Type[j] == "Target") then
-				npcBot:Action_UseAbilityOnEntity(ability, cast.Target[j])
-			elseif (cast.Type[j] == "Location") then
-				npcBot:Action_UseAbilityOnLocation(ability, cast.Target[j])
-			else
-				npcBot:Action_UseAbility(ability)
-			end
+            if cast.Type[j] == "Target" then
+                npcBot:Action_UseAbilityOnEntity(ability, cast.Target[j])
+            elseif cast.Type[j] == "Location" then
+                npcBot:Action_UseAbilityOnLocation(ability, cast.Target[j])
+            elseif cast.Type[j] == "Tree" then
+                npcBot:Action_UseAbilityOnTree(ability, cast.Target[j])
+            else
+                npcBot:Action_UseAbility(ability)
+            end
 		end
         return j, cast.Target[j], cast.Type[j]
 	end

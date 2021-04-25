@@ -13,7 +13,7 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
 	"item_belt_of_strength",
 	"item_gloves", --假腿7.21
-    "item_witch_blade",
+    --"item_witch_blade",
 	"item_veil_of_discord", --纷争7.20
 	"item_orchid", --紫苑
 	"item_black_king_bar", --bkb

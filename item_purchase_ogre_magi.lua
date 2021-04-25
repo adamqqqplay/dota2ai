@@ -14,7 +14,6 @@ local ItemsToBuy =
 	"item_flask",
     "item_hand_of_midas",
 	"item_energy_booster", 
-	-- heroes buy a lot of energy boosters because energy booster and boots create an arcane boots so they need to buy more energy booster
 	"item_aether_lens", --以太之镜7.06
 	"item_ultimate_scepter", --蓝杖
 	"item_force_staff", --推推7.14

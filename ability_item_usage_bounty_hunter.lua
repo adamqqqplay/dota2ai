@@ -29,12 +29,12 @@ local AbilityToLevelUp=
 	Abilities[3],
 	Abilities[3],
 	"talent",
-	Abilities[3],
+	Abilities[2],
 	Abilities[4],
 	Abilities[2],
 	Abilities[2],
 	"talent",
-	Abilities[2],
+	Abilities[3],
 	"nil",
 	Abilities[4],
 	"nil",
@@ -314,9 +314,9 @@ Consider[4]=function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
-	local CastRange = ability:GetCastRange();
-	
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local CastRange = 1599
+	AbilityExtensions:EveryManySeconds(0.5, function() CastRange = ability:GetCastRange() end)
+	local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange, true)
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------

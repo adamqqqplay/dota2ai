@@ -14,7 +14,7 @@ require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
 local debugmode=false
-local npcBot = nil;
+local npcBot = GetBot()
 local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}

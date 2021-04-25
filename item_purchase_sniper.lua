@@ -17,7 +17,6 @@ local ItemsToBuy =
 	"item_black_king_bar", --bkb
 	"item_hyperstone",
 	"item_recipe_mjollnir", --大雷锤
-	-- "item_skadi"
 	"item_greater_crit",
 }
 

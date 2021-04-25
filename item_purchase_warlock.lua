@@ -23,18 +23,6 @@ local ItemsToBuy =
     "item_ultimate_scepter",
     "item_refresher",
     "item_sheepstick",
-	--"item_point_booster",
-	--"item_staff_of_wizardry",
-	--"item_ogre_axe",
-	--"item_blade_of_alacrity", --蓝杖
-	--"item_ring_of_health",
-	--"item_void_stone",
-	--"item_ring_of_health",
-	--"item_void_stone",
-	--"item_recipe_refresher", --刷新球
-	--"item_mystic_staff",
-	--"item_ultimate_orb",
-	--"item_void_stone" --羊刀
 }
 
 ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
