@@ -347,3 +347,10 @@ v1.7.2 (2021.04.14) Updated by AaronSong321
 5. Try automatically add lv 27-30 talents;
 6. Modify furion's sprout not to block friend melee heroes;
 7. Add better behaviour to antimage abilities;
+v1.7.3 (2021.04.26) Updated by AaronSong321
+1. Fix rune mode;
+2. Add battle power evaluation of illusion;
+3. Change ability building tree of Chen, Dazzle, Kotl;
+4. Implement Life_stealer, Dragon_knight, Leshrac, Magnataur, Phantom_assassin;
+5. Try to improve Kunkka’s x-mark combo;
+6. Fix bugs in Alchemist, Bane, Kunkka;
