@@ -303,6 +303,7 @@ Consider[3]=function()
 	
 end
 
+local EnlargeCastRange
 Consider[4]=function()
 	local abilityNumber=4
 	--------------------------------------
@@ -315,7 +316,10 @@ Consider[4]=function()
 	end
 	
 	local CastRange = 1599
-	AbilityExtensions:EveryManySeconds(0.5, function() CastRange = ability:GetCastRange() end)
+	if EnlargeCastRange == nil then
+		EnlargeCastRange = AbilityExtensions:EveryManySeconds(0.5, function() CastRange = ability:GetCastRange() end)
+	end
+	EnlargeCastRange()
 	local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange, true)
 	--------------------------------------
 	-- Global high-priorty usage

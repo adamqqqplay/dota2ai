@@ -295,7 +295,7 @@ Consider[2]=function()
 	-- Check for a channeling enemy
 	for _,npcEnemy in pairs( enemys )
 	do
-		if AbilityExtensions:IsChannelingAbility(npcEnemy) and CanCast[abilityNumber]( npcEnemy then
+		if AbilityExtensions:IsChannelingAbility(npcEnemy) and CanCast[abilityNumber](npcEnemy) then
 			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation(),"Location"
 		end
 	end

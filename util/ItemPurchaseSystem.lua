@@ -997,10 +997,8 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
         if courierState == COURIER_STATE_DEAD then
             return
         end
-        local sToPrnit = npcBot:GetUnitName()..": courier id "..npcBot.courierIDNew.." "..npcBot:GetPlayerID().." courier usage "
         if not npcBot:IsAlive() then
             if courierState ~= COURIER_STATE_RETURNING_TO_BASE and courierState ~= COURIER_STATE_AT_BASE then
-                print(sToPrnit.."a")
                 npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_RETURN)
             end
             return
@@ -1011,23 +1009,19 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
         end
         if #AbilityExtensions:GetStashItems(npcBot) ~= 0 then
             if (courierState == COURIER_STATE_AT_BASE or courierState == COURIER_STATE_IDLE) and not IsWaitingAtSecretShop() then
-                print(npcBot:GetUnitName()..": use courier ".." b")
                 npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TAKE_AND_TRANSFER_ITEMS)
             end
         end
         if #AbilityExtensions:GetCourierItems(courier) ~= 0 then
             if courierState ~= COURIER_STATE_DELIVERING_ITEMS and not IsWaitingAtSecretShop() then
-                print(npcBot:GetUnitName()..": use courier ".."c")
                 npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TRANSFER_ITEMS)
             end
         end
         if IsItemPurchasedFromSecretShop(sNextItem) and npcBot:GetGold() >= GetItemCost(sNextItem)*0.9 then
             if courierState == COURIER_STATE_AT_BASE then
-                print(sToPrnit.."d")
                 npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_SECRET_SHOP)
             end
             if nearSecretShop and npcBot:GetGold() >= GetItemCost(sNextItem) then
-                print(sToPrnit.."e")
                 npcBot:ActionImmediate_PurchaseItem(sNextItem)
             end
         end

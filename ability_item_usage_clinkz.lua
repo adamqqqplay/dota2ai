@@ -363,8 +363,8 @@ function IsGoodNeutralCreeps(npcCreep)
 	return false;
 end
 
-Consider[5]=function()
-	local abilityNumber=5
+Consider[4]=function()
+	local abilityNumber=4
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -420,6 +420,47 @@ Consider[5]=function()
 
 	return BOT_ACTION_DESIRE_NONE, 0;
 
+end
+
+
+Consider[5]=function()
+    local abilityNumber=5
+    --------------------------------------
+    -- Generic Variable Setting
+    --------------------------------------
+    local ability=AbilitiesReal[abilityNumber];
+
+    if not ability:IsFullyCastable() then
+        return BOT_ACTION_DESIRE_NONE, 0;
+    end
+
+    local CastRange = ability:GetCastRange();
+    local Damage = 0;
+    local CastPoint = ability:GetCastPoint();
+
+    local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+    local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+    local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+    local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+    local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+    local creepsNeutral = npcBot:GetNearbyNeutralCreeps(1600)
+    local StrongestCreep,CreepHealth2=utility.GetStrongestUnit(creepsNeutral)
+    --------------------------------------
+    -- Mode based usage
+    --------------------------------------
+
+    -- Find neural creeps
+    if(ManaPercentage>=0.4)
+    then
+        for k,creep in pairs(creepsNeutral) do
+            if(IsGoodNeutralCreeps(creep) and not creep:WasRecentlyDamagedByAnyHero(1.5) or (creep:IsAncientCreep() and npcBot:HasScepter()))
+            then
+                return BOT_ACTION_DESIRE_MODERATE, creep
+            end
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)

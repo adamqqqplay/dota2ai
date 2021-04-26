@@ -60,15 +60,19 @@ local attackRange = npcBot:GetAttackRange()
 local healthPercent = AbilityExtensions:GetHealthPercent(npcBot)
 local manaPercent = AbilityExtensions:GetManaPercent(npcBot)
 
+local EnlargeIllusoryOrbCastRange
 Consider[1] = function()
     local ability = Abilities[1]
     if not ability:IsFullyCastable() then
         return 0
     end
     local castRange = math.min(ability:GetCastRange(), 1599)
-    AbilityExtensions:EveryManySeconds(2, function()
-        castRange = ability:GetCastRange()
-    end)
+    if EnlargeIllusoryOrbCastRange == nil then
+        EnlargeIllusoryOrbCastRange = AbilityExtensions:EveryManySeconds(2, function()
+            castRange = ability:GetCastRange()
+        end)
+    end
+    EnlargeIllusoryOrbCastRange()
     local castPoint = ability:GetCastPoint()
     local manaCost = ability:GetManaCost()
     local enemies = npcBot:GetNearbyHeroes(castRange, true, BOT_MODE_NONE)
@@ -150,17 +154,15 @@ Consider[2]=function()
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, Abilities)
+
 function AbilityUsageThink()
 	if npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() then 
 		return
 	end
-	ComboMana=GetComboMana()
-	
+	ComboMana=GetComboMana(Abilities)
 	cast=ability_item_usage_generic.ConsiderAbility(Abilities,Consider)
-	if(debugmode==true) then
-		ability_item_usage_generic.PrintDebugInfo(Abilities,cast)
-	end
-	ability_item_usage_generic.UseAbility(Abilities,cast)
+	local abilityIndex, target, castType = ability_item_usage_generic.UseAbility(Abilities,cast)
+    AbilityExtensions:RecordAbility(npcBot, abilityIndex, target, castType, Abilities)
 end
 
 function CourierUsageThink() 
