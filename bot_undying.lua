@@ -7,6 +7,7 @@ function MinionThink(  hMinionUnit )
 		elseif minionutils.CantBeControlled(hMinionUnit:GetUnitName()) then
 			minionutils.CantBeControlledThink(hMinionUnit);
 		else
+			print("unrecognised minion: "..hMinionUnit:GetUnitName())
 			return;
 		end
 	end

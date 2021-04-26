@@ -132,10 +132,10 @@ Consider[1]=function()	--Target Ability Example
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
-					if(GetUnitToUnitDistance(npcBot,WeakestEnemy)<CastRange and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk"))
+					if(GetUnitToUnitDistance(npcBot,WeakestEnemy)<CastRange and not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk"))
 					then
 						return BOT_ACTION_DESIRE_HIGH, WeakestEnemy;
-					elseif(creeps[1]~=nil and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk") and WeakestEnemy:HasModifier("modifier_bounty_hunter_track"))
+					elseif(creeps[1]~=nil and not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk") and WeakestEnemy:HasModifier("modifier_bounty_hunter_track"))
 					then
 						return BOT_ACTION_DESIRE_HIGH, creeps[1];
 					end
@@ -206,10 +206,10 @@ Consider[1]=function()	--Target Ability Example
 				then
 					if ( CanCast[abilityNumber]( WeakestEnemy ) )
 					then
-						if(GetUnitToUnitDistance(npcBot,WeakestEnemy)<CastRange and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk"))
+						if(GetUnitToUnitDistance(npcBot,WeakestEnemy)<CastRange and not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk"))
 						then
 							return BOT_ACTION_DESIRE_HIGH, WeakestEnemy;
-						elseif(creeps[1]~=nil and WeakestEnemy:HasModifier("modifier_bounty_hunter_track") and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk"))
+						elseif(creeps[1]~=nil and WeakestEnemy:HasModifier("modifier_bounty_hunter_track") and not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk"))
 						then
 							return BOT_ACTION_DESIRE_HIGH, creeps[1];
 						end
@@ -231,10 +231,10 @@ Consider[1]=function()	--Target Ability Example
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ))
 			then
-				if(GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk"))
+				if(GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange and not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk"))
 				then
 					return BOT_ACTION_DESIRE_HIGH, npcEnemy;
-				elseif(creeps[1]~=nil and npcEnemy:HasModifier("modifier_bounty_hunter_track") and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk"))
+				elseif(creeps[1]~=nil and npcEnemy:HasModifier("modifier_bounty_hunter_track") and not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk"))
 				then
 					return BOT_ACTION_DESIRE_HIGH, creeps[1];
 				end

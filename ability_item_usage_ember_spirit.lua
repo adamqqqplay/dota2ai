@@ -694,7 +694,7 @@ end
 
 local ConsiderFist = function()
     local ability = Abilities[1]
-    if not ability:IsFullyCastable() or IsUsingRemnant() or IsUsingSleightOfFist() or not AbilityExtensions:CanMove(npcBot) then
+    if not ability:IsFullyCastable() or IsUsingRemnant() or IsUsingSleightOfFist() or not AbilityExtensions:CanMove(npcBot) or ability:GetCurrentCharges() == 0 then
         return 0
     end
     local abilityLevel = ability:GetLevel()
@@ -789,7 +789,7 @@ end
 
 Consider[3] = function()
     local ability = Abilities[1]
-    if not ability:IsFullyCastable() then
+    if not ability:IsFullyCastable() or npcBot:HasModifier("modifier_ember_spirit_flame_guard") or npcBot:HasModifier("modifier_shadow_demon_purge_slow") then
         return 0
     end
     local abilityLevel = ability:GetLevel()

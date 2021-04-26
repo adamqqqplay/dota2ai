@@ -173,8 +173,7 @@ Consider[1]=function()
 	then
 		local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 150, true, BOT_MODE_NONE );
 
-		if ( npcBot:WasRecentlyDamagedByAnyHero(3) and #tableNearbyEnemyHeroes==0)
-		then
+		if AbilityExtensions:MayNotBeSeen(npcBot) then
 			return UseAtTarget(BOT_ACTION_DESIRE_VERYHIGH, npcBot)
 		end
 	end
@@ -183,7 +182,7 @@ Consider[1]=function()
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT) 
 	then
 		local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 200, true, BOT_MODE_NONE );
-		if #tableNearbyEnemyHeroes==0 and npcBot:WasRecentlyDamagedByAnyHero(3) then
+		if AbilityExtensions:MayNotBeSeen(npcBot) then
             return UseAtTarget(BOT_ACTION_DESIRE_VERYHIGH, npcBot)
 		end
 	end

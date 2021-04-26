@@ -76,7 +76,10 @@ local const = AbilityHelper.const
 
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.NCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,
+function(t)
+    return t:HasModifier("modifier_shadow_demon_disruption") or AbilityExtensions:NormalCanCast(t, false) or t:HasModifier("modifier_shadow_demon_purge_slow")
+end}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -132,7 +135,7 @@ Consider[1]=function()
 		local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( CastRange, true, BOT_MODE_NONE );
 		for _,npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
-			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy))
+			if ( CanCast[abilityNumber]( npcEnemy ) and not AbilityExtensions:IsOrGoingToBeSeverelyDisabled(npcEnemy))
 			then
 				local Damage2 = npcEnemy:GetEstimatedDamageToTarget( false, npcBot, 3.0, DAMAGE_TYPE_ALL );
 				if ( Damage2 > nMostDangerousDamage )
@@ -143,7 +146,7 @@ Consider[1]=function()
 			end
 		end
 
-		if ( npcMostDangerousEnemy ~= nil and not enemyDisabled(npcMostDangerousEnemy))
+		if ( npcMostDangerousEnemy ~= nil and not AbilityExtensions:IsOrGoingToBeSeverelyDisabled(npcMostDangerousEnemy))
 		then
 			return BOT_ACTION_DESIRE_LOW, npcMostDangerousEnemy;
 		end
@@ -156,7 +159,7 @@ Consider[1]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if ( CanCast[abilityNumber]( WeakestEnemy ) and not enemyDisabled(WeakestEnemy))
+				if ( CanCast[abilityNumber]( WeakestEnemy ) and not AbilityExtensions:IsOrGoingToBeSeverelyDisabled(WeakestEnemy))
 				then
 					return BOT_ACTION_DESIRE_MODERATE,WeakestEnemy; 
 				end
@@ -175,7 +178,7 @@ Consider[1]=function()
 		do
 			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) 
 			then
-				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy)) 
+				if ( CanCast[abilityNumber]( npcEnemy ) and not AbilityExtensions:IsOrGoingToBeSeverelyDisabled(npcEnemy))
 				then
 					return BOT_ACTION_DESIRE_HIGH, npcEnemy;
 				end
@@ -193,7 +196,7 @@ Consider[1]=function()
 
 		if ( npcTarget ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcTarget ) and not enemyDisabled(npcTarget) and GetUnitToUnitDistance(npcBot,npcTarget) > 400 
+			if ( CanCast[abilityNumber]( npcTarget ) and not AbilityExtensions:IsOrGoingToBeSeverelyDisabled(npcTarget) and GetUnitToUnitDistance(npcBot,npcTarget) > 400
 				and GetUnitToUnitDistance(npcBot,npcTarget) < CastRange + 100)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcTarget
@@ -225,7 +228,7 @@ Consider[1]=function()
 		do
 			if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<0.25 and #enemys >= 2 and #allys >= #enemys)
 			then
-				if ( CanCast[abilityNumber]( npcTarget ) and not enemyDisabled(npcTarget))
+				if ( CanCast[abilityNumber]( npcTarget ) and not AbilityExtensions:IsOrGoingToBeSeverelyDisabled(npcTarget))
 				then
 					return BOT_ACTION_DESIRE_MODERATE, npcTarget
 				end
@@ -281,7 +284,7 @@ Consider[3] = function()
 	local nearyByEnemys = npcBot:GetNearbyHeroes(const.WARNING_DISTANCE, true, BOT_MODE_NONE)
 	if ((activeMode == BOT_MODE_RETREAT and activeModeDesire >= BOT_MODE_DESIRE_HIGH) or #nearyByEnemys > 0) then
 		for _, npcEnemy in pairs(enemys) do
-			if (CanCast[abilityIndex](npcEnemy) and not enemyDisabled(npcEnemy)) then
+			if (CanCast[abilityIndex](npcEnemy) and not AbilityExtensions:IsOrGoingToBeSeverelyDisabled(npcEnemy)) then
 				if
 					(npcBot:WasRecentlyDamagedByHero(npcEnemy, 2.0) or GetUnitToUnitDistance(npcBot, npcEnemy) < const.WARNING_DISTANCE)
 				 then
@@ -535,7 +538,7 @@ Consider[5]=function()
 
 		for _,npcEnemy in pairs( enemys )
 		do
-			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy))
+			if ( CanCast[abilityNumber]( npcEnemy ) and not AbilityExtensions:IsSeverelyDisabledOrSlowed(npcEnemy))
 			then
 				local Damage2 = npcEnemy:GetEstimatedDamageToTarget( false, npcBot, 3.0, DAMAGE_TYPE_ALL );
 				if ( Damage2 > nMostDangerousDamage )

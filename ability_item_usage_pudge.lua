@@ -2,9 +2,7 @@
 --	Ranked Matchmaking AI v1.3 New Structure
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
---------------------------------------
--- General Initialization
---------------------------------------
+-- v1.7 template
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
@@ -73,7 +71,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.UCanCast,utility.NCanCast,utility.NCanCast,utility.CanCastNoTarget,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 Consider[1] = function()
@@ -98,14 +96,7 @@ Consider[1] = function()
         local point = target:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, target) / hookSpeed + castPoint)
         local distance = GetUnitToLocationDistance(npcBot, point)
         local line = AbilityExtensions:GetLine(npcBot:GetLocation(), point)
-        if line == nil then
-            print("pudge: line == nil")
-        end
-        print("pudge: if I hook "..target:GetUnitName())
         local result = GetUnitToLocationDistance(npcBot, point) <= range and NotBlockedByAnyUnit(line, target, distance)
-        if result then
-            print("pudge: I can hook "..target:GetUnitName())
-        end
         return result
     end
 

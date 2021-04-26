@@ -4,6 +4,7 @@
 ----------------------------------------------------------------------------
 local utility = require( GetScriptDirectory().."/utility" ) 
 local role = require(GetScriptDirectory() ..  "/util/RoleUtility")
+local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 local HeroMode
 
 function OnStart()
@@ -19,234 +20,235 @@ function GetDesire()
 	end
 
 	--local ShrineDesire=GetShrineDesire()
-	--local TeamRoamDesire=GetTeamRoamDesire()
-	local ShrineDesire=0
-	local TeamRoamDesire=0
+	local TeamRoamDesire=GetTeamRoamDesire()
+	--local ShrineDesire=0
+	--local TeamRoamDesire=0
 
-	if(ShrineDesire>TeamRoamDesire)
-	then
-		HeroMode="Shrine"
-		return ShrineDesire
-	else
-		HeroMode="TeamRoam"
-		return TeamRoamDesire
-	end
+	--if(ShrineDesire>TeamRoamDesire)
+	--then
+	--	HeroMode="Shrine"
+	--	return ShrineDesire
+	--else
+	--	HeroMode="TeamRoam"
+    return TeamRoamDesire
+	--end
 end
 
 function Think()
-	if(HeroMode=="Shrine")
-	then
-		ShrineThink()
-	elseif(HeroMode=="TeamRoam")
+	--if(HeroMode=="Shrine")
+	--then
+	--	ShrineThink()
+	--else
+    if(HeroMode=="TeamRoam")
 	then
 		TeamRoamThink()
 	end
 end
 
-function GetShrineDesire()
-	local npcBot=GetBot()
-
-	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling())
-	then
-		return 0
-	end
-
-	local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
-
-	if(npcBot.ShrineTime==nil)
-	then
-		npcBot.ShrineTime=0
-	end
-
-	if(	npcBot:IsAlive()==false or
-		(npcBot:DistanceFromFountain()<=6000 and (npcBot:GetStashValue()>400 or npcBot:GetMaxMana()-npcBot:GetMana()>=400) and #enemys==0) or
-		(npcBot.GoingToShrine==true and GetShrineCooldown(npcBot.Shrine)>10 and IsShrineHealing(npcBot.Shrine)==false) or
-		npcBot:GetFactor()>1.8 or
-		(GetUnitToUnitDistance(npcBot,npcBot.Shrine)>7500) or
-		(npcBot.Shrine==nil or npcBot.GoingToShrine==false)
-	)
-	then
-		npcBot.GoingToShrine=false
-		npcBot.Shrine=nil
-	end
-
-	if(npcBot.GoingToShrine==false)
-	then
-		ConsiderShrine()
-	end
-
-	if(npcBot.GoingToShrine==true and (GetUnitToUnitDistance(npcBot,npcBot.Shrine)>=300 or IsShrineHealing(npcBot.Shrine)==false)
-		and DotaTime()+GetUnitToUnitDistance(npcBot,npcBot.Shrine)/npcBot:GetCurrentMovementSpeed() >= npcBot.ShrineTime)
-	then
-		local HealthFactor=npcBot:GetHealth()/npcBot:GetMaxHealth()
-		return 0.7+(1-HealthFactor)*0.3
-	end
-	return 0.0;
-end
-
-function ConsiderShrine()
-	local Shrines={	SHRINE_JUNGLE_1,
-					SHRINE_JUNGLE_2	}
-
-	local npcBot=GetBot()
-	local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
-
-	if(npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot.GoingToShrine~=true and
-		(npcBot:GetFactor()<1.2 or npcBot:GetMaxHealth()-npcBot:GetHealth()>=400) and
-		(npcBot:GetMaxMana()-npcBot:GetMana()<=400 and npcBot:GetMaxHealth()-npcBot:GetHealth()<=1000 or #enemys>0  ))
-	then
-		local TargetShrine
-		local min_distance=10000
-		for _,s in pairs(Shrines)
-		do
-			local shrine=GetShrine(GetTeam(),s)
-			if(shrine~=nil and shrine:IsAlive())
-			then
-				if(GetShrineCooldown(shrine)<10 or IsShrineHealing(shrine)==true)
-				then
-					d=GetUnitToUnitDistance(npcBot,shrine)
-					if(d<min_distance)
-					then
-						min_distance=d
-						TargetShrine=shrine
-					end
-				end
-			end
-		end
-		if(2*min_distance<npcBot:DistanceFromFountain())
-		then
-			local shrineLocation=TargetShrine:GetLocation()
-			local max_distance=GetUnitToUnitDistance(npcBot,TargetShrine)/npcBot:GetCurrentMovementSpeed()
-			local allys=GetUnitList(UNIT_LIST_ALLIED_HEROES)
-
-			for _,ally in pairs (allys)
-			do
-				allyfactor=ally:GetFactor()
-				if((allyfactor<1.6 or ally:GetMaxHealth()-ally:GetHealth()>=300) and GetUnitToUnitDistance(ally,TargetShrine)<=7500-allyfactor*1500) and ally:IsAlive()
-				then
-					ally.Shrine=TargetShrine
-					ally.GoingToShrine=true
-
-					local distance = GetUnitToUnitDistance(ally,TargetShrine)/ally:GetCurrentMovementSpeed()
-					if distance>max_distance
-					then
-						max_distance=distance
-					end
-				end
-			end
-
-
-			for _,ally in pairs (allys)
-			do
-				if(TargetShrine==ally.Shrine)
-				then
-					ally.ShrineTime=DotaTime()+max_distance
-					--npcBot:ActionImmediate_Chat("Enjoy together"..ally:GetUnitName()..ally.ShrineTime,false)
-				end
-			end
-
-			npcBot.Shrine=TargetShrine
-			npcBot.GoingToShrine=true
-
-			npcBot.ShrineTime=DotaTime()+max_distance
-			npcBot:ActionImmediate_Chat("I want to use Shrine,let's enjoy together! 我想要使用神泉，快来一起享用",false)
-			--npcBot:ActionImmediate_Ping(shrineLocation.x,shrineLocation.y,true)
-
-		end
-	end
-
-end
-
-function ShrineThink()
-	local npcBot=GetBot()
-
-	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling())
-	then
-		return
-	end
-
-	if(npcBot.GoingToShrine==true and npcBot.Shrine~=nil)
-	then
-		if(GetUnitToUnitDistance(npcBot,npcBot.Shrine)<300 and GetShrineCooldown(npcBot.Shrine)<5)
-		then
-			local allys = npcBot:GetNearbyHeroes( 1600, false, BOT_MODE_NONE );
-			local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
-			local ready=true
-
-			if(#enemys>0)
-			then
-				ready=true
-			else
-				for _,ally in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
-				do
-					local allyfactor=ally:GetHealth()/ally:GetMaxHealth()+ally:GetMana()/ally:GetMaxMana()
-					local distance=GetUnitToUnitDistance(ally,npcBot.Shrine)
-					if(IsPlayerBot(ally:GetPlayerID())==false and distance>500 and allyfactor<1.6 and distance<6000)
-					then
-						if(ally.ShrineHuman==nil)
-						then
-							ally.ShrineHuman={}
-							ally.ShrineHuman.timer=DotaTime()
-							ally.ShrineHuman.distance=distance
-							ready=false
-						else
-							if(DotaTime()-ally.ShrineHuman.timer>5)
-							then
-								if(distance<ally.ShrineHuman.distance)
-								then
-									ready=false
-								else
-									ready=true
-									ally.ShrineHuman=nil
-								end
-							else
-								ready=false
-							end
-						end
-					end
-				end
-				for _,ally in pairs (GetUnitList(UNIT_LIST_ALLIED_HEROES))
-				do
-					if(IsPlayerBot(ally:GetPlayerID())==true)
-					then
-						if(ally.GoingToShrine==true and GetUnitToUnitDistance(ally,npcBot.Shrine)>500 and ally.Shrine==npcBot.Shrine)
-						then
-							ready=false
-						end
-					end
-				end
-			end
-
-			if(ready==true)
-			then
-				npcBot:Action_UseShrine(npcBot.Shrine)
-			else
-				npcBot:Action_MoveToUnit(npcBot.Shrine)
-			end
-		else
-			npcBot:Action_MoveToUnit(npcBot.Shrine)
-		end
-	end
-
-	-- if(IsShrineHealing(npcBot.Shrine)==true)
-	-- then
-		-- npcBot:Action_MoveToUnit(npcBot.Shrine)
-	-- end
-
-	-- local shrines2=npcBot:GetNearbyShrines(1600,false)
-	-- if(npcBot:GetHealth()/npcBot:GetMaxHealth()+npcBot:GetMana()/npcBot:GetMaxMana()<1.8)
-	-- then
-		-- for _,s in pairs(shrines2)
-		-- do
-			-- if(IsShrineHealing(s)==true and GetUnitToUnitDistance(npcBot,s)>=450)
-			-- then
-				-- npcBot:Action_MoveToLocation(s:GetLocation())
-				-- return
-			-- end
-		-- end
-	-- end
-
-end
+--function GetShrineDesire()
+--	local npcBot=GetBot()
+--
+--	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling())
+--	then
+--		return 0
+--	end
+--
+--	local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
+--
+--	if(npcBot.ShrineTime==nil)
+--	then
+--		npcBot.ShrineTime=0
+--	end
+--
+--	if(	npcBot:IsAlive()==false or
+--		(npcBot:DistanceFromFountain()<=6000 and (npcBot:GetStashValue()>400 or npcBot:GetMaxMana()-npcBot:GetMana()>=400) and #enemys==0) or
+--		(npcBot.GoingToShrine==true and GetShrineCooldown(npcBot.Shrine)>10 and IsShrineHealing(npcBot.Shrine)==false) or
+--		npcBot:GetFactor()>1.8 or
+--		(GetUnitToUnitDistance(npcBot,npcBot.Shrine)>7500) or
+--		(npcBot.Shrine==nil or npcBot.GoingToShrine==false)
+--	)
+--	then
+--		npcBot.GoingToShrine=false
+--		npcBot.Shrine=nil
+--	end
+--
+--	if(npcBot.GoingToShrine==false)
+--	then
+--		ConsiderShrine()
+--	end
+--
+--	if(npcBot.GoingToShrine==true and (GetUnitToUnitDistance(npcBot,npcBot.Shrine)>=300 or IsShrineHealing(npcBot.Shrine)==false)
+--		and DotaTime()+GetUnitToUnitDistance(npcBot,npcBot.Shrine)/npcBot:GetCurrentMovementSpeed() >= npcBot.ShrineTime)
+--	then
+--		local HealthFactor=npcBot:GetHealth()/npcBot:GetMaxHealth()
+--		return 0.7+(1-HealthFactor)*0.3
+--	end
+--	return 0.0;
+--end
+--
+--function ConsiderShrine()
+--	local Shrines={	SHRINE_JUNGLE_1,
+--					SHRINE_JUNGLE_2	}
+--
+--	local npcBot=GetBot()
+--	local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
+--
+--	if(npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot.GoingToShrine~=true and
+--		(npcBot:GetFactor()<1.2 or npcBot:GetMaxHealth()-npcBot:GetHealth()>=400) and
+--		(npcBot:GetMaxMana()-npcBot:GetMana()<=400 and npcBot:GetMaxHealth()-npcBot:GetHealth()<=1000 or #enemys>0  ))
+--	then
+--		local TargetShrine
+--		local min_distance=10000
+--		for _,s in pairs(Shrines)
+--		do
+--			local shrine=GetShrine(GetTeam(),s)
+--			if(shrine~=nil and shrine:IsAlive())
+--			then
+--				if(GetShrineCooldown(shrine)<10 or IsShrineHealing(shrine)==true)
+--				then
+--					d=GetUnitToUnitDistance(npcBot,shrine)
+--					if(d<min_distance)
+--					then
+--						min_distance=d
+--						TargetShrine=shrine
+--					end
+--				end
+--			end
+--		end
+--		if(2*min_distance<npcBot:DistanceFromFountain())
+--		then
+--			local shrineLocation=TargetShrine:GetLocation()
+--			local max_distance=GetUnitToUnitDistance(npcBot,TargetShrine)/npcBot:GetCurrentMovementSpeed()
+--			local allys=GetUnitList(UNIT_LIST_ALLIED_HEROES)
+--
+--			for _,ally in pairs (allys)
+--			do
+--				allyfactor=ally:GetFactor()
+--				if((allyfactor<1.6 or ally:GetMaxHealth()-ally:GetHealth()>=300) and GetUnitToUnitDistance(ally,TargetShrine)<=7500-allyfactor*1500) and ally:IsAlive()
+--				then
+--					ally.Shrine=TargetShrine
+--					ally.GoingToShrine=true
+--
+--					local distance = GetUnitToUnitDistance(ally,TargetShrine)/ally:GetCurrentMovementSpeed()
+--					if distance>max_distance
+--					then
+--						max_distance=distance
+--					end
+--				end
+--			end
+--
+--
+--			for _,ally in pairs (allys)
+--			do
+--				if(TargetShrine==ally.Shrine)
+--				then
+--					ally.ShrineTime=DotaTime()+max_distance
+--					--npcBot:ActionImmediate_Chat("Enjoy together"..ally:GetUnitName()..ally.ShrineTime,false)
+--				end
+--			end
+--
+--			npcBot.Shrine=TargetShrine
+--			npcBot.GoingToShrine=true
+--
+--			npcBot.ShrineTime=DotaTime()+max_distance
+--			npcBot:ActionImmediate_Chat("I want to use Shrine,let's enjoy together! 我想要使用神泉，快来一起享用",false)
+--			--npcBot:ActionImmediate_Ping(shrineLocation.x,shrineLocation.y,true)
+--
+--		end
+--	end
+--
+--end
+--
+--function ShrineThink()
+--	local npcBot=GetBot()
+--
+--	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling())
+--	then
+--		return
+--	end
+--
+--	if(npcBot.GoingToShrine==true and npcBot.Shrine~=nil)
+--	then
+--		if(GetUnitToUnitDistance(npcBot,npcBot.Shrine)<300 and GetShrineCooldown(npcBot.Shrine)<5)
+--		then
+--			local allys = npcBot:GetNearbyHeroes( 1600, false, BOT_MODE_NONE );
+--			local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
+--			local ready=true
+--
+--			if(#enemys>0)
+--			then
+--				ready=true
+--			else
+--				for _,ally in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
+--				do
+--					local allyfactor=ally:GetHealth()/ally:GetMaxHealth()+ally:GetMana()/ally:GetMaxMana()
+--					local distance=GetUnitToUnitDistance(ally,npcBot.Shrine)
+--					if(IsPlayerBot(ally:GetPlayerID())==false and distance>500 and allyfactor<1.6 and distance<6000)
+--					then
+--						if(ally.ShrineHuman==nil)
+--						then
+--							ally.ShrineHuman={}
+--							ally.ShrineHuman.timer=DotaTime()
+--							ally.ShrineHuman.distance=distance
+--							ready=false
+--						else
+--							if(DotaTime()-ally.ShrineHuman.timer>5)
+--							then
+--								if(distance<ally.ShrineHuman.distance)
+--								then
+--									ready=false
+--								else
+--									ready=true
+--									ally.ShrineHuman=nil
+--								end
+--							else
+--								ready=false
+--							end
+--						end
+--					end
+--				end
+--				for _,ally in pairs (GetUnitList(UNIT_LIST_ALLIED_HEROES))
+--				do
+--					if(IsPlayerBot(ally:GetPlayerID())==true)
+--					then
+--						if(ally.GoingToShrine==true and GetUnitToUnitDistance(ally,npcBot.Shrine)>500 and ally.Shrine==npcBot.Shrine)
+--						then
+--							ready=false
+--						end
+--					end
+--				end
+--			end
+--
+--			if(ready==true)
+--			then
+--				npcBot:Action_UseShrine(npcBot.Shrine)
+--			else
+--				npcBot:Action_MoveToUnit(npcBot.Shrine)
+--			end
+--		else
+--			npcBot:Action_MoveToUnit(npcBot.Shrine)
+--		end
+--	end
+--
+--	-- if(IsShrineHealing(npcBot.Shrine)==true)
+--	-- then
+--		-- npcBot:Action_MoveToUnit(npcBot.Shrine)
+--	-- end
+--
+--	-- local shrines2=npcBot:GetNearbyShrines(1600,false)
+--	-- if(npcBot:GetHealth()/npcBot:GetMaxHealth()+npcBot:GetMana()/npcBot:GetMaxMana()<1.8)
+--	-- then
+--		-- for _,s in pairs(shrines2)
+--		-- do
+--			-- if(IsShrineHealing(s)==true and GetUnitToUnitDistance(npcBot,s)>=450)
+--			-- then
+--				-- npcBot:Action_MoveToLocation(s:GetLocation())
+--				-- return
+--			-- end
+--		-- end
+--	-- end
+--
+--end
 
 function GetTeamRoamDesire()
 	local npcBot=GetBot()
@@ -282,8 +284,8 @@ function ConsiderTeamRoam()
 			local nearBuilding = utility.GetNearestBuilding(GetTeam(), npcBot:GetLocation())
 			local location = utility.GetUnitsTowardsLocation(nearBuilding,GetAncient(GetTeam()),600)
 			npcBot.TeamRoamAssemblyPoint=location
-			npcBot:ActionImmediate_Chat("Let's Gank "..string.gsub(target:GetUnitName(),"npc_dota_hero_","").." together! ",false)
-			print(npcBot:GetPlayerID().." @TeamRoam@ Let's Gank together! Factor:"..factor.." target:"..target:GetUnitName())
+			--npcBot:ActionImmediate_Chat("Let's Gank "..string.gsub(target:GetUnitName(),"npc_dota_hero_","").." together! ",false)
+			--print(npcBot:GetPlayerID().." @TeamRoam@ Let's Gank together! Factor:"..factor.." target:"..target:GetUnitName())
 			npcBot:ActionImmediate_Ping(location.x,location.y,true)
 			
 			for _,npcAlly in pairs(allys)
@@ -297,8 +299,8 @@ function ConsiderTeamRoam()
 					npcAlly.TeamRoamLeader=npcBot
 					npcAlly.TeamRoamTimer=DotaTime()
 					npcAlly:SetTarget(target)
-					npcBot:ActionImmediate_Chat(string.gsub(npcAlly:GetUnitName(),"npc_dota_hero_","").." come to Gank! Factor:"..factor2,false)
-					print(npcBot:GetPlayerID().." @TeamRoam@"..npcAlly:GetUnitName().." want to Gank together!Factor:"..factor2)				
+					--npcBot:ActionImmediate_Chat(string.gsub(npcAlly:GetUnitName(),"npc_dota_hero_","").." come to Gank! Factor:"..factor2,false)
+					--print(npcBot:GetPlayerID().." @TeamRoam@"..npcAlly:GetUnitName().." want to Gank together!Factor:"..factor2)
 				end
 
 			end
@@ -432,7 +434,7 @@ function GetEnemyFactor(npcEnemy,allys)
 		then
 			factor=factor*1.2
 		end
-		print(npcBot:GetPlayerID().." =[TeamRoam] Enemy/"..npcEnemy:GetUnitName().."/ sumdamage:"..sumdamage.."/ Factor:"..factor)
+--[[		print(npcBot:GetPlayerID().." =[TeamRoam] Enemy/"..npcEnemy:GetUnitName().."/ sumdamage:"..sumdamage.."/ Factor:"..factor)]]
 		return math.min(1.0,factor),suitableallys
 	end
 	return 0,0
@@ -484,6 +486,35 @@ function GetLocationTowardsLocation(vMyLocation,vTargetLocation, nUnits)
 	return vMyLocation+nUnits*tempvector
 end
 
+local wardTargets = {
+    "npc_dota_techies_remote_mine",
+    "npc_dota_techies_stasis_trap",
+    "npc_dota_techies_land_mine",
+    "npc_dota_techies_minefield_sign",
+    "npc_dota_juggernaut_healing_ward",
+	"npc_dota_phoenix_sun",
+    "npc_dota_visage_familiar3",
+	"npc_dota_unit_tombstone4",
+	"npc_dota_pugna_nether_ward_4",
+	"npc_dota_unit_tombstone3",
+    "npc_dota_visage_familiar2",
+	"npc_dota_pugna_nether_ward_43",
+	"npc_dota_unit_tombstone2",
+    "npc_dota_visage_familiar1",
+	"npc_dota_pugna_nether_ward_2",
+	"npc_dota_shadow_shaman_ward_3",
+	"npc_dota_venomancer_plague_ward_4",
+	"npc_dota_venomancer_plague_ward_3",
+	"npc_dota_unit_tombstone1",
+	"npc_dota_pugna_nether_ward_1",
+	"npc_dota_shadow_shaman_ward_2",
+	"npc_dota_shadow_shaman_ward_1",
+	"npc_dota_venomancer_plague_ward_2",
+	"npc_dota_venomancer_plague_ward_1",
+}
+
+local FindEnemyWardTargets
+
 function TeamRoamThink()
 	local npcBot=GetBot()
 
@@ -497,6 +528,9 @@ function TeamRoamThink()
 			return
 		end
 	end
+    if npcBot:GetTarget() ~= nil and not npcBot:GetTarget():IsAlive() then
+        npcBot:SetTarget()
+    end
 
 	if(npcBot.TeamRoamState=="Assemble")
 	then
@@ -558,6 +592,23 @@ function TeamRoamThink()
 			end
 		end
 
+        local enemyStaticTargets = {}
+        local myTeam = npcBot:GetTeam()
+        if FindEnemyWardTargets == nil then
+            FindEnemyWardTargets = AbilityExtensions:EveryManySeconds(1, function()
+                enemyStaticTargets = GetUnitList(UNIT_LIST_ALL)
+                enemyStaticTargets = AbilityExtensions:Filter(enemyStaticTargets, function(t)
+                    return t:GetTeam() ~= myTeam and GetUnitToUnitDistance(npcBot, t) <= npcBot:GetAttackRange() + 150
+                end)
+                enemyStaticTargets = AbilityExtensions:Map(enemyStaticTargets, function(t)
+                    return { t, AbilityExtensions:IndexOf(wardTargets, t:GetUnitName()) }
+                end)
+                enemyStaticTargets = AbilityExtensions:Filter(enemyStaticTargets, function(t) return t[2] ~= -1  end)
+                enemyStaticTargets = AbilityExtensions:SortByMinFirst(enemyStaticTargets, function(t) return t[2]  end)
+            end)
+        end
+        FindEnemyWardTargets()
+
 		local seeninfo=GetHeroLastSeenInfo(npcBot.TeamRoamTargetID)
 		if(seeinfo~=nil)
 		then
@@ -575,19 +626,38 @@ function TeamRoamThink()
 					do
 						npcAlly.TeamRoamTargetID=target2:GetPlayerID()
 					end
-					npcBot:ActionImmediate_Chat("Target Change to "..string.gsub(target2:GetUnitName(),"npc_dota_hero_",""),false)
-					print(npcBot:GetPlayerID().." Target Change！factor:"..factor.." target:"..target2:GetUnitName())
+					--npcBot:ActionImmediate_Chat("Target Change to "..string.gsub(target2:GetUnitName(),"npc_dota_hero_",""),false)
+					--print(npcBot:GetPlayerID().." Target Change！factor:"..factor.." target:"..target2:GetUnitName())
 				else
 					npcBot.TeamRoam=false
 					for i,npcAlly in pairs(GetUnitList(UNIT_LIST_ALLIED_HEROES))
 					do
 						npcAlly.TeamRoam=false
 					end
-					npcBot:ActionImmediate_Chat("Target disappear, Ganking stop",false)
-					print(npcBot:GetPlayerID().." Target disappear！Roaming stop")
+					--npcBot:ActionImmediate_Chat("Target disappear, Ganking stop",false)
+					--print(npcBot:GetPlayerID().." Target disappear！Roaming stop")
 				end
 			end
 
+            local dps = npcBot:GetAttackDamage() * 1 / npcBot:GetSecondsPerAttack()
+            if AbilityExtensions:GetHealthPercent(target) >= 0.5 and AbilityExtensions:Any(enemyStaticTargets) then
+                local selectedWardTarget = enemyStaticTargets[1]
+                if string.match("npc_dota_techies_") then
+                    if npcBot:GetAttackRange() > 500 then
+                        npcBot:SetTarget(selectedWardTarget)
+                        npcBot:Action_AttackUnit(selectedWardTarget, false)
+                    end
+                elseif string.match("npc_dota_venomancer_plague_ward") then
+                    if selectedWardTarget:GetHealth() < selectedWardTarget:GetActualIncomingDamage(dps*2, DAMAGE_TYPE_PHYSICAL) then
+                        npcBot:SetTarget(selectedWardTarget)
+                        npcBot:Action_AttackUnit(selectedWardTarget, false)
+                    end
+                else
+                    npcBot:SetTarget(selectedWardTarget)
+                    npcBot:Action_AttackUnit(selectedWardTarget, false)
+                end
+                return
+            end
 			if(GetUnitToLocationDistance(npcBot,seenpoint)<=1200)
 			then
 				if(target~=nil)

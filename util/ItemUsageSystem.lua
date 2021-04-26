@@ -335,22 +335,6 @@ function M.UnImplementedItemUsage()
     local pt = IsItemAvailable("item_power_treads")
     if pt ~= nil and pt:IsFullyCastable() then
         UsePowerTreads(pt)
-        -- if
-        --     mode == BOT_MODE_RETREAT and pt:GetPowerTreadsStat() ~= ATTRIBUTE_STRENGTH and
-        --         npcBot:WasRecentlyDamagedByAnyHero(5.0)
-        --  then
-        --     npcBot:Action_UseAbility(pt)
-        --     return
-        -- elseif mode == BOT_MODE_ATTACK and CanSwitchPTStat(pt) then
-        --     npcBot:Action_UseAbility(pt)
-        --     return
-        -- else
-        --     local enemies = npcBot:GetNearbyHeroes(1300, true, BOT_MODE_NONE)
-        --     if #enemies == 0 and mode ~= BOT_MODE_RETREAT and CanSwitchPTStat(pt) then
-        --         npcBot:Action_UseAbility(pt)
-        --         return
-        --     end
-        -- end
     end
 
     local bas = IsItemAvailable("item_ring_of_basilius")
@@ -374,17 +358,6 @@ function M.UnImplementedItemUsage()
             return
         end
     end
-
-    -- local aq = IsItemAvailable("item_ring_of_aquila")
-    -- if aq ~= nil and aq:IsFullyCastable() then
-    --     if mode == BOT_MODE_LANING and not aq:GetToggleState() then
-    --         npcBot:Action_UseAbility(aq)
-    --         return
-    --     elseif mode ~= BOT_MODE_LANING and aq:GetToggleState() then
-    --         npcBot:Action_UseAbility(aq)
-    --         return
-    --     end
-    -- end
 
     -- give tango to ally
     local itg = IsItemAvailable("item_tango")
@@ -423,17 +396,6 @@ function M.UnImplementedItemUsage()
         end
     end
 
-    --[[local its=IsItemAvailable("item_tango_single");
-	if its~=nil and its:IsFullyCastable() and its:GetCooldownTimeRemaining() == 0 then
-		if DotaTime() > 10*60 and npcBot:DistanceFromFountain() > 1300
-		then
-			local trees = npcBot:GetNearbyTrees(1300);
-			if trees[1] ~= nil then
-				npcBot:Action_UseAbilityOnTree(its, trees[1]);
-				return;
-			end
-		end
-	end]]
     local its = IsItemAvailable("item_tango_single")
     local tango
     if (its ~= nil) then
@@ -457,16 +419,25 @@ function M.UnImplementedItemUsage()
         end
     end
 
-    if (DotaTime() > 7 * 60) then
-        for i = 0, 5 do
-            local sCurItem = npcBot:GetItemInSlot(i)
-            if (sCurItem ~= nil and (sCurItem:GetName() == "item_tango" or sCurItem:GetName() == "item_tango_single")) then
-                local trees = npcBot:GetNearbyTrees(1000)
-                if trees[1] ~= nil then
-                    npcBot:Action_UseAbilityOnTree(sCurItem, trees[1])
-                    return
+    if (DotaTime() > 10 * 60) then
+        local emptySlots = AbilityExtensions:GetEmptyInventorySlots(npcBot)
+        if emptySlots < 2 then
+            for i = 0, 5 do
+                local tower = npcBot:GetNearbyTowers(1000, true)[1]
+                local sCurItem = npcBot:GetItemInSlot(i)
+                if (sCurItem ~= nil and (sCurItem:GetName() == "item_tango" or sCurItem:GetName() == "item_tango_single")) then
+                    local trees = AbilityExtensions:Filter(npcBot:GetNearbyTrees(300), function(t)
+                        if tower == nil then
+                            return true
+                        end
+                        return GetUnitToLocationDistance(tower, GetTreelocation(t)) > tower:GetAttackRange()
+                    end)
+                    if trees[1] ~= nil then
+                        print(npcBot:GetUnitName()..": use on tree .."..tostring(GetTreeLocation(trees[1])))
+                        npcBot:Action_UseAbilityOnTree(sCurItem, trees[1])
+                        return
+                    end
                 end
-            --npcBot:Action_DropItem(sCurItem,npcBot:GetLocation());
             end
         end
     end
@@ -490,6 +461,16 @@ function M.UnImplementedItemUsage()
                 npcBot:Action_UseAbilityOnEntity(icl, npcBot)
                 return
             end
+        end
+    end
+
+    local itemQuellingBlade = IsItemAvailable("item_quelling_blade") or IsItemAvailable("item_bfury")
+    if itemQuellingBlade ~= nil and itemQuellingBlade:IsFullyCastable() then
+        local trees = npcBot:GetNearbyTrees(250)
+        if #trees >= 8 and AbilityExtensions:Contains(npcBot:GetNearbyHeroes(900, true, BOT_MODE_NONE), function(t) return t:GetUnitName() == "npc_dota_hero_furion" end) then
+            print(npcBot:GetUnitName()..": use on tree .."..tostring(GetTreeLocation(trees[1])))
+            npcBot:Action_UseAbilityOnTree(itemQuellingBlade, trees[1])
+            return
         end
     end
 
@@ -580,7 +561,7 @@ function M.UnImplementedItemUsage()
                 npcBot:GetActiveMode() == BOT_MODE_ROAM or
                 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
                 npcBot:GetActiveMode() == BOT_MODE_GANK or
-                npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY)
+                npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY) and not AbilityExtensions:IsSeverelyDisabled(npcBot)
          then
             npcBot:Action_UseAbility(pb)
             return
@@ -605,7 +586,7 @@ function M.UnImplementedItemUsage()
         end
     end
 
-    local sc = IsItemAvailable("item_solar_crest")
+    local sc = IsItemAvailable("item_solar_crest") or IsItemAvailable("item_medallion_of_courage")
     if sc ~= nil and sc:IsFullyCastable() then
         if
             (npcBot:GetActiveMode() == BOT_MODE_ATTACK or npcBot:GetActiveMode() == BOT_MODE_ROAM or
@@ -651,7 +632,7 @@ function M.UnImplementedItemUsage()
          then
             if
                 (npcTarget ~= nil and npcTarget:IsHero() and GetUnitToUnitDistance(npcTarget, npcBot) > 1000 and
-                    GetUnitToUnitDistance(npcTarget, npcBot) < 2500)
+                    GetUnitToUnitDistance(npcTarget, npcBot) < 2500) and not IsLocationVisible(npcBot)
              then
                 npcBot:Action_UseAbility(se)
                 return
@@ -718,6 +699,24 @@ function M.UnImplementedItemUsage()
                 npcBot:Action_UseAbility(ghost)
                 return
             end
+        end
+    end
+
+    local itemEtherealBlade = IsItemAvailable("item_ethereal_blade")
+    if itemEtherealBlade and itemEtherealBlade:IsFullyCastable() then
+        if npcTarget ~= nil and AbilityExtensions:NormalCanCast(npcTarget) then
+            npcBot:Action_UseAbilityOnEntity(itemDagon, npcBot)
+            return
+        end
+    end
+
+    local itemDagon = AbilityExtensions:Aggregate(nil, AbilityExtensions:Range(1, 5), function(seed, dagonLevelIndex)
+        return seed or IsItemAvailable("item_dagon_"..dagonLevelIndex)
+    end)
+    if itemDagon and itemDagon:IsFullyCastable() then
+        if npcTarget ~= nil and AbilityExtensions:NormalCanCast(npcTarget) then
+            npcBot:Action_UseAbilityOnEntity(itemDagon, npcBot)
+            return
         end
     end
 
@@ -831,16 +830,16 @@ function M.UnImplementedItemUsage()
 			return;
 		end
 	end]]
-    local stick = IsItemAvailable("item_flask")
-    if stick ~= nil and stick:IsFullyCastable() then
+    local stick = IsItemAvailable("item_magic_stick")
+    if stick ~= nil and stick:IsFullyCastable() and stick:GetCurrentCharges() > 0 then
         if DotaTime() > 0 then
             local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes(500, true, BOT_MODE_NONE)
             if
                 ((npcBot:GetHealth() / npcBot:GetMaxHealth() < 0.4 or npcBot:GetMana() / npcBot:GetMaxMana() < 0.2) and
                     #tableNearbyEnemyHeroes >= 1 and
-                    GetItemCharges(npcBot, "item_flask") >= 1) or
+                    GetItemCharges(npcBot, "item_magic_stick") >= 1) or
                     ((npcBot:GetHealth() / npcBot:GetMaxHealth() < 0.7 and npcBot:GetMana() / npcBot:GetMaxMana() < 0.7) and
-                        GetItemCharges(npcBot, "item_flask") >= 7)
+                        GetItemCharges(npcBot, "item_magic_stick") >= 7)
              then
                 npcBot:Action_UseAbility(stick)
                 return
@@ -849,7 +848,7 @@ function M.UnImplementedItemUsage()
     end
 
     local wand = IsItemAvailable("item_magic_wand")
-    if wand ~= nil and wand:IsFullyCastable() then
+    if wand ~= nil and wand:IsFullyCastable() and wand:GetCurrentCharges() > 0 then
         if DotaTime() > 0 then
             local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes(500, true, BOT_MODE_NONE)
             if

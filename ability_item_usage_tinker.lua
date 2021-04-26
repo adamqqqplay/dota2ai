@@ -64,7 +64,7 @@ end
 Consider[1] = function()
     local manaPercentage = AbilityExtensions:GetManaPercent(npcBot)
     local ability = AbilitiesReal[1]
-    if not ability:IsFullyCastable() 
+    if not ability:IsFullyCastable() then
         return 0 
     end
     if npcBot:GetActiveMode() == BOT_MODE_LANING then

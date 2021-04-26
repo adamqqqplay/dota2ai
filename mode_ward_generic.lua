@@ -128,14 +128,14 @@ function OnEnd()
 	bot.steal = false;
 	itemWard = nil;
 	wt = nil;
-	--local wardSlot = bot:FindItemSlot('item_ward_observer');
-	--if wardSlot >=0 and wardSlot <= 5 then
-	--	local mostCostItem = FindMostItemSlot();
-	--	if mostCostItem ~= -1 then
-	--		bot:ActionImmediate_SwapItems( wardSlot, mostCostItem );
-	--		return
-	--	end
-	--end
+	-- local wardSlot = bot:FindItemSlot('item_ward_observer');
+	-- if wardSlot >=0 and wardSlot <= 5 then
+	-- 	local mostCostItem = FindMostItemSlot();
+	-- 	if mostCostItem ~= -1 then
+	-- 		bot:ActionImmediate_SwapItems( wardSlot, mostCostItem );
+	-- 		return
+	-- 	end
+	-- end
 end
 
 function Think()
@@ -145,7 +145,7 @@ function Think()
 	end
 	
 	if wt ~= nil then
-		bot:Action_UseAbilityOnEntity(itemWard, wt);
+		-- bot:Action_UseAbilityOnEntity(itemWard, wt);
 		return
 	end
 	

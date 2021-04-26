@@ -35,21 +35,22 @@ local function ConsiderGlyph()
 		local tower = GetTower(GetTeam(), BuildingID)
 		if RefreshBuildingHealth == nil then
 			RefreshBuildingHealth = AbilityExtensions:EveryManySeconds(0.5, function()
-                if tower == nil then
-                    return
-                end
-	            tower.health0SecondsAgo = tower:GetHealth()
-	            if tower:IsAlive() then
-	                for i=0.5,2,0.5 do
-	                    tower["health"..tostring(i).."SecondsAgo"] = tower["health"..tostring(i-0.5).."SecondsAgo"]
-	                end
-	            end
+                if tower ~= nil and tower:IsAlive() then
+					if tower:GetMaxHealth() == tower:GetHealth() then
+			            tower.health0SecondsAgo = tower:GetHealth()
+			            if tower:IsAlive() then
+			                for _, i in ipairs({0.5,1,1.5,2}) do
+			                    tower["health"..tostring(i).."SecondsAgo"] = tower["health"..tostring(i-0.5).."SecondsAgo"]
+			                end
+			            end
+					end
+				end
 	        end)
 		end
 		RefreshBuildingHealth()
 		if tower ~= nil then
 			local tableNearbyEnemyHeroes = utility.GetEnemiesNearLocation(tower:GetLocation(), 700)
-            if tableNearbyEnemyHeroes ~= nil and #tableNearbyEnemyHeroes >= 1 and tower:GetHealth() - tower["health1SecondsAgo"] >= 10 * DotaTime() / 60 and DotaTime() >= 12 * 60 then
+            if tableNearbyEnemyHeroes ~= nil and #tableNearbyEnemyHeroes >= 1 and tower["health1SecondsAgo"] and tower:GetHealth() - tower["health1SecondsAgo"] >= 10 * DotaTime() / 60 and DotaTime() >= 12 * 60 then
                 GetBot():ActionImmediate_Glyph()
             end
 			if tower:GetHealth() >= 200 and tower:GetHealth() <= 1000 and #tableNearbyEnemyHeroes >= 2 then
@@ -89,6 +90,9 @@ local function SecondaryOperation()
 end
 
 function CourierUsageThink()
+	if not GetBot():IsAlive() then
+		return
+	end
 	AbilityExtensions:TickFromDota()
 	--Courier.CourierUsageThink()
 	SecondaryOperation()

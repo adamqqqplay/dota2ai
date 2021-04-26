@@ -881,6 +881,16 @@ M.GetAvailableBlink = function(self, npc)
     end)
 end
 
+M.GetEmptyInventorySlots = function(self, npc)
+    local g = 0
+    for i = 0, 6 do
+        if npc:GetItemInSlot(i) == nil then
+            g = g+1
+        end
+    end
+    return g
+end
+
 M.GetEmptyItemSlots = function(self, npc)
     local g = 0
     for i = 0, 8 do
@@ -999,7 +1009,9 @@ M.IsBoots = function(self, item)
 end
 
 M.SwapCheapestItemToBackpack = function(self, npc)
-    local cheapestItem = self:First(self:Sort(self:Filter(self:GetInventoryItems(npc), function(t) return not self:IsBoots(t) end), function(a, b) return GetItemCost(a:GetName()) - GetItemCost(b:GetName()) end))
+    local cheapestItem = self:First(self:Sort(self:Filter(self:GetInventoryItems(npc), function(t) 
+        return not self:IsBoots(t) and not string.match(t:GetName(), "item_ward")
+    end), function(a, b) return GetItemCost(a:GetName()) - GetItemCost(b:GetName()) end))
     if cheapestItem == nil then
         return false
     end
@@ -1063,11 +1075,32 @@ M.HasAbilityRetargetModifier = function(self, npc)
 end
 
 M.CanMove = function(self, npc)
-    return not npc:IsStunned() and not npc:IsRooted()
+    return not npc:IsStunned() and not npc:IsRooted() and not self:IsNightmared(npc)
+end
+
+function M:IsNightmared(npc)
+    return npc:HasModifier("modifier_bane_nightmare") or npc:HasModifier("modifier_riki_poison_dart_debuff")
 end
 
 M.IsSeverelyDisabled = function(self, npc)
-    return npc:IsStunned() or npc:IsHexed() or npc:IsRooted() or self:GetMovementSpeedPercent(npc) <= 0.4 or npc:IsNightmared()
+    return npc:IsStunned() or npc:IsHexed() or npc:IsRooted()
+            or self:IsNightmared(npc)
+            or npc:HasModifier("modifier_legion_commander_duel") and not npc:GetUnitName() == "npc_dota_hero_legion_commander"
+end
+
+M.IsSeverelyDisabledOrSlowed = function(self, npc)
+    return self:IsSeverelyDisabled(npc) or self:GetMovementSpeedPercent(npc) <= 0.35
+end
+
+M.HasSeverelyDisableProjectiles = function(self, npc)
+    local projectiles = self:GetIncomingDodgeableProjectiles(npc)
+    return self:Any(projectiles, function(t)
+        return self:Contains(self.targetStunAbilities, t.ability:GetName())
+    end)
+end
+
+M.IsOrGoingToBeSeverelyDisabled = function(self, npc)
+    return self:IsSeverelyDisabled(npc) or self:HasSeverelyDisableProjectiles(npc)
 end
 
 M.EtherealModifiers = {
@@ -1091,6 +1124,30 @@ end
 
 M.IsInvulnerable = function(self, npc)
     return npc:IsInvulnerable() or self:Any(self.IgnoreDamageModifiers, function(t) return npc:HasModifier(t) end)
+end
+
+M.MayNotBeSeen = function(self, npc)
+    if not npc:IsInvisible() or npc:HasModifier("modifier_item_dust") or npc:HasModifier("modifier_bounty_hunter_track") or npc:HasModifier("modifier_slardar_amplify_damage") or npc:HasModifier("modifier_truesight") then
+        return false
+    end
+    local enemies = self:GetNearbyHeroes(npc)
+    return self:All(enemies, function(t)
+        if t:HasItem("item_gem") then
+            return false
+        end
+        if t:GetAttackTarget() == npc then
+            return false
+        end
+        if t:IsUsingAbility() then
+            local ability = t:GetCurrentActiveAbility()
+            if binlib.Test(ability:GetBehavior(), ABILITY_BEHAVIOR_UNIT_TARGET) and t:IsFacingLocation(npc:GetLocation(), 10) then
+                return false
+            end
+        end
+        return true
+    end) and not self:Any(npc:GetNearbyCreeps(1000, true), function(t)
+        return t:GetUnitName() == "npc_dota_necronomicon_warrior_3"
+    end)
 end
 
 M.ShouldNotBeAttacked = function(self, npc)
@@ -1217,7 +1274,11 @@ end
 function M:NormalCanCast(target, isPureDamageWithoutDisable, damageType, pierceMagicImmune)
     damageType = damageType or DAMAGE_TYPE_MAGICAL
     if pierceMagicImmune == nil then
-        pierceMagicImmune = false
+        if damageType == DAMAGE_TYPE_MAGICAL then
+            pierceMagicImmune = false
+        else
+            pierceMagicImmune = true
+        end
     end
     if isPureDamageWithoutDisable == nil then
         isPureDamageWithoutDisable = true
