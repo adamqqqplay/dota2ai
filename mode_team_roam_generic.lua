@@ -18,6 +18,9 @@ function GetDesire()
 	then
 		return 0
 	end
+    if npcBot:IsChanneling() or npcBot:IsUsingAbility() then
+        return npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM and 1 or 0
+    end
 
 	--local ShrineDesire=GetShrineDesire()
 	local TeamRoamDesire=GetTeamRoamDesire()

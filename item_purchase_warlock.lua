@@ -11,14 +11,10 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	"item_boots",
-    "item_magic_stick",
-	"item_recipe_magic_wand", --大魔棒7.14
-	"item_energy_booster",
-	"item_cloak",
-	"item_shadow_amulet", --微光
-	"item_ring_of_regen",
-	"item_staff_of_wizardry",
-	"item_recipe_force_staff", --推推7.14
+    "item_magic_wand", --大魔棒7.14
+	"item_arcane_boots",
+	"item_glimmer_cape",
+	"item_force_staff",
     "item_ghost",
     "item_ultimate_scepter",
     "item_refresher",

@@ -337,23 +337,19 @@ function M.UnImplementedItemUsage()
         UsePowerTreads(pt)
     end
 
-    -- local ringOfBasilius = IsItemAvailable("item_ring_of_basilius")
-    -- if ringOfBasilius and ringOfBasilius:IsFullyCastable() then
-    --     local expectedState = npcBot:GetActiveMode() == BOT_MODE_LANING
-    --     local currentState = ringOfBasilius:GetToggleState()
-    --     if expectedState ~= currentState then
-    --         ringOfBasilius:ToggleAutoCast()
-    --     end
-    -- end
+    local ringOfBasilius = IsItemAvailable("item_ring_of_basilius")
+    if ringOfBasilius and ringOfBasilius:IsFullyCastable() then
+        if (npcBot:GetActiveMode() == BOT_MODE_LANING) ~= ringOfBasilius:GetToggleState() then
+            ringOfBasilius:ToggleAutoCast()
+        end
+    end
 
-    -- local buckler = IsItemAvailable("item_buckler")
-    -- if buckler and buckler:IsFullyCastable() then
-    --     local expectedState = npcBot:GetActiveMode() == BOT_MODE_LANING
-    --     local currentState = buckler:GetToggleState()
-    --     if expectedState ~= currentState then
-    --         buckler:ToggleAutoCast()
-    --     end
-    -- end
+    local buckler = IsItemAvailable("item_buckler")
+    if buckler and buckler:IsFullyCastable() then
+        if (npcBot:GetActiveMode() == BOT_MODE_LANING) ~= buckler:GetToggleState() then
+            buckler:ToggleAutoCast()
+        end
+    end
 
     -- give tango to ally
     local itg = IsItemAvailable("item_tango")
@@ -893,27 +889,14 @@ function M.UnImplementedItemUsage()
         end
     end
 
-    local cyclone = IsItemAvailable("item_cyclone")
+    local cyclone = IsItemAvailable("item_cyclone") or IsItemAvailable("item_wind_waker")
     if cyclone ~= nil and cyclone:IsFullyCastable() then
         if
-            npcTarget ~= nil and npcTarget:IsChanneling() or
-                (npcTarget:HasModifier("modifier_teleporting") or AbilityExtensions:CannotKillNormally(npcTarget)) and
+            npcTarget ~= nil and (AbilityExtensions:IsChanneling(npcTarget) and not AbilityExtensions:IsOrGoingToBeSeverelyDisabled(npcTarget) or AbilityExtensions:CannotKillNormally(npcTarget)) and
                 CanCastOnTarget(npcTarget) and
                 GetUnitToUnitDistance(npcBot, npcTarget) < 775
          then
             npcBot:Action_UseAbilityOnEntity(cyclone, npcTarget)
-            return
-        end
-    end
-
-    local windWaker = IsItemAvailable("item_wind_waker")
-    if windWaker ~= nil and windWaker:IsFullyCastable() then
-        if npcTarget and npcTarget:IsChanneling()
-                or (npcTarget:HasModifier("modifier_teleporting") or AbilityExtensions:CannotKillNormally(npcTarget)) and
-                CanCastOnTarget(npcTarget) and
-                GetUnitToUnitDistance(npcBot, npcTarget) < 775
-        then
-            npcBot:Action_UseAbilityOnEntity(windWaker, npcTarget)
             return
         end
     end

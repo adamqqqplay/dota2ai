@@ -74,7 +74,9 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.CanCastNoTarget,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,function(t)
+    return not AbilityExtensions:ShouldNotBeAttacked(t)
+end,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -381,7 +383,7 @@ Consider[3]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy,"Target"; 
+					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetLocation(),"Location"
 				end
 			end
 		end
@@ -399,8 +401,8 @@ Consider[3]=function()
 			then
 				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy)) 
 				then
-					return BOT_ACTION_DESIRE_MODERATE, npcEnemy,"Target";
-				end
+					return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetLocation(),"Location"
+                end
 			end
 		end
 	end
@@ -446,8 +448,8 @@ Consider[3]=function()
 			then
 				if ( CanCast[abilityNumber]( WeakestEnemy ) )
 				then
-					return BOT_ACTION_DESIRE_LOW,WeakestEnemy,"Target";
-				end
+					return BOT_ACTION_DESIRE_LOW,WeakestEnemy:GetLocation(),"Location"
+                end
 			end
 		end
 	end
@@ -470,8 +472,8 @@ Consider[3]=function()
 		then
 			if ( not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy,"Target"
-			end
+				return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetLocation(),"Location"
+            end
 		end
 	end
 

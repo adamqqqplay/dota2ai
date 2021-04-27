@@ -923,10 +923,6 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
 
     --RemoveInvisibleItemsWhenBountyHunter()
     local sNextItem = GetTopItemToBuy()
-    if sNextItem == nil then
-        print(npcBot:GetUnitName()..": ".."purchase a nil item")
-        return
-    end
     npcBot:SetNextItemPurchaseValue( GetItemCost( sNextItem ) )
 
     M.SellExtraItemExtend(ItemsToBuy)
@@ -939,7 +935,7 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
         npcBot.secretShopMode = false
     end
 
-    if ( npcBot:GetGold() >= GetItemCost( sNextItem ) ) then
+    if npcBot:GetGold() >= GetItemCost( sNextItem ) and GetItemStockCount(sNextItem) >= 1 then
         if npcBot.secretShopMode~=true then
             if (IsItemPurchasedFromSecretShop( sNextItem ) and sNextItem ~= "item_bottle")
             then

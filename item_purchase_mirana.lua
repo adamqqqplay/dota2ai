@@ -11,14 +11,11 @@ local ItemsToBuy =
 	"item_flask",
 	"item_magic_wand",
 	"item_phase_boots", --相位7.21
-    "item_branches",
-    "item_branches",
 	"item_maelstrom",
 	"item_manta",
 	"item_black_king_bar",
 	"item_butterfly",
-	"item_hyperstone",
-	"item_recipe_mjollnir" --大雷锤
+	"item_mjollnir" --大雷锤
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

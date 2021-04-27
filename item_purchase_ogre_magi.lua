@@ -13,7 +13,7 @@ local ItemsToBuy =
 	"item_boots",
 	"item_flask",
     "item_hand_of_midas",
-	"item_energy_booster", 
+	"item_arcane_boots",
 	"item_aether_lens", --以太之镜7.06
 	"item_ultimate_scepter", --蓝杖
 	"item_force_staff", --推推7.14

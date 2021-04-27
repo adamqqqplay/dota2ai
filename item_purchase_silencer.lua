@@ -14,11 +14,9 @@ local ItemsToBuy =
     "item_witch_blade",
 	"item_hurricane_pike", --大推推7.20
 	"item_orchid",
-    "item_hyperstone",
-	"item_recipe_bloodthorn",
+    "item_bloodthorn",
     "item_sheepstick", --羊刀
-    "item_maelstrom",
-    "item_recipe_gleipnir",
+    "item_gleipnir",
 	"item_ultimate_scepter", --蓝杖
 }
 

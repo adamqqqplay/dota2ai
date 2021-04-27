@@ -14,8 +14,7 @@ local ItemsToBuy =
 	"item_null_talisman",
 	"item_boots",
 	"item_magic_wand", --大魔棒7.14
-    "item_robe",
-    "item_gloves",
+	"item_power_treads",
 	"item_dragon_lance", --魔龙枪
     "item_black_king_bar",
     "item_ultimate_scepter", --蓝杖

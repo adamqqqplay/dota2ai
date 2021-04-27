@@ -311,7 +311,7 @@ local hero_pool_test = {
 	-- "npc_dota_hero_naga_siren",
 	-- "npc_dota_hero_shadow_demon",
 }
---recording implemented bots, using in CM mode.
+--recording implemented bots, used in CM mode.
 local allBotHeroes = {
 	"npc_dota_hero_abaddon",
 	"npc_dota_hero_alchemist",
@@ -457,7 +457,7 @@ local hero_pool_position_1 = {
 	"npc_dota_hero_troll_warlord",
 }
 local hero_pool_position_2 = {
-	-- "npc_dota_hero_leshrac",
+	"npc_dota_hero_leshrac",
 	"npc_dota_hero_ember_spirit",
 	"npc_dota_hero_dragon_knight",
 	"npc_dota_hero_huskar",

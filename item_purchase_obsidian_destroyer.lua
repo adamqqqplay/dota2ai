@@ -15,8 +15,7 @@ local ItemsToBuy =
 	"item_orchid",
     "item_black_king_bar", --bkb
     "item_sheepstick", --羊刀
-    "item_force_staff", --推推7.14
-	"item_recipe_hurricane_pike", --大推推7.20
+    "item_hurricane_pike", --大推推7.20
 	"item_sphere", --林肯
     "item_ultimate_scepter",
 }

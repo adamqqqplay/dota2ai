@@ -18,8 +18,7 @@ local ItemsToBuy =
 	"item_solar_crest",
 	"item_black_king_bar", --bkb
 	"item_ultimate_scepter", --蓝杖
-	"item_ultimate_orb",
-	"item_recipe_silver_edge" --大隐刀
+	"item_silver_edge" --大隐刀
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

@@ -13,7 +13,7 @@ local ItemsToBuy =
 	"item_boots",
 	"item_flask",
 	"item_magic_wand", --大魔棒7.14
-	"item_energy_booster",
+	"item_arcane_boots",
 	"item_mekansm", --梅肯
 	"item_ghost",
 	"item_guardian_greaves", --卫士胫甲

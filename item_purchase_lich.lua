@@ -11,8 +11,7 @@ local ItemsToBuy =
 	"item_clarity",
 	"item_wind_lace",
 	"item_boots",
-	"item_magic_wand",
-	"item_ring_of_regen", --绿鞋
+	"item_tranquil_boots",
 	"item_urn_of_shadows",
     "item_ghost",
 	"item_glimmer_cape", --微光

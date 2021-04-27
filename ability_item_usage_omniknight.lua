@@ -333,7 +333,7 @@ Consider[2]=function()
 					npcTarget:WasRecentlyDamagedByAnyHero(5.0) or
 					#allyNeaybyEnemys >= 2)
 				then
-				if (CanCast[abilityIndex](npcTarget)) then
+				if (CanCast[abilityNumber](npcTarget)) then
 					return BOT_ACTION_DESIRE_MODERATE, npcTarget
 				end
 			end
@@ -379,7 +379,8 @@ Consider[2]=function()
 end
 
 Consider[4] = function()
-	local ability = AbilitiesReal[4]
+	local abilityNumber = 4
+	local ability = AbilitiesReal[abilityNumber]
     if not ability:IsFullyCastable() or AbilityExtensions:IsPhysicalOutputDisabled(npcBot) then
         return 0
     end

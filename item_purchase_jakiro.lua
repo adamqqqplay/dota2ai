@@ -18,10 +18,9 @@ local ItemsToBuy =
 	"item_cyclone", --风杖
 	"item_ultimate_scepter", --蓝杖
 	"item_mekansm",
-	"item_buckler",
-	"item_recipe_guardian_greaves",
+	"item_guardian_greaves",
     "item_dragon_lance",
-    "item_recipe_hurricane_pike",
+    "item_hurricane_pike",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

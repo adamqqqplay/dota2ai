@@ -11,9 +11,7 @@ local ItemsToBuy =
 	"item_enchanted_mango",
 	"item_flask",
 	"item_wind_lace",
-	"item_magic_wand", --大魔棒7.14
-	"item_boots",
-	"item_ring_of_regen", --绿鞋
+	"item_tranquil_boots",
 	"item_blink", --跳刀
 	"item_force_staff", --推推7.14
     "item_ultimate_scepter", --蓝杖

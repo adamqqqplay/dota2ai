@@ -387,6 +387,20 @@ M.SortByMinFirst = function(self, tb, map)
     end)
 end
 
+function M:InsertAfter_Modify(tb, item, after)
+    if after == nil then
+        table.insert(tb, item)
+    else
+        for index, value in ipairs(tb) do
+            if item == value then
+                table.insert(tb, index)
+                return
+            end
+        end
+        table.insert(tb, item)
+    end
+end
+
 --local function packRec(g, a, ...)
 --    if a ~= nil then
 --        table.insert(g, a)
@@ -762,6 +776,11 @@ M.GetTeamPlayers = function(self, team)
     end
 end
 
+M.GetEnemyTeamMemberNames = function(self, npcBot)
+    local team = npcBot:GetTeam()
+    return self:Map(self:GetTeamPlayers(team), function(t) return self:GetHeroShortName(GetTeamMember(t):GetUnitName()) end) 
+end
+
 M.MustBeIllusion = function(self, npcBot, target)
     if npcBot:GetTeam() == target:GetTeam() then
         return target:IsIllusion() and not target:HasModifier("modifier_skeleton_king_reincarnation_active")
@@ -787,6 +806,10 @@ M.GetNearbyHeroes = function(self, npcBot, range, getEnemy, botModeMask)
 end
 
 M.GetNearbyNonIllusionHeroes = function(self, npcBot, range, getEnemy, botModeMask)
+    range = range or 1200
+    if getEnemy == nil then
+        getEnemy = true
+    end
     botModeMask = botModeMask or BOT_MODE_NONE
     local heroes = npcBot:GetNearbyHeroes(range, getEnemy, botModeMask)
     return self:Filter(heroes, function(t) return self:MayNotBeIllusion(npcBot, t) end)
@@ -859,6 +882,8 @@ end
 M.GetEnemyHeroNumber = function(self, npcBot, enemies)
     return #self:GetEnemyHeroUnique(npcBot, enemies)
 end
+
+-- item function
 
 M.GetAvailableItem = function(self, npc, itemName)
     for i = 0, 5 do
