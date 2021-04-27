@@ -377,7 +377,7 @@ function UseAbility(AbilitiesReal, cast)
 
         local function CallWithTarget()
             cast.Type[j] = "Target"
-            --print("target ability :"..ability:GetName())
+            -- print("target ability :"..ability:GetName())
             if AbilityExtensions:IsVector(cast.Target[j]) then
                 print("Wrong target type")
                 print(ability:GetName(), cast.Target[j], cast.Type[j])

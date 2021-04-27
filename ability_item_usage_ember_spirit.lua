@@ -429,7 +429,7 @@ local ConsiderFist = function()
     if AbilityExtensions:NotRetreating(npcBot) then
         local findPlace = npcBot:FindAoELocation(true, true, npcBot:GetLocation(), castRange+100, radius, 0, 5000)
         if findPlace.count >= 3 then
-            if GetUnitToLocationDistance(npcBot, findPlace) <= castRange then
+            if GetUnitToLocationDistance(npcBot, findPlace.targetloc) <= castRange then
                 return BOT_ACTION_DESIRE_VERYHIGH, findPlace.targetloc
             else
                 return BOT_ACTION_DESIRE_MODERATE, findPlace.targetloc

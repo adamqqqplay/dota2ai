@@ -805,7 +805,7 @@ function M.SellExtraItemExtend()
 
     if(M.IsItemSlotsFull())
     then
-        if(GameTime()>6*60 or level>=6) and AbilityExtensions:GetEmptyItemSlots(npcBot) < 2
+        if(GameTime()>8*60 or level>=6) and AbilityExtensions:GetEmptyItemSlots(npcBot) < 2
         then
             M.SellSpecifiedItem("item_faerie_fire")
             M.SellSpecifiedItem("item_tango")
@@ -814,13 +814,11 @@ function M.SellExtraItemExtend()
         end
         if(GameTime()>25*60 or level>=10) and AbilityExtensions:GetEmptyItemSlots(npcBot) < 2
         then
-            --M.SellSpecifiedItem("item_stout_shield")
             M.SellSpecifiedItem("item_orb_of_venom")
             M.SellSpecifiedItem("item_enchanted_mango")
             M.SellSpecifiedItem("item_bracer")
             M.SellSpecifiedItem("item_null_talisman")
             M.SellSpecifiedItem("item_wraith_band")
-            --M.SellSpecifiedItem("item_poor_mans_shield")
         end
         if(GameTime()>35*60 or level>=15) and AbilityExtensions:GetEmptyItemSlots(npcBot) < 2
         then
@@ -935,7 +933,10 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
         npcBot.secretShopMode = false
     end
 
-    if npcBot:GetGold() >= GetItemCost( sNextItem ) and GetItemStockCount(sNextItem) >= 1 then
+    if npcBot:GetGold() >= GetItemCost( sNextItem ) then
+        if sNextItem == "item_aghanims_shard" and GetItemStockCount(sNextItem) < 1 then
+            return
+        end
         if npcBot.secretShopMode~=true then
             if (IsItemPurchasedFromSecretShop( sNextItem ) and sNextItem ~= "item_bottle")
             then

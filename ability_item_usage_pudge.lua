@@ -71,7 +71,11 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.UCanCast,utility.NCanCast,utility.NCanCast,utility.CanCastNoTarget,utility.UCanCast}
+local CanCast={function(t)
+    return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_PURE, true, false) 
+end,utility.NCanCast,utility.NCanCast,utility.CanCastNoTarget,function(t)
+    return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_MAGICAL, true, true) and not AbilityExtensions:HasAbilityRetargetModifier(t)
+end}
 local enemyDisabled=utility.enemyDisabled
 
 Consider[1] = function()
@@ -103,14 +107,14 @@ Consider[1] = function()
     local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, true, BOT_MODE_NONE)
     enemies = AbilityExtensions:SortByMaxFirst(enemies, function(t) return GetUnitToUnitDistance(npcBot, t)  end)
     enemies = AbilityExtensions:Filter(enemies, T)
-    if #enemies ~= 0 then
+    if #enemies ~= 0 and CanCast[1](enemies[1]) then
         return BOT_MODE_DESIRE_HIGH, enemies[1]:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemies[1]) / 1450)
     end
 
     local allies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, false, BOT_MODE_NONE)
     allies = AbilityExtensions:Filter(allies, function(t) return t:IsStunned() or t:IsRooted()  end)
     allies = AbilityExtensions:Filter(allies, T)
-    if #allies ~= 0 then
+    if #allies ~= 0 and CanCast[1](allies[1]) then
         return BOT_MODE_DESIRE_HIGH, allies[1]:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemies[1]) / 1450)
     end
 
@@ -132,7 +136,7 @@ Consider[2] = function()
     end
     do
         local target = npcBot:GetTarget()
-        if target and GetUnitToUnitDistance(target, npcBot) <= radius and AbilityExtensions:NormalCanCast(target) then
+        if target and GetUnitToUnitDistance(target, npcBot) <= radius and AbilityExtensions:NormalCanCast(target, false) then
             return true
         end
     end
@@ -176,29 +180,34 @@ Consider[5] = function()
 
     do 
         local target = npcBot:GetTarget()
-        if AbilityExtensions:NormalCanCast(target，false) and not AbilityExtensions:HasAbilityRetargetModifier() and GetUnitToUnitDistance(npcBot, target) <= range then
+        if target ~= nil and CanCast[5](target) and GetUnitToUnitDistance(npcBot, target) <= range then
             return BOT_MODE_DESIRE_HIGH, target
         end
     end
     local nearbyEnemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 900, true, BOT_MODE_NONE)
     if AbilityExtensions:IsAttackingEnemies(npcBot) then
         local u = utility.GetWeakestUnit(nearbyEnemies)
-        if u ~= nil then
+        if u ~= nil and CanCast[5](u) then
             return BOT_MODE_DESIRE_HIGH, u
         end
     end
     if AbilityExtensions:IsRetreating(npcBot) and #nearbyEnemies == 1 then
         local loneEnemy = nearbyEnemies[1]
-        if not AbilityExtensions:HasAbilityRetargetModifier(loneEnemy) then
+        if not AbilityExtensions:HasAbilityRetargetModifier(loneEnemy) and CanCast[5](loneEnemy) then
             return BOT_MODE_DESIRE_MODERATE, loneEnemy
         end
     end
 
-    local nearbyAllies = AbilityExtensions:Filter(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range+200, false, BOT_MODE_NONE), function(t) return AbilityExtensions:CanHardlyMove(t)  end)
-    nearbyAllies = AbilityExtensions:SortByMinFirst(nearbyAllies, function(t) return t:GetHealth()  end)
-    if #nearbyAllies ~= 0 then
-        return BOT_MODE_DESIRE_MODERATE, nearbyAllies[1]
-    end
+    -- if has shard
+    -- local function CanCast5AtFriend(friend)
+    --     return not AbilityExtensions:IsInvulnerable(friend) and not AbilityExtensions:CannotBeTargetted()
+    -- end
+    -- local nearbyAllies = AbilityExtensions:Filter(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range+200, false, BOT_MODE_NONE), function(t) return AbilityExtensions:CanHardlyMove(t)  end)
+    -- nearbyAllies = AbilityExtensions:SortByMinFirst(nearbyAllies, function(t) return t:GetHealth() end)
+    -- if #nearbyAllies ~= 0 and CanCast5AtFriend(nearbyAllies[1]) then
+    --     return BOT_MODE_DESIRE_MODERATE, nearbyAllies[1]
+    -- end
+    return 0
 end
 
 

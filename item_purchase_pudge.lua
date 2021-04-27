@@ -9,12 +9,10 @@ local ItemsToBuy =
 	"item_tango",
 	"item_tango",
 	"item_clarity",
-	"item_wind_lace",
-    "item_magic_stick",
 	"item_boots",
 	"item_bracer",
     "item_magic_wand",
-	"item_ring_of_regen", --绿鞋
+	"item_tranquil_boots",
 	"item_urn_of_shadows",
 	"item_blade_mail",
 	"item_ultimate_scepter",
