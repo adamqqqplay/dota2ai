@@ -338,7 +338,7 @@ v1.7.1 (2021.04.10) Updated by AaronSong321
 7. Remove courier purchase;
 8. Fix some heroes fail to add some of their abilities according to version 7.28; 
 9. Fix TA doesn't purchase any boots; 
-10. Change the ability usage of CM, AM, and Zeus.
+10. Change the ability usage of CM, AM.
 v1.7.2 (2021.04.14) Updated by AaronSong321
 1. Update to support 7.29.
 2. Fixed the ability usage of alchemist, earth spirit, leshrac, broodmother, lich, lycan, medusa, TA.
@@ -348,9 +348,9 @@ v1.7.2 (2021.04.14) Updated by AaronSong321
 6. Modify furion's sprout not to block friend melee heroes;
 7. Add better behaviour to antimage abilities;
 v1.7.3 (2021.04.26) Updated by AaronSong321
-1. Fix rune mode;
+1. Temporarily remove rune mode;
 2. Add battle power evaluation of illusion;
 3. Change ability building tree of Chen, Dazzle, Kotl;
-4. Implement Life_stealer, Dragon_knight, Leshrac, Magnataur, Phantom_assassin;
+4. Implement Life_stealer, Dragon_knight, Leshrac, Magnataur, Phantom_assassin shard abilities;
 5. Try to improve Kunkka’s x-mark combo;
 6. Fix bugs in Alchemist, Bane, Kunkka;

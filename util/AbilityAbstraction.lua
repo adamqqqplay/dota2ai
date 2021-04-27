@@ -1301,7 +1301,7 @@ end
 
 -- ability function
 
-function M:NormalCanCast(target, isPureDamageWithoutDisable, damageType, pierceMagicImmune)
+function M:NormalCanCast(target, isPureDamageWithoutDisable, damageType, pierceMagicImmune, targetMustBeSeen)
     damageType = damageType or DAMAGE_TYPE_MAGICAL
     if pierceMagicImmune == nil then
         if damageType == DAMAGE_TYPE_MAGICAL then
@@ -1317,6 +1317,9 @@ function M:NormalCanCast(target, isPureDamageWithoutDisable, damageType, pierceM
         return false
     end
     if not pierceMagicImmune and target:IsMagicImmune() then
+        return false
+    end
+    if targetMustBeSeen and not target:CanBeSeen() then
         return false
     end
     if isPureDamageWithoutDisable and (damageType == DAMAGE_TYPE_PHYSICAL and self:ShouldNotBeAttacked(target) or damageType == DAMAGE_TYPE_MAGICAL and (target:IsMagicImmune() or self:Contains(self.IgnoreMagicalDamageModifiers, function(t) target:HasModifier(t) end))) then
@@ -1822,20 +1825,8 @@ function M:RecordAbility(npc, index, target, castType, abilities)
             abilityRecords.lastUsedAbilityIndex = abilityRecords.usingAbilityIndex
             abilityRecords.usingAbilityIndex = nil
             abilityRecords.lastUsedAbilityTime = DotaTime()
-            --abilityRecords[abilityRecords.lastUsedAbilityIndex] = nil
-        end
-    else
-        if npc:GetUnitName() == "npc_dota_hero_lina" and abilityRecords.usingAbilityIndex == 1 then
-            if not abilityRecords[abilityRecords.usingAbilityIndex].rolled and RollPercentage(0.1) then
-                print("lina: cancel dragon slave randomly")
-                npc:Action_ClearActions()
-                abilityRecords.lastCancelledAbilityIndex = abilityRecords.usingAbilityIndex
-                abilityRecords.usingAbilityIndex = nil
-            end
-            abilityRecords[abilityRecords.usingAbilityIndex].rolled = true
         end
     end
-    
 end
 
 local frameNumber = 0

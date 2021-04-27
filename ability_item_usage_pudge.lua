@@ -76,10 +76,10 @@ local enemyDisabled=utility.enemyDisabled
 
 Consider[1] = function()
     local ability = AbilitiesReal[1]
-    if not ability:IsFullyCastable() then
+    if not ability:IsFullyCastable() or npcBot:IsChanneling() then
         return 0
     end
-    local castPoint = 0.3
+    local castPoint = ability:GetCastPoint()
     local range = ability:GetSpecialValueInt("hook_distance")
     local searchRadius = ability:GetSpecialValueInt("hook_width")
     local hookSpeed = ability:GetSpecialValueFloat("hook_speed")
@@ -87,7 +87,7 @@ Consider[1] = function()
 
     local function NotBlockedByAnyUnit(line, target, distance)
         return AbilityExtensions:All(AbilityExtensions:Remove(allNearbyUnits, target), function(t)
-            local f = AbilityExtensions:GetPointToLineDistance(t:GetLocation(), line) <= searchRadius + target:GetBoundingRadius() and distance <= GetUnitToUnitDistance(npcBot, t)
+            local f = AbilityExtensions:GetPointToLineDistance(t:GetLocation(), line) <= searchRadius + target:GetBoundingRadius() and distance <= GetUnitToUnitDistance(npcBot, t) or t:IsInvulnerable()
             return f
         end)
     end
@@ -119,10 +119,7 @@ end
 
 Consider[2] = function()
     local ability = AbilitiesReal[2]
-    local radius = 250
-    if npcBot:HasScepter() then
-        radius = 475
-    end
+    local radius = ability:GetAOERadius()
     if not ability:IsFullyCastable() then
         return false
     end
@@ -133,6 +130,13 @@ Consider[2] = function()
         end
         return false
     end
+    do
+        local target = npcBot:GetTarget()
+        if target and GetUnitToUnitDistance(target, npcBot) <= radius and AbilityExtensions:NormalCanCast(target) then
+            return true
+        end
+    end
+
     return false
 end
 Consider[2] = AbilityExtensions:ToggleFunctionToAction(npcBot, Consider[2], AbilitiesReal[2])
@@ -141,7 +145,7 @@ local swallowingSomething
 local swallowTimer
 Consider[4] = function()
     local ability = AbilitiesReal[4]
-    if not ability:IsFullyCastable() then
+    if not ability:IsFullyCastable() or npcBot:IsChanneling() then
         return 0
     end
     swallowingSomething =  npcBot:HasModifier("modifier_pudge_swallow") or npcBot:HasModifier("modifier_pudge_swallow_effect") or npcBot:HasModifier("modifier_pudge_swallow_hide")
@@ -159,7 +163,7 @@ end
 
 Consider[5] = function()
     local ability = AbilitiesReal[5]
-    if not ability:IsFullyCastable() then
+    if not ability:IsFullyCastable() or npcBot:IsChanneling() then
         return nil
     end
     local range = ability:GetCastRange() + 100
@@ -168,6 +172,13 @@ Consider[5] = function()
     end)
     if hookedEnemy ~= nil then
         return BOT_MODE_DESIRE_VERYHIGH, hookedEnemy
+    end
+
+    do 
+        local target = npcBot:GetTarget()
+        if AbilityExtensions:NormalCanCast(target，false) and not AbilityExtensions:HasAbilityRetargetModifier() and GetUnitToUnitDistance(npcBot, target) <= range then
+            return BOT_MODE_DESIRE_HIGH, target
+        end
     end
     local nearbyEnemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 900, true, BOT_MODE_NONE)
     if AbilityExtensions:IsAttackingEnemies(npcBot) then
@@ -190,29 +201,16 @@ Consider[5] = function()
     end
 end
 
-function GetComboDamage()
-	return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
-end
-
-function GetComboMana()
-	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
-end
 
 function CourierUsageThink() 
 	ability_item_usage_generic.CourierUsageThink()
 end
 
 function AbilityUsageThink()
-    if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
-    then
+    if npcBot:IsUsingAbility() or npcBot:IsSilenced() then
         return
     end
 
-
     cast=ability_item_usage_generic.ConsiderAbility(AbilitiesReal,Consider)
-    ---------------------------------debug--------------------------------------------
-    if true then
-        --ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
-    end
     ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
 end

@@ -10,7 +10,6 @@ local ProxRange = 1300;
 local bearState = "";
 
 local BearItem = {
-	"item_stout_shield",
 	"item_boots",
 	"item_orb_of_venom",
 	"item_blight_stone"
