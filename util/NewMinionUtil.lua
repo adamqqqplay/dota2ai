@@ -39,12 +39,6 @@ function IsHawk(unit_name)
 		or unit_name == "npc_dota_beastmaster_hawk_4";
 end
 
-function HawkThink(minion)
-	if CantMove(minion) then return end
-	minion:Action_MoveToLocation(bot:GetLocation());
-	return
-end
- 
 function IsTornado(unit_name)
 	return unit_name == "npc_dota_enraged_wildkin_tornado";
 end 

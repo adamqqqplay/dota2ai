@@ -459,66 +459,63 @@ function ConsiderRecall()
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
 
+local GetAllAllyHeroes
 Consider[4]=function()
-	local abilityNumber=4
-	--------------------------------------
-	-- Generic Variable Setting
-	--------------------------------------
-	local ability=AbilitiesReal[abilityNumber];
-	
-	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
+    local abilityNumber=4
+    --------------------------------------
+    -- Generic Variable Setting
+    --------------------------------------
+    local ability=AbilitiesReal[abilityNumber];
+
+    if not ability:IsFullyCastable() then
+        return BOT_ACTION_DESIRE_NONE, 0;
+    end
+    local healAmount = ability:GetSpecialValueInt("heal_amount")
+    local function IsSeverelyDamaged(npc)
+        return (AbilityExtensions:GetHealthPercent(npc) <= 0.3 or npc:GetHealth() <= 400) and AbilityExtensions:IsSeverelyDisabled(npc) and npc:WasRecentlyDamagedByAnyHero(0.8)
+    end
+    local function IsDamaged(npc)
+        return npc:GetHealth() <= 400 or AbilityExtensions:GetHealthDeficit(npc) >= healAmount * 1.3 and npc:GetUnitName() ~= "npc_dota_hero_huskar" and npc:WasRecentlyDamagedByAnyHero(1.2)
+    end
+
+    local CastRange = 1599
+    local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange, false)
+    if GetAllAllyHeroes == nil then
+		GetAllAllyHeroes = AbilityExtensions:EveryManySeconds(2, function()
+	        allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 10000, false)
+	    end)
 	end
-	
-	local CastRange = 1000;
-	local Damage = 0;
-	local CastPoint = ability:GetCastPoint();
-	
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	GetAllAllyHeroes()
+    local damagedAllies = AbilityExtensions:Filter(allys, function(t) return IsDamaged(t) and not IsSeverelyDamaged(t) end)
+    local severelyDamagedAllies = AbilityExtensions:Filter(allys, IsSeverelyDamaged)
+
+	local enemys = npcBot:GetNearbyHeroes(CastRange,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+	local creeps = npcBot:GetNearbyCreeps(CastRange,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
-		if ( npcBot:WasRecentlyDamagedByAnyHero( 1.0 ) ) 
-		then
-			return BOT_ACTION_DESIRE_HIGH;
+		if npcBot:WasRecentlyDamagedByAnyHero(1.0) and (not IsSeverelyDamaged(npcBot) or #damagedAllies >= 2) then
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
+
+    if npcBot:GetActiveMode() == BOT_MODE_LANING then
+        if #damagedAllies >= 2 and #severelyDamagedAllies >= 1 then
+            return BOT_ACTION_DESIRE_MODERATE
+        end
+    end
 	
 	-- If we're in a teamfight, use it on the scariest enemy
 	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
-	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 
-	then
-		for _,Ally in pairs(allys) do
-			if  Ally:GetHealth()/Ally:GetMaxHealth() < 0.35 and enemys~=nil and #enemys > 0 
-			then
-				return BOT_ACTION_DESIRE_HIGH;
-			end
-		end
+	if  #tableNearbyAttackingAlliedHeroes >= 2 and #enemys > 0 then
+        if AbilityExtensions:Contains(severelyDamagedAllies, npcBot) and #damagedAllies >= 3
+            or #damagedAllies >= 2 and #severelyDamagedAllies >= 1 then
+            return BOT_ACTION_DESIRE_HIGH
+        end
 	end
-	
-	local numPlayer =  GetTeamPlayers(GetTeam());
-	local maxDist = 0;
-	local target = nil;
-	for i = 1, #numPlayer
-	do
-		local Ally = GetTeamMember(i);
-		if Ally:IsAlive() and 
-			Ally:GetActiveMode() == BOT_MODE_RETREAT and Ally:GetActiveModeDesire() >= BOT_ACTION_DESIRE_HIGH and
-			Ally:GetHealth() /Ally:GetMaxHealth() < 0.45 and Ally:WasRecentlyDamagedByAnyHero(2.0)
-		then
-			target = GetTeamMember(i);
-			break;
-		end
-	end
-	if target ~= nil then
-		return BOT_ACTION_DESIRE_MODERATE;
-	end
-	
-	return BOT_ACTION_DESIRE_NONE;
+    return 0
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)

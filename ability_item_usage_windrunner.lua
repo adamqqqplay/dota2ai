@@ -102,7 +102,7 @@ Consider[3]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or npcBot:HasModifier("modifier_windrunner_wind_walk") or npcBot:HasModifier("modifier_shadow_demon_purge_slow")  then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	

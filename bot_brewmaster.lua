@@ -15,6 +15,13 @@ local castSCDesire = 0;
 local castCHDesire = 0;
 local castDBDesire = 0;
 local radius = 1000;
+local abilityCH
+local abilityCY
+local abilityDB
+local abilityDM
+local abilityHB
+local abilitySC
+local abilityWW
 
 function  MinionThink(  hMinionUnit ) 
 
@@ -262,7 +269,7 @@ end
 
 function ConsiderDM(hMinionUnit)
 
-	if not abilityDM:IsFullyCastable() or abilityDM:IsHidden() then
+	if abilityDM == nil or not abilityDM:IsFullyCastable() or abilityDM:IsHidden() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -289,7 +296,7 @@ end
 
 function ConsiderCY(hMinionUnit)
 
-	if not abilityCY:IsFullyCastable() or abilityCY:IsHidden() then
+	if abilityCY == nil or not abilityCY:IsFullyCastable() or abilityCY:IsHidden() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -347,7 +354,7 @@ end
 
 function ConsiderCorrosiveHaze(hMinionUnit)
 
-	if not abilityCH:IsFullyCastable() or abilityCH:IsHidden() or not bot:HasScepter() then
+	if abilityCH == nil or not abilityCH:IsFullyCastable() or abilityCH:IsHidden() or not bot:HasScepter() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -397,7 +404,7 @@ end
 
 function ConsiderWW(hMinionUnit)
 
-	if not abilityWW:IsFullyCastable() or abilityWW:IsHidden() then
+	if abilityWW == nil or not abilityWW:IsFullyCastable() or abilityWW:IsHidden() then
 		return BOT_ACTION_DESIRE_NONE;
 	end
 	
@@ -415,7 +422,7 @@ end
 function ConsiderSlithereenCrush(hMinionUnit)
 
 	-- Make sure it's castable
-	if ( not abilitySC:IsFullyCastable() or abilitySC:IsHidden() or not bot:HasScepter() ) then 
+	if abilitySC == nil or ( not abilitySC:IsFullyCastable() or abilitySC:IsHidden() or not bot:HasScepter() ) then
 		return BOT_ACTION_DESIRE_NONE;
 	end
 
@@ -436,7 +443,7 @@ end
 
 function ConsiderHB(hMinionUnit)
 
-	if not abilityHB:IsFullyCastable() or abilityHB:IsHidden() then
+	if abilityHB == nil or not abilityHB:IsFullyCastable() or abilityHB:IsHidden() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -457,7 +464,7 @@ end
 function ConsiderDrunkenBrawler(hMinionUnit)
 
 	-- Make sure it's castable
-	if ( not abilityDB:IsFullyCastable() or abilityDB:IsHidden() or not bot:HasScepter() ) then 
+	if abilityDB == nil or ( not abilityDB:IsFullyCastable() or abilityDB:IsHidden() or not bot:HasScepter() ) then
 		return BOT_ACTION_DESIRE_NONE;
 	end
 

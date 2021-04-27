@@ -443,7 +443,9 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	local a,b,c = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	AbilityExtensions:RecordAbility(npcBot, a, b, c, AbilitiesReal)
+
 end
 
 function CourierUsageThink() 

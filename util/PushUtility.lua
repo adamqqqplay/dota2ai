@@ -124,7 +124,7 @@ function GetUnitPushLaneDesire(npcBot,lane)
 	return desire
 end
 
-function isNocreeps(npcBot,lane)		--判断兵线位置在不在塔前，不要越塔
+function isNoCreeps(npcBot,lane)		--判断兵线位置在不在塔前，不要越塔
 	local front = GetLaneFrontLocation( GetTeam(), lane, 0 )
 	local AllyTower = GetNearestBuilding(GetTeam(), front)
 	local EnemyTower = GetNearestBuilding(GetOpposingTeam(), front)
@@ -170,10 +170,10 @@ function getTargetLocation(npcBot,lane)
 
 end
 
-function IsCreepAttackTower(creepsNearyTower,EnemyTower)
-	if(creepsNearyTower~=nil and #creepsNearyTower>=1)
+function IsCreepAttackTower(creepsNearTower,EnemyTower)
+	if(creepsNearTower~=nil and #creepsNearTower>=1)
 	then
-		for k,v in pairs(creepsNearyTower)
+		for k,v in pairs(creepsNearTower)
 		do
 			if(v:GetAttackTarget()==EnemyTower)
 			then
@@ -184,7 +184,7 @@ function IsCreepAttackTower(creepsNearyTower,EnemyTower)
 	return false;
 end
 
-function IsSafe(npcBot,lane,creepsNearyTower)
+function IsSafe(npcBot,lane,creepsNearTower)
 
 	local front = GetLaneFrontLocation( GetTeam(), lane, 0 )
 	local EnemyTower = GetNearestBuilding(GetOpposingTeam(), front)
@@ -204,9 +204,9 @@ function IsSafe(npcBot,lane,creepsNearyTower)
 	end
 
 	local CreepMinDistance=99999
-	if(creepsNearyTower~=nil and #creepsNearyTower>=2)
+	if(creepsNearTower~=nil and #creepsNearTower>=2)
 	then
-		for k,v in pairs(creepsNearyTower)
+		for k,v in pairs(creepsNearTower)
 		do
 			local tempDistance=GetUnitToUnitDistance(v,EnemyTower)
 			if(tempDistance<CreepMinDistance)
@@ -298,16 +298,16 @@ function UnitPushLaneThink(npcBot,lane)
 	local EnemyTower = GetNearestBuilding(GetOpposingTeam(), front)
 	local TowerDistance = GetUnitToUnitDistance(npcBot,EnemyTower)
 	
-	local creepsNearyTower = getCreepsNearTower(npcBot,EnemyTower);
-	local TargetLocation = getTargetLocation(npcBot,lane)		--Scatter station to avoid AOE
-	local CreepAttackTower = IsCreepAttackTower(creepsNearyTower,EnemyTower)
-	local Safe = IsSafe(npcBot,lane,creepsNearyTower);
-	local Nocreeps=isNocreeps(npcBot,lane)
+	local creepsNearTower = getCreepsNearTower(npcBot,EnemyTower);
+	local TargetLocation = getTargetLocation(npcBot,lane)		--Scatter positions to avoid AOE
+	local CreepAttackTower = IsCreepAttackTower(creepsNearTower,EnemyTower)
+	local Safe = IsSafe(npcBot,lane,creepsNearTower);
+	local noCreeps=isNoCreeps(npcBot,lane)
 
 	
-	--print(getShortName(npcBot).."\tCreepAttackTower: "..tostring(CreepAttackTower).." Safe:"..tostring(Safe).." NoCreeps:"..tostring(Nocreeps))
+	--print(getShortName(npcBot).."\tCreepAttackTower: "..tostring(CreepAttackTower).." Safe:"..tostring(Safe).." noCreeps:"..tostring(noCreeps))
 
-	local enemys = npcBot:GetNearbyHeroes(1000,true,BOT_MODE_NONE)
+	local enemys = npcBot:GetNearbyHeroes(1200,true,BOT_MODE_NONE)
 	
 	local target=getMyTarget(npcBot,lane,TargetLocation)
 
@@ -318,10 +318,10 @@ function UnitPushLaneThink(npcBot,lane)
 
 	local goodSituation=true;
 
-	if(npcBot:GetLevel()>=12 and npcBot:GetHealth()>=1500)
+	if (npcBot:GetLevel()>=12 and npcBot:GetHealth()>=1500 or npcBot:GetHealth() >= 700 and #enemys == 0)
 	then
 		goodSituation=true;
-	elseif ((Safe==false or Nocreeps==true) and EnemyTower:GetHealth()/EnemyTower:GetMaxHealth()>=0.2)
+	elseif ((Safe==false or noCreeps==true) and EnemyTower:GetHealth()/EnemyTower:GetMaxHealth()>=0.2)
 	then
 		goodSituation=false;
 	end
@@ -329,13 +329,13 @@ function UnitPushLaneThink(npcBot,lane)
 	local MinDelta=200
 	
 	if(IsEnemyTooMany()) then
-		AssmbleWithAlly(npcBot)
+		AssembleWithAlly(npcBot)
 	elseif goodSituation==false then
 		StepBack( npcBot )
 		--print(getCurrentFileName().." "..getShortName(npcBot).." situation is not good");
 	elseif npcBot:WasRecentlyDamagedByTower(1) then		--if I'm under attck of tower, then try to avoid attack
 		if not TransferHatred( npcBot ) or (enemys~=nil and #enemys>=1) or AbilityExtensions:Any(npcBot:GetNearbyTowers(700, true), function(t)
-			return t:GetAttackTarget() == npcBot and t:HasModifier("modifier_fountain_glyph")
+            t:HasModifier("modifier_fountain_glyph")
 		end)
 		then
 			StepBack( npcBot )
@@ -609,7 +609,7 @@ function TransferHatred( unit )
 	return false
 end
 
-function AssmbleWithAlly(unit)
+function AssembleWithAlly(unit)
 	if not NotNilOrDead(unit) then
 		return
 	end
@@ -681,7 +681,7 @@ function StepBackCreeps(unit)
 			end
 		end
 	else
-		local g = GetUnitToUnitDistance(tower, friendCreeps[1]) + 10
+		local g = GetUnitToUnitDistance(tower, friendCreeps[1]) + unit:GetBoundingRadius()
 		unit:Action_MoveDirectly(AbilityExtensions:GetPointFromLineByDistance(tower:GetLocation(), unit:GetLocation(), g))
 		coroutine.yield(g)
 		TransferHatred(unit)
@@ -747,8 +747,8 @@ function strippath(filename)
 end  
 
 
-EnemyHeroListTimer=-1000;
-EnemyHeroList=nil;
+local EnemyHeroListTimer=-1000;
+local EnemyHeroList=nil;
 
 function GetRealHero(Candidates)
 	if Candidates==nil or #Candidates==0 then

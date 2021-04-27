@@ -8,12 +8,10 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_flask",
-	"item_enchanted_mango",
+    "item_quelling_blade",
 	"item_bracer",
 	"item_boots",
-    "item_branches",
-    "item_branches",
-    "item_recipe_magic_wand",
+    "item_magic_wand",
 	"item_blades_of_attack",
 	"item_chainmail", --相位7.21
 	"item_ancient_janggo", --战鼓7.20

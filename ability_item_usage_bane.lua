@@ -524,8 +524,8 @@ Consider[4]=function()
 		end
 	end]]
 
-	if AbilityExtensions:IsRetreating(npcBot) and #enemys == 0 and not AbilityExtensions:HasAbilityRetargetModifier(enemys[1]) then
-		return BOT_ACTION_DESIRE_HIGH, enemys[0]
+	if AbilityExtensions:IsRetreating(npcBot) and #enemys == 1 and not AbilityExtensions:HasAbilityRetargetModifier(enemys[1]) then
+		return BOT_ACTION_DESIRE_HIGH, enemys[1]
 	end
 	
 	-- If we're going after someone
@@ -545,7 +545,7 @@ Consider[4]=function()
 		end
 	end
 
-	local disabledAllies = AbilityExtensions:Filter(allys, function(t) return AbilityExtensions:IsSeverlyDisabled(t) and not t:IsChanneling() end)
+	local disabledAllies = AbilityExtensions:Filter(allys, function(t) return AbilityExtensions:IsSeverelyDisabled(t) and not t:IsChanneling() end)
 	disabledAllies = AbilityExtensions:SortByMinFirst(disabledAllies, function(t) return t:GetHealth() end)
 	if #disabledAllies ~= 0 then
 		return BOT_ACTION_DESIRE_MODERATE, disabledAllies[1]

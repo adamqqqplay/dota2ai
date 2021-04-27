@@ -11,6 +11,7 @@ local ItemUsageSystem = dofile(GetScriptDirectory() .. "/util/ItemUsageSystem")
 local ChatSystem = dofile(GetScriptDirectory() .. "/util/ChatSystem")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
+local RefreshBuildingHealth
 local function ConsiderGlyph()
 	local Towers = {
 		TOWER_TOP_1,
@@ -32,8 +33,26 @@ local function ConsiderGlyph()
 
 	for i, BuildingID in pairs(Towers) do
 		local tower = GetTower(GetTeam(), BuildingID)
+		if RefreshBuildingHealth == nil then
+			RefreshBuildingHealth = AbilityExtensions:EveryManySeconds(0.5, function()
+                if tower ~= nil and tower:GetHealth() > 0 then
+					if tower:GetMaxHealth() ~= tower:GetHealth() then
+			            tower.health0SecondsAgo = tower:GetHealth()
+			            if tower:IsAlive() then
+			                for _, i in ipairs({0.5,1,1.5,2}) do
+			                    tower["health"..tostring(i).."SecondsAgo"] = tower["health"..tostring(i-0.5).."SecondsAgo"]
+			                end
+			            end
+					end
+				end
+	        end)
+		end
+		RefreshBuildingHealth()
 		if tower ~= nil then
 			local tableNearbyEnemyHeroes = utility.GetEnemiesNearLocation(tower:GetLocation(), 700)
+            if tableNearbyEnemyHeroes ~= nil and #tableNearbyEnemyHeroes >= 1 and tower["health1SecondsAgo"] and tower:GetHealth() - tower["health1SecondsAgo"] >= 10 * DotaTime() / 60 and DotaTime() >= 12 * 60 then
+                GetBot():ActionImmediate_Glyph()
+            end
 			if tower:GetHealth() >= 200 and tower:GetHealth() <= 1000 and #tableNearbyEnemyHeroes >= 2 then
 				GetBot():ActionImmediate_Glyph()
 				break
@@ -71,7 +90,11 @@ local function SecondaryOperation()
 end
 
 function CourierUsageThink()
-	Courier.CourierUsageThink()
+	if not GetBot():IsAlive() then
+		return
+	end
+	AbilityExtensions:TickFromDota()
+	--Courier.CourierUsageThink()
 	SecondaryOperation()
 end
 
@@ -329,6 +352,10 @@ function ConsiderAbility(AbilitiesReal, Consider)
 	return cast
 end
 
+local worldBounds = GetWorldBounds()
+local function OutOfBound(vector)
+    return worldBounds[1] >= vector.x or worldBounds[2] >= vector.y or worldBounds[3] <= vector.x or worldBounds[4] <= vector.y
+end
 function UseAbility(AbilitiesReal, cast)
 	local npcBot = GetBot()
 	local HighestDesire = 0
@@ -343,24 +370,54 @@ function UseAbility(AbilitiesReal, cast)
 	if (HighestDesire > 0) then
 		local j = HighestDesireAbilityNumber
 		local ability = AbilitiesReal[j]
+		if not ability:IsCooldownReady() then
+			print("Ability still in cooldown: "..ability:GetName())
+			return
+		end
+
+        local function CallWithTarget()
+            cast.Type[j] = "Target"
+            if AbilityExtensions:IsVector(cast.Target[j]) then
+                print("Wrong target type")
+                print(ability:GetName(), cast.Target[j], cast.Type[j])
+            else
+                npcBot:Action_UseAbilityOnEntity(ability, cast.Target[j])
+            end
+        end
+        local function CallWithLocation()
+            cast.Type[j] = "Location"
+            if not AbilityExtensions:IsVector(cast.Target[j]) then
+                print("Wrong target type")
+                print(ability:GetName(), cast.Target[j], cast.Type[j])
+            elseif OutOfBound(cast.Target[j]) then
+                print("Ability cast out of world bounds!")
+                print(ability:GetName(), cast.Target[j], cast.Type[j])
+            else
+                npcBot:Action_UseAbilityOnLocation(ability, cast.Target[j])
+            end
+        end
+
 		if (cast.Type[j] == nil) then
 			if (utility.CheckFlag(ability:GetBehavior(), ABILITY_BEHAVIOR_NO_TARGET)) then
 				npcBot:Action_UseAbility(ability)
 			elseif (utility.CheckFlag(ability:GetBehavior(), ABILITY_BEHAVIOR_POINT)) then
-				npcBot:Action_UseAbilityOnLocation(ability, cast.Target[j])
+                CallWithLocation()
 			elseif (utility.CheckFlag(ability:GetTargetType(), ABILITY_TARGET_TYPE_TREE)) then
+                cast.Type[j] = "Tree"
 				npcBot:Action_UseAbilityOnTree(ability, cast.Target[j])
 			else
-				npcBot:Action_UseAbilityOnEntity(ability, cast.Target[j])
+                CallWithTarget()
 			end
 		else
-			if (cast.Type[j] == "Target") then
-				npcBot:Action_UseAbilityOnEntity(ability, cast.Target[j])
-			elseif (cast.Type[j] == "Location") then
-				npcBot:Action_UseAbilityOnLocation(ability, cast.Target[j])
-			else
-				npcBot:Action_UseAbility(ability)
-			end
+            if cast.Type[j] == "Target" then
+                CallWithTarget()
+            elseif cast.Type[j] == "Location" then
+                CallWithLocation()
+            elseif cast.Type[j] == "Tree" then
+                npcBot:Action_UseAbilityOnTree(ability, cast.Target[j])
+            else
+                npcBot:Action_UseAbility(ability)
+            end
 		end
         return j, cast.Target[j], cast.Type[j]
 	end

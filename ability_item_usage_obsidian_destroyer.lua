@@ -73,7 +73,10 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,
+function(t)
+    return t:HasModifier("modifier_obsidian_destroyer_astral_imprisonment_prison") or AbilityExtensions:NormalCanCast(t)
+end}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -274,7 +277,7 @@ local oldConsider2 = function()
 		local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( CastRange, true, BOT_MODE_NONE );
 		for _,npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
-			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy))
+			if ( CanCast[abilityNumber]( npcEnemy ) and not AbilityExtensions:IsOrGoingToBeSeverelyDisabled(npcEnemy))
 			then
 				local Damage2 = npcEnemy:GetEstimatedDamageToTarget( false, npcBot, 3.0, DAMAGE_TYPE_ALL );
 				if ( Damage2 > nMostDangerousDamage )
@@ -285,7 +288,7 @@ local oldConsider2 = function()
 			end
 		end
 
-		if ( npcMostDangerousEnemy ~= nil and not enemyDisabled(npcMostDangerousEnemy))
+		if ( npcMostDangerousEnemy ~= nil and not AbilityExtensions:IsOrGoingToBeSeverelyDisabled(npcMostDangerousEnemy))
 		then
 			return BOT_ACTION_DESIRE_LOW, npcMostDangerousEnemy;
 		end
@@ -298,7 +301,7 @@ local oldConsider2 = function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL)- 100 and #allys <= 1 and not enemyDisabled(WeakestEnemy))
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL)- 100 and #allys <= 1 and not AbilityExtensions:IsOrGoingToBeSeverelyDisabled(WeakestEnemy))
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
 				end
@@ -317,7 +320,7 @@ local oldConsider2 = function()
 		do
 			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) 
 			then
-				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy)) 
+				if ( CanCast[abilityNumber]( npcEnemy ) and not AbilityExtensions:IsOrGoingToBeSeverelyDisabled(npcEnemy)) 
 				then
 					return BOT_ACTION_DESIRE_HIGH, npcEnemy;
 				end
@@ -325,14 +328,13 @@ local oldConsider2 = function()
 		end
 	end
 	
-	--消耗
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
 		if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
 		then
 			if (WeakestEnemy~=nil)
 			then
-				if ( CanCast[abilityNumber]( WeakestEnemy ) and GetUnitToUnitDistance(npcBot,WeakestEnemy)< CastRange+200)
+				if ( CanCast[abilityNumber]( WeakestEnemy ) and GetUnitToUnitDistance(npcBot,WeakestEnemy)< CastRange+200 and not AbilityExtensions:IsOrGoingToBeSeverelyDisabled(WeakestEnemy))
 				then
 					return BOT_ACTION_DESIRE_LOW,WeakestEnemy
 				end
@@ -350,7 +352,7 @@ local oldConsider2 = function()
 
 		if ( npcTarget ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcTarget ) and not enemyDisabled(npcTarget) and GetUnitToUnitDistance(npcBot,npcTarget) > 75 * #allys 
+			if ( CanCast[abilityNumber]( npcTarget ) and not AbilityExtensions:IsOrGoingToBeSeverelyDisabled(npcTarget) and GetUnitToUnitDistance(npcBot,npcTarget) > 75 * #allys 
 				and GetUnitToUnitDistance(npcBot,npcTarget) < CastRange + 100)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcTarget
@@ -512,8 +514,6 @@ end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
-
-AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability

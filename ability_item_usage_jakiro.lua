@@ -17,9 +17,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName =  { "jakiro_dual_breath", "jakiro_ice_path", "jakiro_liquid_fire", "jakiro_liquid_ice", "jakiro_macropyre" }
-local abilityIndex = utility.ReverseTable(abilityName)
 
 local AbilityToLevelUp=
 {
@@ -87,6 +84,7 @@ end
 function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
+
 
 Consider[1]=function()
 	local abilityNumber=1
@@ -460,9 +458,7 @@ Consider[3]=function()
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
-	
-	
+	return BOT_ACTION_DESIRE_NONE
 end
 
 Consider[4] = function()	
@@ -669,13 +665,10 @@ end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
-
-	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
-	then 
+    then
 		return
 	end
-	
 	ComboMana=GetComboMana()
 	AttackRange=npcBot:GetAttackRange()
 	ManaPercentage=npcBot:GetMana()/npcBot:GetMaxMana()

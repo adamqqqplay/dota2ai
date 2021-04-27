@@ -15,7 +15,7 @@ function utilityModule.HasImmuneDebuff(npcEnemy)
 end
 
 function utilityModule.NCanCast( npcEnemy )--normal judgement
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable() and not utilityModule.HasImmuneDebuff(npcEnemy) and not npcEnemy:IsIllusion()
+	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable() and not utilityModule.HasImmuneDebuff(npcEnemy)
 end
 
 function utilityModule.MiCanCast( npcEnemy )--magic immune
@@ -23,7 +23,7 @@ function utilityModule.MiCanCast( npcEnemy )--magic immune
 end
 
 function utilityModule.UCanCast( npcEnemy )--magic immune
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable() and not utilityModule.HasImmuneDebuff(npcEnemy) and not npcEnemy:IsIllusion() and not npcEnemy:HasModifier("modifier_item_sphere") and not npcEnemy:HasModifier("modifier_item_sphere_target")
+	return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable() and not utilityModule.HasImmuneDebuff(npcEnemy) and not npcEnemy:IsIllusion()
 end
 
 function utilityModule.CanCastNoTarget()

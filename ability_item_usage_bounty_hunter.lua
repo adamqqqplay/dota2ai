@@ -29,12 +29,12 @@ local AbilityToLevelUp=
 	Abilities[3],
 	Abilities[3],
 	"talent",
-	Abilities[3],
+	Abilities[2],
 	Abilities[4],
 	Abilities[2],
 	Abilities[2],
 	"talent",
-	Abilities[2],
+	Abilities[3],
 	"nil",
 	Abilities[4],
 	"nil",
@@ -132,10 +132,10 @@ Consider[1]=function()	--Target Ability Example
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
-					if(GetUnitToUnitDistance(npcBot,WeakestEnemy)<CastRange and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk"))
+					if(GetUnitToUnitDistance(npcBot,WeakestEnemy)<CastRange and not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk"))
 					then
 						return BOT_ACTION_DESIRE_HIGH, WeakestEnemy;
-					elseif(creeps[1]~=nil and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk") and WeakestEnemy:HasModifier("modifier_bounty_hunter_track"))
+					elseif(creeps[1]~=nil and not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk") and WeakestEnemy:HasModifier("modifier_bounty_hunter_track"))
 					then
 						return BOT_ACTION_DESIRE_HIGH, creeps[1];
 					end
@@ -206,10 +206,10 @@ Consider[1]=function()	--Target Ability Example
 				then
 					if ( CanCast[abilityNumber]( WeakestEnemy ) )
 					then
-						if(GetUnitToUnitDistance(npcBot,WeakestEnemy)<CastRange and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk"))
+						if(GetUnitToUnitDistance(npcBot,WeakestEnemy)<CastRange and not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk"))
 						then
 							return BOT_ACTION_DESIRE_HIGH, WeakestEnemy;
-						elseif(creeps[1]~=nil and WeakestEnemy:HasModifier("modifier_bounty_hunter_track") and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk"))
+						elseif(creeps[1]~=nil and WeakestEnemy:HasModifier("modifier_bounty_hunter_track") and not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk"))
 						then
 							return BOT_ACTION_DESIRE_HIGH, creeps[1];
 						end
@@ -231,10 +231,10 @@ Consider[1]=function()	--Target Ability Example
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ))
 			then
-				if(GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk"))
+				if(GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange and not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk"))
 				then
 					return BOT_ACTION_DESIRE_HIGH, npcEnemy;
-				elseif(creeps[1]~=nil and npcEnemy:HasModifier("modifier_bounty_hunter_track") and not npcBot:HasModifier("modifier_bounty_hunter_wind_walk"))
+				elseif(creeps[1]~=nil and npcEnemy:HasModifier("modifier_bounty_hunter_track") and not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk"))
 				then
 					return BOT_ACTION_DESIRE_HIGH, creeps[1];
 				end
@@ -303,6 +303,7 @@ Consider[3]=function()
 	
 end
 
+local EnlargeCastRange
 Consider[4]=function()
 	local abilityNumber=4
 	--------------------------------------
@@ -314,9 +315,12 @@ Consider[4]=function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
-	local CastRange = ability:GetCastRange();
-	
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local CastRange = 1599
+	if EnlargeCastRange == nil then
+		EnlargeCastRange = AbilityExtensions:EveryManySeconds(0.5, function() CastRange = ability:GetCastRange() end)
+	end
+	EnlargeCastRange()
+	local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange, true)
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------

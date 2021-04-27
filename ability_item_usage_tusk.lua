@@ -104,7 +104,7 @@ Consider[1]=function()
 	local CastRange = 1600;
 	local Damage = ability:GetSpecialValueInt("shard_damage");
 	local Radius = ability:GetSpecialValueInt( "shard_width" );
-	local CastPoint = ability:GetCastPoint()+ability:GetSpecialValueFloat( "delay" );
+	local CastPoint = ability:GetCastPoint()--+ability:GetSpecialValueFloat( "delay" );
 	local Speed = ability:GetSpecialValueInt("shard_speed");
 	
 	local HeroHealth=10000

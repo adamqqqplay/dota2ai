@@ -10,10 +10,10 @@ local ItemsToBuy =
 	"item_tango",
 	"item_hand_of_midas",
 	"item_boots",
-	"item_cyclone",
+    "item_ultimate_scepter",
+    "item_recipe_travel_boots",
+    "item_cyclone",
 	"item_black_king_bar",
-	"item_ultimate_scepter",
-	"item_recipe_travel_boots",
 	"item_black_king_bar",
 	"item_sphere",
 	"item_sheepstick"

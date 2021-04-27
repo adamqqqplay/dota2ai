@@ -295,8 +295,7 @@ Consider[2]=function()
 	-- Check for a channeling enemy
 	for _,npcEnemy in pairs( enemys )
 	do
-		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy ) and not npcEnemy:HasModifier("modifier_teleporting") and not npcEnemy:HasModifier("modifier_boots_of_travel_incoming")) 
-		then
+		if AbilityExtensions:IsChannelingAbility(npcEnemy) and CanCast[abilityNumber](npcEnemy) then
 			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation(),"Location"
 		end
 	end

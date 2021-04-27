@@ -349,7 +349,7 @@ local allBotHeroes = {
 	"npc_dota_hero_enchantress",
 	"npc_dota_hero_enigma",
 	"npc_dota_hero_earthshaker",
-	--"npc_dota_hero_ember_spirit",
+	"npc_dota_hero_ember_spirit",
 
 	"npc_dota_hero_faceless_void",
 	"npc_dota_hero_furion",
@@ -457,7 +457,8 @@ local hero_pool_position_1 = {
 	"npc_dota_hero_troll_warlord",
 }
 local hero_pool_position_2 = {
-	"npc_dota_hero_leshrac",
+	-- "npc_dota_hero_leshrac",
+	"npc_dota_hero_ember_spirit",
 	"npc_dota_hero_dragon_knight",
 	"npc_dota_hero_huskar",
 	"npc_dota_hero_zuus",

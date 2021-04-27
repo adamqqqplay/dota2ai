@@ -17,10 +17,10 @@ local p =
     "item_crimson_guard",
     "item_heart", --龙心7.20
 	"item_black_king_bar", --BKB
-	"item_lotus_orb",
     "item_shivas_guard",
     "item_ultimate_scepter",
     "item_recipe_ultimate_scepter",
+    "item_lotus_orb",
 }
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), p)
 
