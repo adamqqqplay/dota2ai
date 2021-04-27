@@ -48,7 +48,7 @@ local function ConsiderGlyph()
 	        end)
 		end
 		RefreshBuildingHealth()
-		if tower ~= nil then
+		if tower ~= nil and tower:GetHealth() > 0 then
 			local tableNearbyEnemyHeroes = utility.GetEnemiesNearLocation(tower:GetLocation(), 700)
             if tableNearbyEnemyHeroes ~= nil and #tableNearbyEnemyHeroes >= 1 and tower["health1SecondsAgo"] and tower:GetHealth() - tower["health1SecondsAgo"] >= 10 * DotaTime() / 60 and DotaTime() >= 12 * 60 then
                 GetBot():ActionImmediate_Glyph()
