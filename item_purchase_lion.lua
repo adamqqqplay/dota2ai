@@ -9,7 +9,6 @@ local ItemsToBuy =
 	"item_tango",
 	"item_tango",
 	"item_clarity",
-	"item_wind_lace",
 	"item_boots",
 	"item_tranquil_boots",
 	"item_blink",

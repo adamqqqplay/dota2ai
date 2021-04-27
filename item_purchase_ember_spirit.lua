@@ -18,7 +18,6 @@ local ItemsToBuy =
 	"item_greater_crit",
     "item_ultimate_scepter",
     "item_aghanims_shard",
-	"item_maelstrom", --电锤7.14
     "item_octarine_core", --玲珑心
 }
 

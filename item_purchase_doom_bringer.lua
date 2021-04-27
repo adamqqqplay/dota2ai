@@ -12,16 +12,13 @@ local ItemsToBuy =
 	"item_bracer",
 	"item_boots",
     "item_magic_wand",
-	"item_blades_of_attack",
-	"item_chainmail", --相位7.21
+    "item_phase_boots",
 	"item_ancient_janggo", --战鼓7.20
 	"item_invis_sword", --隐刀
 	"item_ultimate_scepter",
 	"item_blade_mail", --刃甲
 	"item_shivas_guard", --希瓦
-	"item_ultimate_orb",
-	"item_recipe_silver_edge", --大隐刀
-	"item_assault" --强袭
+	"item_silver_edge", --大隐刀
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

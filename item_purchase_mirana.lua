@@ -15,7 +15,8 @@ local ItemsToBuy =
 	"item_manta",
 	"item_black_king_bar",
 	"item_butterfly",
-	"item_mjollnir" --大雷锤
+	"item_mjollnir", --大雷锤
+	"item_greater_crit",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

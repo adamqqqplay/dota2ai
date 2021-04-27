@@ -387,6 +387,23 @@ M.SortByMinFirst = function(self, tb, map)
     end)
 end
 
+function M:Remove_Modify(tb, item)
+    local filter = item
+    if type(item) ~= "function" then
+        filter = function(t) return t == item end
+    end
+    local i = 1
+    local d = #tb
+    while i <= d do
+        if filter(tb[i]) then
+            table.remove(tb, i)
+            d = d - 1
+        else
+            i = i + 1
+        end
+    end
+end
+
 function M:InsertAfter_Modify(tb, item, after)
     if after == nil then
         table.insert(tb, item)
@@ -915,9 +932,9 @@ M.TryUseTp = function(self, npc)
     if item ~= nil and item:IsFullyCastable() and self:CanMove(npc) then
         local distanceFromFountain
         if npc:GetTeam() == TEAM_RADIANCE then
-            distanceFromFountain = radianceAncientLocation + self:CreateVector(400, 400)
+            distanceFromFountain = radianceAncientLocation + Vector(400, 400)
         else
-            distanceFromFountain = direAncientLocation + self:CreateVector(-400, -400)
+            distanceFromFountain = direAncientLocation + Vector(-400, -400)
         end
         npc:ActionImmediate_UseAbilityOnLocation(item, distanceFromFountain)
         return true
@@ -1445,33 +1462,8 @@ end
 
 -- geometry
 
-function M:CreateVector(x, y)
-    if self.UnitVectorX == nil then
-        local vector1
-        local vector2
-        for _, unit in GetUnitList(UNIT_LIST_ALL) do
-            local location = unit:GetLocation()
-            if location.x ~= location.y then
-                if vector1 then
-                    vector2 = location
-                    local a4 = vector2.y - vector2.x 
-                    local a3 = vector1.x - vector1.y 
-                    local v = (vector1*a4 + vector2*a3) / (vector1.x*vector2.y - vector1.y-vector2.x)
-                    self.UnitVectorX = (vector1-v*vector1.y) / (vector1.x-vector1.y)
-                    self.UnitVectorY = (vector1-v*vector1.x) / (vector1.y-vector1.x)
-                    print(self:ToStringVector(v))
-                    return
-                else
-                    vector1 = location
-                end
-            end
-        end
-    end
-    return self.UnitVectorX*x+self.UnitVectorY*y 
-end
-
 M.IsVector = function(self, object)
-    return type(object)=="userdata" and type(object.x)=="number" and type(object.y)=="number" and type(object.z)=="number" and type(object.Length) == "function"
+    return type(object)=="userdata" and type(object.x)=="number" and type(object.y)=="number" and type(object.z)=="number"
 end
 M.ToStringVector = function(self, object)
     return string.format("(%d,%d,%d)",object.x,object.y,object.z)
@@ -1510,43 +1502,43 @@ M.GetLocationToLocationDistance = function(self, a, b)
     return ((a.x-b.x)^2+(a.y-b.y)^2)^0.5
 end
 -- Find the location to use a aoe at a single target with the least distance the hero needs to walk before casting
-M.FindAOELocationAtSingleTarget = function(self, npcBot, target, radius, castRange, castPoint)
-    if self:CanMove(target) then
-        radius = radius * 0.8
-    end
-    local g
-    GeneratePath(npcBot:GetLocation(), target:GetLocation(), {}, function(distance, waypoints)
-        if waypoints == 0 then
-            waypoints = { npcBot:GetLocation(), target:GetLocation() }
-        end
-        for i = 1, #waypoints-1 do
-            local waypoint1 = waypoints[i]
-            local waypoint2 = waypoints[i+1]
-            local dis1 = GetUnitToLocationDistance(target, waypoint1)
-            local dis2 = GetUnitToLocationDistance(target, waypoint2)
-            if dis1 > dis2 then
-                if radius >= dis1 then
-                    g = waypoint1
-                    return
-                elseif radius >= dis2 then
-                    local waypointDis = self:GetLocationToLocationDistance(waypoint1, waypoint2)
-                    local cosine = self:GetCos(dis2, waypointDis, dis1)
-                    local walkDis = dis1*cosine - (dis1^2-radius*2)^0.5
-                    local targetLocation = self:GetPointFromLineByDistance(waypoint1, waypoint2, walkDis)
-                    g = targetLocation
-                    return
-                end
-            else
-                if radius >= dis1 then
-                    g = waypoint1
-                    return
-                end
-            end
-        end
-        g = waypoints[#waypoints]
-    end)
-    return g
-end
+--M.FindAOELocationAtSingleTarget = function(self, npcBot, target, radius, castRange, castPoint)
+--    if self:CanMove(target) then
+--        radius = radius * 0.8
+--    end
+--    local g
+--    GeneratePath(npcBot:GetLocation(), target:GetLocation(), {}, function(distance, waypoints)
+--        if waypoints == 0 then
+--            waypoints = { npcBot:GetLocation(), target:GetLocation() }
+--        end
+--        for i = 1, #waypoints-1 do
+--            local waypoint1 = waypoints[i]
+--            local waypoint2 = waypoints[i+1]
+--            local dis1 = GetUnitToLocationDistance(target, waypoint1)
+--            local dis2 = GetUnitToLocationDistance(target, waypoint2)
+--            if dis1 > dis2 then
+--                if radius >= dis1 then
+--                    g = waypoint1
+--                    return
+--                elseif radius >= dis2 then
+--                    local waypointDis = self:GetLocationToLocationDistance(waypoint1, waypoint2)
+--                    local cosine = self:GetCos(dis2, waypointDis, dis1)
+--                    local walkDis = dis1*cosine - (dis1^2-radius*2)^0.5
+--                    local targetLocation = self:GetPointFromLineByDistance(waypoint1, waypoint2, walkDis)
+--                    g = targetLocation
+--                    return
+--                end
+--            else
+--                if radius >= dis1 then
+--                    g = waypoint1
+--                    return
+--                end
+--            end
+--        end
+--        g = waypoints[#waypoints]
+--    end)
+--    return g
+--end
 M.FindAOELocationAtSingleTarget = function(self, npcBot, target, radius, castRange, castPoint)
     radius = radius - 80
     local distance = GetUnitToUnitDistance(npcBot, target)
@@ -1642,9 +1634,18 @@ M.PURCHASE_ITEM_INSUFFICIENT_GOLD=63
 M.PURCHASE_ITEM_NOT_AT_SECRET_SHOP=62
 M.PURCHASE_ITEM_NOT_AT_HOME_SHOP=67
 M.PURCHASE_ITEM_SUCCESS=-1
+
 -- invalid order(3) unrecognised order name
 -- invalid order(40) order not allowed for illusions
--- attempt to purchase "item_energy_booster" failed code 68
+-- target unit is dead (20)
+-- target tree is not active (43)
+-- ability is still in cooldown (15)
+-- ability is hidden
+-- ability is
+-- cannot cast ability on tree
+-- cannot cast ability on target
+-- target is unselectable
+--
 
 M.IgnoreDamageModifiers = {
     "modifier_abaddon_borrowed_time",

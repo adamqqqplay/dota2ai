@@ -52,7 +52,7 @@ local function GiveToMidLaner()
     if DotaTime() <= 0 then return nil end
     for k, _ in pairs(teamPlayers) do
         local member = GetTeamMember(k)
-        if member ~= nil and not member:IsIllusion() and member:IsAlive() and member:GetMaxHealth()-member:GetHealth() >= 150 then
+        if member ~= nil and not member:IsIllusion() and member:IsAlive() and member:GetMaxHealth()-member:GetHealth() >= 200 then
             local num_sts = GetItemCount(member, "item_tango_single")
             local num_ff = GetItemCount(member, "item_faerie_fire")
             local num_stg = GetItemCharges(member, "item_tango")
@@ -425,7 +425,6 @@ function M.UnImplementedItemUsage()
                         return GetUnitToLocationDistance(tower, GetTreelocation(t)) > tower:GetAttackRange()
                     end)
                     if trees[1] ~= nil then
-                        print(npcBot:GetUnitName()..": use on tree .."..tostring(GetTreeLocation(trees[1])))
                         npcBot:Action_UseAbilityOnTree(sCurItem, trees[1])
                         return
                     end
@@ -460,7 +459,6 @@ function M.UnImplementedItemUsage()
     if itemQuellingBlade ~= nil and itemQuellingBlade:IsFullyCastable() then
         local trees = npcBot:GetNearbyTrees(250)
         if #trees >= 8 and AbilityExtensions:Contains(npcBot:GetNearbyHeroes(900, true, BOT_MODE_NONE), function(t) return t:GetUnitName() == "npc_dota_hero_furion" end) then
-            print(npcBot:GetUnitName()..": use on tree .."..tostring(GetTreeLocation(trees[1])))
             npcBot:Action_UseAbilityOnTree(itemQuellingBlade, trees[1])
             return
         end

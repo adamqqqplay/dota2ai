@@ -328,7 +328,7 @@ function M.WeNeedTpscroll()
 
 	-- Count current number of TP scrolls
 	local iScrollCount = 0;
-	for i = 0, 16 do
+	for i = 9, 16 do
 		local sCurItem = npcBot:GetItemInSlot(i);
 		if ( sCurItem ~= nil and sCurItem:GetName() == "item_tpscroll" ) then
 			iScrollCount = iScrollCount+sCurItem:GetCurrentCharges()
@@ -340,7 +340,6 @@ function M.WeNeedTpscroll()
     end
 	-- If we are at the sideshop or fountain with no TPs, then buy one or two
 	if ((iScrollCount <= 2 and DotaTime() >= 5*60) or iScrollCount == 0) and item_travel_boots_1 == nil and item_travel_boots_2 == nil then
-
 		if npcBot:DistanceFromFountain() <= 200 then
 
 			if ( DotaTime() > 2*60 and DotaTime() < 20 * 60 ) then
@@ -349,16 +348,6 @@ function M.WeNeedTpscroll()
 				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 			end
-		--[[else
-			if(npcBot.WeNeedTpscrollTimer==nil)
-			then
-				npcBot.WeNeedTpscrollTimer=DotaTime()
-			end
-			if(DotaTime()-npcBot.WeNeedTpscrollTimer>120)
-			then
-				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
-				npcBot.WeNeedTpscrollTimer=DotaTime()
-			end]]
 		else
 			npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 		end
@@ -367,9 +356,7 @@ function M.WeNeedTpscroll()
 end
 
 function M.SellSpecifiedItem( item_name )
-
 	local npcBot = GetBot();
-
 	local itemCount = 0;
 	local item = nil;
 
@@ -393,9 +380,7 @@ function M.SellSpecifiedItem( item_name )
 end
 
 function M.GetItemSlotsCount2(npcBot)
-
 	local itemCount = 0;
-
 	for i = 0, 8
 	do
 		local sCurItem = npcBot:GetItemInSlot(i);
@@ -410,7 +395,6 @@ end
 
 function M.GetItemSlotsCount()
 	local npcBot = GetBot();
-
 	local itemCount = 0;
 
 	for i = 0, 8
@@ -426,13 +410,7 @@ function M.GetItemSlotsCount()
 end
 
 function M.IsItemSlotsFull()
-	local itemCount = M.GetItemSlotsCount();
-	if(itemCount>=8)
-	then
-		return true
-	else
-		return false
-	end
+	return M.GetItemSlotsCount() >= 8
 end
 
 function M.checkItemBuild(ItemsToBuy)
@@ -575,15 +553,6 @@ function M.BuySupportItem()
 		end
 
 
-		-- if(wardState== nil)
-		-- then
-
-		-- else
-
-		-- end
-
-
-
 		local item_ward_observer = M.GetItemIncludeBackpack( "item_ward_observer" );
 		local item_ward_sentry = M.GetItemIncludeBackpack( "item_ward_dispenser" );
 		local item_gem = M.GetItemIncludeBackpack( "item_gem" )
@@ -694,7 +663,9 @@ M.IsConsumableItem = function(self, item)
 end
 
 
-
+local function HasScepter(npc)
+    return npc:HasScepter() or npc:HasModifier("modifier_item_ultimate_scepter")
+end
 
 M.CreateItemInformationTable = function(self, npcBot, itemTable)
     local function ExpandFirstLevel(item)
@@ -753,6 +724,10 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable)
                 table.remove(infoTable, 1)
             end
         end
+        if npcBot:HasModifier("modifier_item_ultimate_scepter") then
+            AbilityExtensions:Remove_Modify(infoTable, function(t) return t.name == "item_ultimate_scepter" or t.name == "item_recipe_ultimate_scepter"  end)
+        end
+
     end
 
     local g = {}
@@ -796,77 +771,73 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable)
     --AbilityExtensions:DebugArray(AbilityExtensions:Map(AbilityExtensions:GetAllBoughtItems(npcBot), function(t) return t:GetName() end))
 end
 
-function M.SellExtraItemExtend()
-    local npcBot=GetBot()
-    local level=npcBot:GetLevel()
-    local item_travel_boots = M.NoNeedTpscrollForTravelBoots();
-    -- local item_travel_boots_1 = item_travel_boots[1];
-    -- local item_travel_boots_2 = item_travel_boots[2];
+local UseCourier = function()
+    local npcBot = GetBot()
+    local courier = AbilityExtensions:GetMyCourier(npcBot)
+    if courier == nil then
+        return
+    end
+    local courierState = GetCourierState(courier)
+    if courierState == COURIER_STATE_DEAD then
+        return
+    end
+    local courierItemNumber = #AbilityExtensions:GetCourierItems(courier)
 
-    if(M.IsItemSlotsFull())
-    then
-        if(GameTime()>8*60 or level>=6) and AbilityExtensions:GetEmptyItemSlots(npcBot) < 2
-        then
-            M.SellSpecifiedItem("item_faerie_fire")
-            M.SellSpecifiedItem("item_tango")
-            M.SellSpecifiedItem("item_clarity")
-            M.SellSpecifiedItem("item_flask")
+    if not npcBot:IsAlive() then
+        if courierState ~= COURIER_STATE_RETURNING_TO_BASE and courierState ~= COURIER_STATE_AT_BASE then
+            npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_RETURN)
         end
-        if(GameTime()>25*60 or level>=10) and AbilityExtensions:GetEmptyItemSlots(npcBot) < 2
-        then
-            M.SellSpecifiedItem("item_orb_of_venom")
-            M.SellSpecifiedItem("item_enchanted_mango")
-            M.SellSpecifiedItem("item_bracer")
-            M.SellSpecifiedItem("item_null_talisman")
-            M.SellSpecifiedItem("item_wraith_band")
-        end
-        if(GameTime()>35*60 or level>=15) and AbilityExtensions:GetEmptyItemSlots(npcBot) < 2
-        then
-            M.SellSpecifiedItem("item_branches")
-            M.SellSpecifiedItem("item_bottle")
-            M.SellSpecifiedItem("item_magic_wand")
-            M.SellSpecifiedItem("item_flask")
-            M.SellSpecifiedItem("item_ancient_janggo")
-            M.SellSpecifiedItem("item_ring_of_basilius")
-            M.SellSpecifiedItem("item_quelling_blade")
-            M.SellSpecifiedItem("item_soul_ring")
-            M.SellSpecifiedItem("item_buckler")
-            M.SellSpecifiedItem("item_ring_of_basilius")
-            M.SellSpecifiedItem("item_headdress")
-
-
-        end
-        if(GameTime()>40*60 or level>=20) and AbilityExtensions:GetEmptyItemSlots(npcBot) < 2
-        then
-            M.SellSpecifiedItem("item_vladmir")
-            M.SellSpecifiedItem("item_urn_of_shadows")
-            M.SellSpecifiedItem("item_drums_of_endurance")
-            M.SellSpecifiedItem("item_hand_of_midas")
-            M.SellSpecifiedItem("item_dust")
-        end
-        if(GameTime()>40*60 and npcBot:GetGold()>2500 and (item_travel_boots[1]==nil and item_travel_boots[2]==nil) and npcBot.HaveTravelBoots~=true )
-        then
-            table.insert(npcBot.itemInformationTable, { name = "item_travel_boots", recipe = {"item_boots", "item_recipe_travel_boots" }})
-            npcBot.HaveTravelBoots = true
-        end
-        if GameTime()>45*60 and npcBot:GetGold()>2000 and (item_travel_boots[1]==nil and item_travel_boots[2]==nil) and not npcBot.HaveTravelBoots2 then
-            table.insert(npcBot.itemInformationTable,  { name = "item_travel_boots_2", recipe = { "item_recipe_travel_boots" }})
-            npcBot.HaveTravelBoots2 = true
-        end
+        return
+    end
+    local nearSecretShop = courier:DistanceFromSecretShop() <= 180
+    local function IsWaitingAtSecretShop()
+        return courierState == COURIER_STATE_IDLE and nearSecretShop and npcBot:GetGold() >= GetItemCost(sNextItem)*0.9
     end
 
-    if(item_travel_boots[1]~=nil or item_travel_boots[2]~=nil)
-    then
-        M.SellSpecifiedItem("item_boots")
-        M.SellSpecifiedItem("item_arcane_boots")
-        M.SellSpecifiedItem("item_phase_boots")
-        M.SellSpecifiedItem("item_power_treads_agi")
-        M.SellSpecifiedItem("item_power_treads_int")
-        M.SellSpecifiedItem("item_power_treads_str")
-        M.SellSpecifiedItem("item_tranquil_boots")
+    if courier.returnWhenCarryingTooMany then
+        if AbilityExtensions:DistanceFromFountain(courier) <= 1200 and courierState == COURIER_STATE_AT_BASE and (courierState.returnCarryNumber < courierItemNumber or #AbilityExtensions:GetStashItems(npcBot) > 0) then
+            npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TAKE_AND_TRANSFER_ITEMS)
+            courierState.returnWhenCarryingTooMany = nil
+        end
+        if courierState == COURIER_STATE_AT_BASE and IsItemPurchasedFromSecretShop(sNextItem) and npcBot:GetGold() >= GetItemCost(sNextItem)*0.9 then
+            npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_SECRET_SHOP)
+        end
+        return
     end
 
+
+    if AbilityExtensions:GetEmptyItemSlots(npcBot) == 0 and courierItemNumber > 0 and GetUnitToUnitDistance(npcBot, courier) <= 100 then
+        courier.returnWhenCarryingTooMany = true
+        courier.returnCarryNumber = courierItemNumber
+        npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_RETURN)
+        return
+    end
+
+    if #AbilityExtensions:GetStashItems(npcBot) ~= 0 then
+        if (courierState == COURIER_STATE_AT_BASE or courierState == COURIER_STATE_IDLE) and not IsWaitingAtSecretShop() then
+            npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TAKE_AND_TRANSFER_ITEMS)
+            return
+        end
+    end
+    if #AbilityExtensions:GetCourierItems(courier) ~= 0 then
+        if courierState ~= COURIER_STATE_DELIVERING_ITEMS and not IsWaitingAtSecretShop() then
+            npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TRANSFER_ITEMS)
+            return
+        end
+    end
+    if IsItemPurchasedFromSecretShop(sNextItem) and npcBot:GetGold() >= GetItemCost(sNextItem)*0.9 then
+        courier.returnWhenCarryingTooMany = nil
+        if courierState == COURIER_STATE_AT_BASE then
+            npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_SECRET_SHOP)
+            return
+        end
+        if nearSecretShop and npcBot:GetGold() >= GetItemCost(sNextItem) then
+            npcBot:ActionImmediate_PurchaseItem(sNextItem)
+            return
+        end
+    end
 end
+UseCourier = AbilityExtensions:EveryManySeconds(1, UseCourier)
 
 M.ItemPurchaseExtend = function(self, ItemsToBuy)
     local function GetTopItemToBuy()
@@ -923,14 +894,14 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
     local sNextItem = GetTopItemToBuy()
     npcBot:SetNextItemPurchaseValue( GetItemCost( sNextItem ) )
 
-    M.SellExtraItemExtend(ItemsToBuy)
+    M.SellExtraItem(ItemsToBuy)
 
     if npcBot:DistanceFromFountain()<=2500 or npcBot:GetHealth()/npcBot:GetMaxHealth()<=0.35 then
-        npcBot.secretShopMode = false
+     npcBot.secretShopMode = false
     end
 
     if IsItemPurchasedFromSecretShop( sNextItem )==false then
-        npcBot.secretShopMode = false
+     npcBot.secretShopMode = false
     end
 
     if npcBot:GetGold() >= GetItemCost( sNextItem ) then
@@ -985,44 +956,6 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
         npcBot.secretShopMode = false;
     end
 
-    local function UseCourier()
-        local courier = AbilityExtensions:GetMyCourier(npcBot)
-        if courier == nil then
-            return
-        end
-        local courierState = GetCourierState(courier)
-        if courierState == COURIER_STATE_DEAD then
-            return
-        end
-        if not npcBot:IsAlive() then
-            if courierState ~= COURIER_STATE_RETURNING_TO_BASE and courierState ~= COURIER_STATE_AT_BASE then
-                npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_RETURN)
-            end
-            return
-        end
-        local nearSecretShop = courier:DistanceFromSecretShop() <= 180
-        local function IsWaitingAtSecretShop()
-            return courierState == COURIER_STATE_IDLE and nearSecretShop and npcBot:GetGold() >= GetItemCost(sNextItem)*0.9
-        end
-        if #AbilityExtensions:GetStashItems(npcBot) ~= 0 then
-            if (courierState == COURIER_STATE_AT_BASE or courierState == COURIER_STATE_IDLE) and not IsWaitingAtSecretShop() then
-                npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TAKE_AND_TRANSFER_ITEMS)
-            end
-        end
-        if #AbilityExtensions:GetCourierItems(courier) ~= 0 then
-            if courierState ~= COURIER_STATE_DELIVERING_ITEMS and not IsWaitingAtSecretShop() then
-                npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TRANSFER_ITEMS)
-            end
-        end
-        if IsItemPurchasedFromSecretShop(sNextItem) and npcBot:GetGold() >= GetItemCost(sNextItem)*0.9 then
-            if courierState == COURIER_STATE_AT_BASE then
-                npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_SECRET_SHOP)
-            end
-            if nearSecretShop and npcBot:GetGold() >= GetItemCost(sNextItem) then
-                npcBot:ActionImmediate_PurchaseItem(sNextItem)
-            end
-        end
-    end
     UseCourier()
 end
 

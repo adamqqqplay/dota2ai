@@ -20,6 +20,7 @@ local ItemsToBuy =
 	"item_ultimate_scepter", --蓝杖
 	"item_monkey_king_bar",
     "item_recipe_ultimate_scepter",
+    "item_butterfly",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
