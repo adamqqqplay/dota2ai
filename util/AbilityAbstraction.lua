@@ -861,11 +861,41 @@ M.GetEnemyHeroNumber = function(self, npcBot, enemies)
 end
 
 M.GetAvailableItem = function(self, npc, itemName)
-    for i = 0,6 do
+    for i = 0, 5 do
         local item = npc:GetItemInSlot(i)
         if item ~= nil and item:GetName() == itemName then
             return item
         end
+    end
+end
+
+local radianceAncientLocation = Vector(-7200,-6666)
+local direAncientLocation = Vector(7137,6548)
+
+M.GetAncientLocation = function(self, npc)
+    if npc:GetTeam() == TEAM_RADIANCE then
+        return radianceAncientLocation
+    else
+        return direAncientLocation
+    end
+end
+
+M.GetDistanceFromAncient = function(self, npc)
+    local fountain = self:GetAncientLocation(npc)
+    return GetUnitToLocationDistance(npc, fountain)
+end
+
+M.TryUseTp = function(self, npc)
+    local item = npc:GetItemInSlot(15)
+    if item ~= nil and item:IsFullyCastable() and self:CanMove(npc) then
+        local distanceFromFountain
+        if npc:GetTeam() == TEAM_RADIANCE then
+            distanceFromFountain = radianceAncientLocation + self:CreateVector(400, 400)
+        else
+            distanceFromFountain = direAncientLocation + self:CreateVector(-400, -400)
+        end
+        npc:ActionImmediate_UseAbilityOnLocation(item, distanceFromFountain)
+        return true
     end
 end
 
@@ -883,7 +913,7 @@ end
 
 M.GetEmptyInventorySlots = function(self, npc)
     local g = 0
-    for i = 0, 6 do
+    for i = 0, 5 do
         if npc:GetItemInSlot(i) == nil then
             g = g+1
         end
@@ -1386,6 +1416,31 @@ M.ExecuteAbilityLevelUp = function(self, npcBot)
 end
 
 -- geometry
+
+function M:CreateVector(x, y)
+    if self.UnitVectorX == nil then
+        local vector1
+        local vector2
+        for _, unit in GetUnitList(UNIT_LIST_ALL) do
+            local location = unit:GetLocation()
+            if location.x ~= location.y then
+                if vector1 then
+                    vector2 = location
+                    local a4 = vector2.y - vector2.x 
+                    local a3 = vector1.x - vector1.y 
+                    local v = (vector1*a4 + vector2*a3) / (vector1.x*vector2.y - vector1.y-vector2.x)
+                    self.UnitVectorX = (vector1-v*vector1.y) / (vector1.x-vector1.y)
+                    self.UnitVectorY = (vector1-v*vector1.x) / (vector1.y-vector1.x)
+                    print(self:ToStringVector(v))
+                    return
+                else
+                    vector1 = location
+                end
+            end
+        end
+    end
+    return self.UnitVectorX*x+self.UnitVectorY*y 
+end
 
 M.IsVector = function(self, object)
     return type(object)=="userdata" and type(object.x)=="number" and type(object.y)=="number" and type(object.z)=="number" and type(object.Length) == "function"

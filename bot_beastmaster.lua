@@ -7,7 +7,7 @@ local function DiveBombCanCast(target)
 end
 
 function HawkThink(minion)
-	local diveBomb = minion:GetAbilityByName("beastmaster_hawk_dive_bomb")
+	local diveBomb = minion:GetAbilityByName("beastmaster_hawk_dive")
 	if diveBomb:IsHidden() or not diveBomb:IsFullyCastable() then
 		return
 	end
@@ -16,7 +16,7 @@ function HawkThink(minion)
 	if DiveBombCanCast(target) then
 		minion:Action_UseAbilityOnEntity(diveBomb, target)
 	end
-	local nearbyEnemies = AbilityExtensions:Filter(AbilityExtensions:GetNearbyNonIllusionHeores(minion), DiveBombCanCast)
+	local nearbyEnemies = AbilityExtensions:Filter(AbilityExtensions:GetNearbyNonIllusionHeroes(minion), DiveBombCanCast)
 	if #nearbyEnemies > 0 then
 		minion:Action_UseAbilityOnEntity(nearbyEnemies[1], target)
 	end

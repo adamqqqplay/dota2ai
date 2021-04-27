@@ -337,27 +337,23 @@ function M.UnImplementedItemUsage()
         UsePowerTreads(pt)
     end
 
-    local bas = IsItemAvailable("item_ring_of_basilius")
-    if bas ~= nil and bas:IsFullyCastable() then
-        if mode == BOT_MODE_LANING and not bas:GetToggleState() then
-            npcBot:Action_UseAbility(bas)
-            return
-        elseif mode ~= BOT_MODE_LANING and bas:GetToggleState() then
-            npcBot:Action_UseAbility(bas)
-            return
-        end
-    end
+    -- local ringOfBasilius = IsItemAvailable("item_ring_of_basilius")
+    -- if ringOfBasilius and ringOfBasilius:IsFullyCastable() then
+    --     local expectedState = npcBot:GetActiveMode() == BOT_MODE_LANING
+    --     local currentState = ringOfBasilius:GetToggleState()
+    --     if expectedState ~= currentState then
+    --         ringOfBasilius:ToggleAutoCast()
+    --     end
+    -- end
 
-    local buck = IsItemAvailable("item_buckler")
-    if buck ~= nil and buck:IsFullyCastable() then
-        if mode == BOT_MODE_LANING and not buck:GetToggleState() then
-            npcBot:Action_UseAbility(buck)
-            return
-        elseif mode ~= BOT_MODE_LANING and buck:GetToggleState() then
-            npcBot:Action_UseAbility(buck)
-            return
-        end
-    end
+    -- local buckler = IsItemAvailable("item_buckler")
+    -- if buckler and buckler:IsFullyCastable() then
+    --     local expectedState = npcBot:GetActiveMode() == BOT_MODE_LANING
+    --     local currentState = buckler:GetToggleState()
+    --     if expectedState ~= currentState then
+    --         buckler:ToggleAutoCast()
+    --     end
+    -- end
 
     -- give tango to ally
     local itg = IsItemAvailable("item_tango")

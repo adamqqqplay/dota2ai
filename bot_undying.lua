@@ -11,4 +11,8 @@ function MinionThink(  hMinionUnit )
 			return;
 		end
 	end
-end	
+end
+
+function CourierUsageThink()
+
+end

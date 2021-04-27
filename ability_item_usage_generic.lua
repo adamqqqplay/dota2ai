@@ -35,8 +35,8 @@ local function ConsiderGlyph()
 		local tower = GetTower(GetTeam(), BuildingID)
 		if RefreshBuildingHealth == nil then
 			RefreshBuildingHealth = AbilityExtensions:EveryManySeconds(0.5, function()
-                if tower ~= nil and tower:IsAlive() then
-					if tower:GetMaxHealth() == tower:GetHealth() then
+                if tower ~= nil and tower:GetHealth() > 0 then
+					if tower:GetMaxHealth() ~= tower:GetHealth() then
 			            tower.health0SecondsAgo = tower:GetHealth()
 			            if tower:IsAlive() then
 			                for _, i in ipairs({0.5,1,1.5,2}) do
@@ -370,6 +370,10 @@ function UseAbility(AbilitiesReal, cast)
 	if (HighestDesire > 0) then
 		local j = HighestDesireAbilityNumber
 		local ability = AbilitiesReal[j]
+		if not ability:IsCooldownReady() then
+			print("Ability still in cooldown: "..ability:GetName())
+			return
+		end
 
         local function CallWithTarget()
             cast.Type[j] = "Target"
