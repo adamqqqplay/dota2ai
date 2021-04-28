@@ -337,19 +337,19 @@ function M.UnImplementedItemUsage()
         UsePowerTreads(pt)
     end
 
-    local ringOfBasilius = IsItemAvailable("item_ring_of_basilius")
-    if ringOfBasilius and ringOfBasilius:IsFullyCastable() then
-        if (npcBot:GetActiveMode() == BOT_MODE_LANING) ~= ringOfBasilius:GetToggleState() then
-            ringOfBasilius:ToggleAutoCast()
-        end
-    end
-
-    local buckler = IsItemAvailable("item_buckler")
-    if buckler and buckler:IsFullyCastable() then
-        if (npcBot:GetActiveMode() == BOT_MODE_LANING) ~= buckler:GetToggleState() then
-            buckler:ToggleAutoCast()
-        end
-    end
+    --local ringOfBasilius = IsItemAvailable("item_ring_of_basilius")
+    --if ringOfBasilius and ringOfBasilius:IsFullyCastable() then
+    --    if (npcBot:GetActiveMode() == BOT_MODE_LANING) ~= ringOfBasilius:GetToggleState() then
+    --        ringOfBasilius:ToggleAutoCast()
+    --    end
+    --end
+    --
+    --local buckler = IsItemAvailable("item_buckler")
+    --if buckler and buckler:IsFullyCastable() then
+    --    if (npcBot:GetActiveMode() == BOT_MODE_LANING) ~= buckler:GetToggleState() then
+    --        buckler:ToggleAutoCast()
+    --    end
+    --end
 
     -- give tango to ally
     local itg = IsItemAvailable("item_tango")
@@ -890,7 +890,7 @@ function M.UnImplementedItemUsage()
     local cyclone = IsItemAvailable("item_cyclone") or IsItemAvailable("item_wind_waker")
     if cyclone ~= nil and cyclone:IsFullyCastable() then
         if
-            npcTarget ~= nil and (AbilityExtensions:IsChanneling(npcTarget) and not AbilityExtensions:IsOrGoingToBeSeverelyDisabled(npcTarget) or AbilityExtensions:CannotKillNormally(npcTarget)) and
+            npcTarget ~= nil and (npcTarget:IsChanneling() and not AbilityExtensions:IsOrGoingToBeSeverelyDisabled(npcTarget) or AbilityExtensions:CannotBeKilledNormally(npcTarget)) and
                 CanCastOnTarget(npcTarget) and
                 GetUnitToUnitDistance(npcBot, npcTarget) < 775
          then

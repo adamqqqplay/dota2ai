@@ -372,6 +372,9 @@ function UseAbility(AbilitiesReal, cast)
 			print("Ability still in cooldown: "..ability:GetName())
 			return
 		end
+        if npcBot:GetMana() < ability:GetManaCost() then
+            print("Ability mana not enough: "..ability:GetName())
+        end
 
         local function CallWithTarget()
             cast.Type[j] = "Target"

@@ -91,19 +91,16 @@ CanCast[1] = function(target)
 	return not target:HasModifier("modifier_antimage_counterspell") and not target:HasModifier("modifier_shadow_demon_disruption") or AbilityExtensions:NormalCanCast(target, false, DAMAGE_TYPE_MAGICAL, false, true)
 end
 CanCast[2] = function(target)
-	local targetMustBeSeen = abilityIndex ~= 2 and abilityIndex ~= 4
 	return target:HasModifier("modifier_shadow_demon_disruption") or AbilityExtensions:NormalCanCast(target, false, DAMAGE_TYPE_PURE, false, false)
 end
 CanCast[3] = function(target)
-	local targetMustBeSeen = abilityIndex ~= 2 and abilityIndex ~= 4
 	return target:HasModifier("modifier_shadow_demon_disruption") or AbilityExtensions:NormalCanCast(target, false, DAMAGE_TYPE_MAGICAL, false, true) -- cannot calculate the position if the target is not seen
 end
 CanCast[4] = function(target)
-	local targetMustBeSeen = abilityIndex ~= 2 and abilityIndex ~= 4
 	return target:HasModifier("modifier_shadow_demon_disruption") or AbilityExtensions:NormalCanCast(target, false, DAMAGE_TYPE_MAGICAL, false, true)
 end
-CanCast[5] = function(t)
-    return not target:HasModifier("modifier_antimage_counterspell") and not t:HasModifier("modifier_shadow_demon_purge_slow") and (t:HasModifier("modifier_shadow_demon_disruption") or AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_MAGICAL, false, true))
+CanCast[5] = function(target)
+    return not target:HasModifier("modifier_antimage_counterspell") and not target:HasModifier("modifier_shadow_demon_purge_slow") and (target:HasModifier("modifier_shadow_demon_disruption") or AbilityExtensions:NormalCanCast(target, false, DAMAGE_TYPE_MAGICAL, false, true))
 end
 
 Consider[1]=function()
@@ -256,7 +253,7 @@ Consider[1]=function()
 end
 
 Consider[2] = function()
-	local ability = Abilities[2]
+	local ability = AbilitiesReal[2]
     if not ability:IsFullyCastable() or not AbilityExtensions:CanMove(npcBot) or ability:GetCurrentCharges() == 0 then
         return 0
     end
@@ -283,7 +280,7 @@ Consider[2] = function()
 		end
 	end
     if AbilityExtensions:NotRetreating(npcBot) then
-        local findPlace = npcBot:FindAoELocation(true, true, npcBot:GetLocation(), castRange+100, radius, 0, 5000)
+        local findPlace = npcBot:FindAoELocation(true, true, npcBot:GetLocation(), castRange+100, radius, 0, 0)
         if findPlace.count >= 3 then
             if GetUnitToLocationDistance(npcBot, findPlace) <= castRange then
                 return BOT_ACTION_DESIRE_VERYHIGH, findPlace.targetloc

@@ -1061,7 +1061,7 @@ end
 
 M.GetAllBoughtItems = function(self, npcBot)
     local g = {}
-    for i = 0, 14 do
+    for i = 0, 15 do
         local item = npcBot:GetItemInSlot(i)
         if item then
             table.insert(g, item)
@@ -1226,8 +1226,12 @@ M.ShouldNotBeAttacked = function(self, npc)
     return self:CannotBeAttacked(npc) or self:Any(self.IgnoreDamageModifiers, function(t) return npc:HasModifier(t) end) or self:Any(self.IgnorePhysicalDamageModifiers, function(t) return npc:HasModifier(t) end)
 end
 
+M.PhysicalCanCast_NoSelf = function(npc)
+    return not M:IsInvulnerable(npc) and not M:ShouldNotBeAttacked(npc) and not npc:IsMagicImmune()
+end
+
 M.IsPhysicalOutputDisabled = function(self, npc)
-    return npc:IsDisarmed() or npc:IsBlind() or self:IsEthereal(npc)
+    return npc:IsDisarmed() or npc:IsBlind() and not npc:GetAvailableItem("item_monkey_king_bar") or self:IsEthereal(npc)
 end
 
 M.GetHealthPercent = function(self, npc)
@@ -1647,6 +1651,14 @@ M.PURCHASE_ITEM_SUCCESS=-1
 -- target is unselectable
 -- order requires a physical item target, but specified target is not a physical item (9)
 -- item cannot be used from stash (37)
+-- does not have enough mana to cast ability (14)
+-- item is still in cooldown
+-- Can't cast attack ability on target, target is attack immune (32)
+-- order invalid for units with attack ability DOTA_UNIT_CAP_NO_ATTACK (41)
+-- can't cast on target, ability cannot target enemies (30)
+-- unit can't perform command, unit has commands restricted (74)
+-- hero does not have enough ability points to upgrade ability (13)
+
 
 M.IgnoreDamageModifiers = {
     "modifier_abaddon_borrowed_time",

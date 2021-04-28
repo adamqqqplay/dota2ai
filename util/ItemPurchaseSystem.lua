@@ -53,15 +53,15 @@ function M.SellExtraItem(ItemsToBuy)
 			M.SellSpecifiedItem("item_hand_of_midas")
 			M.SellSpecifiedItem("item_dust")
 		end
-		if(GameTime()>40*60 and npcBot:GetGold()>2500 and (item_travel_boots[1]==nil and item_travel_boots[2]==nil) and npcBot.HaveTravelBoots~=true )
-		then
-			table.insert(ItemsToBuy,"item_boots")
-			table.insert(ItemsToBuy,"item_recipe_travel_boots")
-			npcBot.HaveTravelBoots=true
-            if npcBot:GetGold() >= 4500 then
-                table.insert(ItemsToBuy, "item_recipe_travel_boots")
-            end
-		end
+		--if(GameTime()>40*60 and npcBot:GetGold()>2500 and (item_travel_boots[1]==nil and item_travel_boots[2]==nil) and npcBot.HaveTravelBoots~=true )
+		--then
+		--	table.insert(ItemsToBuy,"item_boots")
+		--	table.insert(ItemsToBuy,"item_recipe_travel_boots")
+		--	npcBot.HaveTravelBoots=true
+        --    if npcBot:GetGold() >= 4500 then
+        --        table.insert(ItemsToBuy, "item_recipe_travel_boots")
+        --    end
+		--end
 	end
 
 	if(item_travel_boots[1]~=nil or item_travel_boots[2]~=nil)
@@ -650,7 +650,7 @@ setmetatable(M.ItemName,  {
 })
 M.Consumables = {
     "clarity",
-    "mango",
+    "enchanted_mango",
     "faerie_fire",
     "tome_of_knowledge",
     "tango",
@@ -703,8 +703,8 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable)
     local function RemoveBoughtItems() -- used only when reloading scripts in game
         local boughtItems = AbilityExtensions:Map(AbilityExtensions:GetAllBoughtItems(npcBot), function(t) return t:GetName() end)
         boughtItems = TranslateToEquivalentItem(boughtItems)
-        local function TryRemoveItem(itemName, tbToRemoveFirst)
-            if DotaTime() > -60 and self:IsConsumableItem(itemName) then
+        local function TryRemoveItemWithName(itemName, tbToRemoveFirst)
+            if self:IsConsumableItem(itemName) then
                 table.remove(tbToRemoveFirst, 1)
                 return true
             end
@@ -716,12 +716,31 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable)
                 end
             end
         end
+
+        local function TryRemoveItem(item, tbToRemoveFirst)
+            if self:IsConsumableItem(item.name) then
+                table.remove(tbToRemoveFirst, 1)
+                return true
+            end
+            for i, boughtItem in ipairs(boughtItems) do
+                if boughtItem and boughtItem == item.name then
+                    table.remove(boughtItems, i)
+                    table.remove(tbToRemoveFirst, 1)
+                    return true
+                elseif item.usedAsRecipeOf and AbilityExtensions:Contains(boughtItems, item.usedAsRecipeOf) then
+                    table.remove(tbToRemoveFirst, 1)
+                    return true
+                end
+            end
+        end
         local infoTable = npcBot.itemInformationTable
-        while TryRemoveItem(infoTable[1].name, infoTable) do end
-        if infoTable[1].recipe then
-            while #infoTable[1].recipe > 0 and TryRemoveItem(infoTable[1].recipe[1], infoTable[1].recipe) do end
+        while TryRemoveItem(infoTable[1], infoTable) do end
+        while infoTable[1] and infoTable[1].recipe do
+            while #infoTable[1].recipe > 0 and TryRemoveItemWithName(infoTable[1].recipe[1], infoTable[1].recipe) do end
             if #infoTable[1].recipe == 0 then
                 table.remove(infoTable, 1)
+            else
+                break
             end
         end
         if npcBot:HasModifier("modifier_item_ultimate_scepter") then
@@ -764,7 +783,9 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable)
         table.insert(g, itemInformation)
     end
     npcBot.itemInformationTable = g
-    RemoveBoughtItems()
+    if DotaTime() > -60 then
+        RemoveBoughtItems()
+    end
     --print(npcBot:GetUnitName()..": item table:")
     --AbilityExtensions:DebugArray(g)
     --print("bought items: ")
@@ -795,19 +816,20 @@ local UseCourier = function()
     end
 
     if courier.returnWhenCarryingTooMany then
-        if AbilityExtensions:DistanceFromFountain(courier) <= 1200 and courierState == COURIER_STATE_AT_BASE and (courierState.returnCarryNumber < courierItemNumber or #AbilityExtensions:GetStashItems(npcBot) > 0) then
+        if courier:DistanceFromFountain() <= 1200 and courierState == COURIER_STATE_AT_BASE and (courier.returnCarryNumber < courierItemNumber or #AbilityExtensions:GetStashItems(npcBot) > 0) then
             npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_TAKE_AND_TRANSFER_ITEMS)
-            courierState.returnWhenCarryingTooMany = nil
+            courier.returnWhenCarryingTooMany = nil
+            return
         end
         if courierState == COURIER_STATE_AT_BASE and IsItemPurchasedFromSecretShop(sNextItem) and npcBot:GetGold() >= GetItemCost(sNextItem)*0.9 then
             npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_SECRET_SHOP)
+            return
         end
+        npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_RETURN)
         return
     end
 
-
-    if AbilityExtensions:GetEmptyItemSlots(npcBot) == 0 and courierItemNumber > 0 and GetUnitToUnitDistance(npcBot, courier) <= 100 then
-        courier.returnWhenCarryingTooMany = true
+    if AbilityExtensions:GetEmptyItemSlots(npcBot) == 0 and courierItemNumber > 0 and GetUnitToUnitDistance(npcBot, courier) <= 400 then
         courier.returnCarryNumber = courierItemNumber
         npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_RETURN)
         return
@@ -828,16 +850,18 @@ local UseCourier = function()
     if IsItemPurchasedFromSecretShop(sNextItem) and npcBot:GetGold() >= GetItemCost(sNextItem)*0.9 then
         courier.returnWhenCarryingTooMany = nil
         if courierState == COURIER_STATE_AT_BASE then
+            print("courier usage a2")
             npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_SECRET_SHOP)
             return
         end
         if nearSecretShop and npcBot:GetGold() >= GetItemCost(sNextItem) then
+            print("courier usage a1")
             npcBot:ActionImmediate_PurchaseItem(sNextItem)
             return
         end
     end
 end
-UseCourier = AbilityExtensions:EveryManySeconds(1, UseCourier)
+UseCourier = AbilityExtensions:EveryManySeconds(0.5, UseCourier)
 
 M.ItemPurchaseExtend = function(self, ItemsToBuy)
     local function GetTopItemToBuy()

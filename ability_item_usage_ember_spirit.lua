@@ -185,13 +185,13 @@ local ConsiderFist = function()
     local projectiles = AbilityExtensions:GetIncomingDodgeableProjectiles(npcBot) or {}
     projectiles = AbilityExtensions:Any(projectiles, function(t) return GetUnitToLocationDistance(npcBot, t.location) <= 200  end)
     if projectiles then
-        local locationAoE = npcBot:FindAoELocation(true, not hasBattleFury, npcBot:GetLocation(), castRange+60, radius, 0, 5000)
+        local locationAoE = npcBot:FindAoELocation(true, not hasBattleFury, npcBot:GetLocation(), castRange+60, radius, 0, 0)
         if locationAoE.count >= 2 then
             return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc
         end
     end
     if AbilityExtensions:IsFarmingOrPushing(npcBot) then
-        local locationAoE = npcBot:FindAoELocation(true, false, npcBot:GetLocation(), castRange+150, radius, 0, 5000)
+        local locationAoE = npcBot:FindAoELocation(true, false, npcBot:GetLocation(), castRange+150, radius, 0, 0)
         if locationAoE.count >= 4 and manaPercent >= 0.4 + manaCost or locationAoE.count >= 3 and manaPercent >= 0.6 + manaCost then
             return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
         end
@@ -204,7 +204,7 @@ local ConsiderFist = function()
         end
     end
     if AbilityExtensions:NotRetreating(npcBot) then
-        local findPlace = npcBot:FindAoELocation(true, true, npcBot:GetLocation(), castRange+100, radius, 0, 5000)
+        local findPlace = npcBot:FindAoELocation(true, true, npcBot:GetLocation(), castRange+100, radius, 0, 0)
         if findPlace.count >= 3 then
             if GetUnitToLocationDistance(npcBot, findPlace.targetloc) <= castRange then
                 return BOT_ACTION_DESIRE_VERYHIGH, findPlace.targetloc
@@ -225,7 +225,7 @@ local ConsiderFist = function()
 
         local target = npcBot:GetTarget()
         if target ~= nil and target:CanBeSeen() and AbilityExtensions:NormalCanCast(target, true, DAMAGE_TYPE_PHYSICAL) and not AbilityExtensions:CannotBeAttacked(target)
-                and (mana >= ComboMana or mana >= 200 and target:GetHealth() < target:GetActualIncomingDamage(damage, DAMAGE_TYPE_PHYSICAL) * (0.9 + friendCount*0.1)) then
+                and (mana >= 200 and target:GetHealth() < target:GetActualIncomingDamage(damage, DAMAGE_TYPE_PHYSICAL) * (0.9 + friendCount*0.1)) then
             return BOT_ACTION_DESIRE_HIGH, AbilityExtensions:FindAOELocationAtSingleTarget(npcBot, target, radius, castRange, castPoint)
         end
     end
@@ -263,7 +263,7 @@ Consider[3] = function()
     local weakCreeps = enemyCreeps
     local weakestCreep = utility.GetWeakestUnit(weakCreeps)
     local forbiddenCreeps = {}
-    local manaMaintain = math.min(ComboMana, npcBot:GetMaxMana() * 0.6) + manaCost
+    local manaMaintain = npcBot:GetMaxMana() * 0.6 + manaCost
     if AbilityExtensions:IsFarmingOrPushing(npcBot) then
         if #enemies == 0 and #enemyCreeps >= 5 and mana >= manaMaintain and abilityLevel >= 3 then
             return BOT_ACTION_DESIRE_LOW
@@ -357,14 +357,14 @@ Consider[4] = function()
 		if AbilityExtensions:IsLaning(npcBot) then
 			local laneFront = GetLaneFrontLocation(GetTeam(), npcBot:GetAssignedLane(), 0)
 			local remnantUnderTower = AbilityExtensions:Filter(activeRemnants, function(t) return GetUnitToUnitDistance(t, laneFront) <= 1000 end)
-			if #remnantUnderTower >= 0 then
+			if remnantUnderTower[1] then
 				return BOT_ACTION_DESIRE_MODERATE, remnantUnderTower[1]:GetLocation()
 			end
 		elseif AbilityExtensions:IsFarmingOrPushing(npcBot) then
 			local remnantUnderTower = AbilityExtensions:Filter(activeRemnants, function(t)
                 				return GetUnitToUnitDistance(t, npcBot) >= 4000 and #AbilityExtensions:GetNearbyNonIllusionHeroes(t) == 0
 			end)
-			if #remnantUnderTower >= 0 then
+			if remnantUnderTower[1] then
 				return BOT_ACTION_DESIRE_MODERATE, remnantUnderTower[1]:GetLocation()
 			end
 		elseif AbilityExtensions:IsAttackingEnemies(npcBot) then

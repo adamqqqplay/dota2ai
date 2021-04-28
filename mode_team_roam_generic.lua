@@ -289,7 +289,7 @@ function ConsiderTeamRoam()
 			npcBot.TeamRoamAssemblyPoint=location
 			--npcBot:ActionImmediate_Chat("Let's Gank "..string.gsub(target:GetUnitName(),"npc_dota_hero_","").." together! ",false)
 			--print(npcBot:GetPlayerID().." @TeamRoam@ Let's Gank together! Factor:"..factor.." target:"..target:GetUnitName())
-			npcBot:ActionImmediate_Ping(location.x,location.y,true)
+			--npcBot:ActionImmediate_Ping(location.x,location.y,true)
 			
 			for _,npcAlly in pairs(allys)
 			do

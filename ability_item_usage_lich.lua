@@ -302,20 +302,20 @@ consider[2] = function()
 	end
 
 	-- Attack roshan
-	if (npcBot:GetActiveMode() == BOT_MODE_ROSHAN) then
-		local npcTarget
-		for _, creep in pairs(creeps) do
-			if (AbilityHelper.isRoshan(creep)) then
-				npcTarget = creep
-				break
-			end
-		end
-
-		local roshanTarget = npcTarget:GetAttackTarget()
-		if (isManaEnough and AbilityHelper.isValidTarget(roshanTarget)) then
-			return BOT_ACTION_DESIRE_HIGH, roshanTarget
-		end
-	end
+	--if (npcBot:GetActiveMode() == BOT_MODE_ROSHAN) then
+	--	local npcTarget
+	--	for _, creep in pairs(creeps) do
+	--		if (AbilityHelper.isRoshan(creep)) then
+	--			npcTarget = creep
+	--			break
+	--		end
+	--	end
+    --
+	--	local roshanTarget = npcTarget:GetAttackTarget()
+	--	if (isManaEnough and AbilityHelper.isValidTarget(roshanTarget)) then
+	--		return BOT_ACTION_DESIRE_HIGH, roshanTarget
+	--	end
+	--end
 
 	-- If we're farming
 	if (activeMode == BOT_MODE_FARM) then
@@ -360,7 +360,7 @@ consider[2] = function()
 			if (npcEnemyNearbyAllys ~= nil and #npcEnemyNearbyAllys >= 1) then
 				for _, npcTarget in pairs(npcEnemyNearbyAllys) do
 					if (GetUnitToUnitDistance(npcBot, npcTarget) <= castRange) then
-						return BOT_ACTION_DESIRE_MODERATE, npcTarget
+						return BOT_ACTION_DESIRE_MODERATE, npcBot
 					end
 				end
 			end
