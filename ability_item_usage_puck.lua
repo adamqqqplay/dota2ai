@@ -56,9 +56,11 @@ end
 local cast= {} cast.Desire= {} cast.Target= {} cast.Type= {}
 local Consider = {}
 
-local attackRange = npcBot:GetAttackRange()
-local healthPercent = AbilityExtensions:GetHealthPercent(npcBot)
-local manaPercent = AbilityExtensions:GetManaPercent(npcBot)
+local attackRange
+local healthPercent
+local manaPercent
+local illusoryOrb
+local refreshIllusoryOrbToken
 
 local EnlargeIllusoryOrbCastRange
 Consider[1] = function()
@@ -156,13 +158,23 @@ end
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, Abilities)
 
 function AbilityUsageThink()
+    if refreshIllusoryOrbToken then
+        illusoryOrb = AbilityExtensions:First(GetUnitList(UNIT_LIST_ALL), function(t)
+            return t:GetTeam() == npcBot:GetTeam() and t:GetUnitName() == ""
+        end)
+    end
 	if npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() then 
 		return
 	end
 	ComboMana=GetComboMana(Abilities)
+    attackRange = npcBot:GetAttackRange()
+    healthPercent = AbilityExtensions:GetHealthPercent(npcBot)
+    manaPercent = AbilityExtensions:GetManaPercent(npcBot)
 	cast=ability_item_usage_generic.ConsiderAbility(Abilities,Consider)
 	local abilityIndex, target, castType = ability_item_usage_generic.UseAbility(Abilities,cast)
-    AbilityExtensions:RecordAbility(npcBot, abilityIndex, target, castType, Abilities)
+    if abilityIndex == 1 then
+        refreshIllusoryOrbToken = true
+    end
 end
 
 function CourierUsageThink() 

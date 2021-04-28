@@ -421,7 +421,7 @@ end
 --local function packRec(g, a, ...)
 --    if a ~= nil then
 --        table.insert(g, a)
---        packRec(...)
+--        packRec(g, ...)
 --    end
 --end
 --
@@ -794,8 +794,8 @@ M.GetTeamPlayers = function(self, team)
 end
 
 M.GetEnemyTeamMemberNames = function(self, npcBot)
-    local team = npcBot:GetTeam()
-    return self:Map(self:GetTeamPlayers(team), function(t) return self:GetHeroShortName(GetTeamMember(t):GetUnitName()) end) 
+    local enemies = self:GetEnemyHeroUnique(npcBot, GetUnitList(UNIT_LIST_ENEMY_HEROES))
+    return self:Map(enemies, function(t) return t:GetUnitName()  end)
 end
 
 M.MustBeIllusion = function(self, npcBot, target)
@@ -1637,7 +1637,7 @@ M.PURCHASE_ITEM_SUCCESS=-1
 
 -- invalid order(3) unrecognised order name
 -- invalid order(40) order not allowed for illusions
--- target unit is dead (20)
+-- unit is dead (20)
 -- target tree is not active (43)
 -- ability is still in cooldown (15)
 -- ability is hidden
@@ -1645,7 +1645,8 @@ M.PURCHASE_ITEM_SUCCESS=-1
 -- cannot cast ability on tree
 -- cannot cast ability on target
 -- target is unselectable
---
+-- order requires a physical item target, but specified target is not a physical item (9)
+-- item cannot be used from stash (37)
 
 M.IgnoreDamageModifiers = {
     "modifier_abaddon_borrowed_time",
@@ -1870,6 +1871,7 @@ function M:EveryManyFrames(count, times)
     return frameNumber % count < times
 end
 
+local defaultReturn = {}
 local everySecondsCallRegistry = {}
 
 function M:EveryManySeconds(second, oldFunction)
@@ -1879,8 +1881,28 @@ function M:EveryManySeconds(second, oldFunction)
         if everySecondsCallRegistry[functionName.."lastCallTime"] <= DotaTime() - second then
             everySecondsCallRegistry[functionName.."lastCallTime"] = DotaTime()
             return oldFunction(...)
+        else
+            return defaultReturn
         end
     end
+end
+
+local singleForTeamRegistry = {}
+
+function M:SingleForTeam(oldFunction)
+    local functionName = tostring(oldFunction)..GetTeam()
+    return function(...)
+        if singleForTeamRegistry[functionName] ~= frameNumber then
+            singleForTeamRegistry[functionName] = frameNumber
+            return oldFunction(...)
+        else
+            return defaultReturn
+        end
+    end
+end
+
+function M:CalledOnThisFrame(functionInvocationResult)
+    return functionInvocationResult ~= defaultReturn
 end
 
 M.slowFunctionRegistries = {}

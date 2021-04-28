@@ -197,6 +197,9 @@ Consider[1]=function()
 
 end
 
+CanCast[2] = function(t)
+    return not t:IsInvulnerable() and not AbilityExtensions:CannotBeTargetted(t)
+end
 Consider[2]=function()
 
 	local abilityNumber=2
@@ -361,6 +364,7 @@ Consider[4] = function()
 		return GetUnitToLocationDistance(npcBot, loc) <= radius and npcBot:IsFacingLocation(loc, pullAngle)
 	end
 	local f = AbilityExtensions:Filter(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 500, true), CanToss)
+    f = AbilityExtensions:Filter(f, function(t) AbilityExtensions:NormalCanCast(t) end)
 	f = AbilityExtensions:GetEnemyHeroNumber(f)
 	if AbilityExtensions:NotRetreating(npcBot) and f >= 2 or f == 1 and #AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, true) == 1 then
 		return BOT_MODE_DESIRE_HIGH
@@ -371,6 +375,7 @@ Consider[4] = function()
 		return GetUnitToLocationDistance(npcBot, loc) <= radius and not npcBot:IsFacingLocation(loc, 180-pullAngle)
 	end
 	f = AbilityExtensions:Filter(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 500, true), CanTossAfterTurnBack)
+    f = AbilityExtensions:Filter(f, function(t) AbilityExtensions:NormalCanCast(t) end)
 	f = AbilityExtensions:GetEnemyHeroNumber(f)
 	if AbilityExtensions:NotRetreating(npcBot) and f >= 1 then
 		npcBot:Action_MoveDirectly(utility.GetUnitsTowardsLocation(npcBot, f[1]:GetLocation(), 10))
@@ -379,6 +384,10 @@ Consider[4] = function()
 	end
 
 	return 0
+end
+
+CanCast[5] = function(t)
+    return not AbilityExtensions:IsInvulnerable(t)
 end
 
 Consider[5]=function()
@@ -494,14 +503,24 @@ Consider[5]=function()
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
+
+local abilityUsedInfo = {}
+
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability
-	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
-	then 
+	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )then
+        if abilityUsedInfo.index == 5 then
+            local radius = AbilitiesReal[5]:GetAOERadius()
+            if AbilityExtensions:Count(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, radius), CanCast[5]) == 0 then
+                print("Magnataur: cancel ultimate")
+                npcBot:Action_ClearActions(true)
+            end
+        end
 		return
 	end
-	
+	abilityUsedInfo.index = nil
+    
 	ComboMana=GetComboMana()
 	AttackRange=npcBot:GetAttackRange()
 	ManaPercentage=npcBot:GetMana()/npcBot:GetMaxMana()
@@ -513,7 +532,10 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	local usedAbilityIndex, target, castType = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+    if usedAbilityIndex ~= nil then
+        abilityUsedInfo.index = usedAbilityIndex
+    end
 end
 
 function CourierUsageThink() 

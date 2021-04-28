@@ -11,46 +11,44 @@ local ItemUsageSystem = dofile(GetScriptDirectory() .. "/util/ItemUsageSystem")
 local ChatSystem = dofile(GetScriptDirectory() .. "/util/ChatSystem")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
-local RefreshBuildingHealth
-local function ConsiderGlyph()
-	local Towers = {
-		TOWER_TOP_1,
-		TOWER_TOP_2,
-		TOWER_TOP_3,
-		TOWER_MID_1,
-		TOWER_MID_2,
-		TOWER_MID_3,
-		TOWER_BOT_1,
-		TOWER_BOT_2,
-		TOWER_BOT_3,
-		TOWER_BASE_1,
-		TOWER_BASE_2
-	}
+local towerId = {
+    TOWER_TOP_1,
+    TOWER_TOP_2,
+    TOWER_TOP_3,
+    TOWER_MID_1,
+    TOWER_MID_2,
+    TOWER_MID_3,
+    TOWER_BOT_1,
+    TOWER_BOT_2,
+    TOWER_BOT_3,
+    TOWER_BASE_1,
+    TOWER_BASE_2,
+}
+local RefreshBuildingHealth = AbilityExtensions:SingleForTeam(AbilityExtensions:EveryManySeconds(0.5, function()
+    for _, id in ipairs(towerId) do
+        local tower = GetTower(GetTeam(), id)
+        if tower ~= nil and tower:GetHealth() > 0 then
+            tower.health0SecondsAgo = tower:GetHealth()
+            if tower:IsAlive() then
+                for _, i in ipairs({0.5,1,1.5,2}) do
+                    tower["health"..tostring(i).."SecondsAgo"] = tower["health"..tostring(i-0.5).."SecondsAgo"]
+                end
+            end
+        end
+    end
+end))
 
+local function ConsiderGlyph()
+    RefreshBuildingHealth(tower)
 	if GetGlyphCooldown() > 0 then
 		return false
 	end
 
-	for i, BuildingID in pairs(Towers) do
+	for i, BuildingID in pairs(towerId) do
 		local tower = GetTower(GetTeam(), BuildingID)
-		if RefreshBuildingHealth == nil then
-			RefreshBuildingHealth = AbilityExtensions:EveryManySeconds(0.5, function()
-                if tower ~= nil and tower:GetHealth() > 0 then
-					if tower:GetMaxHealth() ~= tower:GetHealth() then
-			            tower.health0SecondsAgo = tower:GetHealth()
-			            if tower:IsAlive() then
-			                for _, i in ipairs({0.5,1,1.5,2}) do
-			                    tower["health"..tostring(i).."SecondsAgo"] = tower["health"..tostring(i-0.5).."SecondsAgo"]
-			                end
-			            end
-					end
-				end
-	        end)
-		end
-		RefreshBuildingHealth()
 		if tower ~= nil and tower:GetHealth() > 0 then
 			local tableNearbyEnemyHeroes = utility.GetEnemiesNearLocation(tower:GetLocation(), 700)
-            if tableNearbyEnemyHeroes ~= nil and #tableNearbyEnemyHeroes >= 1 and tower["health1SecondsAgo"] and tower:GetHealth() - tower["health1SecondsAgo"] >= 10 * DotaTime() / 60 and DotaTime() >= 12 * 60 then
+            if tableNearbyEnemyHeroes ~= nil and #tableNearbyEnemyHeroes >= 1 and tower["health1SecondsAgo"] and tower:GetHealth() - tower["health1SecondsAgo"] >= 7.5 * DotaTime() / 60 and DotaTime() >= 12 * 60 then
                 GetBot():ActionImmediate_Glyph()
             end
 			if tower:GetHealth() >= 200 and tower:GetHealth() <= 1000 and #tableNearbyEnemyHeroes >= 2 then

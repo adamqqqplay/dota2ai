@@ -73,7 +73,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -312,7 +312,7 @@ Consider[3]=function()
 	local Damage = ability:GetAbilityDamage()
 	local Radius = ability:GetAOERadius() - 50
 	local CastPoint = ability:GetCastPoint()
-	
+
 	local HeroHealth=10000
 	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
@@ -373,7 +373,7 @@ Consider[3]=function()
 	-- If we're farming and can hit 2+ creeps
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM or npcBot:GetActiveMode() == BOT_MODE_LANING)
 	then
-		if ( #creeps >= 2 ) 
+		if ( #creeps >= 2 and WeakestCreep ~= nil) -- WeakestCreep can be nil on line 378, although I don't know why
 		then
 			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_PHYSICAL) and (ManaPercentage>0.4 or npcBot:GetMana()>ComboMana))
 			then
@@ -526,20 +526,27 @@ Consider[4]=function()
 			end
 		end
 	end
-
-	return BOT_ACTION_DESIRE_NONE, 0;
-	
+	return BOT_ACTION_DESIRE_NONE
 end
 
-
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
+
+local abilityUsedInfo = {}
+
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability
-	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
-	then 
-		return
-	end
+    if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )then
+        if abilityUsedInfo.index == 4 then
+            local radius = AbilitiesReal[4]:GetAOERadius()
+            if AbilityExtensions:Count(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, radius), CanCast[4]) == 0 then
+                print("Tide hunter: cancel ultimate")
+                npcBot:Action_ClearActions(true)
+            end
+        end
+        return
+    end
+    abilityUsedInfo.index = nil
 
 	if(npcBot:HasScepter() or npcBot:HasModifier("modifier_item_ultimate_scepter"))
 	then
@@ -557,7 +564,10 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+    local usedAbilityIndex, target, castType = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+    if usedAbilityIndex ~= nil then
+        abilityUsedInfo.index = usedAbilityIndex
+    end
 end
 
 function CourierUsageThink() 
