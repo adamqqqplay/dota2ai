@@ -366,7 +366,7 @@ Consider[3]=function()
 	end
 		
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH and not npcBot:HasModifier("modifier_ice_blast") ) 
 	then
 		if ( npcBot:WasRecentlyDamagedByAnyHero(2) ) 
 		then
@@ -377,6 +377,7 @@ Consider[3]=function()
 	-- Mode based usage
 	--------------------------------------
 	--protect teammate
+	allys = AbilityExtensions:Filter(allys, function(t) return not t:HasModifier("modifier_ice_blast") end)
 	for _,npcTarget in pairs (allys)
 	do
 		local enemys2=npcTarget:GetNearbyHeroes(600,true,BOT_MODE_NONE)

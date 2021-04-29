@@ -262,9 +262,9 @@ Consider[2]=function()
 	then
 		local npcTarget = npcBot:GetTarget();
 		local t=npcBot:GetAttackTarget()
-		if ( npcTarget ~= nil and t~=nil )
+		if ( npcTarget ~= nil and t~=nil and npcBot:GetMana() >= AbilitiesReal[2]:GetManaCost() + AbilitiesReal[1]:GetManaCost() )
 		then
-			return BOT_ACTION_DESIRE_MODERATE;
+			return BOT_ACTION_DESIRE_VERYHIGH;
 		end
 	end
 	

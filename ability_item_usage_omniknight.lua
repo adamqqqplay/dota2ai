@@ -190,6 +190,7 @@ Consider[1]=function()
 	local Radius = ability:GetAOERadius();
 	
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	allys = AbilityExtensions:Filter(npcBot, function(t) return not t:HasModifier("modifier_ice_blast") end)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
@@ -224,7 +225,7 @@ Consider[1]=function()
 	-- If we're seriously retreating
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
-		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) and (#enemys3>=1 or #enemys==0) or HealthPercentage<=0.2) 
+		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) and (#enemys3>=1 or #enemys==0) or HealthPercentage<=0.2) and not npcBot:HasModifier("modifier_ice_blast")
 		then
 			return BOT_ACTION_DESIRE_HIGH+0.08,npcBot; 	
 		end
@@ -234,7 +235,7 @@ Consider[1]=function()
 	if(	true ) 
 	then
 		local HighestFactor,TempTarget=GetTargetFactor()
-		if(HighestFactor>0 and TempTarget~=nil)
+		if(HighestFactor>0 and TempTarget~=nil and not TempTarget:HasModifier("modifier_ice_blast"))
 		then
 			return BOT_ACTION_DESIRE_MODERATE-0.01, TempTarget
 		end	

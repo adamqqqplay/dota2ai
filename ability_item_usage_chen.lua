@@ -459,7 +459,10 @@ function ConsiderRecall()
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
 
-local GetAllAllyHeroes
+local GetAllAllyHeroes = AbilityExtensions:EveryManySeconds(2, function()
+	return AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 10000, false)
+end)
+
 Consider[4]=function()
     local abilityNumber=4
     --------------------------------------
@@ -479,13 +482,11 @@ Consider[4]=function()
     end
 
     local CastRange = 1599
-    local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange, false)
-    if GetAllAllyHeroes == nil then
-		GetAllAllyHeroes = AbilityExtensions:EveryManySeconds(2, function()
-	        allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 10000, false)
-	    end)
+    local allys = GetAllAllyHeroes()
+	if not AbilityExtensions:CalledOnThisFrame(allys) then
+		AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange, false)
 	end
-	GetAllAllyHeroes()
+	allys = AbilityExtensions:Filter(allys, function(t) return not t:IsInvulnerable() and not t:HasModifier("modifier_ice_blast") end)
     local damagedAllies = AbilityExtensions:Filter(allys, function(t) return IsDamaged(t) and not IsSeverelyDamaged(t) end)
     local severelyDamagedAllies = AbilityExtensions:Filter(allys, IsSeverelyDamaged)
 

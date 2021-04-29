@@ -73,7 +73,9 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,function(t)
+	return t:GetTeam() == npcBot:GetTeam() and AbilityExtensions:AllyCanCast(t) and not t:HasModifier("modifier_ice_blast") or AbilityExtensions:NormalCanCast(t) 
+end,utility.NCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()

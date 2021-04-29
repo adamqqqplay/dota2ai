@@ -727,14 +727,18 @@ M.dodgeWorthAbilities = M:Concat(M.targetStunAbilities, M.locationStunAbilities,
 
 -- unit function
 
+function M:isRoshan(npcTarget)
+    return npcTarget ~= nil and npcTarget:IsAlive() and string.find(npcTarget:GetUnitName(), "roshan")
+end
+
 M.GetIncomingDodgeableProjectiles = function(self, npc)
     local projectiles = npc:GetIncomingTrackingProjectiles()
     projectiles = self:Filter(projectiles, function(t)
-        return not t.is_attack and t.is_dodgeable
+        return not t.is_attack
     end)
-    projectiles = self:Filter(projectiles, function(t)
-        return self:Contains(self.dodgeWorthAbilities, t.ability:GetName())
-    end)
+    -- projectiles = self:Filter(projectiles, function(t)
+    --     return self:Contains(self.dodgeWorthAbilities, t.ability:GetName())
+    -- end)
     return projectiles
 end
 
@@ -1186,6 +1190,10 @@ M.IsEthereal = function(self, npc)
     return self:Any(self.EtherealModifiers, function(t) return npc:HasModifier(t) end)
 end
 
+function M:NotBlasted(self, npc)
+    return not npc:HasModifier("modifier_ice_blast")
+end
+
 M.CannotBeTargetted = function(self, npc)
     return self:Any(self.CannotBeTargettedModifiers, function(t) return npc:HasModifier(t) end)
 end
@@ -1372,6 +1380,13 @@ function M:NormalCanCast(target, isPureDamageWithoutDisable, damageType, pierceM
         return false
     end
     return true
+end
+
+function M:AllyCanCast(target, pierceMagicImmune)
+    if pierceMagicImmune == nil then
+        pierceMagicImmune = true
+    end
+    return not target:IsInvulnerable() and not self:CannotBeTargetted(target)
 end
 
 M.SpecialBonusAttributes = "special_bonus_attributes"

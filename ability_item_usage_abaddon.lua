@@ -403,7 +403,7 @@ Consider[4]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or npcBot:HasModifier("modifier_ice_blast") then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 
@@ -415,6 +415,7 @@ Consider[4]=function()
 
 	return BOT_ACTION_DESIRE_NONE
 end
+
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
 function AbilityUsageThink()
