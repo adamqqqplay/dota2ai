@@ -221,6 +221,8 @@ Consider[4]=function()
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(Radius,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+    local damage = AbilitiesReal[1]:GetAbilityDamage()
+    damage = damage * (1 + ability:GetSpecialValueInt("beams" + 1))
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
@@ -256,16 +258,17 @@ Consider[4]=function()
 		end
 		
 		-- If we're going after someone
-		if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
-			 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-			 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-			 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
-		then
-			local npcEnemy = npcBot:GetTarget();
-			local creeps2 = npcAlly:GetNearbyCreeps(Radius,true)
+        if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+                npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+                npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+                npcBot:GetActiveMode() == BOT_MODE_ATTACK )
+        then
+            local npcEnemy = npcBot:GetTarget();
+            local creeps2 = npcBot:GetNearbyCreeps(Radius,true)
+            local incomingDamage = npcEnemy:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL)
 			if ( npcEnemy ~= nil and #creeps2<=1) 
 			then
-				if ( CanCast[abilityNumber]( npcEnemy ) and (npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(npcBot:GetOffensivePower(),DAMAGE_TYPE_MAGICAL) or npcEnemy:GetHealth()<=Damage ) and GetUnitToUnitDistance(npcEnemy,npcBot)<=CastRange)
+                if not (npcEnemy:GetHealth() <= incomingDamage * 0.4 and #allys >= 2 ) and CanCast[abilityNumber]( npcEnemy ) and (npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(damage,DAMAGE_TYPE_MAGICAL) or npcEnemy:GetHealth()<=Damage )  and GetUnitToUnitDistance(npcEnemy,npcBot)<=CastRange
 				then
 					return BOT_ACTION_DESIRE_MODERATE,npcEnemy:GetExtrapolatedLocation(0.5),"Location"
 				end
@@ -292,7 +295,7 @@ Consider[4]=function()
 		then
 			local npcEnemy = npcBot:GetTarget();
 
-			if ( npcEnemy ~= nil and #creeps<=1) 
+			if ( npcEnemy ~= nil and #creeps<=1)
 			then
 				if ( CanCast[abilityNumber]( npcEnemy ) and (npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(npcBot:GetOffensivePower(),DAMAGE_TYPE_MAGICAL) or npcEnemy:GetHealth()<=Damage ) and GetUnitToUnitDistance(npcEnemy,npcBot)<=Radius)
 				then

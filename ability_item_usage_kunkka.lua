@@ -99,9 +99,8 @@ local useTorrentAtXMark
 local useTorrentAtXMarkTime
 local function XMarksEnemy()
 	if xMarkTarget ~= nil then
-		print(xMarkTarget:GetUnitName())
-		print(AbilityExtensions:ToStringVector(xMarkLocation))
-		AbilityExtensions:DebugTable(xMarkTarget)
+		-- print(xMarkTarget:GetUnitName())
+		-- print(AbilityExtensions:ToStringVector(xMarkLocation))
 	end
     return xMarkTarget ~= nil and xMarkTarget:GetTeam() ~= npcBot:GetTeam()
 end
@@ -470,6 +469,30 @@ Consider[6]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
 
+Consider[4] = function()
+    local ability = AbilitiesReal[4]
+    if not ability:IsFullyCastable() or ability:GetCurrentCharges() == 0 then
+        return 0
+    end
+    local abilityLevel = ability:GetLevel()
+    local castRange = ability:GetCastRange() + 200
+    local radius = ability:GetAOERadius()
+    local enemies = AbilityExtensions:GetNearbyHeroes(npcBot, castRange + radius)
+    local realEnemies = AbilityExtensions:Filter(enemies, function(t) return AbilityExtensions:MayNotBeIllusion(npcBot, t) end)
+    local targettableEnemies = AbilityExtensions:Filter(enemies, function(t) return AbilityExtensions:NormalCanCast(t, false) and not AbilityExtensions:CannotBeAttacked(t) end)
+    local target = npcBot:GetTarget()
+
+    if AbilityExtensions:GetEnemyHeroNumber(npcBot, enemies) >= 2 then
+        return RemapValClamped(AbilityExtensions:GetEnemyHeroNumber(npcBot, enemies), 2, 4, 0.3, 0.9)
+    end
+    if AbilityExtensions:Contains(targettableEnemies, target) then
+        return BOT_ACTION_DESIRE_MODERATE, true
+    end
+    return 0
+end
+
+
+
 --  this initialisation doesn't work, because ability values cannot be queried before they are learned
 --local torrentDelay = AbilitiesReal[1]:GetSpecialValueFloat("delay")
 --local xMarksReturnCastPoint = AbilitiesReal[1]:GetCastPoint()
@@ -489,8 +512,12 @@ Consider[7] = function()
     if XMarksEnemy() and npcBot:GetActiveMode() == BOT_MODE_RETREAT and (GetUnitToUnitDistance(npcBot, xMarkTarget) <= 300 or npcBot:WasRecentlyDamagedByHero(xMarkTarget, 1)) and DotaTime() > 1 + xMarkTime and GetUnitToLocationDistance(xMarkTarget, xMarkLocation) then
         return BOT_ACTION_DESIRE_HIGH
     end
-    if XMarksEnemy() and useTorrentAtXMarkTime and useTorrentAtXMarkTime >= DotaTime() - AbilitiesReal[1]:GetSpecialValueFloat("delay") + AbilitiesReal[7]:GetCastPoint() + 0.1 then
-        return BOT_ACTION_DESIRE_VERYHIGH
+	if XMarksEnemy() and useTorrentAtXMark then
+		local timing = useTorrentAtXMarkTime + AbilitiesReal[1]:GetSpecialValueFloat("delay") - ability:GetCastPoint()
+		print("Kunkka return: "..DotaTime().." "..timing)
+		if DotaTime() >= timing-0.1 and DotaTime() <= timing+AbilitiesReal[1]:GetAOERadius()/xMarkTarget:GetVelocity() then
+			return BOT_ACTION_DESIRE_VERYHIGH
+		end
     end
 end
 
@@ -529,12 +556,12 @@ function AbilityUsageThink()
         xMarkTime = DotaTime()+AbilitiesReal[3]:GetCastPoint()
         xMarkLocation = target:GetLocation()
 		if target:GetTeam() == npcBot:GetTeam() then
-			xMarkDuration = AbilitiesReal[3]:GetSpecialValueFloat("allied_duration")
+			xMarkDuration = AbilitiesReal[3]:GetSpecialValueFloat("allied_duration") or 8
 		else
-			xMarkDuration = AbilitiesReal[3]:GetSpecialValueFloat("duration")
+			xMarkDuration = AbilitiesReal[3]:GetSpecialValueFloat("duration") or 4
 		end
 
-    elseif index == 1 and xMarkTarget then
+    elseif index == 1 and xMarkTarget and GetUnitToLocationDistance(xMarkTarget, target) <= 180 then
         useTorrentAtXMark = true
         useTorrentAtXMarkTime = DotaTime()+AbilitiesReal[1]:GetCastPoint()
     end

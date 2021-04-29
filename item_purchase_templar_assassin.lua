@@ -14,10 +14,9 @@ local ItemsToBuy =
 	"item_magic_wand",
 	"item_desolator", --黯灭
 	"item_black_king_bar", --bkb
-	"item_orchid",
+    "item_blink",
 	"item_butterfly", --蝴蝶
-	"item_hyperstone",
-	"item_recipe_bloodthorn" --血棘
+	"item_bloodthorn",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

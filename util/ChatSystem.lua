@@ -1,6 +1,9 @@
 local BotsInit = require("game/botsinit")
 local M = BotsInit.CreateGeneric()
 
+local version = "1.7.3"
+local updateDate = "April 26, 2021"
+
 local announceFlag = false
 function M.SendVersionAnnouncement()
 	if announceFlag == false then
@@ -11,7 +14,7 @@ function M.SendVersionAnnouncement()
 					local npcBot = GetBot()
 					if (npcBot:GetPlayerID() == id) then
 						npcBot:ActionImmediate_Chat(
-							"Welcome to Ranked Matchmaking AI. The current version is 1.7.2, updated on April 14, 2021. If you have any questions or feedback, please leave message on steam workshop https://steamcommunity.com/sharedfiles/filedetails/?id=855965029 or contact Dota2RMMAI@outlook.com",
+							"Welcome to Ranked Matchmaking AI. The current version is "..version..", updated on "..updateDate..". If you have any questions or feedback, please leave message on steam workshop https://steamcommunity.com/sharedfiles/filedetails/?id=855965029 or contact Dota2RMMAI@outlook.com",
 							true
 						)
 						npcBot:ActionImmediate_Chat(

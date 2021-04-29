@@ -15,8 +15,7 @@ local ItemsToBuy =
 	"item_maelstrom", --电锤7.14
 	"item_black_king_bar", --BKB
 	"item_blink",
-	"item_hyperstone",
-	"item_recipe_mjollnir", --大雷锤
+	"item_mjollnir", --大雷锤
 	"item_assault", --强袭
 	"item_greater_crit" --大炮
 }

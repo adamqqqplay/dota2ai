@@ -221,6 +221,7 @@ Consider[2]=function()
 	local HeroHealth=10000
 	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
+	allys = AbilityExtensions:Filter(npcBot, function(t) return not t:HasModifier("modifier_ice_blast") end)
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -242,7 +243,7 @@ Consider[2]=function()
 	end
 	
 	if(	npcBot:GetActiveMode() == BOT_MODE_ATTACK or
-		npcBot:GetActiveMode() == BOT_DEFEND_ALLY or
+		npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		ManaPercentage>0.4)
 	then
 		for _,npcTarget in pairs( allys )
@@ -261,7 +262,7 @@ Consider[2]=function()
 	--Protect myself
 	if ( (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:WasRecentlyDamagedByAnyHero(2)) or HealthPercentage<=0.4+#enemys*0.05+0.2*ManaPercentage) 
 	then
-		if(#enemys>=1)
+		if(#enemys>=1) and not npcBot:HasModifier("modifier_ice_blast")
 		then
 			return BOT_ACTION_DESIRE_HIGH,npcBot; 	
 		end

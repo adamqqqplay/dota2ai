@@ -300,18 +300,18 @@ Consider[2]=function()
 			end
 		end
 
-		if ( GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
-		then
-			for _,myFriend in pairs(allys) do
-				if ( not myFriend:HasModifier("modifier_dark_seer_ion_shell") and myFriend:GetAttackRange() < 300 )
-				then
-					return BOT_ACTION_DESIRE_MODERATE-0.05, myFriend;
-				end
-			end	
-			if not npcBot:HasModifier("modifier_dark_seer_ion_shell") then
-				return BOT_ACTION_DESIRE_MODERATE-0.05, npcBot;
-			end
-		end
+		-- if ( GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
+		-- then
+		-- 	for _,myFriend in pairs(allys) do
+		-- 		if ( not myFriend:HasModifier("modifier_dark_seer_ion_shell") and myFriend:GetAttackRange() < 300 )
+		-- 		then
+		-- 			return BOT_ACTION_DESIRE_MODERATE-0.05, myFriend;
+		-- 		end
+		-- 	end	
+		-- 	if not npcBot:HasModifier("modifier_dark_seer_ion_shell") then
+		-- 		return BOT_ACTION_DESIRE_MODERATE-0.05, npcBot;
+		-- 	end
+		-- end
 	end
 	
 	-- If we're going after someone
@@ -413,10 +413,10 @@ Consider[3]=function()
 		then
 			if ( GetUnitToUnitDistance(npcBot,npcEnemy)< 1600)
 			then
-				local ClosestDist = GetUnitToUnitDistance(npcTarget, npcBot);
+				local ClosestDist = GetUnitToUnitDistance(npcEnemy, npcBot);
 				local ClosestBot = npcBot; 
 				for _,myFriend in pairs(allys) do
-					local dist = GetUnitToUnitDistance(npcTarget, myFriend);
+					local dist = GetUnitToUnitDistance(npcEnemy, myFriend);
 					if dist < ClosestDist and dist < CastRange then
 						ClosestDist = dist;
 						ClosestBot = myFriend;

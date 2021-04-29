@@ -276,13 +276,13 @@ Consider[2]=function()		--Target AOE Ability Example
 	-- Mode based usage
 	--------------------------------------
 	-- If we're seriously retreating
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
-	then
-		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) ) 
-		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy;
-		end
-	end
+	-- if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+	-- then
+	-- 	if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) ) 
+	-- 	then
+	-- 		return BOT_ACTION_DESIRE_HIGH, npcEnemy;
+	-- 	end
+	-- end
 
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or

@@ -93,7 +93,7 @@ end
 local function GetIncomingDodgeableProjectiles()
     local incProj = npcBot:GetIncomingTrackingProjectiles() or {}
     return AbilityExtensions:Filter(incProj, function(t)
-        return not t.is_attack and not AbilityExtensions:IgnoreAbilityBlock(p.ability) and t.caster:GetTeam() ~= npcBot:GetTeam()
+        return not t.is_attack and t.ability and not AbilityExtensions:IgnoreAbilityBlock(t.ability) and t.caster and t.caster:GetTeam() ~= npcBot:GetTeam()
     end)
 end
 
@@ -173,7 +173,7 @@ Consider[2]=function()
     local projectiles = GetIncomingDodgeableProjectiles()
     local castPoint = ability:GetCastPoint()
     local defaultProjectileVelocity = 1500
-    if #projectiles ~= 0 and not AbilityToLevelUp[3]:IsFullyCastable() then
+    if #projectiles ~= 0 and not AbilitiesReal[3]:IsFullyCastable() then
         for _, projectile in pairs(projectiles) do
             if GetUnitToLocationDistance(npcBot, projectile.location) > castPoint * defaultProjectileVelocity then
                 local escapeLocation = utility.GetUnitsTowardsLocation(npcBot, projectile.location, 400)

@@ -407,7 +407,7 @@ Consider[4]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
 end
-
+debugmode=false
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
 	-- Check if we're already using an ability

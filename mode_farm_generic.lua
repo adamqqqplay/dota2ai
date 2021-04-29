@@ -12,7 +12,7 @@ local lanes = {LANE_TOP, LANE_MID, LANE_BOT};
 local cause = "";
 local cogsTarget = nil;
 local t3Destroyed = false;
-local shrineTarget = nil;
+--local shrineTarget = nil;
 local cLoc = nil;
 local farmLane = false;
 
@@ -121,15 +121,15 @@ function GetDesire()
 	
 	if t3Destroyed == false then
 		t3Destroyed = IsThereT3Detroyed();
-	else
-		if bot:DistanceFromFountain() > 10000 then
-			shrineTarget = GetTargetShrine();
-			local barracks = bot:GetNearbyBarracks(700, true);
-			if shrineTarget ~= nil and ( barracks == nil or #barracks == 0 ) and IsSuitableToDestroyShrine()  then
-				cause = "shrine";
-				return BOT_MODE_DESIRE_VERYHIGH;
-			end
-		end
+	--else
+	--	if bot:DistanceFromFountain() > 10000 then
+	--		shrineTarget = GetTargetShrine();
+	--		local barracks = bot:GetNearbyBarracks(700, true);
+	--		if shrineTarget ~= nil and ( barracks == nil or #barracks == 0 ) and IsSuitableToDestroyShrine()  then
+	--			cause = "shrine";
+	--			return BOT_MODE_DESIRE_VERYHIGH;
+	--		end
+	--	end
 	end
 	
 	if campUtils.IsStrongJungler(bot) and bot:GetLevel() >= 6 and bot:GetLevel() < 30 and not IsHumanPlayerInTeam() and GetGameMode() ~= GAMEMODE_MO 
@@ -165,7 +165,7 @@ function OnEnd()
 	cogsTarget = nil;
 	cogs = "";
 	cause = "";
-	shrineTarget = nil;
+	--shrineTarget = nil;
 end
 
 function Think()
@@ -199,15 +199,7 @@ function Think()
 		print("Attack Cogs")
 		bot:Action_AttackUnit( cogsTarget, true );
 		cause = "";
-		return;
-	elseif cause == "shrine" then
-		if GetUnitToUnitDistance(bot, shrineTarget) > 500 then
-			bot:Action_MoveToLocation(shrineTarget:GetLocation())
-			return
-		else
-			bot:Action_AttackUnit(shrineTarget, true)
-			return
-		end
+		return
 	end	
 	
 	if LaneCreeps ~= nil and #LaneCreeps > 0 then
@@ -275,33 +267,33 @@ function IsThereT3Detroyed()
 	return false;
 end
 
-function GetTargetShrine()
-	local shrines = {
-		 SHRINE_JUNGLE_1,
-		 SHRINE_JUNGLE_2 
-	}
-	for _,s in pairs(shrines) do
-		local shrine = GetShrine(GetOpposingTeam(), s);
-		if  shrine ~= nil and shrine:IsAlive() then
-			return shrine;
-		end	
-	end	
-	return nil;
-end
-
-function IsSuitableToDestroyShrine()
-	local mode = bot:GetActiveMode();
-	if bot:WasRecentlyDamagedByTower(2.0) or bot:WasRecentlyDamagedByAnyHero(3.0)
-	   or mode == BOT_MODE_DEFEND_TOWER_TOP
-	   or mode == BOT_MODE_DEFEND_TOWER_MID
-	   or mode == BOT_MODE_DEFEND_TOWER_BOT
-	   or mode == BOT_MODE_ATTACK
-	   or mode == BOT_MODE_RETREAT and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH
-	then
-		return false;
-	end
-	return true;
-end
+--function GetTargetShrine()
+--	local shrines = {
+--		 SHRINE_JUNGLE_1,
+--		 SHRINE_JUNGLE_2
+--	}
+--	for _,s in pairs(shrines) do
+--		local shrine = GetShrine(GetOpposingTeam(), s);
+--		if  shrine ~= nil and shrine:IsAlive() then
+--			return shrine;
+--		end
+--	end
+--	return nil;
+--end
+--
+--function IsSuitableToDestroyShrine()
+--	local mode = bot:GetActiveMode();
+--	if bot:WasRecentlyDamagedByTower(2.0) or bot:WasRecentlyDamagedByAnyHero(3.0)
+--	   or mode == BOT_MODE_DEFEND_TOWER_TOP
+--	   or mode == BOT_MODE_DEFEND_TOWER_MID
+--	   or mode == BOT_MODE_DEFEND_TOWER_BOT
+--	   or mode == BOT_MODE_ATTACK
+--	   or mode == BOT_MODE_RETREAT and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH
+--	then
+--		return false;
+--	end
+--	return true;
+--end
 
 function GetDistance(s, t)
     return math.sqrt((s[1]-t[1])*(s[1]-t[1]) + (s[2]-t[2])*(s[2]-t[2]));

@@ -13,13 +13,10 @@ local ItemsToBuy =
 	"item_power_treads", --假腿7.21
     "item_witch_blade",
 	"item_hurricane_pike", --大推推7.20
-	"item_rod_of_atos", --阿托斯7.20
 	"item_orchid",
-    "item_hyperstone",
-	"item_recipe_bloodthorn",
+    "item_bloodthorn",
     "item_sheepstick", --羊刀
-    "item_maelstrom",
-    "item_recipe_gleipnir",
+    "item_gleipnir",
 	"item_ultimate_scepter", --蓝杖
 }
 

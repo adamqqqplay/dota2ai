@@ -416,87 +416,79 @@ Consider[3]=function()
 end
 
 Consider[4]=function()
-	local abilityNumber=4
-	--------------------------------------
-	-- Generic Variable Setting
-	--------------------------------------
-	local ability=AbilitiesReal[abilityNumber];
-	
-	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
-	end
-	
-	local CastRange = ability:GetCastRange();
-	local Damage = 0
-	local Radius = ability:GetAOERadius()-50;
-	local CastPoint = ability:GetCastPoint()
-	
-	local HeroHealth=10000
-	local CreepHealth=10000
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
-	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+    local abilityNumber=4
+    --------------------------------------
+    -- Generic Variable Setting
+    --------------------------------------
+    local ability=AbilitiesReal[abilityNumber];
 
-	local i=npcBot:FindItemSlot("item_blink")
-	if(i>=0 and i<=5)
-	then
-		blink=npcBot:GetItemInSlot(i)
-		i=nil
-	end
-	if(blink~=nil and blink:IsFullyCastable())
-	then
-		CastRange=CastRange+1200
-		if(npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
-		then
-			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
-			if ( locationAoE.count >= 2 ) 
-			then
-				npcBot:Action_UseAbilityOnLocation( blink, locationAoE.targetloc );
-				return 0
-			end
-		end
-	end
-	--------------------------------------
-	-- Global high-priorty usage
-	--------------------------------------
-	-- Check for a channeling enemy
-	-- If we're in a teamfight, use it on the scariest enemy
-	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
-	if ( #tableNearbyAttackingAlliedHeroes >= 2 )
-	then
-		for _,npcEnemy in pairs( enemys )
-		do
-			if ( npcEnemy:IsChanneling() )
-			then
-				return BOT_ACTION_DESIRE_MODERATE-0.15, npcEnemy:GetLocation()
-			end
-		end
-	end
+    if not ability:IsFullyCastable() then
+        return BOT_ACTION_DESIRE_NONE, 0;
+    end
+
+    local CastRange = ability:GetCastRange()
+    local Radius = ability:GetAOERadius()-50
+    local CastPoint = ability:GetCastPoint()
+
+    local allys = AbilityExtensions:Filter(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot), function(t) return AbilityExtensions:NotRetreating(t)  end)
+    local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+    local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+
+    local i=npcBot:FindItemSlot("item_blink")
+    if(i>=0 and i<=5)
+    then
+        blink=npcBot:GetItemInSlot(i)
+        i=nil
+    end
+    if(blink~=nil and blink:IsFullyCastable())
+    then
+        CastRange=CastRange+1200
+        if(npcBot:GetActiveMode() == BOT_MODE_ATTACK )
+        then
+            local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+            if ( locationAoE.count >= 2 )
+            then
+                npcBot:Action_UseAbilityOnLocation( blink, locationAoE.targetloc );
+                return 0
+            end
+        end
+    end
+
+    local channelingEnemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot)
+    channelingEnemies = AbilityExtensions:Filter(channelingEnemies, function(t) return AbilityExtensions:IsChannelingAbility(t) and not t:IsInvulnerable() and t:CanBeSeen() end)
+    channelingEnemies = AbilityExtensions:Map(channelingEnemies, function(t) return { t, t:GetCurrentActiveAbility() }  end)
+    channelingEnemies = AbilityExtensions:Map(channelingEnemies, function(t) return { t[1], t[2] and t[2]:GetCooldown() or 25 }  end)
+    channelingEnemies = AbilityExtensions:SortByMaxFirst(channelingEnemies, function(t) return t[2]  end)
+    --print("enigma 1")
+    if AbilityExtensions:Any(channelingEnemies) then
+        for _, channelingEnemy in ipairs(channelingEnemies) do
+            if channelingEnemy[1]:IsMagicImmune() or not AbilitiesReal[1]:IsFullyCastable() then
+                if channelingEnemy[2] > 60 then
+                    print("enigma 3")
+                    return RemapValClamped(channelingEnemy[2], 60, 120, 0.5, 0.7), channelingEnemy[1]:GetLocation()
+                end
+            end
+        end
+    end
+
 	--------------------------------------
 	-- Mode based usage
-	--------------------------------------
-	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+    --------------------------------------
+
+    --print("enigma 2")
+    local enemies = AbilityExtensions:Filter(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot), function(t) return CanCast[4](t)  end)
+    local enemyCount = AbilityExtensions:GetEnemyHeroNumber(npcBot, enemies)
+    local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 )
+    if locationAoE.count >= 2 and locationAoE.count == enemyCount and #allys <= enemyCount/2 then
+        return RemapValClamped(locationAoE.count/enemyCount, 0.7, 1, 0.5, 1), locationAoE.targetloc
+    end
+
+    -- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
-		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
-		if ( locationAoE.count >= 2 ) 
+		if ( locationAoE.count >= 2 )
 		then
 			return BOT_ACTION_DESIRE_LOW-0.15, locationAoE.targetloc
-		end
-	end
-	
-	-- If we're pushing or defending a lane and can hit 4+ creeps, go for it
-	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
-	then
-		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
-		if ( locationAoE.count >= 3 ) 
-		then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
 		end
 	end
 	
@@ -506,19 +498,18 @@ Consider[4]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK  ) 
 	then
-		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
 		if ( locationAoE.count >= 2 ) then
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
 		end
 	end
 
-	-- If we're in a teamfight, use it 
+	-- If we're in a teamfight, use it
 	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
 	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 
 	then
 		local npcEnemy = npcBot:GetTarget();
 
-		if ( npcEnemy ~= nil and Enemys~=nil and #Enemys >= 2) 
+		if ( npcEnemy ~= nil and enemys~=nil and #enemys >= 2)
 		then
 			return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc
 		end

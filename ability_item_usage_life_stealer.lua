@@ -17,10 +17,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName =  { "life_stealer_rage", "life_stealer_feast", "life_stealer_ghoul_frenzy", "life_stealer_open_wounds", "life_stealer_infest", "life_stealer_consume" }
-local abilityIndex = utility.ReverseTable(abilityName)
-
 
 local AbilityToLevelUp=
 {
@@ -416,7 +412,6 @@ Consider[7]=function()
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_GANK or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY ) 
 	then
@@ -451,11 +446,11 @@ Consider[6] = function()
 
 	if AbilityExtensions:IsAttackingEnemies(npcBot) then
 		local nearbyEnemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, ability:GetAOERadius(), true)
-		if #nearbyEnemies >= 3 or AbilityExtensions:IsSeverlyDisabled(lastInfestTarget) and #nearbyEnemies <= 2 then
+		if #nearbyEnemies >= 3 or AbilityExtensions:IsSeverelyDisabled(lastInfestTarget) and #nearbyEnemies <= 2 then
 			return BOT_ACTION_DESIRE_MODERATE
 		end
 	end
-	if infest3 and (#enemies == 0 or AbilityExtensions:Outnumber(friends, enemies)) then
+	if infest3 and (#enemies == 0 or AbilityExtensions:Outnumber(npcBot, friends, enemies)) then
 		return BOT_ACTION_DESIRE_HIGH
 	end
 	if infest10 then

@@ -10,7 +10,6 @@ local ProxRange = 1300;
 local bearState = "";
 
 local BearItem = {
-	"item_stout_shield",
 	"item_boots",
 	"item_orb_of_venom",
 	"item_blight_stone"
@@ -162,7 +161,6 @@ function ConsiderSavageRoar(hMinionUnit)
 
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_GANK or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY 
 		 ) 

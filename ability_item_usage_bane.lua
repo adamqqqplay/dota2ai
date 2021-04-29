@@ -524,8 +524,8 @@ Consider[4]=function()
 		end
 	end]]
 
-	if AbilityExtensions:IsRetreating(npcBot) and #enemys == 0 and not AbilityExtensions:HasAbilityRetargetModifier(enemys[1]) then
-		return BOT_ACTION_DESIRE_HIGH, enemys[0]
+	if AbilityExtensions:IsRetreating(npcBot) and #enemys == 1 and not AbilityExtensions:HasAbilityRetargetModifier(enemys[1]) then
+		return BOT_ACTION_DESIRE_HIGH, enemys[1]
 	end
 	
 	-- If we're going after someone
@@ -545,7 +545,7 @@ Consider[4]=function()
 		end
 	end
 
-	local disabledAllies = AbilityExtensions:Filter(allys, function(t) return AbilityExtensions:IsSeverlyDisabled(t) and not t:IsChanneling() end)
+	local disabledAllies = AbilityExtensions:Filter(allys, function(t) return AbilityExtensions:IsSeverelyDisabled(t) and not t:IsChanneling() end)
 	disabledAllies = AbilityExtensions:SortByMinFirst(disabledAllies, function(t) return t:GetHealth() end)
 	if #disabledAllies ~= 0 then
 		return BOT_ACTION_DESIRE_MODERATE, disabledAllies[1]
@@ -572,7 +572,7 @@ Consider[5]=function()
 	local friends = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, false, BOT_MODE_NONE)
 	local nightmaredFriends = AbilityExtensions:Filter(friends, function(t) return t:HasModifier("modifier_bane_nightmare") end)
 	if #nightmaredEnemies ~= 0 then
-		if #enemies == 1 and #friends >= 2 and AbilityExtensions:GetModifierRemainingDuration(nightmaredFriends[1], "modifier_bane_nightmare") <= 4 
+		if #enemies == 1 and #friends >= 2 and AbilityExtensions:GetModifierRemainingDuration(nightmaredEnemies[1], "modifier_bane_nightmare") <= 4
 		or AbilityExtensions:All(nightmaredEnemies, function(t) return AbilityExtensions:GetHealthPercent(t) <= 0.3 and AbilityExtensions:GetModifierRemainingDuration(nightmaredFriends[1], "modifier_bane_nightmare") <= 4 end) and AbilityExtensions:All(friends, function(t) return AbilityExtensions:GetHealthPercent(t) >= 0.5 end) then
 			return BOT_ACTION_DESIRE_HIGH
 		end

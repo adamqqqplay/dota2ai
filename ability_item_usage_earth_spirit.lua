@@ -520,6 +520,7 @@ Consider[3]=function()
 			then
 				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy)) 
 				then
+					local stoneNearby = IsStoneNearby(npcBot:GetLocation(), nSearchRad);
 					if stoneNearby then
 						return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation(), false, true; 
 					elseif nStone >= 1 then
@@ -538,6 +539,7 @@ Consider[3]=function()
 	then
 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), nCastRange, nRadius, nCastPoint, 0 );
 		if ( locationAoE.count >= 2 ) 
+
 		then
 			local stoneNearby = IsStoneNearby(locationAoE.targetloc, nSearchRad);
 			if stoneNearby and ( nStone >= 1 or  nStone < 1 ) then

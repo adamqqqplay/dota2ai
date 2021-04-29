@@ -218,7 +218,7 @@ Consider[2]=function()
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if(WeakestEnemy:GetHealth()<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_ALL) and GetUnitToUnitDistance(npcBot,npcEnemy)< AttackRange - 50)
+			if(WeakestEnemy:GetHealth()<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_ALL) and GetUnitToUnitDistance(npcBot,WeakestEnemy)< AttackRange - 50)
 			then
 				return BOT_ACTION_DESIRE_HIGH
 			end
@@ -267,7 +267,13 @@ Consider[2]=function()
 	
 end
 
-
+npcBot.trapTable = {}
+local findSetTraps = AbilityExtensions:Filter(GetUnitList(UNIT_LIST_ALLIES), function(t)
+	return t:GetUnitName() == "npc_dota_templar_assassin_psionic_trap" and t:GetTeam() == npcBot:GetTeam()
+end)
+AbilityExtensions:ForEach(findSetTraps, function(t)
+	npcBot.trapTable[AbilityExtensions:ToStringVector(t:GetLocation())] = DotaTime()
+end)
 
 Consider[6]=function()
 	local abilityNumber=6
@@ -336,7 +342,7 @@ Consider[6]=function()
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if((ManaPercentage> 0.4 and GetUnitToUnitDistance(npcBot,npcEnemy) < 1600) or GetUnitToUnitDistance(npcBot,npcEnemy)< AttackRange)
+			if((ManaPercentage> 0.4 and GetUnitToUnitDistance(npcBot,WeakestEnemy) < 1600) or GetUnitToUnitDistance(npcBot,WeakestEnemy)< AttackRange)
 			then
 				return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetLocation();
 			end
@@ -396,7 +402,13 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	local index, target, castType = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	if index == 6 then
+		print("ta set trap at: "..AbilityExtensions:ToStringVector(target))
+		npcBot.trapTable[AbilityExtensions:ToStringVector(target)] = DotaTime() + AbilitiesReal[6]:GetCastPoint()
+	end
+	AbilityExtensions:RecordAbility(npcBot, index, target, castType, AbilitiesReal)
+
 end
 
 function CourierUsageThink() 

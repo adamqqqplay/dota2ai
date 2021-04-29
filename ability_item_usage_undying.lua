@@ -387,7 +387,7 @@ Consider[3]=function()
 	then
 		if ( npcBot:WasRecentlyDamagedByAnyHero(2) ) 
 		then
-			if(trees1~=nil and #trees>=1 and #enemys>=1)
+			if(trees~=nil and #trees>=1 and #enemys>=1)
 			then
 				return BOT_ACTION_DESIRE_MODERATE-0.05,GetTreeLocation(trees[#trees])
 			else
@@ -411,7 +411,7 @@ Consider[3]=function()
 			then
 				return BOT_ACTION_DESIRE_MODERATE-0.03, locationAoE.targetloc;
 			end
-			if(trees1~=nil and #trees>=1)
+			if(trees~=nil and #trees>=1)
 			then
 				return BOT_ACTION_DESIRE_MODERATE-0.03,GetTreeLocation(trees[#trees])
 			end

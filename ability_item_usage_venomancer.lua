@@ -290,7 +290,7 @@ Consider[3]=function() --Location AOE Example
 	then
 		if ( #creeps >= 2 and (ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)) 
 		then
-			return BOT_ACTION_DESIRE_LOW, utility.RandomInCastRangePoint(npcBot,npcEnemy,CastRange,RandomRange);
+			return BOT_ACTION_DESIRE_LOW, utility.RandomInCastRangePoint(npcBot,creeps[1],CastRange,RandomRange);
 		end
 	end
 

@@ -279,7 +279,7 @@ Consider[5]=function()
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
 				if(HeroHealth+WeakestEnemy:GetHealthRegen()*CastPoint<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) 
-					and GetUnitToUnitDistance(WeakestEnemy,npcBot) > AttackRange and GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange )
+					and GetUnitToUnitDistance(WeakestEnemy,npcBot) > AttackRange and GetUnitToUnitDistance(npcBot,WeakestEnemy)<CastRange )
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
 				end

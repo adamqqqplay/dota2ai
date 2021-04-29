@@ -593,9 +593,9 @@ Consider[abilityIndex.keeper_of_the_light_blind_light] = function()
 	then
 		local npcEnemy = npcBot:GetTarget();
 
-		if ( npcEnemy ~= nil and Enemys~=nil and #Enemys >= 2) 
+		if ( npcEnemy ~= nil and enemys~=nil and #enemys >= 2) 
 		then
-			return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc
+			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation()
 		end
 	end
 
@@ -676,9 +676,9 @@ Consider[5] = function()
 	then
 		local npcEnemy = npcBot:GetTarget();
 
-		if ( npcEnemy ~= nil and Enemys~=nil and #Enemys >= 2) 
+		if ( npcEnemy ~= nil and enemys~=nil and #enemys >= 2) 
 		then
-			return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc
+			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation()
 		end
 	end
 

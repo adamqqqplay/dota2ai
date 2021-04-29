@@ -396,9 +396,6 @@ Consider[6]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
 
---
-
-
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
 

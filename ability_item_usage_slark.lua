@@ -253,7 +253,7 @@ Consider[2]=function()
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) and npcBot:IsFacingUnit(WeakestEnemy, 10) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange)
+			if ( CanCast[abilityNumber]( WeakestEnemy ) and npcBot:IsFacingUnit(WeakestEnemy, 10) and GetUnitToUnitDistance(npcBot,WeakestEnemy)< CastRange)
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then

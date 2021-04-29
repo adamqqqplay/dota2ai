@@ -37,14 +37,14 @@ v1.1d(2017.5.7)
 5.Improved spirit breaker's charge usage, he will use it more carefully.
 6.Improved crystal maiden's nova usage.
 7.AI will not pick rune when human player coming.
-8.Improved usage and puchase of Anti-hidden item.
+8.Improved usage and purchase of Anti-hidden item.
 V1.1e (2017.5.16)
 1. Updated the 7.06 item recipe.
 2. Now all heroes will try to purchase six items.
 3. Optimized the item building of some heroes.
 4. Improved the warding system (thanks to Improved Default Bots)
 5. Fixed the bot will use tower glyph after tower destroyed.
-6. Fixed the Queen of pain stucked in the woods.
+6. Fixed the Queen of pain stuck in the woods.
 7. Fixed the Axe the probability of stuck after blink.
 V1.1f (2017.5.21)
 1. Added the Spectre, Sven, winter wyvern, pugna, antimage, faceless void.
@@ -73,14 +73,14 @@ Now the program uses the GPLv3 open source protocol license, the use of the sour
 v1.1h(2017.7.10)
 1. Added warlock, windrunner, omniknight, tiny, death prophet.
 2. Fixed lich can not level up talents correctly.
-3. Fixed lich can not bulid items correctly.
+3. Fixed lich can not build items correctly.
 4. Fixed skywrathmage,lina,huskar,abaddon can't use ability.
 5. Fixed a bug where the necrolyte would cause the game to crash.
 6. Improved some heroes item building.
 7. Improved pugna's decrepify usage.
 8. Fixed the bug that did not properly sell the other boots after buying the travel boots.
 9. Improved the ability usage of some heroes.
-10. Earthshaker will now buy ahalilius scepter.
+10. Earthshaker will now buy aghanim's scepter.
 11. Fixed silencer do not use ultimate ability.
 12. Removed debugging information from the release version
 13. Fixed the bug of contending for the courier.
@@ -89,7 +89,7 @@ v1.2(2017.8.23)
 1. Added Team Gank system: AI will buy and use the smoke to kill the enemy hero
 2. Improve the Rune system, AI will recognize the type of the rune, and consider whether it is suitable to pick up the rune. AI will leave the rune to the most suitable hero. AI will avoid possible dangers.
 3. Improve the lane assignment system, AI team will first consider the lane of human players, and then select the most suitable route. Thanks BOT EXPERIMENT author: Arizona, I used part of its function.
-4. Improve the item purchase systeam, AI will ensure their own security before going to sideshop.
+4. Improve the item purchase system, AI will ensure their own security before going to sideshop.
 5. Improve the Shrine usage, AI will be waiting for the nearby human players before using shrine.  (not tested.)
 6. Improve the use of the courier, the courier will try to escape the danger zone. The courier will pick up the items in advance to save time. The courier may wait more time when the human player uses it.
 7. Improve the use of tower Glyph.
@@ -110,12 +110,12 @@ v1.2(2017.8.23)
 22. Fixed spirit breaker wrongly calculate the enemy power in some cases.
 23. Fixed winter wyvern wrongly calculation damage caused by the use of 4 abilitys
 24. Fixed part of the hero can not use the ability to kill jungle creeps.
-25. Improve Faceless void to use ult ablility better, it will avoid affecting friendly heroes.
+25. Improve Faceless void to use ult ability better, it will avoid affecting friendly heroes.
 26. Improve Bane to use nightmare better, to avoid interfering friendly heroes.
-27. Improve slark to use ult ablility better, it will be more likely to use this ability when attacking.
-28. Improve venovenomancer to use ability 3 better, it will be more active to damage enemy heroes
-29. Improve sven to use ablility 1 better, it will be less used to clear the lane.
-30. Improve warlock to use ablility 3 better, it will use this ability later
+27. Improve slark to use ult ability better, it will be more likely to use this ability when attacking.
+28. Improve venomancer to use ability 3 better, it will be more active to damage enemy heroes
+29. Improve sven to use ability 1 better, it will be less used to clear the lane.
+30. Improve warlock to use ability 3 better, it will use this ability later
 31. Improve riki to use ability 2 more often, it will be more active consumption of enemy heroes
 32. Improve axe to use ability 2 better, it will not use the abilitys before using the blink.
 33. Improve necrolyte to use ability 2 better, it will use the skills in more cases
@@ -134,7 +134,7 @@ V1.2b(2017.10.2)
 7.Fixed can not correctly buy items in secret shops and side shops.
 8.Fixed Life stealer will use ultimate ability to itself, thus solving the stuck problem
 9.Improved Leshrac to use ability 2 better.
-10.Improved Undying to use ablility 1 more accurate
+10.Improved Undying to use ability 1 more accurate
 11.Improved rune pick up in game starting.
 12.Improved the purchase time of gem, and now a team will only buy a gem
 13.Improved ability build of Venomancer.
@@ -186,7 +186,7 @@ v1.4c (2018.2.28)
 1.Improve the lineup selection, now AI will consider the player's heroic position to build a team with one hero in each position.  (This change is done by DblTap, thanks for his effort! His Steam link: http://steamcommunity.com/profiles/76561197967823929/ Github link: https://github.com/adamqqqplay/dota2ai/pull/3)
 2.Fixed some bugs.
 v1.4d (2018.3.3)
-1. Improved Lane assaignment, now AI will choose more suitable for their own lane, and where possible, give player the lane.
+1. Improved Lane assignment, now AI will choose more suitable for their own lane, and where possible, give player the lane.
 2. Fixed AI can not choose all implemented heroes.
 3. Improve: Now support heroes will give priority to ward on their own lanes.
 4. Fixed heroes can not switch power treads.
@@ -221,15 +221,15 @@ v1.4f(2018.3.25) Commit by zmcmcc
 9. Updated the Treant's item and ability building.
 10. Updated the Medusa's item and ability building.
 v1.4g(2018.3.25) commit by zmcmcc
-11.Fixed some bugs casued by former updates.
+11.Fixed some bugs caused by former updates.
 v1.4h(2018.3.31) committed by zmcmcc
 1. Updated the hero selection and role allocation. Bots will try to avoid picking heros with duplicated roles. Also slightly changed the hero selection pace. now ally bots will not wait until you pick a hero, but the duration of two picks was slightly prolonged.
 2. Temporarily remove these heros: Alchemist, Antimage, Spectre. 
 3. Get Chen back.
-4. Optimized the Captian Mode. Now if you let Bots to ban/pick, they will try to ban/pick with the same hero pool as in AP mode, and will pick in this order: Offlaner, support1, midlaner,support2,safelane carry. I also try to let them have a 311 distribution, like professional game(If the feedback is bad,it's easy to go back to 212).
+4. Optimized the Captain Mode. Now if you let Bots to ban/pick, they will try to ban/pick with the same hero pool as in AP mode, and will pick in this order: Offlaner, support1, midlaner, support2, safelane carry. I also try to let them have a 311 distribution, like professional game(If the feedback is bad,it's easy to go back to 212).
 Two important things:a.If you are the captain, please follow the Offlaner, support1, midlaner,support2,safelane carry order to pick! The bots will only go to the right place in this case. b.In some extreme cases bots will pick two same heros(I tested 15 games, one occurs). If that happened, just quit and start another game...
 5. Now bots will be laning more peacefully in the first 6-7 minutes without frequent team fight in mid lane.
-6. The following heros are either in item building, ability usage or bug fixed: Batrider, Centaur, Chen, Death prophet, Disruptor, Dragon kignt, Faceless void, Huskar, jakiro, Juggernaut, Legion commander, Leshrac, Lina, Luna, Mirana, Necrolyte, Phantom assassin, Pudge, Riki, Sniper, Sven, Tidehunter, Tiny, Treant, Undying, Windrunner, Zeus.
+6. The following heroes are either in item building, ability usage or bug fixed: Batrider, Centaur, Chen, Death prophet, Disruptor, Dragon kignt, Faceless void, Huskar, jakiro, Juggernaut, Legion commander, Leshrac, Lina, Luna, Mirana, Necrolyte, Phantom assassin, Pudge, Riki, Sniper, Sven, Tidehunter, Tiny, Treant, Undying, Windrunner, Zeus.
 7. Fixed some bugs.
 v1.5(2018.4.8) committed by zmcmcc
 Thanks the author of Bot Experiment Master, Arizona Fauzie。 I used and modified part of his code.
@@ -247,13 +247,13 @@ Thanks the author of Bot Experiment Master, Arizona Fauzie。 I used and modifie
 v1.5b(2018.4.13) committed by zmcmcc
 1. Added new hero Outworld Destroyer, Naga Siren, Terrorblade and Templar Assassin.
 2. Now if bots didn't choose a safe lane support, the other support will buy the courier.
-3. Some heros will now purchase Aeon Disk.
+3. Some heroes will now purchase Aeon Disk.
 4. Fixed the bug that bots will pick duplicated heroes in Captain mode.
 5. Slightly adjust the ability usage of Centaur, Slardar, Ursa etc. so that they are less likely to miss their stuns.
-6. Rewrite the ability usage of skeleton king. Althogh he still can't use his third ability correctly, he has better ability use now.
+6. Rewrite the ability usage of skeleton king. Although he still can't use his third ability correctly, he has better ability use now.
 7. Rewrite the ability usage of pugna. Now his ult still has some problems(Similar to SB and ET) but has better ability use now.
 8. Rewrite the ability usage of tidehunter. Now he can use gush correctly.
-v1.5c(2018.4.19) commited by zmcmcc
+v1.5c(2018.4.19) committed by zmcmcc
 1. Added new hero weaver and shadow demon. However, he cannot use his shukuchi like human.
 2. Added recent created heroes in Captain mode.
 3. Fixed a bug that Witch Doctor, Lina and Oracle cannot buy items.(May also be the reason why sometime bots didn't buy courier).
@@ -264,7 +264,7 @@ v1.5c(2018.4.19) commited by zmcmcc
 8. Fixed a bug that bots buy couriers in 3 minutes and don't release it. Now if bots don't buy courier in the beginning, it means they will never buy it. Buy one by yourself then(lol).
 v1.5d(2018.4.27)
 Update item building of Dota2 v7.14
-v1.5e(2018.5.6) commit by zmcmcc
+v1.5e(2018.5.6) committed by zmcmcc
 1. Added new hero Phantom Lancer, Troll Warlord and Nyx assassin. For now NA cannot use burrow.
 2. Kunkka is back with better ability use(not perfect though).
 3. Temporarily removed Tiny due to his third skill bugs.
@@ -273,7 +273,7 @@ v1.5e(2018.5.6) commit by zmcmcc
 6. Further optimized the usage of stomp-like abilities. Now enemies' movement speed and cast delay will be better considered.
 7. Added judgement of whether stuck on cliff for broodmother, slark and earth spirit. 
 8. Fixed some bugs caused by v7.14.
-v1.5f(2018.5.16) commit by zmcmcc
+v1.5f(2018.5.16) committed by zmcmcc
 1. Added new heroes Tusk, Shredder and Furion.
 2.  Optimized ability usage of TA, QoP, Underlord, Disruptor, Wind Runner, Sniper, NA and Drow Ranger.
 3. FIxed some bugs.
@@ -288,7 +288,7 @@ V1.5g (2018.6.6)
 7. Fixed the issue that the Timber could not use skills
 8. Fixed the issue that the Templar Assassins could not use the ultimate ability.
 9. Try to fix the problem that Troll warlord will not be able to use abilities properly.
-10. Optimize the useage of Weaver's ultimate ability, and now it will use this ability to offset a lot of damage.
+10. Optimize the usage of Weaver's ultimate ability, and now it will use this ability to offset a lot of damage.
 11. Fixed the problem of bristleback can not purchasing items.
 12. Add Invoker's position to the middle to fix the problem.
 13. Now AI will buy more TP and dust.
@@ -319,7 +319,7 @@ V1.6e(2019.10.13)
 5. Optimize the ability using of Doom and Arc Warden.
 6. Temporarily closed the team roaming system.
 7. Remove Monkey King from the lineup.
-8. Warlock will now cancel the channling of 3rd ability at the appropriate time.
+8. Warlock will now cancel the channeling of 3rd ability at the appropriate time.
 v1.6f (2019.12.19)
 1. Update the item building of 7.23.
 2. Update warding location of 7.23.
@@ -338,7 +338,7 @@ v1.7.1 (2021.04.10) Updated by AaronSong321
 7. Remove courier purchase;
 8. Fix some heroes fail to add some of their abilities according to version 7.28; 
 9. Fix TA doesn't purchase any boots; 
-10. Change the ability usage of CM, AM, and Zeus.
+10. Change ability usage of CM, AM.
 v1.7.2 (2021.04.14) Updated by AaronSong321
 1. Update to support 7.29.
 2. Fixed the ability usage of alchemist, earth spirit, leshrac, broodmother, lich, lycan, medusa, TA.
@@ -347,3 +347,10 @@ v1.7.2 (2021.04.14) Updated by AaronSong321
 5. Try automatically add lv 27-30 talents;
 6. Modify furion's sprout not to block friend melee heroes;
 7. Add better behaviour to antimage abilities;
+v1.7.3 (2021.04.26) Updated by AaronSong321
+1. Temporarily remove rune mode;
+2. Add battle power evaluation of illusion;
+3. Change ability building tree of Chen, Dazzle, Kotl;
+4. Implement Life_stealer, Dragon_knight, Leshrac, Magnataur, Phantom_assassin shard abilities;
+5. Try to improve Kunkka’s x-mark combo;
+6. Fix bugs in Alchemist, Bane, Kunkka;

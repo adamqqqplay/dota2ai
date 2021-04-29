@@ -15,19 +15,10 @@ local ItemsToBuy =
 	"item_armlet", --臂章
 	"item_blink",
 	"item_black_king_bar", --BKB
-	"item_mithril_hammer",
-	"item_belt_of_strength",
-	"item_recipe_basher", --晕锤7.14
-	"item_platemail",
-	"item_hyperstone",
-	"item_chainmail",
-	"item_recipe_assault", --强袭
-	"item_javelin",
-	"item_mithril_hammer", --电锤7.14
-	"item_hyperstone",
-	"item_recipe_mjollnir", --大电锤
-	"item_vanguard",
-	"item_recipe_abyssal_blade", --大晕
+	"item_basher", --晕锤7.14
+	"item_assault", --强袭
+	"item_mjollnir", --大电锤
+	"item_abyssal_blade", --大晕
     "item_travel_boots",
 }
 

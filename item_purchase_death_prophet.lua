@@ -12,8 +12,7 @@ local ItemsToBuy =
 	"item_null_talisman", --无用挂件
 	"item_boots",
 	"item_magic_wand",
-	"item_blades_of_attack",
-	"item_chainmail", --相位7.21
+    "item_phase_boots",
 	"item_cyclone", --风杖
 	"item_ultimate_scepter",
 	"item_shivas_guard", --希瓦

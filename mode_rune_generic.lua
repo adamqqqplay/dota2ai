@@ -124,26 +124,26 @@ function Think()
 		end
 	end	
 	
-	if runeStatus == RUNE_STATUS_AVAILABLE then
-		if bottle ~= nil and closestDist < 1200 then 
-			local bottle_charge = bottle:GetCurrentCharges() 
-			if bottle:IsFullyCastable() and bottle_charge > 0 and ( bot:GetHealth() < bot:GetMaxHealth() or bot:GetMana() < bot:GetMaxMana() ) then
-				bot:Action_UseAbility( bottle );
-				return;
-			end
-		end
+	-- if runeStatus == RUNE_STATUS_AVAILABLE then
+	-- 	if bottle ~= nil and closestDist < 1200 then 
+	-- 		local bottle_charge = bottle:GetCurrentCharges() 
+	-- 		if bottle:IsFullyCastable() and bottle_charge > 0 and ( bot:GetHealth() < bot:GetMaxHealth() or bot:GetMana() < bot:GetMaxMana() ) then
+	-- 			bot:Action_UseAbility( bottle );
+	-- 			return;
+	-- 		end
+	-- 	end
 		
-		if closestDist > 200 then
-			bot:Action_MoveToLocation(GetRuneSpawnLocation(closestRune));
-			return
-		else
-			bot:Action_PickUpRune(closestRune);
-			return
-		end
-	else 
-		bot:Action_MoveToLocation(GetRuneSpawnLocation(closestRune));
-		return
-	end
+	-- 	if closestDist > 200 then
+	-- 		bot:Action_MoveToLocation(GetRuneSpawnLocation(closestRune));
+	-- 		return
+	-- 	else
+	-- 		bot:Action_PickUpRune(closestRune);
+	-- 		return
+	-- 	end
+	-- else 
+	-- 	bot:Action_MoveToLocation(GetRuneSpawnLocation(closestRune));
+	-- 	return
+	-- end
 	
 end
 

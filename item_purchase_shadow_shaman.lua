@@ -10,10 +10,9 @@ local ItemsToBuy =
 	"item_tango",
 	"item_clarity",
     "item_magic_stick",
-	"item_ring_of_basilius",
 	"item_arcane_boots",
 	"item_blink",
-	"item_glimmer_cape", --微光
+    "item_aether_lens",
     "item_ghost",
 	"item_force_staff",
 	"item_ultimate_scepter", --蓝杖

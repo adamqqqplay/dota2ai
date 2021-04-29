@@ -102,9 +102,9 @@ Consider[1]=function()
 	local HeroHealth=10000
 	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(1800,true,BOT_MODE_NONE)
+	local enemys = npcBot:GetNearbyHeroes(1599,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(1800,true)
+	local creeps = npcBot:GetNearbyCreeps(1599,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	--------------------------------------
 	-- Global high-priorty usage
@@ -346,11 +346,11 @@ Consider[3]=function()
 	local Damage = ability:GetAbilityDamage();
 	
 	local HeroHealth=10000
-	local allys = npcBot:GetNearbyHeroes( 1800, false, BOT_MODE_NONE );
+	local allys = npcBot:GetNearbyHeroes( 1599, false, BOT_MODE_NONE );
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local allys2 = GetUnitList(UNIT_LIST_ALLIED_HEROES)
     allys2 = AbilityExtensions:Filter(allys2, function(b) return not b:IsIllusion()  end)
-	local enemys = npcBot:GetNearbyHeroes(1800,true,BOT_MODE_NONE)
+	local enemys = npcBot:GetNearbyHeroes(1599,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	--------------------------------------
 	-- Global high-priorty usage
@@ -447,20 +447,7 @@ Consider[3]=function()
 		end
 	end
 	
-	-- If we're farming
-	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
-	then
-		if ( #creeps >= 2 ) 
-		then
-			if(ManaPercentage>0.5)
-			then
-				return BOT_ACTION_DESIRE_LOW,npcBot:GetLocation()
-			end	
-		end
-	end
-	
-	return BOT_ACTION_DESIRE_NONE, 0;
-	
+	return BOT_ACTION_DESIRE_NONE
 end
 
 Consider[6]=function()

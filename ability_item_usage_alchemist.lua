@@ -392,6 +392,7 @@ Consider[4]=function()
     local CastPoint = ability:GetCastPoint();
 
     local allys = npcBot:GetNearbyHeroes( CastRange+200, false, BOT_MODE_NONE );
+	local enemys = npcBot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
     -- use at myself when chemical rage is not available
     local useTable = {}
     if not npcBot:HasModifier("modifier_alchemist_chemical_rage") and not npcBot:HasModifier("modifier_alchemist_berserk_potion") then
