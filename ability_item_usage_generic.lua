@@ -375,6 +375,9 @@ function UseAbility(AbilitiesReal, cast)
         if npcBot:GetMana() < ability:GetManaCost() then
             print("Ability mana not enough: "..ability:GetName())
         end
+        if ability:IsHidden() then
+            print("Ability is hidden: "..ability:GetName())
+        end
 
         local function CallWithTarget()
             cast.Type[j] = "Target"

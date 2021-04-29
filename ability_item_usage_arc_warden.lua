@@ -484,7 +484,7 @@ Consider[4]=function()
 	--------------------------------------
 
 	-- Stop making a huge bounty for the enemy
-	if (npcBot:GetHealth() <= 450 or HealthPercentage <= 0.3) and (npcBot:WasRecentlyDamagedByAnyHero(1.5) or AbilityExtensions:CanHardlyMove(npcBot) or not AbilityExtensions:CanMove(npcBot)) and not AbilityExtensions:Outnumber(allys, enemys) then
+	if (npcBot:GetHealth() <= 450 or HealthPercentage <= 0.3) and (npcBot:WasRecentlyDamagedByAnyHero(1.5) or AbilityExtensions:CanHardlyMove(npcBot) or not AbilityExtensions:CanMove(npcBot)) and not AbilityExtensions:Outnumber(npcBot, allys, enemys) then
 		return 0
 	end
 

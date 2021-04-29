@@ -451,7 +451,7 @@ Consider[6] = function()
 			return BOT_ACTION_DESIRE_MODERATE
 		end
 	end
-	if infest3 and (#enemies == 0 or AbilityExtensions:Outnumber(friends, enemies)) then
+	if infest3 and (#enemies == 0 or AbilityExtensions:Outnumber(npcBot, friends, enemies)) then
 		return BOT_ACTION_DESIRE_HIGH
 	end
 	if infest10 then

@@ -1668,11 +1668,12 @@ M.PURCHASE_ITEM_SUCCESS=-1
 -- item cannot be used from stash (37)
 -- does not have enough mana to cast ability (14)
 -- item is still in cooldown
--- Can't cast attack ability on target, target is attack immune (32)
+-- can't cast attack ability on target, target is attack immune (32)
 -- order invalid for units with attack ability DOTA_UNIT_CAP_NO_ATTACK (41)
 -- can't cast on target, ability cannot target enemies (30)
 -- unit can't perform command, unit has commands restricted (74)
 -- hero does not have enough ability points to upgrade ability (13)
+-- ability is hidden (60)
 
 
 M.IgnoreDamageModifiers = {
@@ -1769,7 +1770,7 @@ end
 
 function M:GetBattlePower(npc)
     local power = 0
-    local name = npc:GetName()
+    local name = npc:GetUnitName()
     if string.match(name, "npc_dota_hero") then
         power = npc:GetNetWorth() + npc:GetLevel() * 1000
         if npc:GetLevel() >= 25 then
@@ -1802,34 +1803,39 @@ function M:GetBattlePower(npc)
     return power
 end
 
-M.GetHeroGroupBattlePower = function(self, heroes, isEnemy)
+M.GetHeroGroupBattlePower = function(self, npcBot, heroes, isEnemy)
     local function A(tb)
         local battlePowerMap = self:Map(tb, function(t) return { t:GetUnitName(), self:GetBattlePower(t) } end)
         battlePowerMap = self:SortByMaxFirst(battlePowerMap, function(t) return t[2] end)
         battlePowerMap = self:Map(battlePowerMap, function(t, index) return t[2] * (1.15-0.15*index) end)
         local g = {}
         for _, v in ipairs(battlePowerMap) do
-            g[battlePowerMap[1]] = battlePowerMap[2]
+            g[v[1]] = v[2]
         end
         return g
     end
-    local enemyNetWorthMap = A(self:GetEnemyHeroUnique(heroes))
+    local enemyNetWorthMap = A(self:GetEnemyHeroUnique(npcBot, heroes))
     local netWorth = 0
     local readNames = {}
     for _, enemy in pairs(heroes) do
         local name = enemy:GetUnitName()
         if not self:Contains(readNames, name) then
             table.insert(readNames, name)
-            netWorth = netWorth + enemyNetWorthMap[name]
+            -- TODO: enemyNetWorthMap[name] should not be null
+            if enemyNetWorthMap[name] then
+                netWorth = netWorth + enemyNetWorthMap[name]
+            end
         else
-            netWorth = netWorth + enemyNetWorthMap[name] * self:GetIllusionBattlePower(enemy)
+            if enemyNetWorthMap[name] then
+                netWorth = netWorth + enemyNetWorthMap[name] * self:GetIllusionBattlePower(enemy)
+            end
         end
     end
     return netWorth
 end
 
-M.Outnumber = function(self, friends, enemies)
-    return self:GetHeroGroupBattlePower(friends, false) >= self:GetHeroGroupBattlePower(enemies, true) * 1.8
+M.Outnumber = function(self, npcBot, friends, enemies)
+    return self:GetHeroGroupBattlePower(npcBot, friends, false) >= self:GetHeroGroupBattlePower(npcBot, enemies, true) * 1.8
 end
 
 
