@@ -634,7 +634,7 @@ function M.PrintTable(table , level)
   for k,v in pairs(table) do
      if type(v) == "table" then
         key = k
-        PrintTable(v, level + 1)
+        M.PrintTable(v, level + 1)
      else
         local content = string.format("%s%s = %s", indent .. "  ",tostring(k), tostring(v))
       print(content)  
@@ -794,6 +794,7 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable)
     --AbilityExtensions:DebugArray(AbilityExtensions:Map(AbilityExtensions:GetAllBoughtItems(npcBot), function(t) return t:GetName() end))
 end
 
+local sNextItem
 local UseCourier = function()
     local npcBot = GetBot()
     local courier = AbilityExtensions:GetMyCourier(npcBot)
@@ -917,7 +918,7 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
     end
 
     --RemoveInvisibleItemsWhenBountyHunter()
-    local sNextItem = GetTopItemToBuy()
+    sNextItem = GetTopItemToBuy()
     npcBot:SetNextItemPurchaseValue( GetItemCost( sNextItem ) )
 
     M.SellExtraItem(ItemsToBuy)

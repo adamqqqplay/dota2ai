@@ -418,19 +418,6 @@ function M:InsertAfter_Modify(tb, item, after)
     end
 end
 
---local function packRec(g, a, ...)
---    if a ~= nil then
---        table.insert(g, a)
---        packRec(g, ...)
---    end
---end
---
---function M:Pack(...)
---    local g = {}
---    packRec(g,...)
---    return g
---end
-
 function M:Unpack(tb)
     local index = #tb
     local function rec(...)
@@ -453,36 +440,6 @@ function M:UnpackIfTable(p)
 end
 
 -- bot mode behaviour
-
-M.SeriouslyRetreatingStunSomeone = function(self, npcBot, abilityIndex, ability, targetType)
-    if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0
-	end
-	
-	local CastRange = ability:GetCastRange()
-	local Damage = ability:GetAbilityDamage()
-	local Radius = ability:GetAOERadius()
-	local CastPoint = ability:GetCastPoint()
-	
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
-	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
-	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
-
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) then
-		for _,npcEnemy in pairs( enemys )
-		do
-			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) 
-			then
-				if ( CanCast[abilityNumber]( npcEnemy ) ) 
-				then
-					return BOT_ACTION_DESIRE_LOW, npcEnemy:GetExtrapolatedLocation(CastPoint)
-				end
-			end
-		end
-	end
-end
 
 local Trim = function(v, left, right)
     if right >= left then
@@ -556,73 +513,6 @@ M.ToggleFunctionToAction = function(self, npcBot, oldConsider, ability)
         else
             return 0
         end
-        local oldDesire = desire
-        if npcBot:GetTeam() ~= target:GetTeam() then -- some ability can cast to both allies and enemies (abbadon_mist_coil, etc)
-            local cooldown = ability:GetCooldown()
-            local abilityImportance = self:GetAbilityImportance(cooldown)
-
-            if target:HasModifier("modifier_antimage_counterspell") then
-                return 0
-            end
-            if target:HasModifier "modifier_item_sphere" or target:HasModifier("modifier_roshan_spell_block") or target:HasModifier("modifier_special_bonus_spell_block") then -- qop lv 25
-                if cooldown >= 30 then
-                    desire = desire - abilityImportance
-                elseif cooldown <= 20 then
-                    desire = desire + abilityImportance
-                end
-            end
-            if target:HasModifier("modifier_item_sphere_target") then
-                if cooldown >= 60 then
-                    desire = 0
-                elseif cooldown >= 30  then
-                    desire = desire - abilityImportance + 0.1
-                elseif cooldown <= 20 then
-                    desire = desire + abilityImportance
-                    if abilityImportance > 0.1 then
-                        desire = desire - 0.1
-                    end
-                end
-            end
-            if target:HasModifier("modifier_item_lotus_orb_active") then
-                if npcBot:GetActiveMode() == BOT_MODE_RETREAT then
-                    desire = 0
-                else
-                    desire = desire - abilityImportance/2
-                end
-            end
-            if target:HasModifier("modifier_mirror_shield_delay") then
-                desire = desire - abilityImportance*1.5
-            end
-
-            desire = self:TrimDesire(desire)
-        end
-        if desire ~= oldDesire then
-            print("desire modified from "..oldDesire.." to "..desire)
-        end
-        return desire, target, targetTypeString
-    end
-    return newConsider
-end
-
-M.GetUsedAbilityInfo = function(self, ability, abilityInfoTable, considerTarget)
-    abilityInfoTable.lastUsedTime = DotaTime()
-    abilityInfoTable.lastUsedCharge = ability:GetCurrentCharges()
-    abilityInfoTable.lastUsedTarget = considerTarget
-    abilityInfoTable.lastUsedRemainingCooldown = ability:GetCooldownTimeRemaining()
-end
-
-M.AddCooldownToChargeAbility = function(self, oldConsider, ability, abilityInfoTable, additionalCooldown)
-    return function()
-        if abilityInfoTable.lastUsedTime == nil then
-            abilityInfoTable.lastUsedTime = DotaTime()
-        end
-        if not (ability:GetCurrentCharges() > 0 and ability:IsFullyCastable()) then
-            return 0
-        end
-        if DotaTime() <= abilityInfoTable.lastUsedTime + additionalCooldown and abilityInfoTable.lastUsedCharge >= ability:GetCurrentCharges() and abilityInfoTable.lastUsedRemainingCooldown <= ability:GetCooldownTimeRemaining() then
-            return 0
-        end
-        return oldConsider()
     end
 end
 
@@ -986,7 +876,7 @@ local radianceAncientLocation = Vector(-7200,-6666)
 local direAncientLocation = Vector(7137,6548)
 
 M.GetAncientLocation = function(self, npc)
-    if npc:GetTeam() == TEAM_RADIANCE then
+    if npc:GetTeam() == TEAM_RADIANT then
         return radianceAncientLocation
     else
         return direAncientLocation
@@ -1002,7 +892,7 @@ M.TryUseTp = function(self, npc)
     local item = npc:GetItemInSlot(15)
     if item ~= nil and item:IsFullyCastable() and self:CanMove(npc) then
         local distanceFromFountain
-        if npc:GetTeam() == TEAM_RADIANCE then
+        if npc:GetTeam() == TEAM_RADIANT then
             distanceFromFountain = radianceAncientLocation + Vector(400, 400)
         else
             distanceFromFountain = direAncientLocation + Vector(-400, -400)
@@ -1141,31 +1031,6 @@ M.GetAllBoughtItems = function(self, npcBot)
     if DotaTime() >= -70 then
         g = self:Concat(g, self:GetCourierItems(self:GetMyCourier(npcBot)))
     end
-    return g
-end
-
-function M:GetCourierItems(courier)
-    if courier ~= nil then
-        for i = 0, 8 do
-            local item = courier:GetItemInSlot(i)
-            if item then
-                table.insert(g, item)
-            end
-        end
-    end
-    return g
-end
-
-M.GetAllBoughtItems = function(self)
-    local g = {}
-    local npcBot = GetBot()
-    for i = 0, 15 do
-        local item = npcBot:GetItemInSlot(i)
-        if item then
-            table.insert(g, item)
-        end
-    end
-    g = self:Concat(g, self:GetCourierItems(GetCourier(0)))
     return g
 end
 
@@ -1658,9 +1523,6 @@ M.FindAOELocationAtSingleTarget = function(self, npcBot, target, radius, castRan
     else
         return self:GetPointFromLineByDistance(target:GetLocation(), npcBot:GetLocation(), radius)
     end
-    local k = (a.y-b.y)/(a.x-b.x)
-    local bb = a.y-k*a.x
-    return { a = k, b = -1, c = bb }
 end
 
 M.MinValue = function(self, coefficients, min, max)
@@ -1938,42 +1800,8 @@ M.CannotBeKilledNormally = function(self, target)
     return target:IsInvulnerable() or self:Any(self.IgnoreDamageModifiers, function(t) target:HasModifier(t) end) or target:HasModifier("modifier_dazzle_shallow_grave")
 end
 
-M.GoodIllusionHero = {
-    "antimage","spectre","terrorblade","naga_siren",
-}
-M.ModerateIllusionHero = {
-    "abaddon","axe","chaos_knight","arc_warden","juggernaut","luna","medusa","morphling","phantom_lancer","sniper","wraith_king","phantom_assassin",
-}
-M.GetIllusionBattlePower = function(self, npc)
-    local name = self:GetHeroShortName(npc:GetUnitName())
-    if npc:HasModifier("modifier_arc_warden_tempest_double") or npc:HasModifier("modifier_skeleton_king_reincarnation_active") then
-        return 0.8
-    end
-    local t = 0.1
-    if self:Contains(self.GoodIllusionHero, name) then
-        t = 0.25
-    elseif self:Contains(self.ModerateIllusionHero, name) then
-        t = 0.4
-    elseif t:IsRanged() then
-        t = t + t:GetAttackRange() / 600
-    end
-    local inventory = self:Map(self:GetInventoryItems(npc), function(t) return t:GetName() end)
-    if self:Contains(inventory, "item_radiance") then
-        t = t+0.07
-    end
-    if self:Contains(inventory, "item_diffusal_blade") then
-        t = t+0.05
-    end
-    if self:Contains(inventory, "item_lesser_crit") then
-        t = t+0.04
-    end
-    if self:Contains(inventory, "item_greater_crit") then
-        t = t+0.08
-    end
-    if npc:HasModifier("modifier_special_bonus_mana_break") then-- mirana talent[5]
-        t = t+0.04
-    end
-    return t 
+M.HasScepter = function(self, npc)
+    return npc:HasScepter() or npc:HasModifier("modifier_wisp_tether_scepter")
 end
 
 -- ability record
@@ -2088,7 +1916,6 @@ function M:RegisterSlowFunction(oldFunction, calledWhenHowManyFrames, frameOffse
         else
             return self:UnpackIfTable(defaultReturn)
         end
-        return g
     end
 end
 

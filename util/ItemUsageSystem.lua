@@ -423,7 +423,7 @@ function M.UnImplementedItemUsage()
                         if tower == nil then
                             return true
                         end
-                        return GetUnitToLocationDistance(tower, GetTreelocation(t)) > tower:GetAttackRange()
+                        return GetUnitToLocationDistance(tower, GetTreeLocation(t)) > tower:GetAttackRange()
                     end)
                     if trees[1] ~= nil then
                         npcBot:Action_UseAbilityOnTree(sCurItem, trees[1])
@@ -771,7 +771,7 @@ function M.UnImplementedItemUsage()
     local itemEtherealBlade = IsItemAvailable("item_ethereal_blade")
     if itemEtherealBlade and itemEtherealBlade:IsFullyCastable() then
         if npcTarget ~= nil and AbilityExtensions:NormalCanCast(npcTarget) then
-            npcBot:Action_UseAbilityOnEntity(itemDagon, npcBot)
+            npcBot:Action_UseAbilityOnEntity(itemEtherealBlade, npcBot)
             return
         end
     end
