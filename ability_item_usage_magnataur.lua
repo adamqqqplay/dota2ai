@@ -100,8 +100,7 @@ Consider[1]=function()
 	local Damage = ability:GetAbilityDamage();
 	local Radius = ability:GetAOERadius();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+0,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -407,12 +406,7 @@ Consider[5]=function()
 	local CastPoint = ability:GetCastPoint()
 	
 	local blink
-	local i=npcBot:FindItemSlot("item_blink")
-	if(i>=0 and i<=5)
-	then
-		blink=npcBot:GetItemInSlot(i)
-		i=nil
-	end
+	local blink = AbilityExtensions:GetAvailableBlink(npcBot)
 	if(blink~=nil and blink:IsFullyCastable())
 	then
 		CastRange=CastRange+1200
@@ -427,8 +421,7 @@ Consider[5]=function()
 		end
 	end
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)

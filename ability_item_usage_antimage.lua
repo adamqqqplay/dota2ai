@@ -90,12 +90,6 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
-local function GetIncomingDodgeableProjectiles()
-    local incProj = npcBot:GetIncomingTrackingProjectiles() or {}
-    return AbilityExtensions:Filter(incProj, function(t)
-        return not t.is_attack and t.ability and not AbilityExtensions:IgnoreAbilityBlock(t.ability) and t.caster and t.caster:GetTeam() ~= npcBot:GetTeam()
-    end)
-end
 
 Consider[2]=function()
     local abilityNumber=2
@@ -170,7 +164,7 @@ Consider[2]=function()
 	end
 
     -- use blink to dodge ability
-    local projectiles = GetIncomingDodgeableProjectiles()
+    local projectiles = AbilityExtensions:GetIncomingDodgeWorthProjectiles(npcBot)
     local castPoint = ability:GetCastPoint()
     local defaultProjectileVelocity = 1500
     if #projectiles ~= 0 and not AbilitiesReal[3]:IsFullyCastable() then

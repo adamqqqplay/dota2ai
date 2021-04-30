@@ -102,8 +102,7 @@ Consider[1]=function()
 	local Damage = 0
 	--print(ability:GetName().." :Damage is "..Damage)
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local allys2= GetUnitList(UNIT_LIST_ALLIED_HEROES)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
@@ -269,8 +268,7 @@ Consider[2]=function()		--Target AOE Ability Example
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	--------------------------------------
 	-- Mode based usage
@@ -322,8 +320,7 @@ Consider[4]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)

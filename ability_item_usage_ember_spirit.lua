@@ -182,7 +182,7 @@ Consider[2] = function()
     end
     local hasBattleFury = AbilityExtensions:GetAvailableItem(npcBot, "item_bfury") ~= nil
 
-    local projectiles = AbilityExtensions:GetIncomingDodgeableProjectiles(npcBot) or {}
+    local projectiles = AbilityExtensions:GetIncomingDodgeWorthProjectiles(npcBot) or {}
     projectiles = AbilityExtensions:Any(projectiles, function(t) return GetUnitToLocationDistance(npcBot, t.location) <= 200  end)
     if projectiles then
         local locationAoE = npcBot:FindAoELocation(true, false, npcBot:GetLocation(), castRange+60, radius, 0, 0)
@@ -281,7 +281,7 @@ Consider[3] = function()
             end
         else
             if not npcBot:IsMagicImmune() then
-                local projectiles = AbilityExtensions:GetIncomingDodgeableProjectiles(npcBot)
+                local projectiles = AbilityExtensions:GetIncomingDodgeWorthProjectiles(npcBot)
                 projectiles = AbilityExtensions:Any(projectiles, function(t) return GetUnitToLocationDistance(npcBot, t.location) <= 400  end)
                 if projectiles then
                     return BOT_ACTION_DESIRE_MODERATE
@@ -292,7 +292,7 @@ Consider[3] = function()
             end
         end
     elseif AbilityExtensions:IsRetreating(npcBot) then
-        local projectiles = AbilityExtensions:GetIncomingDodgeableProjectiles(npcBot)
+        local projectiles = AbilityExtensions:GetIncomingDodgeWorthProjectiles(npcBot)
         projectiles = AbilityExtensions:Any(projectiles, function(t) return GetUnitToLocationDistance(npcBot, t.location) <= 400  end)
         if projectiles and abilityLevel >= 3 then
             return BOT_ACTION_DESIRE_MODERATE
@@ -515,10 +515,8 @@ function AbilityUsageThink()
     manaPercent = AbilityExtensions:GetManaPercent(npcBot)
 
     cast=ability_item_usage_generic.ConsiderAbility(Abilities,Consider)
-    --AbilityExtensions:DebugTable(cast)
     local abilityIndex, target, castType = ability_item_usage_generic.UseAbility(Abilities,cast)
     AbilityExtensions:RecordAbility(npcBot, abilityIndex, target, castType, Abilities)
-    --local records = npcBot.abilityRecords
     if abilityIndex == 5 then
         refreshRemnantToken = true
     end

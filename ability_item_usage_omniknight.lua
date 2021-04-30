@@ -443,8 +443,7 @@ Consider[5]=function()
 	local Damage = 0
 	local Radius = ability:GetAOERadius()
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( math.max(Radius,1600), false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)

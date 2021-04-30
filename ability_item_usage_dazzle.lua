@@ -98,8 +98,7 @@ Consider[1]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -289,8 +288,7 @@ Consider[3]=function()
 	local MaxTarget=ability:GetSpecialValueInt("max_targets")
 	local DamageType=DAMAGE_TYPE_PHYSICAL
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+200,true,BOT_MODE_NONE)

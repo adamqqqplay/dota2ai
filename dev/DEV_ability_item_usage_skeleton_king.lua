@@ -102,8 +102,7 @@ Consider[1]=function()	--Target Ability Example
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)

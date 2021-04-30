@@ -117,8 +117,7 @@ Consider[1]=function() -- TODO: lv 25 AOE mist coil
 	local Damage = ability:GetAbilityDamage();
 	local SelfDamage = ability:GetSpecialValueInt("self_damage");
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( CastRange+150, false, BOT_MODE_NONE );
 	for _,hero in pairs (allys)
 	do
@@ -246,8 +245,7 @@ Consider[2]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)

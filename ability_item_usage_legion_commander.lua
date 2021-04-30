@@ -99,8 +99,7 @@ Consider[1]=function()
 	local Damage = ability:GetLevel()*75
 	local Radius = ability:GetAOERadius()
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+150,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -218,8 +217,7 @@ Consider[2]=function()
 	
 	local CastRange = ability:GetCastRange();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
 	allys = AbilityExtensions:Filter(npcBot, function(t) return not t:HasModifier("modifier_ice_blast") end)
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
@@ -352,8 +350,7 @@ Consider[4]=function()
 	
 	local CastRange = ability:GetCastRange();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)

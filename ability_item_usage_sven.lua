@@ -101,12 +101,7 @@ Consider[1]=function()
 	local Radius = ability:GetAOERadius();
 
 	local blink
-	local i=npcBot:FindItemSlot("item_blink")
-	if(i>=0 and i<=5)
-	then
-		blink=npcBot:GetItemInSlot(i)
-		i=nil
-	end
+	local blink = AbilityExtensions:GetAvailableBlink(npcBot)
 	if(blink~=nil and blink:IsFullyCastable())
 	then
 		if(npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 

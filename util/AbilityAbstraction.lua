@@ -653,32 +653,165 @@ end
 
 -- ability information
 
-M.targetStunAbilities = {
-    "beastmaster_primal_roar",
-    "chaos_knight_chaos_bolt",
+M.UndisjointableProjectiles = {
+    "alchemist_berser_potion",
+    "alchemist_unstable_concoction_throw",
+    "arc_warden_spark_wraith",
+    "grimstroke_phantoms_embrace",
+    "earthshaker_echoslam",
     "gyrocopter_homing_missile",
-    "skeleton_king_wraith_burst",
+    "beastmaster_hawk_dive",
+    "huskar_life_break",
+    "lich_chain_frost",
+    "medusa_cold_blooded",
+    "medusa_mystic_snake",
+    "mirana_starstorm",
+    "necrolyte_death_pulse",
+    "necrolyte_death_seeker",
+    "oracle_fortunes_end",
+    "queenofpain_scream_of_pain",
+    "skywrath_mage_arcane_bolt",
+    "snapfire_firesnap_cookie",
+    "spectre_spectral_dagger",
+    "tiny_toss",
+    "tusk_snowball",
+    "witch_doctor_paralyzing_cask",
+}
+
+M.targetTrackingStunAbilities = {
+    "alchemist_berser_potion",
+    "alchemist_unstable_concoction_throw",
+    "chaos_knight_chaos_bolt",
+    "dragon_knight_dragon_tail",
+    "gyrocopter_homing_missile",
+    "morphling_adaptive_strike_str",
+    "mud_golem_hurl_boulder",
+    "skeleton_king_hellfire_blast",
     "sven_storm_hammer",
     "vengefulspirit_magic_missile",
-    "windrunner_shackle_shot",
+    "windrunner_shackleshot",
 }
+
+M.targetNonTrackingStunAbilities = {
+    "bane_fiends_grip",
+    "beastmaster_primal_roar",
+    "dark_willow_cursed_crown",
+    "enigma_malefice",
+    "invoker_cold_snap",
+    "item_abyssal_blade",
+    "lich_sinister_gaze",
+    "luna_lucent_beam",
+    "necrolyte_reapers_scythe",
+    "ogre_magi_fireblast",
+    "ogre_magi_unrefined_fireblast",
+    "pudge_dismember",
+    "rubick_telekinesis",
+    "shadow_shaman_shackles",
+    "storm_spirit_electric_vortex",
+}
+
+M.targetStunAbilities = M:Concat(M.targetTrackingStunAbilities, M.targetNonTrackingStunAbilities)
+
 M.locationStunAbilities = {
+    "axe_berserkers_call",
     "centaur_hoof_stomp",
+    "dark_seer_vacuum",
+    "dark_willow_cursed_crown",
+    "dawnbreaker_fire_wreath",
+    "dawnbreaker_solar_guardian",
     "earthshaker_fissure",
     "earthshaker_enchant_totem",
     "earthshaker_echoslam",
+    "enigma_black_hole",
+    "faceless_void_chronosphere",
+    "jakiro_ice_path",
+    "keeper_of_the_light_will_o_wisp",
+    "kunkka_ghostship",
+    "kunkka_torrent",
+    "kunkka_torrent_storm",
     "lina_light_strike_array",
+    "magnataur_skewer",
+    "magnataur_horn_toss",
+    "magnataur_reverse_polarity",
+    "monkey_king_boundless_strike",
+    "phoenix_supernova",
+    "puck_dream_coil",
+    "sand_king_burrowstrike",
     "slardar_slithereen_crush",
+    "tidehunter_ravage",
 }
-M.targetHeavyDamageAbilities = {
-    "lina_laguna_blade",
+
+M.targetTrackingDisableAbilities = {
+    "gleipnir_eternal_chains",
+    "naga_siren_ensnare",
+    "riki_sleeping_dart",
+    "viper_viper_strike",
+}
+
+M.targetNonTrackingDisableAbilities = {
+    "bloodseeker_rupture",
+    "doom_bringer_doom",
+    "ember_spirit_searing_chains",
+    "grimstroke_ink_creature",
+    "grimstroke_soul_chain",
+    "item_sheepstick",
+    "lion_vex",
+    "shadow_demon_purge",
+    "shadow_shaman_voodoo",
+}
+
+M.targetDisableAbilities = M:Concat(M.targetNonTrackingStunAbilities, M.targetTrackingDisableAbilities)
+
+M.locationDisableAbilities = {
+    "dark_willow_bramble_maze",
+    "death_prophet_silence",
+    "disruptor_kinetic_field",
+    "disruptor_static_storm",
+    "drow_ranger_wave_of_silence",
+    "elder_titan_echo_stomp",
+    "invoker_deafening_wave",
+    "treant_overgrowth",
+}
+
+M.targetTrackingHeavyDamageAbilities = {
+    "item_ethereal_blade",
+    "lich_chain_frost",
     "lion_finger_of_death",
-    "necrolyte_reapers_scythe",
+    "morphling_adaptive_strike_agi",
+    "sniper_assassinate",
 }
+
+M.targetNonTrackingHeavyDamageAbilities = {
+    "antimage_mana_void",
+    "item_dagon",
+    "lina_laguna_blade",
+    "pugna_life_drain",
+    "tinker_laser",
+    "zuus_lightning_bolt",
+}
+
+M.targetHeavyDamageAbilities = M:Concat(M.targetTrackingHeavyDamageAbilities, M.targetNonTrackingHeavyDamageAbilities)
+
 M.locationHeavyDamageAbilities = {
+    "ancient_apparition_ice_blast",
+    "antimage_mana_void",
+    "disruptor_static_storm",
+    "invoker_chaos_meteor",
+    "invoker_sun_strike",
+    "jakiro_macropyre",
+    "kunkka_ghostship",
+    "nevermore_requiem_of_souls",
     "obsidian_destroyer_sanitys_eclipse",
+    "phoenix_sun_ray",
+    "puck_dream_coil",
+    "pugna_nether_blast",
+    "queenofpain_sonic_wave",
+    "sand_king_epicenter",
+    "skywrath_mage_mystic_flare",
+    "venomancer_poison_nova",
 }
-M.heavyDamageAbilities = M:Concat(M.targetHeavyDamageAbilities, M.locationHeavyDamageAbilities)
+
+M.heavyDamageAbilities = M:Concat(M.targetTrackingHeavyDamageAbilities, M.locationHeavyDamageAbilities)
 
 M.dodgeWorthAbilities = M:Concat(M.targetStunAbilities, M.locationStunAbilities, M.heavyDamageAbilities)
 
@@ -688,14 +821,26 @@ function M:isRoshan(npcTarget)
     return npcTarget ~= nil and npcTarget:IsAlive() and string.find(npcTarget:GetUnitName(), "roshan")
 end
 
-M.GetIncomingDodgeableProjectiles = function(self, npc)
+M.GetIncomingDodgeWorthProjectiles = function(self, npc)
+    local health = npc:GetHealth()
     local projectiles = npc:GetIncomingTrackingProjectiles()
     projectiles = self:Filter(projectiles, function(t)
-        return not t.is_attack
+        if t.is_attack or npc:GetTeam() == t.caster:GetTeam() then
+            return false
+        end
+        local ability = t.ability
+        if ability then
+            local abilityName = ability:GetName()
+            if self:Contains(self.UndisjointableProjectiles, abilityName) then
+                return false
+            end
+            if self:Contains(self.targetTrackingStunAbilities, abilityName) or self:Contains(self.targetTrackingDisableAbilities, abilityName) or self:Contains(self.targetTrackingHeavyDamageAbilities, abilityName) or npc:GetHealth() <= npc:GetActualIncomingDamage(ability:GetAbilityDamage(), ability:GetDamageType()) then
+                return true
+            end
+            return false
+        end
+        return true
     end)
-    -- projectiles = self:Filter(projectiles, function(t)
-    --     return self:Contains(self.dodgeWorthAbilities, t.ability:GetName())
-    -- end)
     return projectiles
 end
 
@@ -732,15 +877,6 @@ end
 
 M.IsChannelingAbility = function(self, npc)
     return npc:IsChanneling() and not self:IsChannelingItem(npc)
-end
-
-local GetOtherTeam = function(team)
-    if team == TEAM_RADIANT then
-        return TEAM_DIRE
-    end
-    if team == TEAM_DIRE then
-        return TEAM_RADIANT
-    end
 end
 
 M.RadiantPlayerId = GetTeamPlayers(TEAM_RADIANT)
@@ -1119,7 +1255,7 @@ M.AbilityRetargetModifiers = {
     "modifier_antimage_counterspell",
     "modifier_item_lotus_orb_active",
     "modifier_nyx_assassin_spiked_carapace",
-    "modifier_item_blade_mail",
+    -- "modifier_item_blade_mail",
 }
 M.HasAbilityRetargetModifier = function(self, npc)
     return self:HasAnyModifier(npc, self.AbilityRetargetModifiers)
@@ -1262,12 +1398,16 @@ function M:GetManaDeficit(npc)
     return npc:GetMaxMana() - npc:GetMana()
 end
 
+-- sorted by importance, used by dispell abilities
+
 M.BasicDispellablePositiveModifiers = {
+    "modifier_omniknight_guardian_angle",
     "modifier_ember_spirit_flame_guard",
     "modifier_legion_commander_press_the_attack",
     "modifier_windrunner_windrun",
     "modifier_lich_frost_shield",
     "modifier_oracle_purifying_flames",
+    "modifier_ogre_magi_bloodlust",
     "modifier_treant_living_armor",
     "modifier_mirana_leap_buff",
     "modifier_necrolyte_death_seeker",
@@ -1325,6 +1465,25 @@ M.TimeSensitivePositiveModifiers = {
 
 function M:DontInterruptAlly(npc)
     return self:HasAnyModifier(npc, self.PositiveForceMovementModifiers) or self:HasAnyModifier(npc, self.TimeSensitivePositiveModifiers) or self:IsDuelCaster(npc)
+end
+
+M.MidLaneTowers = { TOWER_MID_1, TOWER_MID_2, TOWER_MID_3 }
+M.BotLaneTowers = { TOWER_BOT_1, TOWER_BOT_2, TOWER_BOT_3 }
+M.TopLaneTowers = { TOWER_TOP_1, TOWER_TOP_2, TOWER_TOP_3 }
+
+function M:GetLaningTower(npc)
+    local team = npc:GetTeam()
+    local lane = npc:GetAssignedLane()
+    local function ToTower(t) return GetTower(team, t) end
+    local function TowerExists(t) return t:GetHealth() > 0 end
+    if lane == LANE_BOT then
+        local a = self:Map(self.BotLaneTowers, ToTower)
+        return self:First(a, TowerExists)
+    elseif lane == LANE_MID then
+        return self:First(self:Map(self.MidLaneTowers, ToTower), TowerExists)
+    elseif lane == LANE_TOP then
+        return self:First(self:Map(self.TopLaneTowers, ToTower), TowerExists)
+    end
 end
 
 -- debug functions
@@ -1885,7 +2044,7 @@ M.CannotBeKilledNormally = function(self, target)
 end
 
 M.HasScepter = function(self, npc)
-    return npc:HasScepter() or npc:HasModifier("modifier_wisp_tether_scepter")
+    return npc:HasScepter() or npc:HasModifier("modifier_wisp_tether_scepter") or npc:HasModifier("modifier_item_ultimate_scepter") or npc:HasModifier("modifier_item_ultimate_scepter_consumed_alchemist")
 end
 
 -- ability record

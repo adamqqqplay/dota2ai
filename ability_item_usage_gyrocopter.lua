@@ -100,8 +100,7 @@ Consider[1]=function()
 	local Radius = ability:GetAOERadius()
 	local CastPoint = ability:GetCastPoint()
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes(Radius, false, BOT_MODE_NONE );
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)

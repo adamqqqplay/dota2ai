@@ -352,8 +352,7 @@ Consider[4]=function()
 	
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local CastRange=1600;
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(1200,true,BOT_MODE_NONE)

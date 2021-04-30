@@ -74,6 +74,10 @@ end
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
 local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+CanCast[1] = function(t)
+	return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_PURE, true, false)
+end
+
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -100,12 +104,7 @@ Consider[1]=function()
 	local Radius = ability:GetAOERadius()-50
 	local CastPoint = ability:GetCastPoint()
 	
-	local i=npcBot:FindItemSlot("item_blink")
-	if(i>=0 and i<=5)
-	then
-		blink=npcBot:GetItemInSlot(i)
-		i=nil
-	end
+	local blink = AbilityExtensions:GetAvailableBlink(npcBot)
 	if(blink~=nil and blink:IsFullyCastable())
 	then
 		CastRange=CastRange+1200
@@ -120,8 +119,7 @@ Consider[1]=function()
 		end
 	end
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -393,6 +391,15 @@ function AbilityUsageThink()
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then 
+		if npcBot:IsUsingAbility() then
+			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[1] then
+				local d = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, AbilitiesReal[1]:GetAOERadius())
+				d = AbilityExtensions:Filter(d, CanCast[1])
+				if #d == 0 then
+					npcBot:Action_ClearActions()
+				end
+			end
+		end
 		return
 	end
 	

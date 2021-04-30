@@ -107,8 +107,7 @@ Consider[1]=function()
 	local CastPoint = ability:GetCastPoint()--+ability:GetSpecialValueFloat( "delay" );
 	local Speed = ability:GetSpecialValueInt("shard_speed");
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -223,8 +222,7 @@ Consider[2]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetSpecialValueInt( "snowball_damage" );
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -383,8 +381,7 @@ Consider[3]=function()
 	end
 	
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(1200,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -451,8 +448,7 @@ Consider[6]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -560,6 +556,9 @@ Consider[7] = function()
 		RefreshSnowballTarget()
 	end
 	
+	if AbilityExtensions:HasAbilityRetargetModifier(snowballTarget) and not snowballTarget:IsChanneling() then
+		return 0
+	end
 	if snowballTarget:IsChanneling() or GetUnitToUnitDistance(snowballTarget, npcBot) >= 600 then
 		return BOT_ACTION_DESIRE_VERYHIGH
 	end
@@ -591,8 +590,7 @@ Consider[4]=function() --A杖大
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)

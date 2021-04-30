@@ -17,10 +17,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName =  { "ogre_magi_fireblast", "ogre_magi_ignite", "ogre_magi_bloodlust", "ogre_magi_unrefined_fireblast", "ogre_magi_smash", "ogre_magi_multicast" }
-local abilityIndex = utility.ReverseTable(abilityName)
-
 
 local AbilityToLevelUp=
 {
@@ -100,8 +96,7 @@ Consider[1]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -224,8 +219,7 @@ Consider[2]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = (18+8*ability:GetLevel())*(4+ability:GetLevel());
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -346,8 +340,7 @@ Consider[3]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = 0
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -415,8 +408,7 @@ Consider[4]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)

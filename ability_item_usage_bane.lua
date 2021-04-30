@@ -75,13 +75,19 @@ end
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
 
-function CanCast1( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable() and not npcEnemy:HasModifier( "modifier_bane_enfeeble" ) 
+
+local CanCast = {}
+CanCast[1] = function(t)
+	return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_MAGICAL, false, true)
 end
-function CanCast2( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable() and not npcEnemy:WasRecentlyDamagedByAnyHero(2.0)
+CanCast[2] = function(t)
+	return AbilityExtensions:NormalCanCast(t, true, DAMAGE_TYPE_PURE, false, true) and not AbilityExtensions:HasAbilityRetargetModifier(t) and not (AbilityExtensions:HasModifier("modifier_item_blade_mail") and AbilityExtensions:IsRetreating(npcBot))
 end
-local CanCast={CanCast1,CanCast2,utility.NCanCast,utility.UCanCast}
+CanCast[3] = CanCast[1]
+CanCast[4] = function(t)
+	return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_PURE, true, true) and not AbilityExtensions:HasAbilityRetargetModifier(t)
+end
+
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -595,11 +601,26 @@ end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
+local drainSnapTarget
+local fiendsGripTarget
+
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then 
+		if npcBot:IsUsingAbility() then
+			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[2] then
+				if drainSnapTarget and AbilityExtensions:HasAbilityRetargetModifier(drainSnapTarget) then
+					npcBot:Action_ClearActions(true)
+				end
+			end
+			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[4] and not npcBot:IsChanneling() then
+				if fiendsGripTarget and AbilityExtensions:HasAbilityRetargetModifier(fiendsGripTarget) then
+					npcBot:Action_ClearActions(true)
+				end
+			end
+		end
 		return
 	end
 	
@@ -614,7 +635,12 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	if index == 2 then
+		drainSnapTarget = target
+	elseif index == 4 then
+		fiendsGripTarget = target
+	end
 end
 
 function CourierUsageThink() 
