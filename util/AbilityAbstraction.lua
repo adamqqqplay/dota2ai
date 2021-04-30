@@ -842,7 +842,7 @@ M.GetModifierRemainingDuration = function(self, npc, modifierName)
     if mod ~= -1 then
         return npc:GetModifierRemainingDuration(mod)
     end
-    return nil
+    return 0
 end
 M.ImprisonmentModifier = {
     "modifier_item_cyclone",
@@ -854,7 +854,21 @@ M.ImprisonmentModifier = {
     --"modifier_x_marks_the_target",
 }
 M.GetImprisonmentRemainingDuration = function(self, npc)
-    return self:First(self:Map(self.ImprisonmentModifier, function(t) return self:GetModifierRemainingDuration(npc, t)  end), function(t) return t ~= nil  end)
+    return self:First(self:Map(self.ImprisonmentModifier, function(t) return self:GetModifierRemainingDuration(npc, t)  end), function(t) return t ~= 0  end) or 0
+end
+
+M.MagicImmuneModifiers = {
+    "modifier_item_black_king_bar",
+    "modifier_life_stealer_rage",
+    "modifier_juggernaut_blade_fury",
+    "modifier_minotaur_horn_immune",
+}
+
+function M:GetMagicImmuneRemainingDuration(npc)
+    local remainingTime = self:Map(self.MagicImmuneModifiers, function(t) return { t, self:GetModifierRemainingDuration(npc, t)} end)
+    remainingTime = self:SortByMaxFirst(remainingTime, function(t) return t[2] end) 
+    remainingTime = remainingTime[1]
+    return remainingTime and remainingTime[2] or 0
 end
 
 M.GetEnemyHeroNumber = function(self, npcBot, enemies)
@@ -1155,9 +1169,13 @@ M.CannotBeTargetted = function(self, npc)
     return self:Any(self.CannotBeTargettedModifiers, function(t) return npc:HasModifier(t) end)
 end
 
+M.CanBeTargettedFunction = function(npc) return not M:CanBeTargetted(npc) end
+
 M.CannotBeAttacked = function(self, npc)
     return self:IsEthereal(npc) or self:IsInvulnerable(npc) or self:CannotBeTargetted(npc)
 end
+
+M.CanBeAttackedFunction = function(npc) return not M:CanBeAttacked(npc) end
 
 M.IsInvulnerable = function(self, npc)
     return npc:IsInvulnerable() or self:Any(self.IgnoreDamageModifiers, function(t) return npc:HasModifier(t) end)
@@ -1191,7 +1209,7 @@ M.ShouldNotBeAttacked = function(self, npc)
     return self:CannotBeAttacked(npc) or self:Any(self.IgnoreDamageModifiers, function(t) return npc:HasModifier(t) end) or self:Any(self.IgnorePhysicalDamageModifiers, function(t) return npc:HasModifier(t) end)
 end
 
-M.PhysicalCanCast_NoSelf = function(npc)
+M.PhysicalCanCastFunction = function(npc)
     return not M:IsInvulnerable(npc) and not M:ShouldNotBeAttacked(npc) and not npc:IsMagicImmune()
 end
 
@@ -1339,12 +1357,16 @@ function M:NormalCanCast(target, isPureDamageWithoutDisable, damageType, pierceM
     return true
 end
 
+M.NormalCanCastFunction = function(target) return M:NormalCanCast(target) end
+
 function M:AllyCanCast(target, pierceMagicImmune)
     if pierceMagicImmune == nil then
         pierceMagicImmune = true
     end
     return not target:IsInvulnerable() and not self:CannotBeTargetted(target)
 end
+
+M.AllyCanCastFunction = function(target) return M:AllyCanCast(target) end
 
 M.SpecialBonusAttributes = "special_bonus_attributes"
 M.TalentNamePrefix = "special_bonus_"
@@ -1392,6 +1414,8 @@ M.FillInAbilities = function(self, npcBot, abilityTable)
         table.insert(abilityTable, 22, self.SpecialBonusAttributes)
         table.insert(abilityTable, 23, self.SpecialBonusAttributes)
         table.insert(abilityTable, 24, self.SpecialBonusAttributes)
+    end
+    if #abilityTable == 25 then
         table.insert(abilityTable, 26, self.SpecialBonusAttributes)
     end
     for i = 1, 26 do
@@ -1404,6 +1428,10 @@ M.FillInAbilities = function(self, npcBot, abilityTable)
         end
     end
     if #abilityTable == 30 then
+        npcBot.abilityTable = abilityTable
+        abilityTable.incorrectAbilityLevelUpNumber = self:Count(abilityTable, function(ability, index)
+            return index < npcBot:GetLevel() - npcBot:GetAbilityPoints() + 1 and (ability == nil or not ability:CanAbilityBeUpgraded() or ability:GetName() == self.IncorrectAbilityName)
+        end)
         return
     end
 

@@ -643,7 +643,7 @@ function M.UnImplementedItemUsage()
         end
 
         local allies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot)
-        allies = AbilityExtensions:Filter(allies, AbilityExtensions.PhysicalCanCast_NoSelf)
+        allies = AbilityExtensions:Filter(allies, AbilityExtensions.PhysicalCanCastFunction)
         allies = AbilityExtensions:Filter(allies, function(t)
             return not t:HasModifier("modifier_item_medallion_of_courage_armor_addition")
         end)

@@ -73,7 +73,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={AbilityExtensions.PhysicalCanCast_NoSelf,utility.NCanCast,utility.NCanCast,
+local CanCast={AbilityExtensions.PhysicalCanCastFunction,utility.NCanCast,utility.NCanCast,
 function(t)
     return t:HasModifier("modifier_obsidian_destroyer_astral_imprisonment_prison") or AbilityExtensions:NormalCanCast(t)
 end}
