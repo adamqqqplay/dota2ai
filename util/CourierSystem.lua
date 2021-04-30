@@ -346,7 +346,7 @@ function M.CourierUsageThink()
             npcCourier.latestUser = "temp";
         end
 
-        if npcBot.SShopUser and ( not npcBot:IsAlive() or npcBot:GetActiveMode() == npcBot_MODE_SECRET_SHOP or not npcBot.SecretShop  ) then
+        if npcBot.SShopUser and ( not npcBot:IsAlive() or npcBot:GetActiveMode() == BOT_MODE_SECRET_SHOP or not npcBot.SecretShop  ) then
             --npcBot:ActionImmediate_Chat( "Releasing the courier to anticipate secret shop stuck", true );
             npcCourier.latestUser = "temp";
             npcBot.SShopUser = false;

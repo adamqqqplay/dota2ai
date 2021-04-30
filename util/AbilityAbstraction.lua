@@ -1068,6 +1068,10 @@ M.IsMeleeHero = function(self, npc)
     return range <= 210 or name == self:GetHeroFullName("tiny") or name == self:GetHeroFullName("doom_bringer") or name == self:GetHeroFullName("pudge")
 end
 
+function M:HasAnyModifier(npc, modifierGroup)
+    return self:First(modifierGroup, function(t) return npc:HasModifier(t) end)
+end
+
 M.AttackPassiveAbilities = {
     "doom_bringer_infernal_blade",
     "drow_ranger_frost_arrows",
@@ -1104,15 +1108,40 @@ M.AbilityRetargetModifiers = {
     "modifier_item_blade_mail",
 }
 M.HasAbilityRetargetModifier = function(self, npc)
-    return self:Any(self.AbilityRetargetModifiers, function(t) return npc:HasModifier(t)  end)
+    return self:HasAnyModifier(npc, self.AbilityRetargetModifiers)
 end
 
 M.CanMove = function(self, npc)
-    return not npc:IsStunned() and not npc:IsRooted() and not self:IsNightmared(npc)
+    return not npc:IsStunned() and not npc:IsRooted() and not self:IsNightmared(npc) and not self:IsTaunted(npc)
+end
+
+function M:CannotMove(npc)
+    return npc:IsStunned() or npc:IsRooted() or self:IsNightmared(npc) or self:IsTaunted(npc)
 end
 
 function M:IsNightmared(npc)
     return npc:HasModifier("modifier_bane_nightmare") or npc:HasModifier("modifier_riki_poison_dart_debuff")
+end
+
+function M:IsTaunted(npc)
+    return npc:HasModifier("modifier_axe_berserkers_call") or npc:HasModifier("modifier_legion_commander_duel")
+end
+
+function M:IsDuelCaster(npc)
+    local function IsTaunting(_npc)
+        local ability = _npc:GetAbilityByName("legion_commander_duel")
+        return ability and ability:GetCooldownTimeRemaining() + self:GetModifierRemainingDuration(_npc, "modifier_legion_commander_duel") + 1 >= ability:GetCooldown()
+    end
+    local npcBot = GetBot()
+    if npcBot:GetTeam() == npc:GetTeam() then
+        return IsTaunting(npc)
+    else
+        local players = self:Map(self:Range(0, 4), GetTeamMember)
+        local tauntingPlayer = self:First(players, function(t)
+            return IsTaunting(t) and t:GetAttackTarget() == npc
+        end)
+        return not IsTaunting(tauntingPlayer)
+    end
 end
 
 M.IsSeverelyDisabled = function(self, npc)
@@ -1144,7 +1173,7 @@ M.EtherealModifiers = {
     "modifier_pugna_decrepify",
 }
 M.IsEthereal = function(self, npc)
-    return self:Any(self.EtherealModifiers, function(t) return npc:HasModifier(t) end)
+    return self:HasAnyModifier(npc, self.EtherealModifiers)
 end
 
 function M:NotBlasted(self, npc)
@@ -1152,7 +1181,7 @@ function M:NotBlasted(self, npc)
 end
 
 M.CannotBeTargetted = function(self, npc)
-    return self:Any(self.CannotBeTargettedModifiers, function(t) return npc:HasModifier(t) end)
+    return self:HasAnyModifier(npc, self.CannotBeTargettedModifiers)
 end
 
 M.CannotBeAttacked = function(self, npc)
@@ -1232,7 +1261,6 @@ M.BasicDispellablePositiveModifiers = {
     "modifier_spirit_breaker_bulldoze",
     "modifier_item_spider_legs_active",
     "modifier_item_bullwhip_buff",
-
 }
 
 function M:IndexOfBasicDispellablePositiveModifier(npc)
@@ -1251,6 +1279,34 @@ end
 
 function M:HasBasicDispellablePositiveModifier(npc)
     return self:Any(self.BasicDispellablePositiveModifiers, function(t) return t:HasModifier(t) end)
+end
+
+M.PositiveForceMovementModifiers = {
+    "modifier_faceless_void_time_walk",
+    "modifier_huskar_life_break_charge",
+    "modifier_magnataur_skewer_movement",
+    "modifier_monkey_king_bounce",
+    "modifier_monkey_king_bounce_leap",
+    "modifier_monkey_king_tree_dance_activity",
+    "modifier_monkey_king_bounce_perch",
+    "modifier_monkey_king_right_click_jump_activity",
+    "modifier_pangolier_swashbuckle",
+    "modiifer_pangolier_shield_crash_jump",
+    "modifier_pangolier_rollup",
+    "modifier_snapfire_firesnap_cookie",
+    "modifier_snapfire_gobble_up",
+    "modifier_sand_king_burrowstrike",
+    "modifier_techies_suicide_leap",
+}
+
+M.TimeSensitivePositiveModifiers = {
+    "modifier_item_black_king_bar",
+    "modifier_faceless_void_chronosphere_selfbuff",
+    "modifier_medusa_stone_gaze",
+}
+
+function M:DontInterruptAlly(npc)
+    return self:HasAnyModifier(npc, self.PositiveForceMovementModifiers) or self:HasAnyModifier(npc, self.TimeSensitivePositiveModifiers) or self:IsDuelCaster(npc)
 end
 
 -- debug functions

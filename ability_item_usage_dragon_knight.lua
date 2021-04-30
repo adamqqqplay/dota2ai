@@ -483,10 +483,26 @@ Consider[5]=function()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-		-- If we're in a teamfight, use it on the scariest enemy
 	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
 	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 
 	then
+
+		local npcMostDangerousEnemy = nil;
+		local nMostDangerousDamage = 0;
+
+		for _,npcEnemy in pairs( enemys )
+		do
+			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy))
+			then
+				local Damage2 = npcEnemy:GetEstimatedDamageToTarget( false, npcBot, 3.0, DAMAGE_TYPE_ALL );
+				if ( Damage2 > nMostDangerousDamage )
+				then
+					nMostDangerousDamage = Damage2;
+					npcMostDangerousEnemy = npcEnemy;
+				end
+			end
+		end
+
 		if ( npcMostDangerousEnemy ~= nil )
 		then
 			return BOT_ACTION_DESIRE_HIGH

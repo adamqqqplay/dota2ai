@@ -147,7 +147,7 @@ end
 
 Consider[2] = function()
     local ability = Abilities[2]
-    if not ability:IsFullyCastable() or IsUsingRemnant() or IsUsingSleightOfFist() or not AbilityExtensions:CanMove(npcBot) or ability:GetCurrentCharges() == 0 then
+    if not ability:IsFullyCastable() or IsUsingRemnant() or IsUsingSleightOfFist() or AbilityExtensions:CannotMove(npcBot) or ability:GetCurrentCharges() == 0 then
         return 0
     end
     local abilityLevel = ability:GetLevel()
@@ -316,7 +316,7 @@ RefreshActiveRemnants()
 
 Consider[4] = function()
 	local ability = Abilities[4]
-    if not ability:IsFullyCastable() or IsUsingSleightOfFist() or IsUsingRemnant() or not AbilityExtensions:CanMove(npcBot) then
+    if not ability:IsFullyCastable() or IsUsingSleightOfFist() or IsUsingRemnant() or AbilityExtensions:CannotMove(npcBot) then
         return 0
     end
     DetectRemnant()
@@ -416,7 +416,7 @@ end
 
 Consider[5] = function()
     local ability = Abilities[5]
-    if not ability:IsFullyCastable() or not AbilityExtensions:CanMove(npcBot) or ability:GetCurrentCharges() == 0 then
+    if not ability:IsFullyCastable() or AbilityExtensions:CannotMove(npcBot) or ability:GetCurrentCharges() == 0 then
         return 0
     end
     local abilityLevel = ability:GetLevel()

@@ -276,16 +276,17 @@ Consider[4]=function()
 		end
 
 	else
-		if ( npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
-		then
-			if ( #enemys+disabledheronum-#creeps>=2) 
-			then
-				if ( npcMostDangerousEnemy ~= nil )
-				then
-					return BOT_ACTION_DESIRE_HIGH
-				end
-			end
-		end
+		-- npcMostDangerousEnemy is never assigned
+		-- if ( npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+		-- then
+		-- 	if ( #enemys+disabledheronum-#creeps>=2) 
+		-- 	then
+		-- 		if ( npcMostDangerousEnemy ~= nil )
+		-- 		then
+		-- 			return BOT_ACTION_DESIRE_HIGH
+		-- 		end
+		-- 	end
+		-- end
 		
 		-- If we're going after someone
 		if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or

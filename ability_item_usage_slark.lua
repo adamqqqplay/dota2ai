@@ -226,7 +226,7 @@ Consider[2]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() or not AbilityExtensions:CanMove(npcBot) then
+	if not ability:IsFullyCastable() or AbilityExtensions:CannotMove(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	

@@ -73,7 +73,9 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,function(t)
+	return AbilityExtensions:AllyCanCast(t) and (not AbilityExtensions:DontInterruptAlly(t) or t:HasModifier("modifier_medusa_stone_gaze") and t:GetActiveMode() == BOT_MODE_RETREAT) and not t:IsChanneling()
+end,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()

@@ -149,7 +149,7 @@ end
 
 Consider[2]=function()
     local ability = Abilities[2]
-    if not ability:IsFullyCastable() or not AbilityExtensions:CanMove(npcBot) then
+    if not ability:IsFullyCastable() or AbilityExtensions:CannotMove(npcBot) then
         return BOT_ACTION_DESIRE_NONE
     end
 

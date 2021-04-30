@@ -439,7 +439,7 @@ function CastThink(minion, ability)
 	if CheckFlag(ability:GetBehavior(), ABILITY_BEHAVIOR_UNIT_TARGET) then
 		if ability:GetName() == "ogre_magi_frost_armor" then
 			local castRange = ability:GetCastRange();
-			local allies = GetNearbyHeroes(castRange+200, false, BOT_MODE_NONE);
+			local allies = minion:GetNearbyHeroes(castRange+200, false, BOT_MODE_NONE);
 			if #allies > 0 then
 				for i=1, #allies do
 					if IsValidTarget(allies[i]) and CanCastOnTarget(allies[i], ability) 
