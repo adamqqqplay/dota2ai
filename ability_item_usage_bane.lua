@@ -573,7 +573,13 @@ Consider[5]=function()
 	local nightmaredFriends = AbilityExtensions:Filter(friends, function(t) return t:HasModifier("modifier_bane_nightmare") end)
 	if #nightmaredEnemies ~= 0 then
 		if #enemies == 1 and #friends >= 2 and AbilityExtensions:GetModifierRemainingDuration(nightmaredEnemies[1], "modifier_bane_nightmare") <= 4
-		or AbilityExtensions:All(nightmaredEnemies, function(t) return AbilityExtensions:GetHealthPercent(t) <= 0.3 and AbilityExtensions:GetModifierRemainingDuration(nightmaredFriends[1], "modifier_bane_nightmare") <= 4 end) and AbilityExtensions:All(friends, function(t) return AbilityExtensions:GetHealthPercent(t) >= 0.5 end) then
+		or AbilityExtensions:All(nightmaredEnemies, function(t) 
+			return AbilityExtensions:GetHealthPercent(t) <= 0.3
+		end) and AbilityExtensions:All(nightmaredFriends, function(t) 
+			return AbilityExtensions:GetModifierRemainingDuration(t, "modifier_bane_nightmare") <= 4 
+		end) and AbilityExtensions:All(friends, function(t) 
+			return AbilityExtensions:GetHealthPercent(t) >= 0.5 
+		end) then
 			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
