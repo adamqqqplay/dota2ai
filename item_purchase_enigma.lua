@@ -8,7 +8,7 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_clarity",
-	"item_ring_of_basilius",
+	-- "item_ring_of_basilius",
 	"item_magic_wand", --大魔棒7.14
 	"item_arcane_boots", --秘法鞋
 	"item_blink", --跳刀

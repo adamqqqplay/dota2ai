@@ -406,13 +406,7 @@ Consider[4]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local i=npcBot:FindItemSlot("item_blink")
-		if(i>=0 and i<=5)
-		then
-			blink=npcBot:GetItemInSlot(i)
-			i=nil
-		end
-	
+		local blink = AbilityExtensions:GetAvailableBlink(npcBot)
 		if(blink~=nil and blink:IsFullyCastable())
 		then
 			local CastRange=1200

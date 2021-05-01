@@ -237,10 +237,7 @@ function tryTP( npcBot,lane )
 	if not tp or not tp:IsFullyCastable() then 
 		tp = nil
 	end
-	local travel = IsItemAvailable("item_travel_boots")
-	if not travel or not travel:IsFullyCastable() then 
-		travel = nil
-	end
+	local travel = AbilityExtensions:GetAvailableTravelBoots(npcBot)
 	if DistanceToFront > 4000 then
 		if travel then
 			npcBot:Action_UseAbilityOnLocation( travel, front )
@@ -253,11 +250,11 @@ function tryTP( npcBot,lane )
 	return false;
 end
 
-function getCreepsNearTower(npcBot,tower)
+local function getCreepsNearTower(npcBot,tower)
 	local creeps = {}
 	for k,v in pairs(npcBot:GetNearbyCreeps(1600,false))
 	do
-		if(GetUnitToUnitDistance(v,EnemyTower)<800)
+		if(GetUnitToUnitDistance(v, tower)<800)
 		then
 			table.insert(creeps,v)
 		end
@@ -265,7 +262,7 @@ function getCreepsNearTower(npcBot,tower)
 	return creeps
 end
 
-function getMyTarget(npcBot,lane,TargetLocation)
+local function getMyTarget(npcBot,lane,TargetLocation)
 	local team = GetTeam()
 	local front = GetLaneFrontLocation( team, lane, 0 )
 	local EnemyTower = GetNearestBuilding(GetOpposingTeam(), front)
@@ -718,7 +715,7 @@ function IsEnemyTooMany()
 
 	for _,enemy in pairs(enemies) do
 		local Lane=GetLane(GetTeam(),enemy)
-		if NotNilOrDead(enemy) and GetUnitToUnitDistance(npcBot,ally)<3000 and MyLane==Lane then
+		if NotNilOrDead(enemy) and GetUnitToUnitDistance(npcBot,enemy)<3000 and MyLane==Lane then
 			EnemyCount=EnemyCount+1
 		end
 	end

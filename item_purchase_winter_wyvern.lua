@@ -11,7 +11,6 @@ local ItemsToBuy =
 	"item_clarity",
     "item_magic_stick",
 	"item_tranquil_boots",
-	"item_buckler",
 	"item_urn_of_shadows",
 	"item_glimmer_cape", --微光
 	"item_force_staff",

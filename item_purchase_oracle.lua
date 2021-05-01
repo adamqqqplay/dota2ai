@@ -9,7 +9,7 @@ local ItemsToBuy =
 	"item_tango",
 	"item_clarity",
 	"item_flask",
-	"item_ring_of_basilius",
+	-- "item_ring_of_basilius",
 	"item_tranquil_boots",
 	"item_urn_of_shadows",
     "item_ghost",

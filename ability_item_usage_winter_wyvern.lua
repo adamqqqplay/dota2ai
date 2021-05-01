@@ -73,7 +73,29 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
+
 local CanCast={utility.NCanCast,utility.NCanCast,function(t)
+	if not AbilityExtensions:AllyCanCast(t) or AbilityExtensions:MustBeIllusion(npcBot, t) and not AbilityExtensions:IsTempestDouble(t) or not AbilityExtensions:IsHero(t) and not AbilityExtensions:IsLoneDruidBear(t) then
+		return false
+	end
+	if AbilityExtensions:DontInterruptAlly(t) then
+		if t:HasModifier("modifier_medusa_stone_gaze") and AbilityExtensions:IsRetreating(t) then
+			return true
+		end
+		if t:HasModifier("modifier_monkey_king_fur_army_soldier_in_position") and AbilityExtensions:GetHealthPercent(t) <= 0.35 then
+			return true
+		end
+		return false
+	end
+	if t:GetUnitName() == "npc_dota_hero_faceless_void" then
+		local allUnits = AbilityExtensions:GetNearbyAllUnits(t, 1599)
+		--  GetUnitList(UNIT_LIST_ALL)
+		return AbilityExtensions:Any(allUnits, function(t)
+			return t:HasModifier("modifier_faceless_void_chronosphere_freeze")
+		end) or AbilityExtensions:Any(t:GetNearbyHeroes(300, true, BOT_MODE_NONE, function(t)
+			return t:HasModifier("modifier_faceless_void_timelock_freeze")
+		end))
+	end
 	return AbilityExtensions:AllyCanCast(t) and (not AbilityExtensions:DontInterruptAlly(t) or t:HasModifier("modifier_medusa_stone_gaze") and t:GetActiveMode() == BOT_MODE_RETREAT) and not t:IsChanneling()
 end,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled

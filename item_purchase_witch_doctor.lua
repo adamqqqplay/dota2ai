@@ -14,7 +14,6 @@ local ItemsToBuy =
 	"item_boots",
 	"item_arcane_boots",
 	"item_urn_of_shadows",
-    "item_buckler",
     "item_ghost",
 	"item_glimmer_cape", --微光
 	"item_force_staff",

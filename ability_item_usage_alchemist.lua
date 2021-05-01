@@ -549,10 +549,17 @@ Consider[6]=function()
 			end
 		end
 	end
-	
-	if(TimeSinceCast>=5)
-	then
-		return BOT_ACTION_DESIRE_HIGH+0.1,enemys[1]
+
+	if TimeSinceCast >= 4 or TimeSinceCast >= 3 and enemys[1]:GetStunDuration(true) >= 2 then
+		return BOT_ACTION_DESIRE_VERYHIGH,enemys[1]
+	end
+	if TimeSinceCast >= 2.5 then
+		local silencer = AbilityExtensions:Count(enemys, function(t)
+			return AbilityExtensions:MayNotBeIllusion(t) and t:HasSilence()
+		end)
+		if silencer > 0 then
+			return BOT_ACTION_DESIRE_HIGH, enemys[1]
+		end
 	end
 	
 	-- throw when I'm hurt

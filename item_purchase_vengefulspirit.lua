@@ -8,7 +8,7 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_clarity",
-	"item_ring_of_basilius",
+	-- "item_ring_of_basilius",
     "item_magic_stick",
 	"item_power_treads", --假腿7.21
 	"item_medallion_of_courage", --勋章

@@ -434,12 +434,7 @@ Consider[4]=function()
     local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
     local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 
-    local i=npcBot:FindItemSlot("item_blink")
-    if(i>=0 and i<=5)
-    then
-        blink=npcBot:GetItemInSlot(i)
-        i=nil
-    end
+	local blink = AbilityExtensions:GetAvailableBlink(npcBot)
     if(blink~=nil and blink:IsFullyCastable())
     then
         CastRange=CastRange+1200

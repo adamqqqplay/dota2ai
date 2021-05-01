@@ -21,13 +21,11 @@ function M.SellExtraItem(ItemsToBuy)
 		end
 		if(GameTime()>25*60 or level>=10)
 		then
-			--M.SellSpecifiedItem("item_stout_shield")
 			M.SellSpecifiedItem("item_orb_of_venom")
 			M.SellSpecifiedItem("item_enchanted_mango")
 			M.SellSpecifiedItem("item_bracer")
 			M.SellSpecifiedItem("item_null_talisman")
 			M.SellSpecifiedItem("item_wraith_band")
-			--M.SellSpecifiedItem("item_poor_mans_shield")
 		end
 		if(GameTime()>35*60 or level>=15)
 		then
@@ -40,7 +38,6 @@ function M.SellExtraItem(ItemsToBuy)
 			M.SellSpecifiedItem("item_quelling_blade")
 			M.SellSpecifiedItem("item_soul_ring")
 			M.SellSpecifiedItem("item_buckler")
-			M.SellSpecifiedItem("item_ring_of_basilius")
 			M.SellSpecifiedItem("item_headdress")
 			
 

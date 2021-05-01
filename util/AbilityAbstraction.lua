@@ -815,10 +815,195 @@ M.heavyDamageAbilities = M:Concat(M.targetTrackingHeavyDamageAbilities, M.locati
 
 M.dodgeWorthAbilities = M:Concat(M.targetStunAbilities, M.locationStunAbilities, M.heavyDamageAbilities)
 
+M.invisibleModifiers = {
+    "modifier_bounty_hunter_wind_walk",
+    "modifier_clinkz_wind_walk",
+    "modifier_dark_willow_shadow_realm_buff",
+    "modifier_item_glimmer_cape_glimmer",
+    "modifier_invoker_ghost_walk_self",
+    "modifier_nyx_assassin_vendetta",
+    "modifier_item_phase_boots_active",
+    "modifier_item_shadow_amulet_fade",
+    "modifier_item_invisibility_edge_windwalk",
+    "modifier_shadow_fiend_requiem_thinker",
+    "modifier_item_silver_edge_windwalk",
+    "modifier_windrunner_wind_walk",
+    "modifier_storm_wind_walk",
+    "modifier_templar_assassin_meld",
+    "modifier_visage_silent_as_the_grave",
+    "modifier_weaver_shukuchi",
+}
+
+M.phaseModifiers = {
+    "modifier_bounty_hunter_wind_walk",
+    "modifier_clinkz_wind_walk",
+    "modifier_dark_willow_shadow_realm_buff",
+    "modifier_faceless_void_chronosphere_selfbuff",
+    "modifier_item_glimmer_cape_glimmer",
+    "modifier_invoker_ghost_walk_self",
+    "modifier_nyx_assassin_vendetta",
+    "modifier_item_phase_boots_active",
+    "modifier_item_shadow_amulet_fade",
+    "modifier_item_invisibility_edge_windwalk",
+    "modifier_shadow_fiend_requiem_thinker",
+    "modifier_item_silver_edge_windwalk",
+    "modifier_slardar_sprint",
+    "modifier_storm_wind_walk",
+    "modifier_templar_assassin_meld",
+    "modifier_weaver_shukuchi",
+}
+
+M.phaseUnits = {
+    "npc_dota_brewmaster_fire_1",
+    "npc_dota_brewmaster_fire_2",
+    "npc_dota_brewmaster_fire_3",
+    "npc_dota_broodmother_web",
+    "npc_dota_courier",
+    "npc_dota_phoenix_sun",
+    "npc_dota_juggernaut_healing_ward",
+    "npc_dota_techies_land_mine",
+    "npc_dota_techies_stasis_trap",
+    "npc_dota_techies_remote_mine",
+    "npc_dota_weaver_swarm",
+}
+
+M.unobstructedMovementModifiers = {
+    "modifier_batrider_firefly",
+    "modifier_broodmother_spin_web",
+    "modifier_centaur_stampede",
+    "modifier_dragon_knight_dragon_form",
+    "modifier_item_giants_ring_giants_foot",
+    "modifier_lich_sinister_gaze",
+    "modifier_legion_commander_duel",
+    "modifier_nyx_assassin_vendetta",
+    "modifier_spectre_spectral_dagger_path_phased",
+    "modifier_item_spider_legs_active",
+    "modifier_visage_silent_as_the_grave",
+}
+
+M.flyingModifiers = {
+    "modifier_rattletrap_jetpack",
+    "modifier_night_stalker_darkness",
+    "modifier_winter_wyvern_arctic_burn_flight",
+}
+
+M.flyingUnits = {
+    "npc_dota_visage_familiar1",
+    "npc_dota_visage_familiar2",
+    "npc_dota_visage_familiar3",
+    "npc_dota_flying_courier",
+    "npc_dota_beastmaster_hawk",
+}
+
+M.positiveForceMovementModifiers = {
+    "modifier_faceless_void_time_walk",
+    "modifier_huskar_life_break_charge",
+    "modifier_magnataur_skewer_movement",
+    "modifier_monkey_king_bounce",
+    "modifier_monkey_king_bounce_leap",
+    "modifier_monkey_king_tree_dance_activity",
+    "modifier_monkey_king_bounce_perch",
+    "modifier_monkey_king_right_click_jump_activity",
+    "modifier_pangolier_swashbuckle",
+    "modiifer_pangolier_shield_crash_jump",
+    "modifier_pangolier_rollup",
+    "modifier_snapfire_firesnap_cookie",
+    "modifier_snapfire_gobble_up",
+    "modifier_sand_king_burrowstrike",
+    "modifier_techies_suicide_leap",
+}
+
+M.timeSensitivePositiveModifiers = {
+    "modifier_item_black_king_bar",
+    "modifier_faceless_void_chronosphere_selfbuff",
+    "modifier_medusa_stone_gaze",
+    "modifier_monkey_king_fur_army_soldier_in_position",
+}
+-- sorted by importance, used by dispell abilities
+
+M.basicDispellablePositiveModifiers = {
+    "modifier_omniknight_guardian_angle",
+    "modifier_ember_spirit_flame_guard",
+    "modifier_legion_commander_press_the_attack",
+    "modifier_windrunner_windrun",
+    "modifier_lich_frost_shield",
+    "modifier_oracle_purifying_flames",
+    "modifier_ogre_magi_bloodlust",
+    "modifier_treant_living_armor",
+    "modifier_mirana_leap_buff",
+    "modifier_necrolyte_death_seeker",
+    "modifier_necrolyte_sadist_active",
+    "modifier_pugna_decrepify",
+    "modifier_item_ethereal_blade_ethereal",
+    "modifier_ghost_state",
+    "modifier_abaddon_frostmourne_buff",
+    "modifier_item_mjollnir_static",
+    "modifier_visage_silent_as_the_grave",
+    "modifier_spirit_breaker_bulldoze",
+    "modifier_item_spider_legs_active",
+    "modifier_item_bullwhip_buff",
+}
+
+M.basicDispellWorthPositiveModifiers = {
+    "modifier_omniknight_guardian_angle",
+    "modifier_ember_spirit_flame_guard",
+    "modifier_legion_commander_press_the_attack",
+    "modifier_windrunner_windrun",
+    "modifier_lich_frost_shield",
+    "modifier_oracle_purifying_flames",
+    "modifier_ogre_magi_bloodlust",
+    "modifier_treant_living_armor",
+    "modifier_mirana_leap_buff",
+    "modifier_necrolyte_death_seeker",
+    "modifier_necrolyte_sadist_active",
+    "modifier_pugna_decrepify",
+    "modifier_item_ethereal_blade_ethereal",
+    "modifier_ghost_state",
+}
+
+M.basicDispellWorthNegativeModifiers = {
+    "modifier_abaddon_frostmourne_debuff_bonus",
+}
+
+M.basicDispellableNegativeModifiers = {
+    "modifier_abaddon_frostmourne_debuff",
+    "modifier_abaddon_frostmourne_debuff_bonus",
+
+}
+
+M.unbreakableChannelAbilities = {
+    "puck_phase_shift",
+    "pangolier_gyroshell",
+    "lone_druid_true_form",
+    "phoenix_supernova",
+    "lycan_shapeshift",
+}
+
 -- unit function
 
-function M:isRoshan(npcTarget)
+function M:IsRoshan(npcTarget)
     return npcTarget ~= nil and npcTarget:IsAlive() and string.find(npcTarget:GetUnitName(), "roshan")
+end
+
+function M:IsHero(t)
+    return t:IsHero()
+end
+
+function M:IsTempestDouble(npc)
+    return npc:HasModifier("modifier_arc_warden_tempest_double")
+end
+
+function M:IsLoneDruidBear(npc)
+    return string.match(npc:GetUnitName(), "npc_dota_lone_druid_bear")
+end
+
+function M:IsVisageFamiliar(npc)
+    return string.match(npc:GetUnitName(), "npc_dota_visage_familiar")
+end
+
+function M:IsBrewmasterPrimalSplit(npc)
+    local unitName = npc:GetUnitName()
+    return string.match(unitName, "npc_dota_brewmaster_")
 end
 
 M.GetIncomingDodgeWorthProjectiles = function(self, npc)
@@ -877,6 +1062,25 @@ end
 
 M.IsChannelingAbility = function(self, npc)
     return npc:IsChanneling() and not self:IsChannelingItem(npc)
+end
+
+function M:IsChannelingBreakWorthAbility(npc)
+    if not npc:IsChanneling() then 
+        return false
+    end
+    local ability = npc:GetCurrentActiveAbility()
+    if ability == nil then
+        if npc:HasModifier("modifier_teleporting") then
+            return true
+        end
+        local item = self:GetAvailableItem(npc, "item_fallen_sky")
+        return item ~= nil
+    end
+    local name = ability:GetName()
+    if self:Contains(self.unbreakableChannelAbilities, name) then
+        return false
+    end
+    return true
 end
 
 M.RadiantPlayerId = GetTeamPlayers(TEAM_RADIANT)
@@ -1035,6 +1239,37 @@ M.GetEnemyHeroNumber = function(self, npcBot, enemies)
     return #self:GetEnemyHeroUnique(npcBot, enemies)
 end
 
+function M:HasPhasedMovement(npc)
+    return self:HasAnyModifier(npc, self.phaseModifiers) or self:Contains(self.phaseUnits, npc:GetUnitName())
+end
+
+function M:HasUnobstructedMovement(npc)
+    if self:HasAnyModifier(npc, self.flyingModifiers) or self:Contains(self.flyingUnits, npc:GetUnitName()) then
+        if string.match(npc:GetUnitName(), "npc_dota_visage_familiar") then
+            return npc:HasModifier("modifier_rooted")
+        end
+        return true
+    end
+    local activeFlyingModifiers = self:Filter(self.unobstructedMovementModifiers, function(t) return npc:HasModifier(t) end)
+    if #activeFlyingModifiers ~= 0 then
+        local dragonKnightDragonForm = self:IndexOf(activeFlyingModifiers, "modifier_dragon_knight_dragon_form")
+        if dragonKnightDragonForm ~= -1 then
+            local ability = npc:GetAbilityByName("dragon_knight_elder_dragon_form")
+            if ability == nil or not (ability:GetLevel() == 4) then
+                table.remove(activeFlyingModifiers, dragonKnightDragonForm)
+            end
+        end
+        local stampede = self:IndexOf(activeFlyingModifiers, "modifier_centaur_stampede")
+        if stampede ~= -1 then
+            local ability = npc:GetAbilityByName("centaur_stampede")
+            if ability == nil or not self:hasScepter(npc) then
+                table.remove(activeFlyingModifiers, stampede)
+            end
+        end
+    end
+    return #activeFlyingModifiers ~= 0
+end
+
 -- item function
 
 M.GetAvailableItem = function(self, npc, itemName)
@@ -1084,7 +1319,17 @@ M.GetAvailableBlink = function(self, npc)
         "item_arcane_blink",
     }
     return self:Aggregate(nil, blinks, function(a, blinkName)
-        return a or self:GetAvailableItem(blinkName)
+        return a or self:GetAvailableItem(npc, blinkName)
+    end)
+end
+
+function M:GetAvailableTravelBoots(npc)
+    local travelBoots = {
+        "item_travel_boots",
+        "item_travel_boots_2",
+    }
+    return self:Aggregate(nil, travelBoots, function(seed, t)
+        return seed or self:GetAvailableItem(npc, t)
     end)
 end
 
@@ -1422,59 +1667,17 @@ function M:GetManaDeficit(npc)
     return npc:GetMaxMana() - npc:GetMana()
 end
 
--- sorted by importance, used by dispell abilities
-
-M.BasicDispellablePositiveModifiers = {
-    "modifier_omniknight_guardian_angle",
-    "modifier_ember_spirit_flame_guard",
-    "modifier_legion_commander_press_the_attack",
-    "modifier_windrunner_windrun",
-    "modifier_lich_frost_shield",
-    "modifier_oracle_purifying_flames",
-    "modifier_ogre_magi_bloodlust",
-    "modifier_treant_living_armor",
-    "modifier_mirana_leap_buff",
-    "modifier_necrolyte_death_seeker",
-    "modifier_necrolyte_sadist_active",
-    "modifier_pugna_decrepify",
-    "modifier_item_ethereal_blade_ethereal",
-    "modifier_ghost_state",
-    "modifier_abaddon_frostmourne_buff",
-    "modifier_item_mjollnir_static",
-    "modifier_spirit_breaker_bulldoze",
-    "modifier_item_spider_legs_active",
-    "modifier_item_bullwhip_buff",
-}
-
-M.BasicDispellWorthPositiveModifiers = {
-    "modifier_omniknight_guardian_angle",
-    "modifier_ember_spirit_flame_guard",
-    "modifier_legion_commander_press_the_attack",
-    "modifier_windrunner_windrun",
-    "modifier_lich_frost_shield",
-    "modifier_oracle_purifying_flames",
-    "modifier_ogre_magi_bloodlust",
-    "modifier_treant_living_armor",
-    "modifier_mirana_leap_buff",
-    "modifier_necrolyte_death_seeker",
-    "modifier_necrolyte_sadist_active",
-    "modifier_pugna_decrepify",
-    "modifier_item_ethereal_blade_ethereal",
-    "modifier_ghost_state",
-}
-
-M.BasicDispellWorthNegativeModifiers = {
-    "modifier_abaddon_frostmourne_debuff_bonus",
-}
-
-M.BasicDispellableNegativeModifiers = {
-    "modifier_abaddon_frostmourne_debuff",
-    "modifier_abaddon_frostmourne_debuff_bonus",
-
-}
+function M:GetAcrossAbilityStatusPerFrame(npc)
+    local g = {}
+    g.health = npc:GetHealth()
+    g.mana = npc:GetMana()
+    g.healthPercent = self:GetHealthPercent(npc)
+    g.manaPercent = self:GetManaPercent(npc)
+    g.attackRange = npc:GetAttackRange()
+end
 
 function M:IndexOfBasicDispellablePositiveModifier(npc)
-    return self:Aggregate(nil, self.BasicDispellWorthPositiveModifiers, function(seed, modifier, index)
+    return self:Aggregate(nil, self.basicDispellWorthPositiveModifiers, function(seed, modifier, index)
         if seed then
             return seed
         end
@@ -1488,35 +1691,11 @@ function M:IndexOfBasicDispellablePositiveModifier(npc)
 end
 
 function M:HasBasicDispellablePositiveModifier(npc)
-    return self:Any(self.BasicDispellWorthPositiveModifiers, function(t) return t:HasModifier(t) end)
+    return self:Any(self.basicDispellWorthPositiveModifiers, function(t) return t:HasModifier(t) end)
 end
 
-M.PositiveForceMovementModifiers = {
-    "modifier_faceless_void_time_walk",
-    "modifier_huskar_life_break_charge",
-    "modifier_magnataur_skewer_movement",
-    "modifier_monkey_king_bounce",
-    "modifier_monkey_king_bounce_leap",
-    "modifier_monkey_king_tree_dance_activity",
-    "modifier_monkey_king_bounce_perch",
-    "modifier_monkey_king_right_click_jump_activity",
-    "modifier_pangolier_swashbuckle",
-    "modiifer_pangolier_shield_crash_jump",
-    "modifier_pangolier_rollup",
-    "modifier_snapfire_firesnap_cookie",
-    "modifier_snapfire_gobble_up",
-    "modifier_sand_king_burrowstrike",
-    "modifier_techies_suicide_leap",
-}
-
-M.TimeSensitivePositiveModifiers = {
-    "modifier_item_black_king_bar",
-    "modifier_faceless_void_chronosphere_selfbuff",
-    "modifier_medusa_stone_gaze",
-}
-
 function M:DontInterruptAlly(npc)
-    return self:HasAnyModifier(npc, self.PositiveForceMovementModifiers) or self:HasAnyModifier(npc, self.TimeSensitivePositiveModifiers) or self:IsDuelCaster(npc)
+    return self:HasAnyModifier(npc, self.positiveForceMovementModifiers) or self:HasAnyModifier(npc, self.timeSensitivePositiveModifiers) or self:IsDuelCaster(npc)
 end
 
 M.MidLaneTowers = { TOWER_MID_1, TOWER_MID_2, TOWER_MID_3 }

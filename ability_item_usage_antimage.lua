@@ -90,7 +90,37 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
+local function GetBlinkAttackLocation(enemy)
+	local attackDistance = enemy:GetBoundingRadius() + npcBot:GetBoundingRadius()
+	if AbilityExtensions:HasPhasedMovement(enemy) or AbilityExtensions:HasUnobstructedMovement(enemy) then
+		attackDistance = npcBot:GetAttackRange()
+	end
+	local enemyNextStep = enemy:GetLocation() + Vector(math.cos(enemy:GetFacing()), math.sin(enemy:GetFacing())) * attackDistance
+	local distanceFromNextStep = GetUnitToLocationDistance(npcBot, enemyNextStep)
+	local blinkRadius = AbilitiesReal[2]:GetSpecialValueInt("blink_range")
+	if AbilityExtensions:HasPhasedMovement(enemy) or AbilityExtensions:HasUnobstructedMovement(enemy) then
+		
+	end
+	if blinkRadius <= distanceFromNextStep then
+		return AbilityExtensions:GetPointFromLineByDistance(npcBot:GetLocation(), enemy:GetLocation(), blinkRadius)
+	else
+		return enemyNextStep
+	end
+end
 
+local function TooDangerousToBlinkNear(npc)
+	local enoughHealth = AbilityExtensions:GetHealthPercent(npcBot) >= AbilityExtensions:GetHealthPercent(npc) + 0.2 and npcBot:GetHealth() >= npc:GetHealth() * 0.8
+	local isVeryDangerous = npc:HasModifier("modifier_medusa_stone_gaze") or npc:HasModifier("modifier_faceless_void_chronosphere_selfbuff") or npc:HasModifier("modifier_monkey_king_fur_army_soldier_in_position") or AbilityExtensions:IsInvulnerable(npc)
+	if isVeryDangerous then
+		return true
+	end
+	local isDangerous = npc:HasModifier("modifier_batrider_firefly") or npc:HasModifier("modifier_winter_wyvern_arctic_burn_flight") or npc:IsMagicImmune()
+	if isDangerous and not enoughHealth then
+		return true
+	end
+	return false
+end
+	
 Consider[2]=function()
     local abilityNumber=2
 	--------------------------------------
@@ -118,7 +148,10 @@ Consider[2]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana and GetUnitToUnitDistance(npcBot,WeakestEnemy) > 200)
 				then
-					return BOT_ACTION_DESIRE_HIGH,utility.GetUnitsTowardsLocation(npcBot,WeakestEnemy,CastRange+200); 
+					if TooDangerousToBlinkNear(WeakestEnemy) then
+						return 0
+					end
+					return BOT_ACTION_DESIRE_HIGH, GetBlinkAttackLocation(WeakestEnemy)
 				end
 			end
 		end
@@ -156,7 +189,10 @@ Consider[2]=function()
 				then
 					if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys and GetUnitToUnitDistance(npcBot,npcEnemy) > 200)
 					then
-						return BOT_ACTION_DESIRE_MODERATE, utility.GetUnitsTowardsLocation(npcBot,npcEnemy,CastRange+200);
+						if TooDangerousToBlinkNear(npcEnemy) then
+							return 0
+						end
+						return BOT_ACTION_DESIRE_MODERATE, GetBlinkAttackLocation(npcEnemy)
 					end
 				end
 			end
@@ -167,7 +203,7 @@ Consider[2]=function()
     local projectiles = AbilityExtensions:GetIncomingDodgeWorthProjectiles(npcBot)
     local castPoint = ability:GetCastPoint()
     local defaultProjectileVelocity = 1500
-    if #projectiles ~= 0 and not AbilitiesReal[3]:IsFullyCastable() then
+    if #projectiles ~= 0 and not AbilitiesReal[3]:IsFullyCastable() and not npcBot:HasModifier("modifier_antimage_counterspell") then
         for _, projectile in pairs(projectiles) do
             if GetUnitToLocationDistance(npcBot, projectile.location) > castPoint * defaultProjectileVelocity then
                 local escapeLocation = utility.GetUnitsTowardsLocation(npcBot, projectile.location, 400)
