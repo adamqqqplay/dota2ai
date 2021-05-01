@@ -387,6 +387,24 @@ M.SortByMinFirst = function(self, tb, map)
     end)
 end
 
+function M:FilterSequence(tb, filter)
+    return coroutine.wrap(function()
+        for index, value in ipairs(tb) do
+            if filter(value, index) then
+                coroutine.yield(value)
+            end
+        end
+    end)
+end
+
+function M:MapSequence(tb, map)
+    return coroutine.wrap(function()
+        for index, value in ipairs(tb) do
+            coroutine.yield(map(value, index))
+        end
+    end)
+end
+
 function M:Remove_Modify(tb, item)
     local filter = item
     if type(item) ~= "function" then
@@ -2365,20 +2383,74 @@ function M:SingleForTeam(oldFunction)
     end
 end
 
+local singleForAllBots = {}
+
+function M:SingleForAllBots(oldFunction)
+    local functionName = tostring(oldFunction)
+    return function(...)
+        if singleForAllBots[functionName] ~= frameNumber then
+            singleForAllBots[functionName] = frameNumber
+            return oldFunction(...)
+        else
+            return defaultReturn
+        end
+    end
+end
+
+function M:RunCoroutineOnce(oldFunction)
+    local thread = coroutine.create(oldFunction)
+    coroutine.resume(thread)
+end
+
+local groupAnnounceTimes1 = 0
+function M:AnnounceGroups1(npcBot)
+    if groupAnnounceTimes1 == 0 then
+        npcBot:ActionImmediate_Chat("Thanks for choosing RMMAI. Join our new discord group at ... to put suggestions or devloping issues!")
+        groupAnnounceTimes1 = 1
+    end
+end
+local groupAnnounceTimes2 = 0
+function M:AnnounceGroups2(npcBot)
+    if groupAnnounceTimes2 == 0 then
+        npcBot:ActionImmediate_Chat("Or join QQ group at 946823144!")
+        groupAnnounceTimes2 = 1
+    end
+end
+
 function M:CalledOnThisFrame(functionInvocationResult)
     return functionInvocationResult ~= defaultReturn
 end
 
-M.slowFunctionRegistries = {}
+local slowFunctionRegistries = {}
+local coroutineRegistry = {}
+
 function M:TickFromDota()
     local time = DotaTime()
+    local function ResumeCoroutine(thread)
+        local coroutineResult = { coroutine.resume(thread[1], time - dotaTimer) }
+        if not coroutineResult[1] then
+            raise(coroutineResult[2])
+        end
+    end
     if dotaTimer == nil then
         dotaTimer = time
         return
     end
     if not FloatEqual(time, dotaTimer) then
         frameNumber = frameNumber + 1
-        self:ForEach(self.slowFunctionRegistries, function(t) t(dotaTimer - time) end)
+        self:ForEach(slowFunctionRegistries, function(t) t(time - dotaTimer) end)
+        local threadIndex = 1
+        while threadIndex <= #coroutineRegistry do
+            local t = coroutineRegistry[threadIndex]
+            if coroutine.status(t) == "suspended" then
+                ResumeCoroutine(t)
+                threadIndex = threadIndex + 1
+            elseif coroutine.status(t) == "dead" then
+                table.remove(coroutineRegistry, threadIndex)
+            else
+                threadIndex = threadIndex + 1
+            end
+        end
         dotaTimer = time
     end
 end
@@ -2391,6 +2463,10 @@ function M:RegisterSlowFunction(oldFunction, calledWhenHowManyFrames, frameOffse
             return self:UnpackIfTable(defaultReturn)
         end
     end
+end
+
+function M:StartCoroutine(func)
+    table.insert(coroutineRegistry, coroutine.create(func))
 end
 
 -- local reduceConsiderInvocationTimesCount = 0

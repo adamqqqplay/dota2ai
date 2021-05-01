@@ -85,6 +85,12 @@ local function SecondaryOperation()
 	then
 		ChatSystem.SendVersionAnnouncement()
 	end
+	if GetAncient(TEAM_RADIANT):GetHealth() <= 1500 or GetAncient(TEAM_DIRE):GetHealth() <= 1500 then
+		AbilityExtensions:AnnounceGroups1(GetBot())
+	end
+	if GetAncient(TEAM_RADIANT):GetHealth() <= 1200 or GetAncient(TEAM_DIRE):GetHealth() <= 1200 then
+		AbilityExtensions:AnnounceGroups2(GetBot())
+	end
 end
 
 function CourierUsageThink()
