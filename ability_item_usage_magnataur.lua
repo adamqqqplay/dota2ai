@@ -73,7 +73,9 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,function(t)
+    return not AbilityExtensions:IsInvulnerable(t)
+end}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -352,7 +354,7 @@ Consider[4] = function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber]
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or ability:IsHidden() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	local radius = ability:GetSpecialValueInt("radius")
@@ -385,10 +387,6 @@ Consider[4] = function()
 	return 0
 end
 
-CanCast[5] = function(t)
-    return not AbilityExtensions:IsInvulnerable(t)
-end
-
 Consider[5]=function()
 	local abilityNumber=5
 	--------------------------------------
@@ -405,7 +403,6 @@ Consider[5]=function()
 	local Radius = ability:GetAOERadius()-50
 	local CastPoint = ability:GetCastPoint()
 	
-	local blink
 	local blink = AbilityExtensions:GetAvailableBlink(npcBot)
 	if(blink~=nil and blink:IsFullyCastable())
 	then
@@ -420,7 +417,6 @@ Consider[5]=function()
 			end
 		end
 	end
-	
 
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)

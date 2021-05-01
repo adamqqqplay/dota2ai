@@ -1011,7 +1011,7 @@ end
 function GetPositionedHero(team, selectedHeroes)
 	--Fill positions in random order
     local positionCounts = GetPositionCounts( team );
-	local postion
+	local position
 	repeat
 		position=RandomInt(1,5);
 	until(positionCounts[position] == 0)
