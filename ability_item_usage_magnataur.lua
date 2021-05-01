@@ -353,7 +353,7 @@ Consider[4] = function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber]
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or ability:IsHidden() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	local radius = ability:GetSpecialValueInt("radius")
@@ -406,13 +406,7 @@ Consider[5]=function()
 	local Radius = ability:GetAOERadius()-50
 	local CastPoint = ability:GetCastPoint()
 	
-	local blink
-	local i=npcBot:FindItemSlot("item_blink")
-	if(i>=0 and i<=5)
-	then
-		blink=npcBot:GetItemInSlot(i)
-		i=nil
-	end
+	local blink = AbilityExtensions:GetAvailableBlink(npcBot)
 	if(blink~=nil and blink:IsFullyCastable())
 	then
 		CastRange=CastRange+1200
