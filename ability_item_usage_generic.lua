@@ -76,6 +76,11 @@ local function RecordStuckState()
 	end
 end
 
+local function AncientBelow(team, health)
+	local ancient = GetAncient(team)
+	return ancient:IsInvulnerable() and ancient:GetHealth() < health
+end
+
 local function SecondaryOperation()
 	ConsiderGlyph()
 	ItemUsageSystem.UnImplementedItemUsage()
@@ -85,10 +90,10 @@ local function SecondaryOperation()
 	then
 		ChatSystem.SendVersionAnnouncement()
 	end
-	if GetAncient(TEAM_RADIANT):GetHealth() <= 1500 or GetAncient(TEAM_DIRE):GetHealth() <= 1500 then
+	if AncientBelow(TEAM_RADIANT, 1500) or AncientBelow(TEAM_DIRE, 1500) then
 		AbilityExtensions:AnnounceGroups1(GetBot())
 	end
-	if GetAncient(TEAM_RADIANT):GetHealth() <= 1200 or GetAncient(TEAM_DIRE):GetHealth() <= 1200 then
+	if AncientBelow(TEAM_RADIANT, 1200) or AncientBelow(TEAM_DIRE, 1200) then
 		AbilityExtensions:AnnounceGroups2(GetBot())
 	end
 end
@@ -384,9 +389,15 @@ function UseAbility(AbilitiesReal, cast)
         if ability:IsHidden() then
             print("Ability is hidden: "..ability:GetName())
         end
+		if npcBot:IsRooted() then
+			print("use when rooted: "..ability:GetName())
+		end
 
         local function CallWithTarget()
             cast.Type[j] = "Target"
+			-- if not AbilityExtensions:IsHero(cast.Target[j]) then
+			-- 	print("target at creep"..ability:GetName())
+			-- end
             -- print("target ability :"..ability:GetName())
             if AbilityExtensions:IsVector(cast.Target[j]) then
                 print("Wrong target type")

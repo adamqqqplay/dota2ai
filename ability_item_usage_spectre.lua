@@ -207,7 +207,7 @@ Consider[1]=function()
 				then
 					if ( CanCast[abilityNumber]( WeakestEnemy ) )
 					then
-						return BOT_ACTION_DESIRE_LOW, WeakestEnemy,"Target";
+						return BOT_ACTION_DESIRE_LOW, WeakestEnemy:GetLocation(),"Location"
 					end
 				end
 			end
