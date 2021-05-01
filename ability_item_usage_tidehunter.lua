@@ -539,8 +539,7 @@ function AbilityUsageThink()
     end
     abilityUsedInfo.index = nil
 
-	if(npcBot:HasScepter() or npcBot:HasModifier("modifier_item_ultimate_scepter"))
-	then
+	if AbilityExtensions:HasScepter(npcBot) then
 		Consider[1]=Consider1New;
 	end
 	

@@ -386,6 +386,8 @@ end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
+local cullingBladeTarget
+
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability
@@ -393,9 +395,13 @@ function AbilityUsageThink()
 	then 
 		if npcBot:IsUsingAbility() then
 			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[1] then
-				local d = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, AbilitiesReal[1]:GetAOERadius())
-				d = AbilityExtensions:Filter(d, CanCast[1])
-				if #d == 0 then
+				local nearbyEnemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, AbilitiesReal[1]:GetAOERadius())
+				nearbyEnemies = AbilityExtensions:Filter(nearbyEnemies, CanCast[1])
+				if #nearbyEnemies == 0 then
+					npcBot:Action_ClearActions()
+				end
+			elseif npcBot:GetCurrentActiveAbility() == AbilitiesReal[4] and cullingBladeTarget then
+				if cullingBladeTarget:GetHealth() > AbilitiesReal[4]:GetSpecialValueInt("kill_threshold") then
 					npcBot:Action_ClearActions()
 				end
 			end
@@ -414,7 +420,10 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	if index == 4 then
+		cullingBladeTarget = target
+	end
 end
 
 function CourierUsageThink() 

@@ -353,7 +353,7 @@ Consider[4]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetSpecialValueInt( "damage" );
 	local Radius = ability:GetSpecialValueInt( "light_strike_array_aoe" );
-	local DamageType = npcBot:HasScepter() and DAMAGE_TYPE_PURE or DAMAGE_TYPE_MAGICAL;
+	local DamageType = AbilityExtensions:HasScepter(npcBot) and DAMAGE_TYPE_PURE or DAMAGE_TYPE_MAGICAL;
 	
 
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );

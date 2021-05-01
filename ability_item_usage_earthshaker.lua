@@ -248,7 +248,7 @@ Consider[2]=function()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-	if(npcBot:HasScepter() or npcBot:HasModifier("modifier_item_ultimate_scepter"))
+	if AbilityExtensions:HasScepter(npcBot)
 	then
 		-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 		if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 

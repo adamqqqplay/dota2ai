@@ -72,12 +72,7 @@ function CanCast1( npcEnemy )
 	then
 		return false
 	end
-	if(npcBot:HasScepter())
-	then
-		return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable();
-	else
-		return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable() and not npcEnemy:IsAncientCreep()
-	end
+	return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable()
 end
 
 --------------------------------------

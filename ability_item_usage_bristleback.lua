@@ -117,7 +117,7 @@ Consider[1]=function()
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	
-	if npcBot:HasScepter() then
+	if AbilityExtensions:HasScepter(npcBot) then
 		local enemies = npcBot:GetNearbyHeroes(CastRange, true, BOT_MODE_NONE)
 		enemies = AbilityExtensions:Filter(enemies, function(t) 
 			local m = t:GetModifierByName("modifier_bristleback_viscous_nasal_goo")
@@ -126,7 +126,7 @@ Consider[1]=function()
 			end
 			return true
 		end)
-		if AbilityExtensions:IsAttackingEnemies(npcBot) or AbilityExtensions:IsRetreating(npcBot) then
+		if (AbilityExtensions:IsAttackingEnemies(npcBot) or AbilityExtensions:IsRetreating(npcBot)) and npcBot:GetMana() >= 120 then
 			if #enemies == 0 then
 				return 0
 			end

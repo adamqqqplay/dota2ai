@@ -97,7 +97,8 @@ Consider[1]=function()	--Target Ability Example
 	local CastRange = ability:GetCastRange();
 	local Damage = 65+npcBot:GetAttackDamage()*(0.1+0.15*ability:GetLevel())
 
-
+	local HeroHealth=10000
+	local CreepHealth=10000
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -236,7 +237,6 @@ Consider[2]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = 0
 
-
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -267,11 +267,11 @@ Consider[2]=function()
 		local npcEnemy
 		for _,tempEnemy in pairs( allys )
 		do
-			tempdistance=tempEnemy:DistanceFromFountain()
-			if (tempdistance<allydistance)
+			local tempDistance=tempEnemy:DistanceFromFountain()
+			if (tempDistance<allydistance)
 			then
 				npcEnemy=tempEnemy
-				allydistance=tempdistance
+				allydistance=tempDistance
 			end
 		end
 		if (npcEnemy~=nil)
@@ -325,6 +325,10 @@ Consider[3]=function()
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+
+	local dispellRadius = ability:GetCastRange()
+	local realEnemiesNearby = AbilityExtensions:GetNearbyNonIllusionHeroes(dispellRadius)
+
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
@@ -334,11 +338,17 @@ Consider[3]=function()
 			return 0
 		end
 	end
-	if(npcBot:WasRecentlyDamagedByAnyHero(2.5) or
+	if(npcBot:WasRecentlyDamagedByAnyHero(1) or
 		(npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_MODERATE))
 	then
-		if (#enemys==0)
+		if (#realEnemiesNearby==0)
 		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+
+	if AbilityExtensions:HasScepter(npcBot) then
+		if AbilityExtensions:GetALlyDispellWorthModifiers(npcBot) then
 			return BOT_ACTION_DESIRE_HIGH
 		end
 	end

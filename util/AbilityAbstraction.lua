@@ -895,12 +895,22 @@ M.GetEnemyTeamMemberNames = function(self, npcBot)
     return self:Map(enemies, function(t) return t:GetUnitName()  end)
 end
 
+M.EnemyVisibleIllusionModifiers = {
+    "modifier_illusion",
+    -- "modifier_phantom_lancer_doppelwalk_illusion",
+    -- "modifier_phantom_lancer_juxtapose_illusion",
+    "modifier_terrorblade_conjureimage",
+}
+
 M.MustBeIllusion = function(self, npcBot, target)
     if npcBot:GetTeam() == target:GetTeam() then
-        return target:IsIllusion() and not target:HasModifier("modifier_skeleton_king_reincarnation_active")
+        return target:IsIllusion() or target:HasModifier("modifier_skeleton_king_reincarnation_active") or target:HasModifier("modifier_arc_warden_tempest_double") or self:HasAnyModifier(target, self.EnemyVisibleIllusionModifiers)
     end
-    if self:Contains(self:GetTeamPlayers(npcBot:GetTeam()), target:GetPlayerID()) then
+    if self:Contains(self:GetTeamPlayers(npcBot:GetTeam()), target:GetPlayerID()) or target.markedAsIllusion then
         return true
+    end
+    if target.markedAsRealHero then
+        return false
     end
     if not IsHeroAlive(target:GetPlayerID()) then
         return true
@@ -908,6 +918,20 @@ M.MustBeIllusion = function(self, npcBot, target)
     return false
 end
 M.MayNotBeIllusion = function(self, npcBot, target) return not self:MustBeIllusion(npcBot, target) end
+
+M.DetectIllusion = function(self, npcBot)
+    local nearbyEnemies = self:GetNearbyNonIllusionHeroes(npcBot, 1599)
+    nearbyEnemies = self:Filter(nearbyEnemies, function(t) return string.match(t:GetUnitName(), "npc_dota_hero") end)
+    local castingEnemies = self:Filter(nearbyEnemies, function(t) return (t:IsUsingAbility() or t:IsChanneling() or self:HasNonIllusionModifier(t) or t.markedAsRealHero) and not t.markedAsIllusion end)
+    local castingEnemy = castingEnemies[1]
+    if castingEnemy and not (castingEnemy:GetUnitName()) then
+        castingEnemy.markedAsRealHero = true
+        castingEnemies = self:Remove(nearbyEnemies, castingEnemy)
+        self:ForEach(castingEnemies, function(t)
+            t.markedAsIllusion = true
+        end)
+    end
+end
 
 M.GetNearbyHeroes = function(self, npcBot, range, getEnemy, botModeMask)
     range = range or 1200
@@ -1415,14 +1439,42 @@ M.BasicDispellablePositiveModifiers = {
     "modifier_pugna_decrepify",
     "modifier_item_ethereal_blade_ethereal",
     "modifier_ghost_state",
+    "modifier_abaddon_frostmourne_buff",
     "modifier_item_mjollnir_static",
     "modifier_spirit_breaker_bulldoze",
     "modifier_item_spider_legs_active",
     "modifier_item_bullwhip_buff",
 }
 
+M.BasicDispellWorthPositiveModifiers = {
+    "modifier_omniknight_guardian_angle",
+    "modifier_ember_spirit_flame_guard",
+    "modifier_legion_commander_press_the_attack",
+    "modifier_windrunner_windrun",
+    "modifier_lich_frost_shield",
+    "modifier_oracle_purifying_flames",
+    "modifier_ogre_magi_bloodlust",
+    "modifier_treant_living_armor",
+    "modifier_mirana_leap_buff",
+    "modifier_necrolyte_death_seeker",
+    "modifier_necrolyte_sadist_active",
+    "modifier_pugna_decrepify",
+    "modifier_item_ethereal_blade_ethereal",
+    "modifier_ghost_state",
+}
+
+M.BasicDispellWorthNegativeModifiers = {
+    "modifier_abaddon_frostmourne_debuff_bonus",
+}
+
+M.BasicDispellableNegativeModifiers = {
+    "modifier_abaddon_frostmourne_debuff",
+    "modifier_abaddon_frostmourne_debuff_bonus",
+
+}
+
 function M:IndexOfBasicDispellablePositiveModifier(npc)
-    return self:Aggregate(nil, self.BasicDispellablePositiveModifiers, function(seed, modifier, index)
+    return self:Aggregate(nil, self.BasicDispellWorthPositiveModifiers, function(seed, modifier, index)
         if seed then
             return seed
         end
@@ -1436,7 +1488,7 @@ function M:IndexOfBasicDispellablePositiveModifier(npc)
 end
 
 function M:HasBasicDispellablePositiveModifier(npc)
-    return self:Any(self.BasicDispellablePositiveModifiers, function(t) return t:HasModifier(t) end)
+    return self:Any(self.BasicDispellWorthPositiveModifiers, function(t) return t:HasModifier(t) end)
 end
 
 M.PositiveForceMovementModifiers = {

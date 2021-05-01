@@ -260,7 +260,7 @@ local goodNeutral=
 	"npc_dota_neutral_enraged_wildkin",  -- 枭兽撕裂者
 }
 
-function IsGoodNeutralCreeps(npcCreep)
+local function IsGoodNeutralCreeps(npcCreep)
 	local name=npcCreep:GetUnitName();
 	for k,creepName in pairs(goodNeutral) do
 		if(name==creepName)
@@ -300,7 +300,7 @@ Consider[2]=function()
 	if(ManaPercentage>=0.3)
 	then
 		for k,creep in pairs(creepsNeutral) do
-			if(IsGoodNeutralCreeps(creep) or (creep:IsAncientCreep() and npcBot:HasScepter()))
+			if(IsGoodNeutralCreeps(creep) or (creep:IsAncientCreep() and AbilityExtensions:HasScepter(npcBot)))
 			then
 				return BOT_ACTION_DESIRE_HIGH, creep;
 			end
