@@ -169,7 +169,7 @@ Consider[1]=function()
 			return BOT_ACTION_DESIRE_LOW+0.05, locationAoE.targetloc;
 		end
 	
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then
@@ -343,6 +343,10 @@ Consider[2]=function()
 	
 end
 
+local function ShouldSurge(t)
+	return (AbilityExtensions:IsRetreating(t) or AbilityExtensions:GetHealthPercent(t) <= 0.4 or t:IsHexed() or t:GetCurrentMovementSpeed() <= 150) and AbilityExtensions:CanMove(t) and t:WasRecentlyDamagedByAnyHero(3)
+end
+
 Consider[3]=function()
 	local abilityNumber=3
 	--------------------------------------
@@ -358,8 +362,8 @@ Consider[3]=function()
 	local Damage = ability:GetAbilityDamage();
 	local CastPoint = ability:GetCastPoint();
 	
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange + 200)
+	local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1400)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
@@ -368,14 +372,14 @@ Consider[3]=function()
 	local Radius=300;
 
 	local locationAoE = npcBot:FindAoELocation( false, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
-	if ( locationAoE.count >= 2 and AOESurge:IsTrained()==true ) then
-		return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc, "Location"
+	if ( locationAoE.count >= 2 and AOESurge:IsTrained()==true ) and #enemys ~= 0 then
+		return RemapValClamped(locationAoE.count, 2, 4, BOT_ACTION_DESIRE_LOW, BOT_ACTION_DESIRE_HIGH), locationAoE.targetloc, "Location"
 	end
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH and ShouldSurge(npcBot) ) 
 	then
 		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) ) 
 		then
@@ -390,7 +394,7 @@ Consider[3]=function()
 	-- Help our ally
 	local allysRetreat = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_RETREAT );
 	for k,ally in pairs(allys) do
-		if(CanCast[abilityNumber]( ally ) and ally:WasRecentlyDamagedByAnyHero(2.0))
+		if(CanCast[abilityNumber]( ally ) and ally:WasRecentlyDamagedByAnyHero(2.0)) and ShouldSurge(ally)
 		then
 			if(AOESurge:IsTrained()==true) then
 				local locationAoE = npcBot:FindAoELocation( false, true, ally:GetLocation(), CastRange, Radius, 0, 0 );
@@ -491,7 +495,7 @@ Consider[4]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then

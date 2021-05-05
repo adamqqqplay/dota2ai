@@ -111,7 +111,7 @@ local ExecuteAbilityLevelUp = function(AbilityToLevelUp, TalentTree)
     local npcBot = GetBot()
     local function GetNextTalent()
         return AbilityExtensions:First(AbilityExtensions:GetTalents(npcBot), function(t)
-            return t:CanAbilityBeUpgraded()
+            return not t:IsTrained()
         end)
     end
 
@@ -356,6 +356,26 @@ function ConsiderAbility(AbilitiesReal, Consider)
 	return cast
 end
 
+function ConsiderAbilityCoroutine(AbilitiesReal, Consider)
+	local npcBot = GetBot()
+	local cast = {}
+	cast.Desire = {}
+	cast.Target = {}
+	cast.Type = {}
+	for i, ability in pairs(AbilitiesReal) do
+		if Consider[i] ~= nil then
+			local consider1 = AbilityExtensions:ResumeUntilReturn(Consider[i])
+			consider1 = AbilityExtensions:Max(consider1, function(t) return t[1] end)
+			if consider1 then
+				cast.Desire[i], cast.Target[i], cast.Type[i] = AbilityExtensions:Unpack(consider1)
+			else
+				cast.Desire[i] = 0
+			end
+		end
+	end
+	return cast
+end
+
 local worldBounds = GetWorldBounds()
 local function OutOfBound(vector)
     return worldBounds[1] >= vector.x or worldBounds[2] >= vector.y or worldBounds[3] <= vector.x or worldBounds[4] <= vector.y
@@ -380,9 +400,11 @@ function UseAbility(AbilitiesReal, cast)
 		end
         if npcBot:GetMana() < ability:GetManaCost() then
             print("Ability mana not enough: "..ability:GetName())
+			return
         end
         if ability:IsHidden() then
             print("Ability is hidden: "..ability:GetName())
+			return
         end
 
         local function CallWithTarget()
@@ -391,6 +413,7 @@ function UseAbility(AbilitiesReal, cast)
             if AbilityExtensions:IsVector(cast.Target[j]) then
                 print("Wrong target type")
                 print(ability:GetName(), cast.Target[j], cast.Type[j])
+				return
             else
                 npcBot:Action_UseAbilityOnEntity(ability, cast.Target[j])
             end
@@ -400,9 +423,11 @@ function UseAbility(AbilitiesReal, cast)
             if not AbilityExtensions:IsVector(cast.Target[j]) then
                 print("Wrong target type")
                 print(ability:GetName(), cast.Target[j], cast.Type[j])
+				return
             elseif OutOfBound(cast.Target[j]) then
                 print("Ability cast out of world bounds!")
                 print(ability:GetName(), cast.Target[j], cast.Type[j])
+				return
             else
                 npcBot:Action_UseAbilityOnLocation(ability, cast.Target[j])
             end

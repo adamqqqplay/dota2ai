@@ -389,7 +389,7 @@ Consider[4] = function()
 
     else
         for _, activeRemnant in ipairs(activeRemnants) do
-            local target = npcBot:GetTarget()
+            local target = AbilityExtensions:GetTargetIfGood(npcBot)
             if target ~= nil and target:CanBeSeen() and AbilityExtensions:NormalCanCast(target, false) and GetUnitToUnitDistance(activeRemnant, target) <= radius then
                 if AbilityExtensions:GetHealthPercent(target) <= 0.7 then
                     if AbilityExtensions:Any(activeRemnants, function(t)
@@ -440,7 +440,10 @@ Consider[5] = function()
         forbiddenCreeps = {}
     end
     local charge = ability:GetCurrentCharges()
-    local remnantSpeed = npcBot:GetCurrentMovementSpeed() * ability:GetSpecialValueInt("")
+    if charge == 0 then
+        return 0
+    end
+    local remnantSpeed = npcBot:GetCurrentMovementSpeed() * ability:GetSpecialValueInt("speed_multiplier") / 100
 
     if AbilityExtensions:IsFarmingOrPushing(npcBot) and AbilityExtensions:GetManaPercent(npcBot) >= 0.9 then
         local nearbyTowers = npcBot:GetNearbyTowers(1100, true)
@@ -483,7 +486,7 @@ Consider[5] = function()
             end
         end
     else
-        local target = npcBot:GetTarget()
+        local target = AbilityExtensions:GetTargetIfGood(npcBot)
         if target ~= nil and target:CanBeSeen() and AbilityExtensions:NormalCanCast(target, false) then
             if AbilityExtensions:GetHealthPercent(target) <= 0.7 then
                 local remnantNumber = AbilityExtensions:Count(activeRemnants, function(t)

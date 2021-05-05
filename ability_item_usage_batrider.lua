@@ -131,7 +131,7 @@ Consider[1]=function()
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 
-		if ( locationAoE.count >= 2 ) then
+		if ( locationAoE.count >= 3 ) then
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 		end
 	end
@@ -146,7 +146,7 @@ Consider[1]=function()
 	then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 
-		if ( locationAoE.count >= 2 ) 
+		if ( locationAoE.count >= 4 ) 
 		then
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 		end
@@ -202,7 +202,7 @@ Consider[1]=function()
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) )
+			if ( CanCast[abilityNumber]( npcEnemy ) ) and npcBot:GetMana() > ComboMana
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation(CastPoint);
 			end
@@ -215,7 +215,7 @@ end
 
 function GetStickyNapalmCount(npcTarget)
 	local modifier=npcTarget:GetModifierByName("modifier_batrider_sticky_napalm")
-	if(modifier~=nil)
+	if(modifier~=nil) and modifier ~= -1
 	then
 		return npcTarget:GetModifierStackCount(modifier)
 	else
@@ -578,8 +578,7 @@ Consider[4]=function()
 	then
 		local npcEnemy = npcBot:GetTarget();
 
-		if ( npcEnemy ~= nil ) 
-		then
+		if npcEnemy ~= nil and npcEnemy:IsHero() and AbilityExtensions:MayNotBeIllusion(npcEnemy) then
 			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcEnemy

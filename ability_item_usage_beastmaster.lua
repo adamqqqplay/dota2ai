@@ -466,13 +466,13 @@ Consider[6]=function()	--Target Ability Example
 	-- Mode based usage
 	--------------------------------------
 	--protect myself
-	local enemys2 = npcBot:GetNearbyHeroes( 400, true, BOT_MODE_NONE );
+	local enemys2 =  AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange, true)
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) or #enemys2>0) 
 	then
 		for _,npcEnemy in pairs( enemys )
 		do
-			if ( (npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) and CanCast[abilityNumber]( npcEnemy )) or GetUnitToUnitDistance(npcBot,npcEnemy)<400) 
+			if ( (npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) and CanCast[abilityNumber]( npcEnemy )) or GetUnitToUnitDistance(npcBot,npcEnemy)<400) and not AbilityExtensions:HasDamageRetargetModifier(npcEnemy)
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy;
 			end
@@ -485,9 +485,9 @@ Consider[6]=function()	--Target Ability Example
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
-		if ( npcEnemy ~= nil ) 
+		if ( npcEnemy ~= nil )
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then

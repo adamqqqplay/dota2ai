@@ -179,7 +179,7 @@ Consider[2]=function()
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
+			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end
@@ -248,10 +248,10 @@ Consider[3]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT) 
 	then
-		if #creeps2<=2 then
+		if #creeps2<=1 then
 			for _,npcTarget in pairs( allys )
 			do
-				if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<(0.4+0.4*ManaPercentage))
+				if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<(0.4+0.4*ManaPercentage)) and not npcTarget:HasModifier("modifier_ice_blast")
 				then
 					return BOT_ACTION_DESIRE_MODERATE
 				end

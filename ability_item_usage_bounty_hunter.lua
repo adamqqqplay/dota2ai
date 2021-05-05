@@ -289,7 +289,7 @@ Consider[3]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 		if ( npcEnemy ~= nil ) 
 		then
 			if (GetUnitToUnitDistance(npcBot,npcEnemy)<=2000)
@@ -305,6 +305,11 @@ end
 
 local EnlargeCastRange = AbilityExtensions:EveryManySeconds(0.5, function() CastRange = AbilitiesReal[4]:GetCastRange() end)
 
+CanCast[4] = function(t)
+	return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_PHYSICAL, true, true) and t:IsHero() 
+	-- and AbilityExtensions:MayNotBeIllusion(t)
+end
+
 Consider[4]=function()
 	local abilityNumber=4
 	--------------------------------------
@@ -312,36 +317,32 @@ Consider[4]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
+	local function HasTrackModifierPenalty(t)
+		return AbilityExtensions:GetModifierRemainingDuration("modifier_bounty_hunter_track") <= 5 and 2 or 1
+	end
+
 	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
+		return BOT_ACTION_DESIRE_NONE
 	end
 	
-	local CastRange = 1599
-	EnlargeCastRange()
-	local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange)
-	--------------------------------------
-	-- Global high-priorty usage
-	--------------------------------------
-	--Try to kill enemy hero
-	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT and ManaPercentage>=0.2) 
-	then
-		for _,npcEnemy in pairs( enemys )
-		do
-			local count=100;
-			local modifier=npcEnemy:GetModifierByName("modifier_bounty_hunter_track")
-			if(modifier~=nil)
-			then
-				count=npcEnemy:GetModifierRemainingDuration(modifier)
-			end
-
-			if(npcEnemy:HasModifier("modifier_bounty_hunter_track")==false or count<=5)
-			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy;
-			end
+	local CastRange = Clamp(ability:GetCastRange(), 0, 1599)
+	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local realEnemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange)
+	realEnemies = AbilityExtensions:Filter(realEnemies, CanCast[4])
+	realEnemies = AbilityExtensions:Map(realEnemies, function(t)
+		return { t, t:GetHealth()*HasTrackModifierPenalty(t) }
+	end)
+	realEnemies = AbilityExtensions:SortByMinFirst(realEnemies, function(t) return t[2] end)
+	if AbilityExtensions:Any(realEnemies) then
+		local desire = RemapValClamped(realEnemies[2], 300+ability:GetLevel()*100, 1000, 0.8, 0.4)
+		if desire >= 0.5 and ManaPercentage >= 0.4 or desire >= 0.7 then
+			return desire, realEnemies[1]
+		else
+			return desire-0.2, realEnemies[1]
 		end
 	end
-
-	return BOT_ACTION_DESIRE_NONE, 0;
+	
+	return BOT_ACTION_DESIRE_NONE
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)

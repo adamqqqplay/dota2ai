@@ -256,10 +256,10 @@ Consider[3]=function()
 		then
 			if CanCast[abilityNumber]( npcTarget ) and GetUnitToUnitDistance(npcBot,npcTarget) < 600
 			then
-				local incProj = npcBot:GetIncomingTrackingProjectiles()
+				local incProj = AbilityExtensions:GetIncomingDodgeWorthProjectiles(npcBot)
 				for _,p in pairs(incProj)
 				do
-					if GetUnitToLocationDistance(npcBot, p.location) <= 300 and p.is_attack == false and not AbilityExtensions:IgnoreAbilityBlock(p.ability) then
+					if GetUnitToLocationDistance(npcBot, p.location) <= 300 then
 						return BOT_ACTION_DESIRE_HIGH
 					end
 				end

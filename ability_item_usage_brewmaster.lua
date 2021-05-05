@@ -154,13 +154,17 @@ Consider[1]=function()
 	-- Mode based usage
 	--------------------------------------
 	--protect myself
+	local blademailEnemies = AbilityExtensions:Count(enemys, function(t) return t:HasModifier("modifier_item_blade_mail") end)
 	if((npcBot:WasRecentlyDamagedByAnyHero(2) and #enemys>=1) or #enemys >=2)
 	then
-		for _,npcEnemy in pairs( enemys )
-		do
-			if ( CanCast[abilityNumber]( npcEnemy ) )
-			then
-				return BOT_ACTION_DESIRE_HIGH,"immediately"
+		if blademailEnemies ~= 0 and npcBot:GetHealth() <= 300 then
+			-- pass
+		else
+			for _,npcEnemy in pairs( enemys )
+			do
+				if ( CanCast[abilityNumber]( npcEnemy ) ) then
+					return BOT_ACTION_DESIRE_HIGH
+				end
 			end
 		end
 	end
@@ -176,7 +180,7 @@ Consider[1]=function()
 				then
 					if(GetUnitToUnitDistance(npcBot,WeakestEnemy)<Radius-CastPoint*WeakestEnemy:GetCurrentMovementSpeed())
 					then
-						return BOT_ACTION_DESIRE_LOW,WeakestEnemy
+						return BOT_ACTION_DESIRE_LOW
 					end
 				end
 			end
@@ -190,7 +194,7 @@ Consider[1]=function()
 		then
 			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 			then
-				return BOT_ACTION_DESIRE_LOW,WeakestCreep
+				return BOT_ACTION_DESIRE_LOW
 			end
 		end
 	end
@@ -208,12 +212,12 @@ Consider[1]=function()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy) <= Radius-CastPoint* npcEnemy:GetCurrentMovementSpeed())
 			then
-				return BOT_ACTION_DESIRE_MODERATE,npcEnemy
+				return BOT_ACTION_DESIRE_MODERATE
 			end
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
+	return BOT_ACTION_DESIRE_NONE
 	
 end
 
@@ -511,6 +515,16 @@ function AbilityUsageThink()
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then 
+		if npcBot:IsCastingAbility() then
+			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[1] then
+				if not AbilityExtensions:IsFarmingOrPushing(npcBot) then
+					local nearbyEnemies = AbilityExtensions:GetNearbyEnemyUnits(npcBot, AbilitiesReal[1]:GetAOERadius() + 40)
+					if AbilityExtensions:Count(nearbyEnemies, CanCast[1]) then
+						npcBot:Action_ClearActions()
+					end
+				end
+			end
+		end
 		return
 	end
 	

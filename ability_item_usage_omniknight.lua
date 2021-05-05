@@ -310,7 +310,7 @@ Consider[2]=function()
 	local CastPoint = ability:GetCastPoint();
 	
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
-	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_ATTACK );
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange+300, false, BOT_MODE_ATTACK );
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------

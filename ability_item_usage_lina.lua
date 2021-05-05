@@ -83,8 +83,12 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
-function CanCast4( npcTarget )
-	return npcTarget:CanBeSeen() and npcTarget:IsHero() and ( GetBot():HasScepter() or not npcTarget:IsMagicImmune() ) and not npcTarget:IsInvulnerable();
+local function GetLagunaBladeDamageType()
+	return AbilityExtensions:HasScepter(npcBot) and DAMAGE_TYPE_PURE or DAMAGE_TYPE_MAGICAL
+end
+function CanCast4(t)
+	local hasShard = AbilityExtensions:HasShard(t)
+	return AbilityExtensions:NormalCanCast(t, false, GetLagunaBladeDamageType(), nil, not hasShard, not hasShard)
 end
 local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,CanCast4}
 
@@ -342,8 +346,8 @@ end
 
 ----------------------------------------------------------------------------------------------------
 
-Consider[4]=function()
 
+local function NormalLagnuaBladeConsider()
 	local ability=AbilitiesReal[4];
 	
 	if not ability:IsFullyCastable() then
@@ -351,16 +355,12 @@ Consider[4]=function()
 	end
 	
 	local CastRange = ability:GetCastRange();
-	local Damage = ability:GetSpecialValueInt( "damage" );
-	local Radius = ability:GetSpecialValueInt( "light_strike_array_aoe" );
-	local DamageType = AbilityExtensions:HasScepter(npcBot) and DAMAGE_TYPE_PURE or DAMAGE_TYPE_MAGICAL;
-	
+	local Damage = ability:GetAbilityDamage()
+	local DamageType = GetLagunaBladeDamageType()
 
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
-	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 
 	--try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
@@ -371,19 +371,19 @@ Consider[4]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DamageType) or HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DamageType))
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
+					return BOT_ACTION_DESIRE_HIGH, WeakestEnemy, "Target"
 				end
 			end
 		end
 	end
 	
 	-- If a mode has set a target, and we can kill them, do it
-	local npcTarget = npcBot:GetTarget();
+	local npcTarget = AbilityExtensions:GetTargetIfGood(npcBot)
 	if ( npcTarget ~= nil and CanCast[4]( npcTarget ) )
 	then
 		if ( npcTarget:GetActualIncomingDamage( Damage, DamageType ) > npcTarget:GetHealth() and GetUnitToUnitDistance( npcTarget, npcBot ) < ( CastRange + 200 ) )
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcTarget;
+			return BOT_ACTION_DESIRE_HIGH, npcTarget, "Target"
 		end
 	end
 
@@ -411,12 +411,57 @@ Consider[4]=function()
 
 		if ( npcMostDangerousEnemy ~= nil )
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy;
+			return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy, "Target"
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
+	return BOT_ACTION_DESIRE_NONE
+end
 
+local function TryUseShardLagunaAt(location, possibleEnemies)
+	local scepter_width = AbilitiesReal[4]:GetSpecialValueInt("scepter_width")
+	local line = AbilityExtensions:GetLine(npcBot:GetLocation(), location)
+	return AbilityExtensions:Count(possibleEnemies, function(t)
+		return CanCast[4](t) and AbilityExtensions:GetPointToLineDistance(t:GetLocation(), line) <= (AbilityExtensions:CannotMove() and scepter_width + t:GetBoundingRadius() or scepter_width * 0.75 + t:GetBoundingRadius())
+	end)
+end
+
+local ShardLagunaBlade = function()
+    local ability = AbilitiesReal[4]
+    if not ability:IsFullyCastable() then
+        return 0
+    end
+    local castRange = ability:GetCastRange()
+	local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, castRange)
+	local oDesire, oTarget = NormalLagnuaBladeConsider()
+	local myLocation = npcBot:GetLocation()
+	local scepter_width = ability:GetSpecialValueInt("scepter_width") / 2
+	local deltaDegree = scepter_width / castRange * 180 / math.pi -- at a low degree, tan(x) ~= x
+	if oDesire > 0 then
+		local enemyLocation = oTarget:GetLocation()
+		local distance = GetUnitToUnitDistance(npcBot, oTarget)
+		local degree1 = AbilityExtensions:GetDegree(enemyLocation, myLocation)
+		local degree2 = degree1 + deltaDegree
+		local degree3 = degree1 - deltaDegree
+		local degree = { degree1, degree2, degree3 }
+		local guess = AbilityExtensions:Map(degree, function(t) return { t, myLocation + Vector(distance*math.cos(t), distance*math.sin(t)) } end)
+		local count = AbilityExtensions:Map(guess, function(t) return { t[1], t[2], TryUseShardLagunaAt(t[3], enemies) } end)
+		count = AbilityExtensions:Max(count, function(t) return t[3] end)
+		if count[3] > 1 or AbilityExtensions:HasAbilityRetargetModifier(oTarget) or AbilityExtensions:CannotBeTargetted(oTarget) then
+			return oDesire, count[2], "Location"
+		else
+			return oDesire, oTarget, "Target" -- Why still use at target sometimes? Because laguna used at location can be dodged with forced movement!
+		end
+	end
+	return 0
+end
+
+Consider[4] = function()
+	if AbilityExtensions:HasShard(npcBot) then
+		return NormalLagnuaBladeConsider()
+	else
+		return ShardLagunaBlade()
+	end
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)

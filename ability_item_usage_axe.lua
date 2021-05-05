@@ -194,7 +194,7 @@ Consider[1]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then
@@ -328,7 +328,7 @@ Consider[2]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then
@@ -356,31 +356,34 @@ Consider[4]=function()
 	
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetSpecialValueInt("kill_threshold");
+	local function IsWeak(t)
+		return AbilityExtensions:NormalCanCast(t,true, DAMAGE_TYPE_PURE,true, true) and t:GetHealth() <= Damage
+	end
 	local CastPoint = ability:GetCastPoint();
 	
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local realEnemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange+300)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
 	--Try to kill enemy hero
-	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
-	then
-		for _,npcEnemy in pairs(enemys)
-		do
-			if(npcEnemy:GetHealth()<=Damage)
-			then
-				return BOT_ACTION_DESIRE_HIGH,npcEnemy;
+	if AbilityExtensions:NotRetreating(npcBot) then
+		if #realEnemies > 0 then
+			local weakEnemy = AbilityExtensions:First(realEnemies, IsWeak)
+			if weakEnemy then
+				return BOT_ACTION_DESIRE_HIGH, weakEnemy
+			end
+		else -- only kill illusions when there are no real heroes 
+			local weakEnemy = AbilityExtensions:First(enemys, IsWeak)
+			if AbilityExtensions:GetHealthPercent(npcBot) <= 0.3 and AbilityExtensions:GetManaPercent(npcBot) >= 0.5 + AbilitiesReal[4]:GetManaCost() and not npcBot:HasModifier("modifier_axe_culling_blade_boost") and weakEnemy then
+				return BOT_ACTION_DESIRE_MODERATE, weakEnemy
 			end
 		end
 	end
-	
-	--------------------------------------
-	-- Mode based usage
-	--------------------------------------
 
-	return BOT_ACTION_DESIRE_NONE, 0;
+	return BOT_ACTION_DESIRE_NONE
 end
 
 
@@ -393,12 +396,14 @@ function AbilityUsageThink()
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then 
-		if npcBot:IsUsingAbility() then
+		if npcBot:IsCastingAbility() then
 			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[1] then
-				local nearbyEnemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, AbilitiesReal[1]:GetAOERadius())
-				nearbyEnemies = AbilityExtensions:Filter(nearbyEnemies, CanCast[1])
-				if #nearbyEnemies == 0 then
-					npcBot:Action_ClearActions()
+				if not AbilityExtensions:IsFarmingOrPushing(npcBot) then
+					local nearbyEnemies = AbilityExtensions:GetNearbyHeroes(npcBot, AbilitiesReal[1]:GetAOERadius())
+					nearbyEnemies = AbilityExtensions:Filter(nearbyEnemies, CanCast[1])
+					if #nearbyEnemies == 0 then
+						npcBot:Action_ClearActions()
+					end
 				end
 			elseif npcBot:GetCurrentActiveAbility() == AbilitiesReal[4] and cullingBladeTarget then
 				if cullingBladeTarget:GetHealth() > AbilitiesReal[4]:GetSpecialValueInt("kill_threshold") then

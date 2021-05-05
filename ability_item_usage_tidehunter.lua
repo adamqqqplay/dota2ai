@@ -507,7 +507,7 @@ Consider[4]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil and #enemys>=2) 
 		then

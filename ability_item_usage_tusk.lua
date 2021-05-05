@@ -526,7 +526,7 @@ Consider[6]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcTarget = npcBot:GetTarget();
+		local npcTarget = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcTarget ~= nil ) 
 		then

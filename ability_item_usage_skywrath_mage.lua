@@ -345,7 +345,7 @@ Consider[3]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcTarget = npcBot:GetTarget();
+		local npcTarget = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcTarget ~= nil ) 
 		then
@@ -377,7 +377,7 @@ Consider[4]=function()
 	
 	
 	-- If a mode has set a target, and we can kill them, do it
-	local npcTarget = npcBot:GetTarget();
+	local npcTarget = AbilityExtensions:GetTargetIfGood(npcBot)
 	if ( npcTarget ~= nil and CanCast[4]( npcTarget ) )
 	then
 		if (GetComboDamage() > npcTarget:GetHealth() and GetUnitToUnitDistance ( npcTarget, npcBot ) < ( CastRange + 200 ) and 

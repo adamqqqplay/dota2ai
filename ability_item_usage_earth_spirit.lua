@@ -667,7 +667,7 @@ Consider[6]=function()
 			return BOT_ACTION_DESIRE_HIGH;
 		end
 
-		local npcTarget = npcBot:GetTarget();
+		local npcTarget = AbilityExtensions:GetTargetIfGood(npcBot)
 		if ( npcTarget ~= nil ) 
 		then
 			if ( CanCast[abilityNumber]( npcTarget ) and not enemyDisabled(npcTarget) and GetUnitToUnitDistance(npcBot,npcTarget)< CastRange + 75*#allys) and GetUnitToUnitDistance(npcBot,npcTarget)< nRadius-100

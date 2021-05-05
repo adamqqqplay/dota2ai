@@ -187,10 +187,8 @@ Consider[1]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcTarget = npcBot:GetTarget();
-
-		if ( npcTarget ~= nil ) 
-		then
+		local npcTarget = AbilityExtensions:GetTargetIfGood(npcBot)
+		if npcTarget ~= nil then
 			if ( CanCast[abilityNumber]( npcTarget )  and GetUnitToUnitDistance(npcBot,npcTarget)< CastRange)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcTarget

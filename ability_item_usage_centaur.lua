@@ -230,7 +230,8 @@ Consider[2]=function()
 	
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
-	if HealthPercentage <= 0.2 + npcBot:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) then
+	local selfDamage = npcBot:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL)
+	if HealthPercentage <= 0.2 + selfDamage then
 		return 0
 	end
 	
@@ -261,9 +262,9 @@ Consider[2]=function()
 	-- If we're farming and can hit 2+ creeps and kill 1+ 
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
-		if ( #creeps >= 2 ) 
+		if ( #creeps >= 3 ) 
 		then
-			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and HealthPercentage>=0.4)
+			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and HealthPercentage>=0.4+selfDamage)
 			then
 				return BOT_ACTION_DESIRE_LOW, WeakestCreep;
 			end
@@ -406,7 +407,7 @@ Consider[4]=function()
 	then
 		if(#allys >=2)
 		then
-			local npcEnemy = npcBot:GetTarget();
+			local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 			if ( npcEnemy ~= nil ) 
 			then
 				if ( CanCast[abilityNumber]( npcEnemy )  and GetUnitToUnitDistance(npcBot,npcEnemy)>=600)
@@ -428,6 +429,16 @@ function AbilityUsageThink()
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then
+		if npcBot:IsCastingAbility() then
+			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[1] then
+				if not AbilityExtensions:IsFarmingOrPushing(npcBot) then
+					local nearbyEnemies = AbilityExtensions:GetNearbyEnemyUnits(npcBot, AbilitiesReal[1]:GetAOERadius() + 40)
+					if AbilityExtensions:Count(nearbyEnemies, CanCast[1]) then
+						npcBot:Action_ClearActions()
+					end
+				end
+			end
+		end
 		return
 	end
 	

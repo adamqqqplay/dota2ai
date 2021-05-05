@@ -438,7 +438,7 @@ Consider[4]=function()
 	
 
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(1200,true,BOT_MODE_NONE)
+	local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 
 	-- Check for a channeling enemy

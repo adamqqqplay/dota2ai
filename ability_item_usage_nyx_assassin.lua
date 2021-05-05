@@ -186,7 +186,7 @@ Consider[1]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then
@@ -258,7 +258,7 @@ Consider[2]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcTarget = npcBot:GetTarget();
+		local npcTarget = AbilityExtensions:GetTargetIfGood(npcBot)
 		
 		if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
 		then
@@ -392,7 +392,7 @@ Consider[5]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 		if ( npcEnemy ~= nil ) 
 		then
 			if (GetUnitToUnitDistance(npcBot,npcEnemy)<=2000)

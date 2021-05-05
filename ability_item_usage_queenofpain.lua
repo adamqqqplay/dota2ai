@@ -464,7 +464,7 @@ Consider[4]=function()
 				return BOT_ACTION_DESIRE_MODERATE, locationAoE.targetloc;
 			end
 		else
-			local npcTarget = npcBot:GetTarget();
+			local npcTarget = AbilityExtensions:GetTargetIfGood(npcBot)
 			if ( npcTarget ~= nil ) 
 			then
 				if ( CanCast[abilityNumber]( npcTarget ) )

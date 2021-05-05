@@ -470,7 +470,7 @@ Consider[5]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then
@@ -500,12 +500,14 @@ function AbilityUsageThink()
 
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )then
-        if abilityUsedInfo.index == 5 then
-            local radius = AbilitiesReal[5]:GetAOERadius()
-            if AbilityExtensions:Count(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, radius), CanCast[5]) == 0 then
-                print("Magnataur: cancel ultimate")
-                npcBot:Action_ClearActions(true)
-            end
+        if npcBot:IsCastingAbility() then
+			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[5] then
+				local radius = AbilitiesReal[5]:GetAOERadius()
+				if AbilityExtensions:Count(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, radius), CanCast[5]) == 0 then
+					print("Magnataur: cancel ultimate")
+					npcBot:Action_ClearActions(true)
+				end
+			end
         end
 		return
 	end

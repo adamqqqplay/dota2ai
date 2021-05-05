@@ -179,7 +179,7 @@ Consider[5] = function()
     end
 
     do 
-        local target = npcBot:GetTarget()
+        local target = AbilityExtensions:GetTargetIfGood(npcBot)
         if target ~= nil and CanCast[5](target) and GetUnitToUnitDistance(npcBot, target) <= range then
             return BOT_MODE_DESIRE_HIGH, target
         end

@@ -453,13 +453,11 @@ Consider[4]=function()
     channelingEnemies = AbilityExtensions:Filter(channelingEnemies, function(t) return AbilityExtensions:IsChannelingAbility(t) and not t:IsInvulnerable() and t:CanBeSeen() end)
     channelingEnemies = AbilityExtensions:Map(channelingEnemies, function(t) return { t, t:GetCurrentActiveAbility() }  end)
     channelingEnemies = AbilityExtensions:Map(channelingEnemies, function(t) return { t[1], t[2] and t[2]:GetCooldown() or 25 }  end)
-    channelingEnemies = AbilityExtensions:SortByMaxFirst(channelingEnemies, function(t) return t[2]  end)
-    --print("enigma 1")
+    channelingEnemies = AbilityExtensions:SortByMaxFirst(channelingEnemies, function(t) return t[2] end)
     if AbilityExtensions:Any(channelingEnemies) then
         for _, channelingEnemy in ipairs(channelingEnemies) do
             if channelingEnemy[1]:IsMagicImmune() or not AbilitiesReal[1]:IsFullyCastable() then
                 if channelingEnemy[2] > 60 then
-                    print("enigma 3")
                     return RemapValClamped(channelingEnemy[2], 60, 120, 0.5, 0.7), channelingEnemy[1]:GetLocation()
                 end
             end
@@ -470,7 +468,6 @@ Consider[4]=function()
 	-- Mode based usage
     --------------------------------------
 
-    --print("enigma 2")
     local enemies = AbilityExtensions:Filter(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot), function(t) return CanCast[4](t)  end)
     local enemyCount = AbilityExtensions:GetEnemyHeroNumber(npcBot, enemies)
     local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 )
@@ -502,7 +499,7 @@ Consider[4]=function()
 	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
 	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil and enemys~=nil and #enemys >= 2)
 		then

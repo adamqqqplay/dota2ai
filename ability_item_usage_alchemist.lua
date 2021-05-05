@@ -299,7 +299,7 @@ function Consider2()
 	then
 		local npcEnemy = npcBot:GetTarget();
 
-		if ( npcEnemy ~= nil ) 
+		if ( npcEnemy ~= nil ) and npcEnemy:IsHero()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
@@ -536,7 +536,7 @@ Consider[6]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then
@@ -573,6 +573,40 @@ Consider[6]=function()
 end
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
+local function HasRealScepter(t)
+	return t:HasScepter() or t:HasModifier("modifier_item_ultimate_scepter") or t:HasModifier("modifier_item_ultimate_scepter_consumed_alchemist") 
+end
+
+local function GetNonScepterFriends()
+	local friends = GetTeamPlayers(GetTeam())
+	return AbilityExtensions:FilterNot(friends, function(t) return HasRealScepter(t) end)
+end
+
+local function GetFeedScepterDesire(t)
+	if npcBot == t then
+		return 0.1
+	end
+	if HasRealScepter(t) then
+		return 0
+	end
+	local tb = t.itemInformationTable
+	local scepterIndex = AbilityExtensions:IndexOf(tb, function(tp) return tp.name == "item_ultimate_scepter" or tp.name == "item_recipe_ultimate_scepter" end)
+	if scepterIndex == -1 then
+		return 0.02
+	elseif scepterIndex == 1 then
+		return 0
+	end
+	local desire = RemapValClamped(scepterIndex, 2, 4, 0.8, 0.2)
+	return desire
+end
+
+local function CheckFeedScepter()
+	local friends = GetNonScepterFriends()
+	friends = AbilityExtensions:Filter(friends, function(t) return t:IsAlive() and AbilityExtensions:AllyCanCast(t) and GetUnitToUnitDistance(t, npcBot) <= 1400 end)
+	AbilityExtensions:ForEach(friends, function(t) coroutine.yield(GetFeedScepterDesire(t), t) end)
+end
+CheckFeedScepter = AbilityExtensions:EveryManySeconds(1, CheckFeedScepter)
+
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability
@@ -592,7 +626,19 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	local index, target, castType = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	if index == nil then
+		local scepter = AbilityExtensions:GetAvailableItem(npcBot, "item_ultimate_scepter")
+		if scepter and not AbilityExtensions:IsMuted(npcBot) then
+			local desirePairs = AbilityExtensions:ResumeUntilReturn(CheckFeedScepter)
+			if AbilityExtensions:CalledOnThisFrame(desirePairs) then
+				local bestDesire = AbilityExtensions:Max(desirePairs, function(t) return t[1] end)
+				if bestDesire[1] ~= 0 then
+					npcBot:Action_UseAbilityOnEntity(scepter, bestDesire[2])
+				end
+			end
+		end
+	end
 end
 
 function CourierUsageThink() 

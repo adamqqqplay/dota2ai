@@ -366,7 +366,7 @@ Consider[4]=function()
 	then
 		local npcTarget = npcBot:GetTarget();
 		local t=npcBot:GetAttackTarget()
-		if ( npcTarget ~= nil and t~=nil )
+		if ( npcTarget ~= nil and t~=nil )and not npcBot:HasModifier("modifier_stunned")
 		then
 			return BOT_ACTION_DESIRE_MODERATE;
 		end
@@ -378,7 +378,7 @@ Consider[4]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then

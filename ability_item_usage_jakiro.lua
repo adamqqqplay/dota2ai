@@ -74,7 +74,9 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast,function(t)
+	return AbilityExtensions:NormalCanCast(t, true, AbilityExtensions:HasScepter(npcBot) and DAMAGE_TYPE_PURE or DAMAGE_TYPE_MAGICAL, false, false)
+end}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -315,7 +317,7 @@ Consider[2]=function()		--Target AOE Ability Example
 			return BOT_ACTION_DESIRE_MODERATE, locationAoE.targetloc
 		end
 		
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then
@@ -572,7 +574,7 @@ Consider[4] = function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then
@@ -609,17 +611,27 @@ Consider[5]=function()
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(1600,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+
+	local damagePerSecond = ability:GetSpecialValueInt("damage")
+	local lingerTime = ability:GetSpecialValueInt("linger_duration")
+	local damageType = AbilityExtensions:HasScepter(npcBot) and DAMAGE_TYPE_PURE or DAMAGE_TYPE_MAGICAL
+	local pathRadius = ability:GetSpecialValueInt("path_radius")
+
+	local function GetDamage(target)
+		local damageAtLeast = damagePerSecond * (lingerTime + AbilityExtensions:GetStunRemainingDuration(target) + pathRadius / target:GetCurrentMovementSpeed())
+		return target:GetActualIncomingDamage(damageAtLeast, damageType)
+	end
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
 	--Try to kill enemy hero
-	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
+	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT )
 	then
 		if (WeakestEnemy~=nil)
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+				if HeroHealth<=GetDamage(WeakestEnemy) * (0.9+#allys*0.1) 
 				then
 					local d=GetUnitToUnitDistance(npcBot,WeakestEnemy)
 					if(d<=CastRange+Radius)

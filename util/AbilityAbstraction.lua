@@ -191,6 +191,29 @@ M.Prepend = function(self, a, b)
     return self:Concat(b, a)
 end
 
+M.GroupBy = function(self, collection, keySelector, elementSelector, resultSelector, comparer)
+    comparer = comparer or function(a,b) return a==b end
+    resultSelector = resultSelector or function(key, value) return value end
+    elementSelector = elementSelector or self.IdentityFunction
+    local keys = {}
+    local values = {}
+    for _, k in ipairs(collection) do
+        local keyFound = false
+        for readKeyIndex, readKey in ipairs(keys) do
+            if comparer(readKey, keySelector(k)) then
+                keyFound = true
+                table.insert(values[readKeyIndex], elementSelector(k))
+                break
+            end
+        end
+        if not keyFound then
+            table.insert(keys, keySelector(k))
+            table.insert(values, { elementSelector(k) })
+        end
+    end
+    return self:Map2(keys, values, resultSelector)
+end
+
 M.Distinct = function(self, tb, compare)
     compare = compare or function(a, b) return a == b end
     local g = {}
@@ -212,6 +235,41 @@ end
 
 M.Last = function(self, tb, filter)
     return self:First(self:Reverse(tb), filter)
+end
+
+function M:Identity(t) return t end
+M.IdentityFunction = function(t) return t end
+
+function M:Max(tb, map)
+    if #tb == 0 then
+        return nil
+    end
+    map = map or self.IdentityFunction
+    local maxv, maxm = tb[1], map(tb[1])
+    for i = 2, #tb do
+        local m = map(tb[i])
+        if m > maxm then
+            maxm = m
+            maxv = tb[i]
+        end
+    end
+    return maxv
+end
+
+function M:Min(tb, map)
+    if #tb == 0 then
+        return nil
+    end
+    map = map or self.IdentityFunction
+    local maxv, maxm = tb[1], map(tb[1])
+    for i = 2, #tb do
+        local m = map(tb[i])
+        if m < maxm then
+            maxm = m
+            maxv = tb[i]
+        end
+    end
+    return maxv
 end
 
 M.Repeat = function(self, element, count)
@@ -377,31 +435,15 @@ end
 
 M.Sort = M.SlowSort
 M.SortByMaxFirst = function(self, tb, map)
+    map = map or function(a, b) return b-a end
     return self:Sort(tb, function(a, b)
         return map(b) - map(a)
     end)
 end
 M.SortByMinFirst = function(self, tb, map)
+    map = map or function(a, b) return a-b end
     return self:Sort(tb, function(a, b)
         return map(a) - map(b)
-    end)
-end
-
-function M:FilterSequence(tb, filter)
-    return coroutine.wrap(function()
-        for index, value in ipairs(tb) do
-            if filter(value, index) then
-                coroutine.yield(value)
-            end
-        end
-    end)
-end
-
-function M:MapSequence(tb, map)
-    return coroutine.wrap(function()
-        for index, value in ipairs(tb) do
-            coroutine.yield(map(value, index))
-        end
     end)
 end
 
@@ -455,6 +497,12 @@ function M:UnpackIfTable(p)
     else
         return p
     end
+end
+
+function M:ClampGroup(tb, min, max)
+    local vmin = math.min(tb)
+    local vmax = math.max(tb)
+    return self:Map(tb, function(t) return RemapVal(t, vmin, vmax, min, max) end)
 end
 
 -- bot mode behaviour
@@ -997,6 +1045,107 @@ M.unbreakableChannelAbilities = {
     "lycan_shapeshift",
 }
 
+M.nonIllusionModifiers = {}
+
+M.valubleNeutrals = {
+    "npc_dota_neutral_alpha_wolf",
+	"npc_dota_neutral_centaur_khan",
+	"npc_dota_neutral_polar_furbolg_ursa_warrior",
+	"npc_dota_neutral_dark_troll_warlord",
+	"npc_dota_neutral_mud_golem",
+	"npc_dota_neutral_satyr_hellcaller",
+}
+
+M.valubleAncientNeutrals = {
+    "npc_dota_neutral_black_dragon",
+    "npc_dota_neutral_rock_golem",
+    "npc_dota_neutral_big_thunder_lizard",
+}
+
+M.hypnosisModifiers = {
+    "modifier_lich_sinister_gaze",
+    "modifier_void_spirit_aether_remnant_pull",
+    "modifier_keeper_of_the_light_will_o_wisp",
+}
+
+M.fearModifiers = {
+    "modifier_dark_willow_debuff_fear",
+    "modifier_lone_druid_savage_roar",
+    "modifier_shadow_fiend_requiem_fear",
+    "modifier_terrorblade_fear",
+}
+
+M.hexModifiers = {
+    "modifier_lion_voodoo",
+    "modifier_shadow_shaman_voodoo",
+    "modifier_sheepstick_debuff",
+    "modifier_item_princes_knife_hex",
+    "modifier_hexxed", -- dazzle_poison_touch lv 25
+}
+
+M.silenceModifiers = {
+    "modifier_abaddon_frostmourne_debuff_bonus",
+    "modifier_silence",
+    "modifier_bloodthorn_debuff",
+    "modifier_disruptor_static_storm",
+    "modifier_doom_bringer_doom",
+    "modifier_drow_ranger_wave_of_silence",
+    "modifier_earth_spirit_geomagnetic_grip_debuff",
+    "modifier_enigma_black_hole_pull",
+    "modifier_grimstroke_ink_creature_debuff",
+    "modifier_legion_commander_duel",
+    "modifier_item_mask_of_madness_berserk",
+    "modifier_night_stalker_crippling_fear",
+    "modifier_orchid_malevolence_debuff",
+    "modifier_riki_smoke_screen",
+    "modifier_silencer_global_silence",
+    "modifier_silencer_last_word",
+    "modifier_skywrath_mage_ancient_seal",
+}
+
+M.timedSilenceModifiers = {
+    "modifier_abaddon_frostmourne_debuff_bonus",
+    "modifier_silence",
+    "modifier_bloodthorn_debuff",
+    "modifier_doom_bringer_doom",
+    "modifier_drow_ranger_wave_of_silence",
+    "modifier_earth_spirit_geomagnetic_grip_debuff",
+    "modifier_grimstroke_ink_creature_debuff",
+    "modifier_legion_commander_duel",
+    "modifier_item_mask_of_madness_berserk",
+    "modifier_orchid_malevolence_debuff",
+    "modifier_silencer_global_silence",
+    "modifier_silencer_last_word",
+    "modifier_skywrath_mage_ancient_seal",
+}
+
+M.magicImmuneModifiers = {
+    "modifier_item_black_king_bar",
+    "modifier_life_stealer_rage",
+    "modifier_juggernaut_blade_fury",
+    "modifier_minotaur_horn_immune",
+    "modifier_elder_titan_echo_stomp_magic_immune",
+    "modifier_huskar_life_break_charge",
+    "modifier_legion_commander_press_the_attack_immunity",
+    "modifier_lion_mana_drain_immunity",
+}
+
+M.muteModifiers = {
+    "modifier_tusk_snowball",
+    "modifier_doom_bringer_doom",
+    "modifier_disruptor_static_storm_mute",
+}
+
+M.breakModifiers = {
+    -- "modifier_doom_bringer_doom",--only breaks with scepter
+    "modifier_hoodwink_sharpshooter",
+    "modifier_phantom_assassin_fan_of_knives",
+    -- "modifier_shadow_demon_purge_slow",--only break with scepter
+    "modifier_silver_edge_debuff",
+    "modifier_spirit_breaker_greaterbash_break",--only break with shard
+    "modifier_viper_nethertoxin",
+}
+
 -- unit function
 
 function M:IsRoshan(npcTarget)
@@ -1117,16 +1266,20 @@ M.GetEnemyTeamMemberNames = function(self, npcBot)
     return self:Map(enemies, function(t) return t:GetUnitName()  end)
 end
 
-M.EnemyVisibleIllusionModifiers = {
+M.enemyVisibleIllusionModifiers = {
     "modifier_illusion",
     -- "modifier_phantom_lancer_doppelwalk_illusion",
     -- "modifier_phantom_lancer_juxtapose_illusion",
     "modifier_terrorblade_conjureimage",
+    "modifier_grimstroke_scepter_buff",
+    "modifier_arc_warden_tempest_double",
+    "modifier_skeleton_king_reincarnation_active",
+    "modifier_vengefulspirit_hybrid_special",
 }
 
 M.MustBeIllusion = function(self, npcBot, target)
     if npcBot:GetTeam() == target:GetTeam() then
-        return target:IsIllusion() or target:HasModifier("modifier_skeleton_king_reincarnation_active") or target:HasModifier("modifier_arc_warden_tempest_double") or self:HasAnyModifier(target, self.EnemyVisibleIllusionModifiers)
+        return target:IsIllusion() or self:HasAnyModifier(target, self.enemyVisibleIllusionModifiers)
     end
     if self:Contains(self:GetTeamPlayers(npcBot:GetTeam()), target:GetPlayerID()) or target.markedAsIllusion then
         return true
@@ -1141,18 +1294,47 @@ M.MustBeIllusion = function(self, npcBot, target)
 end
 M.MayNotBeIllusion = function(self, npcBot, target) return not self:MustBeIllusion(npcBot, target) end
 
+function M:IsOnSameTeam(a, b)
+    return a:GetTeam() == b:GetTeam()
+end
+
+function M:IsNonIllusionHero(npcBot, target)
+    return self:MayNotBeIllusion(npcBot, target) and self:IsHero(target)
+end
+
+function M:HasNonIllusionModifier(npc)
+    return self:HasAnyModifier(npc, self.nonIllusionModifiers)
+end
+
+function M:CanIllusionUseAbility(npc)
+    local name = npc:GetUnitName()
+    local ability = npc:GetCurrentActiveAbility()
+    if ability == nil then
+        return false
+    end
+    if name == "npc_dota_hero_bane" and self:HasScepter(npc) and ability:GetName() == "bane_fiends_grip" then
+        return true
+    end
+end
+
 M.DetectIllusion = function(self, npcBot)
     local nearbyEnemies = self:GetNearbyNonIllusionHeroes(npcBot, 1599)
     nearbyEnemies = self:Filter(nearbyEnemies, function(t) return string.match(t:GetUnitName(), "npc_dota_hero") end)
-    local castingEnemies = self:Filter(nearbyEnemies, function(t) return (t:IsUsingAbility() or t:IsChanneling() or self:HasNonIllusionModifier(t) or t.markedAsRealHero) and not t.markedAsIllusion end)
-    local castingEnemy = castingEnemies[1]
-    if castingEnemy and not (castingEnemy:GetUnitName()) then
-        castingEnemy.markedAsRealHero = true
-        castingEnemies = self:Remove(nearbyEnemies, castingEnemy)
-        self:ForEach(castingEnemies, function(t)
-            t.markedAsIllusion = true
+    local nearbyEnemyGroups = self:GroupBy(nearbyEnemies, function(t) return t:GetUnitName() end)
+    nearbyEnemyGroups = self:Filter(nearbyEnemyGroups, function(t) return #t > 1 end)
+    self:ForEach(nearbyEnemyGroups, function(nearbyEnemyGroup)
+        local castingEnemies = self:Filter(nearbyEnemyGroup, function(t)
+            return (t:IsUsingAbility() or t:IsChanneling() or self:HasNonIllusionModifier(t) or t.markedAsRealHero) and not t.markedAsIllusion 
         end)
-    end
+        local castingEnemy = castingEnemies[1]
+        if castingEnemy and not self:CanIllusionUseAbility(castingEnemy) then
+            castingEnemy.markedAsRealHero = true
+            castingEnemies = self:Remove(nearbyEnemyGroup, castingEnemy)
+            self:ForEach(castingEnemies, function(t)
+                t.markedAsIllusion = true
+            end)
+        end
+    end)
 end
 
 M.GetNearbyHeroes = function(self, npcBot, range, getEnemy, botModeMask)
@@ -1198,6 +1380,13 @@ M.GetNearbyAllUnits = function(self, npcBot, range)
     return self:Concat(h1, h2, h3, h4)
 end
 
+function M:GetNearbyEnemyUnits(npc, range)
+    local h1 = npc:GetNearbyHeroes(range, true, BOT_MODE_NONE)
+    local h3 = npc:GetNearbyCreeps(range, true)
+    return self:Concat(h1, h3)
+end
+    
+
 M.GetEnemyHeroUnique = function(self, npcBot, enemies)
     local p = self:Filter(enemies, function(t) self:MayNotBeIllusion(npcBot, t) end)
     local g = {}
@@ -1226,7 +1415,8 @@ M.GetModifierRemainingDuration = function(self, npc, modifierName)
     end
     return 0
 end
-M.ImprisonmentModifier = {
+
+M.imprisonmentModifier = {
     "modifier_item_cyclone",
     "modifier_item_wind_waker",
     "modifier_shadow_demon_disruption",
@@ -1236,21 +1426,32 @@ M.ImprisonmentModifier = {
     --"modifier_x_marks_the_target",
 }
 M.GetImprisonmentRemainingDuration = function(self, npc)
-    return self:First(self:Map(self.ImprisonmentModifier, function(t) return self:GetModifierRemainingDuration(npc, t)  end), function(t) return t ~= 0  end) or 0
+    return self:First(self:Map(self.imprisonmentModifier, function(t) return self:GetModifierRemainingDuration(npc, t)  end), function(t) return t ~= 0  end) or 0
 end
 
-M.MagicImmuneModifiers = {
-    "modifier_item_black_king_bar",
-    "modifier_life_stealer_rage",
-    "modifier_juggernaut_blade_fury",
-    "modifier_minotaur_horn_immune",
-}
-
 function M:GetMagicImmuneRemainingDuration(npc)
-    local remainingTime = self:Map(self.MagicImmuneModifiers, function(t) return { t, self:GetModifierRemainingDuration(npc, t)} end)
+    local remainingTime = self:Map(self.magicImmuneModifiers, function(t) return { t, self:GetModifierRemainingDuration(npc, t)} end)
     remainingTime = self:SortByMaxFirst(remainingTime, function(t) return t[2] end) 
     remainingTime = remainingTime[1]
     return remainingTime and remainingTime[2] or 0
+end
+
+function M:GetSilenceRemainingDuration(npc)
+    local silenceModifierRemainings = self:Map(self.timedSilenceModifiers, function(t)
+        return self:GetModifierRemainingDuration(npc, t)
+    end)
+    if npc:HasModifier("modifier_disruptor_static_storm") then
+        table.insert(silenceModifierRemainings, 1, 6)
+    end
+    if npc:HasModifier("modifier_enigma_black_hole_pull") or npc:HasModifier("modifier_riki_smoke_screen") then
+        table.insert(silenceModifierRemainings, 1, 4)
+    end
+    silenceModifierRemainings = #silenceModifierRemainings ~= 0 and math.max(self:Unpack(silenceModifierRemainings)) or 0
+    return silenceModifierRemainings
+end
+
+function M:GetStunRemainingDuration(npc)
+    return self:IsStunned(npc) and 1 or 0
 end
 
 M.GetEnemyHeroNumber = function(self, npcBot, enemies)
@@ -1457,6 +1658,17 @@ function M:GetMyCourier(npcBot)
     return GetCourier(npcBot.courierIDNew)
 end
 
+function M:FindCourier(npcBot)
+    for i = 0,4 do
+        local courier = GetCourier(i)
+        if courier ~= nil then
+            if courier:GetPlayerID() == npcBot:GetPlayerID() then
+                npcBot.courierIDNew = i
+            end
+        end
+    end
+end
+
 M.GetAllBoughtItems = function(self, npcBot)
     local g = {}
     for i = 0, 15 do
@@ -1553,7 +1765,7 @@ M.CanMove = function(self, npc)
 end
 
 function M:CannotMove(npc)
-    return npc:IsStunned() or npc:IsRooted() or self:IsNightmared(npc) or self:IsTaunted(npc)
+    return npc:IsStunned() or npc:IsRooted() or self:IsNightmared(npc) or self:IsTaunted(npc) or self:IsTaunted(npc) or self:IsHypnosed(npc) or self:IsFeared(npc)
 end
 
 function M:IsNightmared(npc)
@@ -1581,10 +1793,24 @@ function M:IsDuelCaster(npc)
     end
 end
 
+function M:IsMuted(npc)
+    return npc:IsHexed() or self:HasAnyModifier(npc, self.muteModifiers)
+end
+
+function M:IsHypnosed(npc)
+    return self:HasAnyModifier(npc, self.hypnosisModifiers)
+end
+
+function M:IsFeared(npc)
+    return self:HasAnyModifier(npc, self.fearModifiers)
+end
+
 M.IsSeverelyDisabled = function(self, npc)
-    return npc:IsStunned() or npc:IsHexed() or npc:IsRooted()
+    return npc:IsStunned() or npc:IsHexed() or npc:IsRooted() or self:IsFeared(npc) or self:IsHypnosed(npc)
             or self:IsNightmared(npc)
-            or npc:HasModifier("modifier_legion_commander_duel") and not npc:GetUnitName() == "npc_dota_hero_legion_commander"
+            or npc:HasModifier("modifier_legion_commander_duel") and not self:IsDuelCaster(npc) or npc:HasModifier("modifier_axe_berserkers_call")
+            or npc:HasModifier("modifier_shadow_demon_purge_slow")
+            or npc:HasModifier("modifier_doom_bringer_doom")
 end
 
 M.IsSeverelyDisabledOrSlowed = function(self, npc)
@@ -1594,7 +1820,7 @@ end
 M.HasSeverelyDisableProjectiles = function(self, npc)
     local projectiles = self:GetIncomingDodgeableProjectiles(npc)
     return self:Any(projectiles, function(t)
-        return self:Contains(self.targetStunAbilities, t.ability:GetName())
+        return self:Contains(self.targetTrackingStunAbilities, t.ability:GetName())
     end)
 end
 
@@ -1673,6 +1899,18 @@ M.GetHealthPercent = function(self, npc)
     return npc:GetHealth() / npc:GetMaxHealth()
 end
 
+function M:GetPhysicalHealth(t)
+    return t:GetHealth() * (1+0.06*t:GetArmor()) / (1 - t:GetEvasion())
+end
+
+function M:GetBuildingPhysicalHealth(t)
+    local h = self:GetPhysicalHealth(t)
+    if t:HasModifier("modifier_fountain_glyph") then
+        h = h + self:GetModifierRemainingDuration("modifier_fountain_glyph") * 200
+    end
+    return h
+end
+
 M.GetManaPercent = function(self, npc)
     return npc:GetMana() / npc:GetMaxMana()
 end
@@ -1683,6 +1921,13 @@ end
 
 function M:GetManaDeficit(npc)
     return npc:GetMaxMana() - npc:GetMana()
+end
+
+function M:GetTargetIfGood(npc)
+    local target = npc:GetTarget()
+    if target~=nil and target:IsHero() and self:MayNotBeIllusion(target) then
+        return target
+    end
 end
 
 function M:GetAcrossAbilityStatusPerFrame(npc)
@@ -1794,7 +2039,7 @@ end
 
 -- ability function
 
-function M:NormalCanCast(target, isPureDamageWithoutDisable, damageType, pierceMagicImmune, targetMustBeSeen)
+function M:NormalCanCast(target, isPureDamageWithoutDisable, damageType, pierceMagicImmune, targetMustBeSeen, mustBeTargettable)
     damageType = damageType or DAMAGE_TYPE_MAGICAL
     if pierceMagicImmune == nil then
         if damageType == DAMAGE_TYPE_MAGICAL then
@@ -1807,6 +2052,12 @@ function M:NormalCanCast(target, isPureDamageWithoutDisable, damageType, pierceM
         isPureDamageWithoutDisable = true
     end
     if self:IsInvulnerable(target) then
+        return false
+    end
+    if mustBeTargettable == nil then
+        mustBeTargettable = true
+    end
+    if mustBeTargettable and not self:CannotBeTargetted(target) then
         return false
     end
     if not pierceMagicImmune and target:IsMagicImmune() then
@@ -1823,6 +2074,27 @@ end
 
 M.NormalCanCastFunction = function(target) return M:NormalCanCast(target) end
 
+function M:SpellCanCast(target, pierceMagicImmune, targetMustBeSeen, mustBeTargettable)
+    if targetMustBeSeen == nil then
+        targetMustBeSeen = true
+    end
+    if mustBeTargettable == nil then
+        mustBeTargettable = true
+    end
+    if target:IsInvulnerable() then
+        return false
+    end
+    if mustBeTargettable and self:CannotBeTargetted(target) then
+        return false
+    end
+    if not pierceMagicImmune and target:IsMagicImmune() then
+        return false
+    end
+    return true
+end
+
+M.SpellCanCastFunction = function(target) return M:SpellCanCast(target) end
+
 function M:AllyCanCast(target, pierceMagicImmune)
     if pierceMagicImmune == nil then
         pierceMagicImmune = true
@@ -1831,6 +2103,18 @@ function M:AllyCanCast(target, pierceMagicImmune)
 end
 
 M.AllyCanCastFunction = function(target) return M:AllyCanCast(target) end
+
+function M:NeutralCanCast(target)
+
+end
+
+function M:EnemyAllyCanCast(target, isPureDamageWithoutDisable, damageType, pierceMagicImmune, targetMustBeSeen)
+    if self:IsOnSameTeam(target, GetBot()) then
+        return self:NormalCanCast(target, isPureDamageWithoutDisable, damageType, pierceMagicImmune, targetMustBeSeen)
+    else
+        return self:AllyCanCast(target, pierceMagicImmune, targetMustBeSeen)
+    end
+end
 
 M.SpecialBonusAttributes = "special_bonus_attributes"
 M.TalentNamePrefix = "special_bonus_"
@@ -1968,6 +2252,12 @@ M.GetCos = function(self, b, c, a)
 end
 M.GetLocationToLocationDistance = function(self, a, b)
     return ((a.x-b.x)^2+(a.y-b.y)^2)^0.5
+end
+
+function M:GetDegree(loc1, loc2)
+    local y = loc2.y-loc1.y 
+    local x = loc2.x-loc1.x
+    return math.atan2(y, x) * 180 / math.pi
 end
 -- Find the location to use a aoe at a single target with the least distance the hero needs to walk before casting
 --M.FindAOELocationAtSingleTarget = function(self, npcBot, target, radius, castRange, castPoint)
@@ -2344,6 +2634,8 @@ local function FloatEqual(a, b)
     return math.abs(a-b)<0.000001
 end
 
+-- tick
+
 function M:GetFrameNumber()
     return frameNumber
 end
@@ -2397,11 +2689,6 @@ function M:SingleForAllBots(oldFunction)
     end
 end
 
-function M:RunCoroutineOnce(oldFunction)
-    local thread = coroutine.create(oldFunction)
-    coroutine.resume(thread)
-end
-
 local groupAnnounceTimes1 = 0
 function M:AnnounceGroups1(npcBot)
     if groupAnnounceTimes1 == 0 then
@@ -2412,7 +2699,7 @@ end
 local groupAnnounceTimes2 = 0
 function M:AnnounceGroups2(npcBot)
     if groupAnnounceTimes2 == 0 then
-        npcBot:ActionImmediate_Chat("Or join QQ group at 946823144!")
+        npcBot:ActionImmediate_Chat("Or our join QQ group at 946823144!")
         groupAnnounceTimes2 = 1
     end
 end
@@ -2423,13 +2710,14 @@ end
 
 local slowFunctionRegistries = {}
 local coroutineRegistry = {}
+local coroutineExempt = {}
 
 function M:TickFromDota()
     local time = DotaTime()
     local function ResumeCoroutine(thread)
         local coroutineResult = { coroutine.resume(thread[1], time - dotaTimer) }
         if not coroutineResult[1] then
-            raise(coroutineResult[2])
+            error(coroutineResult[2])
         end
     end
     if dotaTimer == nil then
@@ -2442,13 +2730,28 @@ function M:TickFromDota()
         local threadIndex = 1
         while threadIndex <= #coroutineRegistry do
             local t = coroutineRegistry[threadIndex]
-            if coroutine.status(t) == "suspended" then
-                ResumeCoroutine(t)
-                threadIndex = threadIndex + 1
-            elseif coroutine.status(t) == "dead" then
-                table.remove(coroutineRegistry, threadIndex)
-            else
-                threadIndex = threadIndex + 1
+            local exemptIndex
+            local exempt
+            self:ForEach(coroutineExempt, function(exemptPair, index)
+                if exemptPair[1] == t then
+                    if exemptPair[2] == frameNumber then
+                        exempt = true
+                    end
+                    exemptIndex = index
+                end
+            end)
+            if exemptIndex then
+                table.remove(coroutineExempt, exemptIndex)
+            end
+            if not exempt then
+                if coroutine.status(t) == "suspended" then
+                    ResumeCoroutine(t)
+                    threadIndex = threadIndex + 1
+                elseif coroutine.status(t) == "dead" then
+                    table.remove(coroutineRegistry, threadIndex)
+                else
+                    threadIndex = threadIndex + 1
+                end
             end
         end
         dotaTimer = time
@@ -2465,28 +2768,84 @@ function M:RegisterSlowFunction(oldFunction, calledWhenHowManyFrames, frameOffse
     end
 end
 
-function M:StartCoroutine(func)
-    table.insert(coroutineRegistry, coroutine.create(func))
+-- coroutine
+
+function M:ResumeUntilReturn(func)
+    local g = {}
+    local thread = coroutine.create(func)
+    while true do
+        local values = { coroutine.resume(thread) }
+        if values[1] then
+            table.remove(values, 1)
+            table.insert(g, values)
+        else
+            error(values[2])
+            break
+        end
+    end
+    return g
 end
 
--- local reduceConsiderInvocationTimesCount = 0
--- function M:ReduceConsiderInvocationTimes(oldFunction, npc)
---     local offset = reduceConsiderInvocationTimesCount
---     reduceConsiderInvocationTimesCount = (reduceConsiderInvocationTimesCount + 1) % 10
---     return self:RegisterSlowFunction(oldFunction, 10, offset, BOT_ACTION_DESIRE_NONE)
--- end
+function M:StartCoroutine(func)
+    local newCoroutine = coroutine.create(func)
+    table.insert(coroutineRegistry, newCoroutine)
+    table.insert(coroutineExempt, {newCoroutine, frameNumber})
+    return newCoroutine
+end
 
--- courier
+function M:WaitForSeconds(seconds)
+    local function WaitFor(firstFrameTime)
+        local t = seconds - firstFrameTime
+        while t > 0 do
+            t = t - coroutine.yield()
+        end
+    end
+    return self:StartCoroutine(WaitFor)
+end
 
-function M:FindCourier(npcBot)
-    for i = 0,4 do
-        local courier = GetCourier(i)
-        if courier ~= nil then
-            if courier:GetPlayerID() == npcBot:GetPlayerID() then
-                npcBot.courierIDNew = i
+function M:StopCoroutine(thread)
+    self:Remove_Modify(coroutineExempt, function(t) return t[1] == thread end)
+    self:Remove_Modify(coroutineRegistry, thread)
+end
+
+local function GetDataFromAbility(ability, valueName)
+    local a = ability:GetSpecialValueInt(valueName)
+    return a==0 and ability:GetSpecialValueFloat(valueName) or a
+end
+
+local function Append__Index(tb, __index)
+    local m = getmetatable(tb)
+    if m == nil then
+        m = {}
+        setmetatable(tb, m)
+    end
+    local oldIndex = m.__index
+    if oldIndex == nil then
+        m.__index = __index
+    elseif type(oldIndex) == "function" then
+        m.__index = function(ability, i)
+            local oldResult = { oldIndex(ability, i) }
+            if oldResult[1] == nil then
+                return __index(ability, i)
+            else
+                return M.Unpack(oldResult)
             end
+        end
+    elseif type(oldIndex) == "table" then
+        if oldIndex == m then
+            m.__index = function(g, h)
+                local newResult = { __index(g, h) }
+                if newResult[1] == nil then
+                    return oldIndex[h]
+                else
+                    return M.Unpack(newResult)
+                end
+            end
+        else
+            Append__Index(oldIndex, __index)
         end
     end
 end
+Append__Index(CDOTABaseAbility_BotScript, GetDataFromAbility)
 
 return M

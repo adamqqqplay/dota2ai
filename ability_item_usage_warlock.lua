@@ -531,18 +531,6 @@ local upheavelTimer
 local upheavelLocation
 local upheavelRadius
 
-local function GetSpellImmuneRemainingTime(target)
-    local spellImmuneModifiers = {
-        "modifier_black_king_bar_immune",
-        "modifier_minotaur_horn_immune",
-        "modifier_life_stealer_rage",
-    }
-    local c = AbilityExtensions:Map(spellImmuneModifiers, function(t) return AbilityExtensions:GetModifierRemainingDuration(t)  end)
-    c = AbilityExtensions:Filter(c, function(t) return t ~= nil  end)
-    c = AbilityExtensions:SortByMaxFirst(c, function(t) return t  end)
-    c = c[1] or 0
-    return c
-end
 
 function AbilityUsageThink()
 
@@ -564,7 +552,7 @@ function AbilityUsageThink()
                 local enemies = npcBot:GetNearbyHeroes(1500, true, BOT_MODE_NONE)
                 enemies = AbilityExtensions:Count(enemies, function(t)
                     return t:HasModifier("modifier_warlock_upheavel")
-                            or GetUnitToLocationDistance(t, upheavelLocation) <= upheavelRadius and GetSpellImmuneRemainingTime(t) <= 1
+                            or GetUnitToLocationDistance(t, upheavelLocation) <= upheavelRadius and AbilityExtensions:GetMagicImmuneRemainingDuration(t) <= 1
                 end)
                 if enemies == 0 then
                     if DotaTime() > upheavelTimer + 1.5 then

@@ -222,7 +222,7 @@ Consider[2]=function()
 	-- Check for a channeling enemy
 	for _,npcEnemy in pairs( enemys )
 	do
-		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy )) 
+		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy ))
 		then
 			return BOT_ACTION_DESIRE_HIGH, npcEnemy
 		end
@@ -331,7 +331,7 @@ Consider[2]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then
@@ -507,7 +507,7 @@ Consider[4]=function()
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 		end
 	
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then

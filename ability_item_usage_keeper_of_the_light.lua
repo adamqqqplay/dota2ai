@@ -723,7 +723,7 @@ Consider[6]=function()
 	-- If we're in a teamfight, use it 
 	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK )
 	if #tableNearbyAttackingAlliedHeroes >= 2 then
-		local npcEnemy = npcBot:GetTarget()
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 		if ( npcEnemy ~= nil ) 
 		then
 			return BOT_ACTION_DESIRE_HIGH

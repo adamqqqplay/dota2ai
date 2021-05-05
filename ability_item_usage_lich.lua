@@ -353,7 +353,7 @@ consider[2] = function()
 			npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 			npcBot:GetActiveMode() == BOT_MODE_ATTACK)
 	 then
-		local npcEnemy = npcBot:GetTarget()
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if (AbilityHelper.isValidTarget(npcEnemy)) then
 			local npcEnemyNearbyAllys = npcEnemy:GetNearbyHeroes(serachDistance, false, BOT_MODE_NONE)
@@ -609,7 +609,7 @@ consider[5] = function()
 			npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 			npcBot:GetActiveMode() == BOT_MODE_ATTACK)
 	 then
-		local npcEnemy = npcBot:GetTarget()
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if (AbilityHelper.isValidTarget(npcEnemy) and CanCast[abilityIndex](npcEnemy) and not isDisabled(npcEnemy)) then
 			if (GetUnitToUnitDistance(npcBot, npcEnemy) < castRange + 75 * #allys) then

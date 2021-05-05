@@ -385,7 +385,7 @@ Consider[4]=function()
 			then
 				if(WeakestCreep~=nil)
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestCreep; 
+					return BOT_ACTION_DESIRE_HIGH,WeakestCreep,"Target"
 				end
 				if(WeakestEnemy~=nil)
 				then
@@ -408,18 +408,6 @@ Consider[4]=function()
 					return BOT_ACTION_DESIRE_MODERATE+0.05,WeakestCreep,"Target"; 
 				end
 			end		
-		end
-	end
-	
-	-- If we're farming and can hit 2+ creeps and kill 1+ 
-	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
-	then
-		if ( #Allcreeps >= 2 ) 
-		then
-			if(CreepHealth<=Allcreeps[1]:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and ManaPercentage>0.45 and npcBot:GetMana()>ComboMana)
-			then
-				return BOT_ACTION_DESIRE_LOW, Allcreeps[1],"Target";
-			end
 		end
 	end
 

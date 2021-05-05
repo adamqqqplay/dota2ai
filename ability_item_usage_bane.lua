@@ -609,7 +609,7 @@ function AbilityUsageThink()
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then 
-		if npcBot:IsUsingAbility() then
+		if npcBot:IsCastingAbility() then
 			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[2] then
 				if drainSnapTarget and AbilityExtensions:HasAbilityRetargetModifier(drainSnapTarget) then
 					npcBot:Action_ClearActions(true)

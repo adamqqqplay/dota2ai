@@ -72,7 +72,13 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.CanCastNoTarget,utility.CanCastPassive}
+local CanCast={function(t)
+	return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_PHYSICAL, true, true, true) and not AbilityExtensions:HasAbilityRetargetModifier(npcBot)
+end,function(t)
+	return AbilityExtensions:SpellCanCast(t, true, true, true) and not AbilityExtensions:HasAbilityRetargetModifier(npcBot)
+end,utility.NCanCast,function(t)
+	return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_PHYSICAL, true, false, false)
+end,utility.CanCastPassive}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()

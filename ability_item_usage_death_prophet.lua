@@ -197,7 +197,7 @@ Consider[1]=function()
 end
 
 Consider[2]=function()
-local abilityNumber=2
+	local abilityNumber=2
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -275,7 +275,7 @@ local abilityNumber=2
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
 		end
 		
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then
@@ -454,7 +454,7 @@ Consider[4]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then
@@ -469,8 +469,6 @@ Consider[4]=function()
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
-local lastAbilityIndex
-local lastAbilityTarget
 
 function AbilityUsageThink()
 
@@ -479,8 +477,6 @@ function AbilityUsageThink()
 	then 
 		return
 	end
-	lastAbilityIndex = nil
-	lastAbilityTarget = nil
 	
 	ComboMana=GetComboMana()
 	AttackRange=npcBot:GetAttackRange()
@@ -493,7 +489,7 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	lastAbilityIndex, lastAbilityTarget = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
 end
 
 function CourierUsageThink() 

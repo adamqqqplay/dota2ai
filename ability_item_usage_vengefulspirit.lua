@@ -72,10 +72,14 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={function(target) return (npcBot:GetLevel()>=25 and utility.UCanCast(target)) or utility.NCanCast(target) end,
-               utility.NCanCast,
-               utility.NCanCast,
-               utility.UCanCast,}
+local CanCast={function(target) 
+	return (npcBot:GetLevel()>=25 and utility.UCanCast(target)) or utility.NCanCast(target) and not AbilityExtensions:HasAbilityRetargetModifier(target)
+end,
+	utility.NCanCast,
+	utility.NCanCast,
+	function(target)
+		return AbilityExtensions:NormalCanCast(target, false, DAMAGE_TYPE_MAGICAL, true) and not target:HasModifier("modifier_item_mirror_shield_delay") and not target:HasModifier("modifier_item_sphere_target")
+	end}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -200,7 +204,7 @@ Consider[1]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcTarget = npcBot:GetTarget();
+		local npcTarget = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcTarget ~= nil ) 
 		then
@@ -379,7 +383,7 @@ Consider[4]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcTarget = npcBot:GetTarget();
+		local npcTarget = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcTarget ~= nil ) 
 		then

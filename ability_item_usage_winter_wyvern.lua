@@ -97,7 +97,9 @@ local CanCast={utility.NCanCast,utility.NCanCast,function(t)
 		end))
 	end
 	return AbilityExtensions:AllyCanCast(t) and (not AbilityExtensions:DontInterruptAlly(t) or t:HasModifier("modifier_medusa_stone_gaze") and t:GetActiveMode() == BOT_MODE_RETREAT) and not t:IsChanneling()
-end,utility.UCanCast}
+end,function(t)
+	return AbilityExtensions:SpellCanCast(t, true, true)
+end}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -468,6 +470,9 @@ Consider[3]=function()
 	
 end
 
+local function CanBeAffectedByCurse(t)
+	return AbilityExtensions:SpellCanCast(t, false, false)
+end
 Consider[4]=function()
 
 	local abilityNumber=4
@@ -505,7 +510,7 @@ Consider[4]=function()
 	
 	if(enemys~=nil and #enemys==1)
 	then
-		return 0,0
+		return 0
 	end
 	
 	--Try to kill enemy hero

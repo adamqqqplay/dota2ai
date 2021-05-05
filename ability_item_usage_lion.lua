@@ -452,7 +452,7 @@ Consider[4]=function()
 	end
 	
 	-- If a mode has set a target, and we can kill them, do it
-	local npcTarget = npcBot:GetTarget();
+	local npcTarget = AbilityExtensions:GetTargetIfGood(npcBot)
 	if ( npcTarget ~= nil and CanCast[abilityNumber]( npcTarget ) )
 	then
 		if ( npcTarget:GetActualIncomingDamage( Damage, DAMAGE_TYPE_MAGICAL ) > npcTarget:GetHealth() and GetUnitToUnitDistance( npcTarget, npcBot ) < ( CastRange + 200 ) )

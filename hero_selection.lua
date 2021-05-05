@@ -915,7 +915,7 @@ function IsHumanPresentInGame()
 	return false;
 end
 
-local function IsHumanDonePickingFirstSlot()
+function IsHumanDonePickingFirstSlot()
 	if GetTeam() == TEAM_RADIANT then
 		for _,id in pairs(GetTeamPlayers(GetTeam())) do
 			if IsPlayerBot(id) == false and GetSelectedHeroName(id) ~= "" then
@@ -931,7 +931,7 @@ local function IsHumanDonePickingFirstSlot()
 	end
 end
 
-local function IsHumanPlayerInRadiant1Slot()
+function IsHumanPlayerInRadiant1Slot()
 	if GetTeam() == TEAM_RADIANT then
 		for i,id in pairs(GetTeamPlayers(GetTeam())) do
 			if i == 1 and IsPlayerBot(id) == false then
@@ -1061,7 +1061,7 @@ end
 -- Returns a hero from the hero_pool_test pool
 function GetHeroInTest(selectedHeroes)
     -- Step through the "hero_pool_test" pool allocating them in order. This function will error if the pool is too small, but it's not for general use.
-	
+	local hero
 	repeat
 		hero = hero_pool_test[1]
 		table.remove(hero_pool_test,1)
@@ -1512,7 +1512,7 @@ function IsUnavailableHero(name)
 	return false;
 end
 --Check if a hero hasn't implemented yet
-function IsUnImplementedHeroes()
+function IsUnImplementedHeroes(name)
 	for _,unh in pairs(UnImplementedHeroes)
 	do
 		if name == unh then

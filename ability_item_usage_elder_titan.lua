@@ -348,15 +348,6 @@ Consider[4]=function()
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
-	-- Check for a channeling enemy
-	for _,npcEnemy in pairs( enemys )
-	do
-		if ( npcEnemy:IsChanneling() ) 
-		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation();
-		end
-	end
-
 	--try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
 	then
