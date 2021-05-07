@@ -850,12 +850,12 @@ local UseCourier = function()
     if IsItemPurchasedFromSecretShop(sNextItem) and npcBot:GetGold() >= GetItemCost(sNextItem)*0.9 then
         courier.returnWhenCarryingTooMany = nil
         if courierState == COURIER_STATE_AT_BASE then
-            print("courier usage a2")
+            -- print("courier usage a2")
             npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_SECRET_SHOP)
             return
         end
         if nearSecretShop and npcBot:GetGold() >= GetItemCost(sNextItem) then
-            print("courier usage a1")
+            -- print("courier usage a1")
             npcBot:ActionImmediate_PurchaseItem(sNextItem)
             return
         end

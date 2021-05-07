@@ -18,8 +18,6 @@ local AbilitiesReal ={}
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
 
-
-
 local AbilityToLevelUp=
 {
 	Abilities[2],
@@ -375,7 +373,7 @@ Consider[2]=function()
 	if utility.IsStuck(npcBot)
 	then
 		local loc = utility.GetEscapeLoc();
-		return BOT_ACTION_DESIRE_HIGH, npcBot:GetLocation(),"Location";
+		return BOT_ACTION_DESIRE_HIGH, npcBot:GetLocation(), false
 	end
 
 	--Try to kill enemy hero
@@ -725,7 +723,7 @@ function AbilityUsageThink()
 
 	if ( cast.Desire[1] > 0 ) 
 	then
-		if castQStone then
+		if castQStone and AbilitiesReal[4]:IsFullyCastable() then
 			npcBot:Action_ClearActions(false);
 			npcBot:ActionQueue_UseAbilityOnLocation(AbilitiesReal[4], npcBot:GetLocation());
 			npcBot:ActionQueue_UseAbilityOnLocation(AbilitiesReal[1], castQLoc);
@@ -743,7 +741,7 @@ function AbilityUsageThink()
 	
 	if ( cast.Desire[2] > 0 ) 
 	then
-		if castWStone then
+		if castWStone and AbilitiesReal[4]:IsFullyCastable() and not npcBot:IsChanneling() and not npcBot:IsSilenced() then
 			npcBot:Action_ClearActions(false);
 			npcBot:ActionQueue_UseAbilityOnLocation(AbilitiesReal[2], castWLoc);
 			npcBot:ActionQueue_UseAbilityOnLocation(AbilitiesReal[4], npcBot:GetXUnitsTowardsLocation(castWLoc, 300));
@@ -756,7 +754,7 @@ function AbilityUsageThink()
 	
 	if ( cast.Desire[3] > 0 ) 
 	then
-		if castEStone then
+		if castEStone and AbilitiesReal[4]:IsFullyCastable() and not npcBot:IsChanneling() and not npcBot:IsSilenced() then
 			npcBot:Action_ClearActions(false);
 			npcBot:ActionQueue_UseAbilityOnLocation(AbilitiesReal[4], castELoc);
 			npcBot:ActionQueue_UseAbilityOnLocation(AbilitiesReal[3], castELoc);
@@ -767,10 +765,9 @@ function AbilityUsageThink()
 		end
 	end
 	
-	if ( cast.Desire[4] > 0 ) 
+	if  cast.Desire[4] > 0 and AbilitiesReal[4]:IsFullyCastable() and not npcBot:IsChanneling() and not npcBot:IsSilenced()
 	then
 		npcBot:Action_UseAbilityOnLocation( AbilitiesReal[4], castDLoc );
-		npcBot:ActionImmediate_Chat( "RESET BOYS", true );
 		stoneCast = DotaTime();
 		return;
 	end

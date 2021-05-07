@@ -2520,13 +2520,13 @@ M.PURCHASE_ITEM_NOT_AT_SECRET_SHOP=62
 M.PURCHASE_ITEM_NOT_AT_HOME_SHOP=67
 M.PURCHASE_ITEM_SUCCESS=-1
 
+-- specified ability is not actually an ability (2)
 -- invalid order(3) unrecognised order name
 -- invalid order(40) order not allowed for illusions
 -- unit is dead (20)
 -- target tree is not active (43)
 -- ability is still in cooldown (15)
 -- ability is hidden
--- ability is
 -- cannot cast ability on tree
 -- cannot cast ability on target
 -- target is unselectable
@@ -2537,6 +2537,7 @@ M.PURCHASE_ITEM_SUCCESS=-1
 -- can't cast attack ability on target, target is attack immune (32)
 -- order invalid for units with attack ability DOTA_UNIT_CAP_NO_ATTACK (41)
 -- can't cast on target, ability cannot target enemies (30)
+-- can't cast on target, ability cannot target creeps (56)
 -- unit can't perform command, unit has commands restricted (74)
 -- hero does not have enough ability points to upgrade ability (13)
 -- ability is hidden (60)
@@ -2819,14 +2820,14 @@ end
 local groupAnnounceTimes1 = 0
 function M:AnnounceGroups1(npcBot)
     if groupAnnounceTimes1 == 0 then
-        npcBot:ActionImmediate_Chat("Thanks for choosing RMMAI. Join our new discord group at ... to put suggestions or devloping issues!")
+        npcBot:ActionImmediate_Chat("Thanks for choosing RMMAI. Join our new discord group at ... to put suggestions or devloping issues!", true)
         groupAnnounceTimes1 = 1
     end
 end
 local groupAnnounceTimes2 = 0
 function M:AnnounceGroups2(npcBot)
     if groupAnnounceTimes2 == 0 then
-        npcBot:ActionImmediate_Chat("Or our join QQ group at 946823144!")
+        npcBot:ActionImmediate_Chat("Or join QQ group at 946823144!", true)
         groupAnnounceTimes2 = 1
     end
 end
