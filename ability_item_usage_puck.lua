@@ -122,7 +122,7 @@ end
 
 Consider[2] = function()
     local ability = Abilities[1]
-    if not ability:IsFullyCastable() then
+    if not ability:IsFullyCastable() or AbilityExtensions:CannotTeleport(npcBot) then
         return 0
     end
     local abilityLevel = ability:GetLevel()
@@ -188,7 +188,7 @@ end
 
 Consider[4] = function()
     local ability = Abilities[1]
-    if not ability:IsFullyCastable() then
+    if not ability:IsFullyCastable() or AbilityExtensions:CannotTeleport(npcBot) then
         return 0
     end
     local abilityLevel = ability:GetLevel()

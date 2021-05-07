@@ -416,7 +416,7 @@ end
 
 Consider[5] = function()
     local ability = Abilities[5]
-    if not ability:IsFullyCastable() or AbilityExtensions:CannotMove(npcBot) or ability:GetCurrentCharges() == 0 then
+    if not ability:IsFullyCastable() or ability:GetCurrentCharges() == 0 then
         return 0
     end
     local abilityLevel = ability:GetLevel()

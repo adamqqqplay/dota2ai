@@ -466,7 +466,7 @@ Consider[4]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or AbilityExtensions:CannotTeleport(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -484,7 +484,7 @@ Consider[4]=function()
 	--------------------------------------
 
 	-- Stop making a huge bounty for the enemy
-	if (npcBot:GetHealth() <= 450 or HealthPercentage <= 0.3) and (npcBot:WasRecentlyDamagedByAnyHero(1.5) or AbilityExtensions:CanHardlyMove(npcBot) or AbilityExtensions:CannotMove(npcBot)) and not AbilityExtensions:Outnumber(npcBot, allys, enemys) then
+	if (npcBot:GetHealth() <= 450 or HealthPercentage <= 0.3) and (npcBot:WasRecentlyDamagedByAnyHero(1.5) or AbilityExtensions:CanHardlyMove(npcBot) or AbilityExtensions:CannotTeleport(npcBot)) and not AbilityExtensions:Outnumber(npcBot, allys, enemys) then
 		return 0
 	end
 

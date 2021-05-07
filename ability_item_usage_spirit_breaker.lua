@@ -313,7 +313,7 @@ Consider[4]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or AbilityExtensions:CannotTeleport(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	

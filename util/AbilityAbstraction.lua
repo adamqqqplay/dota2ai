@@ -4,27 +4,52 @@ local binlib = require(GetScriptDirectory().."/util/BinDecHex")
 
 -- LINQ functions
 
+local magicTable = {}
+local function NewTable()
+    local a = {}
+    setmetatable(a, magicTable)
+    return a
+end
+magicTable.__index = magicTable
+
 M.Range = function(self, min, max, step)
     if step == nil then step = 1 end
-    local g = {}
+    local g = NewTable()
     for i = min, max, step do
         table.insert(g, i)
     end
     return g
 end
 
-M.Contains = function(self, tb, value, compare)
-    compare = compare or function(a, b) return a == b end
+M.Contains = function(self, tb, value, equals)
+    equals = equals or function(a, b) return a == b end
     for _, v in ipairs(tb) do
-        if compare(v, value) then
+        if equals(v, value) then
             return true
         end
     end
     return false
 end
 
+M.ContainsKey = function(self, tb, key, equals)
+    equals = equals or function(a, b) return a == b end
+    for k, _ in pairs(tb) do
+        if equals(key, k) then
+            return true
+        end
+    end
+    return false
+end
+
+function M:Keys(tb)
+    local g = NewTable()
+    for k, _ in pairs(tb) do
+        table.insert(g, k)
+    end
+end
+
 M.Filter = function(self, tb, filter)
-    local g = {}
+    local g = NewTable()
     for k, v in ipairs(tb) do
         if filter(v, k) then
             table.insert(g, v)
@@ -33,7 +58,7 @@ M.Filter = function(self, tb, filter)
     return g
 end
 M.FilterNot = function(self, tb, filter)
-    local g = {}
+    local g = NewTable()
     for k, v in ipairs(tb) do
         if not filter(v, k) then
             table.insert(g, v)
@@ -52,9 +77,23 @@ M.Count = function(self, tb, filter)
     return g
 end
 
+function M:NonEmpty(self, tb)
+    return self:Filter(tb, function(t)
+        return t ~= nil and #t ~= 0
+    end)
+end
+
 M.Map = function(self, tb, transform)
-    local g = {}
+    local g = NewTable()
     for k, v in ipairs(tb) do
+        g[k] = transform(v)
+    end
+    return g
+end
+
+function M:MapDic(tb, transform)
+    local g = NewTable()
+    for k, v in pairs(tb) do
         g[k] = transform(v)
     end
     return g
@@ -92,7 +131,7 @@ M.Aggregate = function(self, seed, tb, aggregate)
 end
 
 M.ShallowCopy = function(self, tb)
-    local g = {}
+    local g = NewTable()
     for k, v in pairs(tb) do
         g[k] = v
     end
@@ -108,7 +147,7 @@ M.First = function(self, tb, filter)
 end
 
 M.Skip = function(self, tb, number)
-    local g = {}
+    local g = NewTable()
     local i = 0
     for _, v in ipairs(tb) do
         i = i + 1
@@ -120,7 +159,7 @@ M.Skip = function(self, tb, number)
 end
 
 M.Take = function(self, tb, number)
-    local g = {}
+    local g = NewTable()
     local i = 0
     for _, v in ipairs(tb) do
         i = i + 1
@@ -134,8 +173,8 @@ M.Take = function(self, tb, number)
 end
 
 local function deepCopy(self, tb)
-    local copiedTables = {}
-    local g = {}
+    local copiedTables = NewTable()
+    local g = NewTable()
     table.insert(copiedTables, tb)
     for k, v in pairs(tb) do
         if type(v) ~= "table" then
@@ -153,7 +192,7 @@ end
 M.DeepCopy = deepCopy
 
 M.Concat = function(self, a, ...)
-    local g = {}
+    local g = NewTable()
     local rec
     rec = function(b, ...)
         if b == nil then
@@ -178,7 +217,7 @@ M.Remove = function(self, a, b)
     return g
 end
 M.RemoveAll = function(self, a, b)
-    local g = {}
+    local g = NewTable()
     for _,v in pairs(a) do
         if not self:Contains(b, v) then
             table.insert(g, v)
@@ -195,8 +234,8 @@ M.GroupBy = function(self, collection, keySelector, elementSelector, resultSelec
     comparer = comparer or function(a,b) return a==b end
     resultSelector = resultSelector or function(key, value) return value end
     elementSelector = elementSelector or self.IdentityFunction
-    local keys = {}
-    local values = {}
+    local keys = NewTable()
+    local values = NewTable()
     for _, k in ipairs(collection) do
         local keyFound = false
         for readKeyIndex, readKey in ipairs(keys) do
@@ -214,11 +253,24 @@ M.GroupBy = function(self, collection, keySelector, elementSelector, resultSelec
     return self:Map2(keys, values, resultSelector)
 end
 
-M.Distinct = function(self, tb, compare)
-    compare = compare or function(a, b) return a == b end
-    local g = {}
+M.Partition = function(self, tb, filter)
+    local a = NewTable()
+    local b = NewTable()
+    for k, v in pairs(tb) do
+        if filter(v, k) then
+            table.insert(a, v)
+        else
+            table.insert(b, v)
+        end
+    end
+    return a, b
+end
+
+M.Distinct = function(self, tb, equals)
+    equals = equals or function(a, b) return a == b end
+    local g = NewTable()
     for _, v in pairs(tb) do
-        if not self:Contains(tb, v, compare) then
+        if not self:Contains(g, v, equals) then
             table.insert(g, v)
         end
     end
@@ -226,7 +278,7 @@ M.Distinct = function(self, tb, compare)
 end
 
 M.Reverse = function(self, tb) 
-    local g = {}
+    local g = NewTable()
     for i = #tb, 1, -1 do
         table.insert(g, tb[i])
     end
@@ -273,7 +325,7 @@ function M:Min(tb, map)
 end
 
 M.Repeat = function(self, element, count)
-    local g = {}
+    local g = NewTable()
     for i = 1, count do
         table.insert(g, element)
     end
@@ -282,7 +334,7 @@ end
 
 M.Select = M.Map
 M.SelectMany = function(self, tb, map, filter)
-    local g = {}
+    local g = NewTable()
     for _, source in ipairs(tb) do
         local collection = map(source)
         for index, value in ipairs(collection) do
@@ -294,12 +346,14 @@ M.SelectMany = function(self, tb, map, filter)
     return g
 end
 
+M.Where = M.Filter
+
 M.SkipLast = function(self, tb, number)
     return self:Skip(self:Reverse(tb), number)
 end
 
 M.Replace = function(self, tb, filter, map)
-    local g = {}
+    local g = NewTable()
     for k, v in ipairs(tb) do
         if filter(v, k) then
             table.insert(g, map(v, k))
@@ -311,7 +365,7 @@ M.Replace = function(self, tb, filter, map)
 end
 
 M.IndexOf = function(self, tb, filter)
-    local g = {}
+    local g = NewTable()
     for k, v in ipairs(tb) do
         if type(filter) == "function" then
             if filter(v, k) then
@@ -332,7 +386,7 @@ M.Zip2 = function(self, tb1, tb2, map)
             return {a, b}
         end
     end
-    local g = {}
+    local g = NewTable()
     for i = 1, #tb1 do
         table.insert(g, map(tb1[i], tb2[i]))
     end
@@ -346,7 +400,7 @@ M.ForEach2 = function(self, tb1, tb2, func)
 end
 
 M.Map2 = function(self, tb1, tb2, map)
-    local g = {}
+    local g = NewTable()
     for i = 1, #tb1 do
         table.insert(g, map(tb1[i], tb2[i], i))
     end
@@ -357,7 +411,7 @@ M.Filter2 = function(self, tb1, tb2, filter, map)
     if map == nil then
         map = function(a,b,c) return {a,b,c} end
     end
-    local g = {}
+    local g = NewTable()
     for i = 1, #tb1 do
         if filter(tb1[i], tb2[i], i) then
             table.insert(map(tb1[i], tb2[i], i))
@@ -394,7 +448,7 @@ M.MergeSort = function(self, tb, sort)
         sort = function(a, b) return a-b end
     end
     local function Merge(a, b)
-        local g = {}
+        local g = NewTable()
         local aLen = #a
         local bLen = #b
         local i = 1
@@ -499,11 +553,34 @@ function M:UnpackIfTable(p)
     end
 end
 
-function M:ClampGroup(tb, min, max)
-    local vmin = math.min(tb)
-    local vmax = math.max(tb)
-    return self:Map(tb, function(t) return RemapVal(t, vmin, vmax, min, max) end)
+function M:Also(tb, block)
+    block(tb)
+    return tb
 end
+
+function M:Let(tb, block)
+    return block(tb)
+end
+
+
+-- function M:ClampGroup(tb, min, max)
+--     local vmin = math.min(tb)
+--     local vmax = math.max(tb)
+--     return self:Map(tb, function(t) return RemapVal(t, vmin, vmax, min, max) end)
+-- end
+
+local function AddLinqFunctionsToMetatable(mt)
+    M:ForEach(mt, function(v,k) 
+        mt[k] = function(...)
+            return v(M, ...)
+        end
+    end)
+    for functionName, func in pairs(table) do
+        mt[functionName] = func
+    end
+end
+
+AddLinqFunctionsToMetatable(magicTable)
 
 -- bot mode behaviour
 
@@ -697,9 +774,9 @@ M.AutoModifyConsiderFunction = function(self, npcBot, considers, abilitiesReal)
 end
 
 function M:InitAbility(npcBot)
-    local abilities = {}
-    local abilityNames = {}
-    local talents = {}
+    local abilities = NewTable()
+    local abilityNames = NewTable()
+    local talents = NewTable()
     for i = 0, 23 do
         local ability = npcBot:GetAbilityInSlot(i)
         if (ability ~= nil) then
@@ -718,6 +795,8 @@ function M:InitAbility(npcBot)
 end
 
 -- ability information
+
+local keysBeforeAbilityInformation = M:Keys(M)
 
 M.UndisjointableProjectiles = {
     "alchemist_berser_potion",
@@ -1142,9 +1221,52 @@ M.breakModifiers = {
     "modifier_phantom_assassin_fan_of_knives",
     -- "modifier_shadow_demon_purge_slow",--only break with scepter
     "modifier_silver_edge_debuff",
-    "modifier_spirit_breaker_greaterbash_break",--only break with shard
+    -- "modifier_spirit_breaker_greaterbash_break",--only break with shard
     "modifier_viper_nethertoxin",
 }
+-- TODO: how to record he caster of these abilities
+
+M.noTrueSightRootAbilityAssociation = {
+    dark_willow_branble_maze = "modifier_dark_willow_bramble_maze",
+    item_diffusal_blade = "modifier_rooted", -- most people don't know diffusal blade apply root on non-hero units
+}
+
+M.conditionalTrueSightRootAbilityAssociation = {
+    dark_troll_warlord_ensnare = "modifier_dark_troll_warlord_ensnare",
+    ember_spirit_searing_chains = "modifier_ember_spirit_searing_chains",
+    oracle_fortunes_end = "modifier_oracle_fortunes_end_purge",
+    item_rod_of_atos = "modifier_rod_of_atos_debuff",
+}
+
+M.permanentTrueSightRootAbilityAssociation = {
+    broodmother_silken_bola = "modifier_broodmother_silken_bola",
+    crystal_maiden_frostbite = "modfifier_crystal_maiden_frostbite",
+    meepo_earthbind = "modifier_meepo_earthbind",
+    naga_siren_ensnare = "modifier_naga_siren_ensnare",
+    spirit_bear_entangling_claws = "modifier_lone_druid_spirit_bear_entangle_effect",
+    techies_stasis_trap = "modifier_techies_stasis_trap_stunned",
+    treant_overgrowth = "modifier_treant_overgrowth",
+    troll_warlord_berserkers_rage = "modifier_troll_warlord_berserkers_rage_ensnare",
+    abyssal_underlord_pit_of_malice = "modifier_abyssal_underlord_pit_of_malice_ensare",
+}
+
+M.rootAbilityAssociation = M:Concat(M.noTrueSightRootAbilityAssociation, M.conditionalTrueSightRootAbilityAssociation, M.permanentTrueSightRootAbilityAssociation)
+
+local keysAfterAbilityInformation = M:Keys(M)
+local abilityInformationKeys = keysAfterAbilityInformation:RemoveAll(keysBeforeAbilityInformation)
+abilityInformationKeys:ForEach(function(t) setmetatable(M[t], magicTable) end)
+abilityInformationKeys = abilityInformationKeys:Filter(function(t) return t:match("AbilityAssociation") end)
+
+local function ExtendAssociation(association)
+    return association:MapDic(function(key, value) return key end), association:Map(function(key, value) return value end):Distinct()
+end
+abilityInformationKeys:ForEach(function(t)
+    local a, b = ExtendAssociation(t)
+    local k = t:sub(1, #t-#"AbilityAssociation")
+    M[k.."Abilities"] = a
+    M[k.."Modifiers"] = b
+end)
+
 
 -- unit function
 
@@ -1344,7 +1466,7 @@ M.GetNearbyHeroes = function(self, npcBot, range, getEnemy, botModeMask)
     end
     botModeMask = botModeMask or BOT_MODE_NONE
     local heroes = npcBot:GetNearbyHeroes(range, getEnemy, botModeMask)
-    return heroes or {}
+    return heroes
 end
 
 M.GetNearbyNonIllusionHeroes = function(self, npcBot, range, getEnemy, botModeMask)
@@ -1389,8 +1511,8 @@ end
 
 M.GetEnemyHeroUnique = function(self, npcBot, enemies)
     local p = self:Filter(enemies, function(t) self:MayNotBeIllusion(npcBot, t) end)
-    local g = {}
-    local readNames = {}
+    local g = NewTable()
+    local readNames = NewTable()
     for _, enemy in pairs(p) do
         local name = enemy:GetUnitName()
         if not self:Contains(readNames, name) then
@@ -1593,7 +1715,7 @@ M.SwapItemToBackpack = function(self, npc, itemIndex)
 end
 
 M.GetCarriedItems = function(self, npc)
-    local g = {}
+    local g = NewTable()
     for i = 0, 8 do
         local item = npc:GetItemInSlot(i)
         if item ~= nil then
@@ -1605,7 +1727,7 @@ M.GetCarriedItems = function(self, npc)
 end
 
 M.GetInventoryItems = function(self, npc)
-    local g = {}
+    local g = NewTable()
     for i = 0, 5 do
         local item = npc:GetItemInSlot(i)
         if item ~= nil then
@@ -1617,7 +1739,7 @@ M.GetInventoryItems = function(self, npc)
 end
 
 M.GetInventoryItemNames = function(self, npc)
-    local g = {}
+    local g = NewTable()
     for i = 0, 5 do
         local item = npc:GetItemInSlot(i)
         if item ~= nil then
@@ -1629,7 +1751,7 @@ M.GetInventoryItemNames = function(self, npc)
 end
 
 M.GetStashItems = function(self, npc)
-    local g = {}
+    local g = NewTable()
     for i = 9, 14 do
         local item = npc:GetItemInSlot(i)
         if item ~= nil then
@@ -1641,7 +1763,7 @@ M.GetStashItems = function(self, npc)
 end
 
 function M:GetCourierItems(courier)
-    local g = {}
+    local g = NewTable()
     for i = 0, 8 do
         local item = courier:GetItemInSlot(i)
         if item then
@@ -1670,7 +1792,7 @@ function M:FindCourier(npcBot)
 end
 
 M.GetAllBoughtItems = function(self, npcBot)
-    local g = {}
+    local g = NewTable()
     for i = 0, 15 do
         local item = npcBot:GetItemInSlot(i)
         if item then
@@ -1765,7 +1887,12 @@ M.CanMove = function(self, npc)
 end
 
 function M:CannotMove(npc)
-    return npc:IsStunned() or npc:IsRooted() or self:IsNightmared(npc) or self:IsTaunted(npc) or self:IsTaunted(npc) or self:IsHypnosed(npc) or self:IsFeared(npc)
+    return -- npc:IsStunned() or self:IsNightmared(npc) or --actually still able to cast abilities or move while stunned or nightmared, but provides no dfference
+            npc:IsRooted() or self:IsTaunted(npc)or self:IsHypnosed(npc) or self:IsFeared(npc)
+end
+
+function M:CannotTeleport(npc)
+    return npc:IsRooted() or self:IsTaunted(npc)or self:IsHypnosed(npc) or self:IsFeared(npc)
 end
 
 function M:IsNightmared(npc)
@@ -1930,14 +2057,14 @@ function M:GetTargetIfGood(npc)
     end
 end
 
-function M:GetAcrossAbilityStatusPerFrame(npc)
-    local g = {}
-    g.health = npc:GetHealth()
-    g.mana = npc:GetMana()
-    g.healthPercent = self:GetHealthPercent(npc)
-    g.manaPercent = self:GetManaPercent(npc)
-    g.attackRange = npc:GetAttackRange()
-end
+-- function M:GetAcrossAbilityStatusPerFrame(npc)
+--     local g = {}
+--     g.health = npc:GetHealth()
+--     g.mana = npc:GetMana()
+--     g.healthPercent = self:GetHealthPercent(npc)
+--     g.manaPercent = self:GetManaPercent(npc)
+--     g.attackRange = npc:GetAttackRange()
+-- end
 
 function M:IndexOfBasicDispellablePositiveModifier(npc)
     return self:Aggregate(nil, self.basicDispellWorthPositiveModifiers, function(seed, modifier, index)
@@ -2131,7 +2258,7 @@ M.IsTalent = function(self, ability)
 end
 
 M.GetAbilities = function(self, npcBot)
-    local g = {}
+    local g = NewTable()
     for i = 0,25 do
         local ability = npcBot:GetAbilityInSlot(i)
         if ability ~= nil and ability:GetName() ~= "generic_hidden" then
@@ -2547,7 +2674,7 @@ M.GetHeroGroupBattlePower = function(self, npcBot, heroes, isEnemy)
         local battlePowerMap = self:Map(tb, function(t) return { t:GetUnitName(), self:GetBattlePower(t) } end)
         battlePowerMap = self:SortByMaxFirst(battlePowerMap, function(t) return t[2] end)
         battlePowerMap = self:Map(battlePowerMap, function(t, index) return t[2] * (1.15-0.15*index) end)
-        local g = {}
+        local g = NewTable()
         for _, v in ipairs(battlePowerMap) do
             g[v[1]] = v[2]
         end
@@ -2555,7 +2682,7 @@ M.GetHeroGroupBattlePower = function(self, npcBot, heroes, isEnemy)
     end
     local enemyNetWorthMap = A(self:GetEnemyHeroUnique(npcBot, heroes))
     local netWorth = 0
-    local readNames = {}
+    local readNames = NewTable()
     for _, enemy in pairs(heroes) do
         local name = enemy:GetUnitName()
         if not self:Contains(readNames, name) then
@@ -2645,8 +2772,8 @@ function M:EveryManyFrames(count, times)
     return frameNumber % count < times
 end
 
-local defaultReturn = {}
-local everySecondsCallRegistry = {}
+local defaultReturn = NewTable()
+local everySecondsCallRegistry = NewTable()
 
 function M:EveryManySeconds(second, oldFunction)
     local functionName = tostring(oldFunction)
@@ -2661,7 +2788,7 @@ function M:EveryManySeconds(second, oldFunction)
     end
 end
 
-local singleForTeamRegistry = {}
+local singleForTeamRegistry = NewTable()
 
 function M:SingleForTeam(oldFunction)
     local functionName = tostring(oldFunction)..GetTeam()
@@ -2675,7 +2802,7 @@ function M:SingleForTeam(oldFunction)
     end
 end
 
-local singleForAllBots = {}
+local singleForAllBots = NewTable()
 
 function M:SingleForAllBots(oldFunction)
     local functionName = tostring(oldFunction)
@@ -2708,9 +2835,9 @@ function M:CalledOnThisFrame(functionInvocationResult)
     return functionInvocationResult ~= defaultReturn
 end
 
-local slowFunctionRegistries = {}
-local coroutineRegistry = {}
-local coroutineExempt = {}
+local slowFunctionRegistries = NewTable()
+local coroutineRegistry = NewTable()
+local coroutineExempt = NewTable()
 
 function M:TickFromDota()
     local time = DotaTime()
@@ -2771,7 +2898,7 @@ end
 -- coroutine
 
 function M:ResumeUntilReturn(func)
-    local g = {}
+    local g = NewTable()
     local thread = coroutine.create(func)
     while true do
         local values = { coroutine.resume(thread) }

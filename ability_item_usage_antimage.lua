@@ -128,7 +128,7 @@ Consider[2]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() or AbilityExtensions:CannotMove(npcBot) then
+	if not ability:IsFullyCastable() or AbilityExtensions:CannotTeleport(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -315,7 +315,6 @@ Consider[5]=function()
 
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         local targets = npcBot:GetNearbyHeroes(CastRange+400,true,BOT_MODE_NONE)
-        local filter = function(t) return CanCast[abilityNumber](t)  end
         local goodTargets = {}
         for _,t in pairs(targets) do
             if AbilityExtensions:MustBeIllusion(npcBot, t) then
@@ -352,29 +351,6 @@ Consider[5]=function()
         end
     end
 
-	--if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT )
-	--then
-	--	for i,npcEnemy in pairs(enemys)
-	--	do
-	--		if ( CanCast[abilityNumber]( npcEnemy ) )
-	--		then
-	--			local enemys = npcEnemy:GetNearbyHeroes(Radius,false,BOT_MODE_NONE)
-	--			local Damage=(npcEnemy:GetMaxMana()-npcEnemy:GetMana())*DamagePercent
-	--			local ManaPercentageEnemy=npcEnemy:GetMana()/npcEnemy:GetMaxMana()
-	--			if(enemys~=nil)
-	--			then
-	--				Damage=Damage*(1+0.2*#enemys)
-	--			end
-	--
-	--			if(npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
-	--			then
-	--				return BOT_ACTION_DESIRE_HIGH,npcEnemy;
-	--			end
-	--		end
-	--	end
-	--end
-	
-	-- Check for a channeling enemy
 	for _,npcEnemy in pairs( enemys )
 	do
 		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy )) 
