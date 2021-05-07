@@ -46,6 +46,7 @@ function M:Keys(tb)
     for k, _ in pairs(tb) do
         table.insert(g, k)
     end
+    return g
 end
 
 M.Filter = function(self, tb, filter)
@@ -94,7 +95,7 @@ end
 function M:MapDic(tb, transform)
     local g = NewTable()
     for k, v in pairs(tb) do
-        g[k] = transform(v)
+        g[k] = transform(k, v)
     end
     return g
 end
@@ -570,11 +571,11 @@ end
 -- end
 
 local function AddLinqFunctionsToMetatable(mt)
-    M:ForEach(mt, function(v,k) 
+    for k, v in pairs(M) do
         mt[k] = function(...)
-            return v(M, ...)
+            return v(M, ...) 
         end
-    end)
+    end
     for functionName, func in pairs(table) do
         mt[functionName] = func
     end
@@ -1261,7 +1262,7 @@ local function ExtendAssociation(association)
     return association:MapDic(function(key, value) return key end), association:Map(function(key, value) return value end):Distinct()
 end
 abilityInformationKeys:ForEach(function(t)
-    local a, b = ExtendAssociation(t)
+    local a, b = ExtendAssociation(M[t])
     local k = t:sub(1, #t-#"AbilityAssociation")
     M[k.."Abilities"] = a
     M[k.."Modifiers"] = b
@@ -1990,6 +1991,9 @@ M.MayNotBeSeen = function(self, npc)
     if not npc:IsInvisible() or npc:HasModifier("modifier_item_dust") or npc:HasModifier("modifier_bounty_hunter_track") or npc:HasModifier("modifier_slardar_amplify_damage") or npc:HasModifier("modifier_truesight") then
         return false
     end
+    if self:HasAnyModifier(npc, self.permanentTrueSightRootModifiers) then
+        return false
+    end
     local enemies = self:GetNearbyHeroes(npc)
     return self:All(enemies, function(t)
         if t:HasItem("item_gem") then
@@ -2052,7 +2056,7 @@ end
 
 function M:GetTargetIfGood(npc)
     local target = npc:GetTarget()
-    if target~=nil and target:IsHero() and self:MayNotBeIllusion(target) then
+    if target~=nil and target:IsHero() and self:MayNotBeIllusion(npc, target) then
         return target
     end
 end
@@ -2936,6 +2940,9 @@ function M:StopCoroutine(thread)
     self:Remove_Modify(coroutineRegistry, thread)
 end
 
+-- get data from ability
+-- for example, to get value aoe_radius, use ability.aoe_radius rather than ability:GetSpecialValueInt("aoe_radius")
+
 local function GetDataFromAbility(ability, valueName)
     local a = ability:GetSpecialValueInt(valueName)
     return a==0 and ability:GetSpecialValueFloat(valueName) or a
@@ -2975,5 +2982,23 @@ local function Append__Index(tb, __index)
     end
 end
 Append__Index(CDOTABaseAbility_BotScript, GetDataFromAbility)
+
+function M:pcall(func, ...)
+    local result = { func(...) }
+    if result[1] then
+        table.remove(result, 1)
+        return self:Unpack(result)
+    else
+        error(result[2])
+        DebugPause()
+    end
+end
+
+-- M.debug = true
+function M:DebugPause()
+    if self.debug then
+        DebugPause()
+    end
+end
 
 return M

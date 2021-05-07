@@ -117,7 +117,7 @@ Consider[1]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy,"Target"; 
+					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetLocation()
 				end
 			end
 		end
@@ -135,7 +135,7 @@ Consider[1]=function()
 			then
 				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy)) 
 				then
-					return BOT_ACTION_DESIRE_MODERATE, npcEnemy,"Target";
+					return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetLocation()
 				end
 			end
 		end
@@ -149,7 +149,7 @@ Consider[1]=function()
 			local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 			if ( locationAoE.count >= 3 ) 
 			then
-				return BOT_ACTION_DESIRE_MODERATE-0.03, locationAoE.targetloc,"Location";
+				return BOT_ACTION_DESIRE_MODERATE-0.03, locationAoE.targetloc
 			end
 		end
 	end
@@ -167,7 +167,7 @@ Consider[1]=function()
 			local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 			if ( locationAoE.count >= 3 ) 
 			then
-				return BOT_ACTION_DESIRE_MODERATE-0.03, locationAoE.targetloc,"Location";
+				return BOT_ACTION_DESIRE_MODERATE-0.03, locationAoE.targetloc
 			end
 		end
 	end
@@ -182,7 +182,7 @@ Consider[1]=function()
 			then
 				if ( CanCast[abilityNumber]( WeakestEnemy ) )
 				then
-					return BOT_ACTION_DESIRE_LOW,WeakestEnemy,"Target";
+					return BOT_ACTION_DESIRE_LOW,WeakestEnemy:GetLocation()
 				end
 			end
 		end
@@ -197,7 +197,7 @@ Consider[1]=function()
 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 		if ( locationAoE.count >= 2 ) 
 		then
-			return BOT_ACTION_DESIRE_MODERATE, locationAoE.targetloc,"Location"
+			return BOT_ACTION_DESIRE_MODERATE, locationAoE.targetloc
 		end
 		
 		local npcEnemy = npcBot:GetTarget();
@@ -206,7 +206,7 @@ Consider[1]=function()
 		then
 			if ( not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy,"Target"
+				return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetLocation()
 			end
 		end
 	end

@@ -401,19 +401,22 @@ function UseAbility(AbilitiesReal, cast)
 		local ability = AbilitiesReal[j]
 		if not ability:IsCooldownReady() then
 			print("Ability still in cooldown: "..ability:GetName())
+			AbilityExtensions:DebugPause()
 			return
 		end
         if npcBot:GetMana() < ability:GetManaCost() then
             print("Ability mana not enough: "..ability:GetName())
+			AbilityExtensions:DebugPause()
 			return
         end
         if ability:IsHidden() then
             print("Ability is hidden: "..ability:GetName())
+			AbilityExtensions:DebugPause()
 			return
         end
-		if npcBot:IsRooted() then
-			print("use when rooted: "..ability:GetName())
-		end
+		-- if npcBot:IsRooted() then
+		-- 	print("use when rooted: "..ability:GetName())
+		-- end
 
         local function CallWithTarget()
             cast.Type[j] = "Target"
@@ -424,6 +427,7 @@ function UseAbility(AbilitiesReal, cast)
             if AbilityExtensions:IsVector(cast.Target[j]) then
                 print("Wrong target type")
                 print(ability:GetName(), cast.Target[j], cast.Type[j])
+				AbilityExtensions:DebugPause()
 				return
             else
                 npcBot:Action_UseAbilityOnEntity(ability, cast.Target[j])
@@ -434,10 +438,12 @@ function UseAbility(AbilitiesReal, cast)
             if not AbilityExtensions:IsVector(cast.Target[j]) then
                 print("Wrong target type")
                 print(ability:GetName(), cast.Target[j], cast.Type[j])
+				AbilityExtensions:DebugPause()
 				return
             elseif OutOfBound(cast.Target[j]) then
                 print("Ability cast out of world bounds!")
                 print(ability:GetName(), cast.Target[j], cast.Type[j])
+				AbilityExtensions:DebugPause()
 				return
             else
                 npcBot:Action_UseAbilityOnLocation(ability, cast.Target[j])

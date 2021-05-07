@@ -114,7 +114,8 @@ Consider[1]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or npcBot:GetMana() < ability:GetManaCost() or not ability:IsCooldownReady() then
+		-- tempest double doesn't check ability:IsFullyCastable(), so manual check is required here
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -181,7 +182,7 @@ Consider[1]=function()
 	then
 		if ( #creeps >=1 ) 
 		then
-			if(npcBot:GetMana()>ComboMana and CanCast[abilityNumber](WeakestCreep))
+			if(npcBot:GetMana()>ComboMana*2 and CanCast[abilityNumber](WeakestCreep))
 			then
 				return BOT_ACTION_DESIRE_LOW, WeakestCreep;
 			end
@@ -240,7 +241,7 @@ Consider[2]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or npcBot:GetMana() < ability:GetManaCost() or not ability:IsCooldownReady() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -335,7 +336,7 @@ Consider[3]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or npcBot:GetMana() < ability:GetManaCost() or not ability:IsCooldownReady() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -466,7 +467,7 @@ Consider[4]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() or AbilityExtensions:CannotTeleport(npcBot) then
+	if not ability:IsFullyCastable() or AbilityExtensions:CannotTeleport(npcBot) or AbilityExtensions:IsTempestDouble(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
