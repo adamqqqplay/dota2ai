@@ -98,8 +98,7 @@ Consider[1]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -216,13 +215,13 @@ Consider[2]=function()
 	local CastRange = ability:GetCastRange()
 	local CastPoint = ability:GetCastPoint()
 
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
+	local enemys = npcBot:GetNearbyHeroes(1200,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(Radius+300,true)
+	local creeps = npcBot:GetNearbyCreeps(1200,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+	local Damage = ability:GetLevel()*100
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
@@ -270,7 +269,7 @@ Consider[2]=function()
 		if ( npcEnemy ~= nil and npcBot:HasModifier("modifier_skeleton_king_mortal_strike")
 				and npcBot:GetModifierStackCount(npcBot:GetModifierByName("modifier_skeleton_king_mortal_strike"))> ability:GetLevel() + 2)
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy) <= Radius-CastPoint* npcEnemy:GetCurrentMovementSpeed())
+			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy) <= 1200-CastPoint* npcEnemy:GetCurrentMovementSpeed())
 			then
 				return BOT_ACTION_DESIRE_MODERATE
 			end

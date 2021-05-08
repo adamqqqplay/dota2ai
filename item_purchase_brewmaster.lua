@@ -13,7 +13,6 @@ local ItemsToBuy =
 	"item_bracer",
 	"item_phase_boots", --相位7.21
 	"item_magic_wand",
-	"item_vladmir", --祭品7.21
 	"item_blink", --跳刀
 	"item_black_king_bar", --BKB
 	"item_ultimate_scepter", --蓝杖

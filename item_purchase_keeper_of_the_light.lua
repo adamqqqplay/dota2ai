@@ -11,8 +11,7 @@ local ItemsToBuy =
 	"item_tango",
 	"item_wind_lace",
 	"item_boots",
-    "item_magic_stick",
-	"item_ring_of_regen", --绿鞋
+	"item_tranquil_boots",
 	"item_glimmer_cape", --微光
     "item_ghost", --绿杖
 	"item_force_staff", --推推7.14

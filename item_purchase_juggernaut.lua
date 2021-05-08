@@ -15,12 +15,12 @@ local ItemsToBuy =
 	"item_phase_boots", --相位7.21
 	"item_maelstrom",
 	"item_yasha", --夜叉
-	"item_diffusal_blade", --散失刀
 	"item_ultimate_orb",
 	"item_recipe_manta", --分身
 	"item_abyssal_blade", --大晕锤
 	"item_butterfly", --蝴蝶
     "item_ultimate_scepter",
+    "item_swift_blink",
     "item_recipe_ultimate_scepter",
 }
 

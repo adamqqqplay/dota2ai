@@ -101,12 +101,7 @@ Consider[1]=function()
 	local Radius = ability:GetAOERadius();
 
 	local blink
-	local i=npcBot:FindItemSlot("item_blink")
-	if(i>=0 and i<=5)
-	then
-		blink=npcBot:GetItemInSlot(i)
-		i=nil
-	end
+	local blink = AbilityExtensions:GetAvailableBlink(npcBot)
 	if(blink~=nil and blink:IsFullyCastable())
 	then
 		if(npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
@@ -362,7 +357,7 @@ Consider[4]=function()
 	local CastPoint = ability:GetCastPoint();
 	
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
+	local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot)
 	local enemys2 = npcBot:GetNearbyHeroes(Radius,false,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps2 = npcBot:GetNearbyCreeps(Radius,false)
@@ -372,9 +367,9 @@ Consider[4]=function()
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_PHYSICAL))
+			if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_PHYSICAL)) and GetUnitToUnitDistance(npcBot, WeakestEnemy) <= 1800
 			then
-				return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
+				return BOT_ACTION_DESIRE_HIGH
 			end
 		end
 	end
@@ -385,9 +380,9 @@ Consider[4]=function()
 	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
 	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
-		if ( npcEnemy ~= nil ) 
+		if ( npcEnemy ~= nil ) and GetUnitToUnitDistance(npcBot, npcEnemy) <= 1800
 		then
 			return BOT_ACTION_DESIRE_HIGH
 		end

@@ -73,7 +73,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -148,15 +148,14 @@ Consider[2]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() or not AbilityExtensions:CanMove(npcBot) then
+	if not ability:IsFullyCastable() or AbilityExtensions:CannotMove(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -270,8 +269,7 @@ Consider[4]=function()
 	local Radius = ability:GetAOERadius()
 	local CastPoint = ability:GetCastPoint()
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -306,6 +304,29 @@ Consider[4]=function()
 
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
+end
+
+Consider[5] = function()
+	local abilityNumber=5
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber]
+	
+	if not ability:IsFullyCastable() or ability:IsHidden() then
+		return BOT_ACTION_DESIRE_NONE
+	end
+	local Radius = ability:GetAOERadius()
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
+	local enemys = npcBot:GetNearbyHeroes(1500,true,BOT_MODE_NONE)
+	if --AbilityExtensions:Outnumber(npcBot, allys, enemys) and
+            HealthPercentage>=0.5 and not npcBot:WasRecentlyDamagedByAnyHero(1.5) then
+		return BOT_ACTION_DESIRE_HIGH
+	end
+	if #enemys == 0 and not npcBot:WasRecentlyDamagedByAnyHero(1.5) then
+		return BOT_ACTION_DESIRE_HIGH
+	end
+	return 0
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)

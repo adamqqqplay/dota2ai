@@ -10,22 +10,14 @@ local ItemsToBuy =
 	"item_tango",
 	"item_quelling_blade",
 	"item_enchanted_mango",
-	"item_branches",
-	"item_branches",
-	"item_magic_stick",
-	"item_recipe_magic_wand", --大魔棒7.14
+	"item_magic_wand",
 	"item_boots",
 	"item_bracer",
 	"item_energy_booster",
 	"item_mekansm", --梅肯
 	"item_vladmir", --祭品7.21
-	"item_buckler",
-	"item_recipe_guardian_greaves", --卫士胫甲
-	"item_hood_of_defiance", --挑战
-	"item_ring_of_regen",
-	"item_recipe_headdress",
-	"item_branches",
-	"item_recipe_pipe", --笛子
+	"item_guardian_greaves", --卫士胫甲
+	"item_pipe", --笛子
 	"item_ultimate_scepter", --蓝杖
 	"item_lotus_orb" --清莲宝珠
 }

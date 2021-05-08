@@ -12,9 +12,9 @@ local ItemsToBuy =
     "item_branches",
 	"item_boots",
 	"item_flask",
-    "item_recipe_magic_wand",
+    "item_magic_wand",
     "item_null_talisman",
-	"item_ring_of_basilius",
+	-- "item_ring_of_basilius",
 	"item_energy_booster",
 	"item_glimmer_cape", --微光
     "item_ghost",

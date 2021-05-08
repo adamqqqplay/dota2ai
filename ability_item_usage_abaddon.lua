@@ -76,6 +76,13 @@ end
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
 
+
+local attackRange
+local health
+local healthPercent
+local mana
+local manaPercent
+
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -117,8 +124,7 @@ Consider[1]=function() -- TODO: lv 25 AOE mist coil
 	local Damage = ability:GetAbilityDamage();
 	local SelfDamage = ability:GetSpecialValueInt("self_damage");
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( CastRange+150, false, BOT_MODE_NONE );
 	for _,hero in pairs (allys)
 	do
@@ -232,6 +238,150 @@ Consider[1]=function() -- TODO: lv 25 AOE mist coil
 	
 end
 
+
+-- local function MistCoilAuxilliaryCanCast(t)
+-- 	if AbilityExtensions:IsOnSameTeam(npcBot, t) then
+-- 		return AbilityExtensions:AllyCanCast(t)
+-- 	else
+-- 		return AbilityExtensions:NormalCanCast(t, true, DAMAGE_TYPE_MAGICAL)
+-- 	end
+-- end
+
+-- local function MistCoilPrimaryCanCast(t)
+-- 	if AbilityExtensions:IsOnSameTeam(npcBot, t) then
+-- 		return AbilityExtensions:AllyCanCast(t)
+-- 	else
+-- 		return AbilityExtensions:NormalCanCast(t, true, DAMAGE_TYPE_MAGICAL) and not AbilityExtensions:HasModifier("modifier_antimage_counterspell")
+-- 	end
+-- end
+
+-- local function NormalMistCoil()
+-- 	local ability=AbilitiesReal[1]
+	
+-- 	if not ability:IsFullyCastable() then
+-- 		return BOT_ACTION_DESIRE_NONE
+-- 	end
+	
+--     local abilityLevel = ability:GetLevel()
+--     local castRange = ability:GetCastRange()
+--     local castPoint = ability:GetCastPoint()
+--     local manaCost = ability:GetManaCost()
+--     local enemies = AbilityExtensions:GetNearbyHeroes(npcBot, castRange)
+--     local realEnemies = AbilityExtensions:Filter(enemies, function(t) return AbilityExtensions:MayNotBeIllusion(npcBot, t) end)
+--     local friends = AbilityExtensions:GetNearbyHeroes(npcBot, 1200, true)
+--     local friendCount = AbilityExtensions:GetEnemyHeroNumber(npcBot, friends)
+-- 	local targettableFriends = AbilityExtensions:Remove(friends, npcBot)
+
+-- 	local hasBorrowedTime = npcBot:HasModifier("modifier_abaddon_borrowed_time")
+-- 	local hasAphoticShield = npcBot:HasModifier("modifier_abaddon_aphotic_shield")
+
+-- 	local damage = ability:GetDamage()
+-- 	local selfDamage = npcBot:GetActualIncomingDamage(damage * ability:GetSpecialValueInt("self_damage") / 100, DAMAGE_TYPE_PURE)
+-- 	local function ChangeDesireBasedOnMyBuff(desire)
+-- 		if hasBorrowedTime then
+-- 			if healthPercent <= 0.75 then
+-- 				desire = desire * 2 
+-- 			else
+-- 				desire = desire * 1.5
+-- 			end
+-- 		else
+-- 			if hasAphoticShield and healthPercent >= 0.6 then
+-- 				desire = desire * 1.2
+-- 			else
+-- 				desire = desire - RemapValClamped(health, selfDamage*1.1, selfDamage*4, 0.8, 0)
+-- 			end
+-- 		end
+-- 	end
+
+-- 	local function ProtectFriends()
+-- 		local protectFriends = AbilityExtensions:Filter(targettableFriends, function(t) return AbilityExtensions:MayNotBeIllusion(t) and MistCoilPrimaryCanCast(t) and AbilityExtensions:GetMaxHealth(t) <= 0.7 and t:GetHealth() <= health * 2 end)
+-- 		AbilityExtensions:ForEach(protectFriends, function(t)
+-- 			local desire = RemapValClamped(t:GetHealth(), 100, 800, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_VERYLOW)
+-- 			desire = ChangeDesireBasedOnMyBuff(desire)
+-- 			if AbilityExtensions:IsSeverelyDisabledOrSlowed(t) then
+-- 				desire = desire * 1.5
+-- 			end
+-- 			coroutine.yield(Clamp(desire, 0, 0.8), t)
+-- 		end)
+-- 	end
+
+-- 	if AbilityExtensions:IsAttackingEnemies(npcBot) then
+-- 		AbilityExtensions:ForEach(realEnemies, function(t)
+-- 			if AbilityExtensions:GetHealthPercent(t) <= 0.6 and MistCoilPrimaryCanCast(t) then
+-- 				local actualDamage = t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL)
+-- 				local desire = RemapValClamped(t:GetHealth(), actualDamage*1.1, actualDamage*8, BOT_ACTION_DESIRE_HIGH, BOT_ACTION_DESIRE_VERYLOW)
+-- 				desire = ChangeDesireBasedOnMyBuff(desire)
+-- 				coroutine.yield(Clamp(desire, 0, 0.8), t)
+-- 			end
+-- 		end)
+-- 		ProtectFriends()
+-- 	elseif AbilityExtensions:IsLaning(npcBot) then
+-- 		if friendCount == 1 and health > selfDamage + 0.6 * npcBot:GetMaxHealth() and manaPercent > 0.3 + manaCost then
+-- 			local enemyCreeps = AbilityExtensions:GetNearbyAttackableCreeps(npcBot, 900)
+-- 			local weakCreeps = AbilityExtensions:Filter(enemyCreeps, function(t) return t:GetHealth() <= t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) end)
+-- 			weakCreeps = AbilityExtensions:Filter(weakCreeps, function(t) return t:WasRecentlyDamagedByCreep(1.7) and t:GetAttackRange() >= 450 and GetUnitToLocationDistanceSqr(npcBot, t) > 300^2 end)
+-- 			AbilityExtensions:ForEach(weakCreeps, function(t)
+-- 				coroutine.yield(BOT_ACTION_DESIRE_MODERATE, t)
+-- 			end)
+-- 		end
+-- 	elseif AbilityExtensions:IsRetreating(npcBot) then
+-- 		if not npcBot:WasRecentlyDamagedByAnyHero(0.7) and AbilityExtensions:IsSeverelyDisabledOrSlowed(npcBot) then
+-- 			if npcBot:HasModifier("modifier_abaddon_borrowed_time") then
+-- 				local attackEnemies = AbilityExtensions:Filter(realEnemies, function(t) return MistCoilPrimaryCanCast(t) and t:GetHealth() <= 800 end)
+-- 				AbilityExtensions:ForEach(attackEnemies, function(t)
+-- 					return RemapValClamped(t:GetHealth(), 100, 800, BOT_ACTION_DESIRE_VERYHIGH, BOT_ACTION_DESIRE_LOW)
+-- 				end)
+-- 			end
+-- 		end
+-- 	else
+-- 		ProtectFriends()
+-- 	end
+-- 	return 0
+-- end
+
+-- local function AOEMistCoil()
+-- 	local ability=AbilitiesReal[1]
+	
+-- 	if not ability:IsFullyCastable() then
+-- 		return BOT_ACTION_DESIRE_NONE
+-- 	end
+	
+--     local abilityLevel = ability:GetLevel()
+--     local castRange = ability:GetCastRange()
+--     local castPoint = ability:GetCastPoint()
+--     local manaCost = ability:GetManaCost()
+-- 	local damage = ability:GetDamage()
+-- 	local selfDamage = npcBot:GetActualIncomingDamage(damage * ability:GetSpecialValueInt("self_damage") / 100, DAMAGE_TYPE_PURE)
+--     local enemies = AbilityExtensions:GetNearbyHeroes(npcBot, castRange)
+--     local realEnemies = AbilityExtensions:Filter(enemies, function(t) return AbilityExtensions:MayNotBeIllusion(npcBot, t) end)
+--     local friends = AbilityExtensions:GetNearbyHeroes(npcBot, 1200, true)
+--     local friendCount = AbilityExtensions:GetEnemyHeroNumber(npcBot, friends)
+-- 	local targettableFriends = AbilityExtensions:Remove(friends, npcBot)
+--     local enemyCreeps = AbilityExtensions:GetNearbyAttackableCreeps(npcBot, 900)
+--     local friendCreeps = AbilityExtensions:GetNearbyAttackableCreeps(npcBot, npcBot:GetAttackRange()+150, false)
+--     local weakCreeps = AbilityExtensions:Filter(enemyCreeps, function(t) return t:GetHealth() < t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) end)
+--     local weakestCreep = utility.GetWeakestUnit(weakCreeps)
+--     local forbiddenCreeps = AbilityExtensions:Filter(enemyCreeps, function(t)
+--         return t:GetHealth() > t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) and t:GetHealth() <= t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) + AbilityExtensions:AttackOnceDamage(npcBot, t) * (0.9+#enemyCreeps*0.1)
+--     end)
+--     if #friendCreeps == 0 then
+--         forbiddenCreeps = {}
+-- 	end
+
+-- 	local hasBorrowedTime = npcBot:HasModifier("modifier_abaddon_borrowed_time")
+-- 	local hasAphoticShield = npcBot:HasModifier("modifier_abaddon_aphotic_shield")
+	
+-- end
+
+-- Consider[1] = function()
+-- 	local ability25 = npcBot:GetAbilityByName("special_bonus_unique_abaddon_4")
+-- 	if ability25:IsTrained() then
+-- 		return NormalMistCoil()
+-- 	else
+-- 		return AOEMistCoil()
+-- 	end
+-- end
+
 Consider[2]=function()
 	local abilityNumber=2
 	--------------------------------------
@@ -246,8 +396,7 @@ Consider[2]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
@@ -269,7 +418,7 @@ Consider[2]=function()
 		end
 	end
 	if(	npcBot:GetActiveMode() == BOT_MODE_ATTACK or
-		npcBot:GetActiveMode() == BOT_DEFEND_ALLY or
+		npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		ManaPercentage>0.4)
 	then
 		for _,npcTarget in pairs( allys )
@@ -403,7 +552,7 @@ Consider[4]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or npcBot:HasModifier("modifier_ice_blast") then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 
@@ -415,6 +564,7 @@ Consider[4]=function()
 
 	return BOT_ACTION_DESIRE_NONE
 end
+
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
 function AbilityUsageThink()
@@ -429,6 +579,11 @@ function AbilityUsageThink()
 	AttackRange=npcBot:GetAttackRange()
 	ManaPercentage=npcBot:GetMana()/npcBot:GetMaxMana()
 	HealthPercentage=npcBot:GetHealth()/npcBot:GetMaxHealth()
+	attackRange = npcBot:GetAttackRange()
+	health = npcBot:GetHealth()
+    healthPercent = AbilityExtensions:GetHealthPercent(npcBot)
+    mana = npcBot:GetMana()
+    manaPercent = AbilityExtensions:GetManaPercent(npcBot)
 	
 	cast=ability_item_usage_generic.ConsiderAbility(AbilitiesReal,Consider)
 	---------------------------------debug--------------------------------------------

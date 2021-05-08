@@ -241,14 +241,14 @@ function M.CourierUsageThink()
                         -- print(npcBot:GetUnitName());
                         if cst == COURIER_STATE_MOVING then
                             courierUtils.pIDInc = courierUtils.pIDInc + 1;
-                            print(npcBot:GetUnitName().." : Courier Successfully Assigned ."..tostring(npcBot.courierID));
+                            -- print(npcBot:GetUnitName().." : Courier Successfully Assigned ."..tostring(npcBot.courierID))
                             checkCourier = false;
                             npcBot.courierAssigned = true;
                             courierUtils.calibrateTime = DotaTime();
                             npcBot:ActionImmediate_Courier( cr, COURIER_ACTION_RETURN_STASH_ITEMS );
                             return;
                         elseif npcBot.courierID ~= nil then
-                             print(npcBot:GetUnitName().. ": Failed to Assign Courier.");
+                            --  print(npcBot:GetUnitName().. ": Failed to Assign Courier.")
                             npcBot.courierID = npcBot.courierID + 1;
                             checkCourier = false;
                             courierUtils.calibrateTime = DotaTime();
@@ -318,20 +318,20 @@ function M.CourierUsageThink()
         local courierPHP = npcCourier:GetHealth() / npcCourier:GetMaxHealth();
 
         if IsFlyingCourier(npcCourier) then
-            local burst = npcCourier:GetAbilityByName('courier_shield');
-            if IsTargetedByUnit(npcCourier) then
-                if burst:IsFullyCastable() and apiAvailable == true
-                then
-                    npcBot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_BURST );
-                    return
-                elseif DotaTime() > returnTime + 7.0
-                       --and not burst:IsFullyCastable() and not npcCourier:HasModifier('modifier_courier_shield')
-                then
-                    npcBot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_RETURN );
-                    returnTime = DotaTime();
-                    return
-                end
-            end
+            -- local burst = npcCourier:GetAbilityByName('courier_shield');
+            -- if IsTargetedByUnit(npcCourier) then
+            --     if burst:IsFullyCastable() and apiAvailable == true
+            --     then
+            --         npcBot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_BURST );
+            --         return
+            --     elseif DotaTime() > returnTime + 7.0
+            --            --and not burst:IsFullyCastable() and not npcCourier:HasModifier('modifier_courier_shield')
+            --     then
+            --         npcBot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_RETURN );
+            --         returnTime = DotaTime();
+            --         return
+            --     end
+            -- end
         else
             if IsTargetedByUnit(npcCourier) then
                 if DotaTime() - returnTime > 7.0 then
@@ -346,7 +346,7 @@ function M.CourierUsageThink()
             npcCourier.latestUser = "temp";
         end
 
-        if npcBot.SShopUser and ( not npcBot:IsAlive() or npcBot:GetActiveMode() == npcBot_MODE_SECRET_SHOP or not npcBot.SecretShop  ) then
+        if npcBot.SShopUser and ( not npcBot:IsAlive() or npcBot:GetActiveMode() == BOT_MODE_SECRET_SHOP or not npcBot.SecretShop  ) then
             --npcBot:ActionImmediate_Chat( "Releasing the courier to anticipate secret shop stuck", true );
             npcCourier.latestUser = "temp";
             npcBot.SShopUser = false;

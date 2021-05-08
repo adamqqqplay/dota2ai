@@ -147,68 +147,6 @@ Consider[4] = function()
 
 end
 
-Consider[3] = function()
-    local abilityNumber = 3
-    --------------------------------------
-    -- Generic Variable Setting
-    --------------------------------------
-    local ability = AbilitiesReal[abilityNumber];
-
-    if not ability:IsFullyCastable()
-    then
-        return BOT_ACTION_DESIRE_NONE, 0;
-    end
-
-    local CastRange = ability:GetCastRange();
-    local Damage = ability:GetAbilityDamage();
-    local CastPoint = ability:GetCastPoint();
-
-    local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE);
-    local enemys = npcBot:GetNearbyHeroes(math.min(1600,CastRange + 300), true, BOT_MODE_NONE)
-    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
-    local creeps = npcBot:GetNearbyCreeps(math.min(1600,CastRange + 300), true)
-    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
-    --------------------------------------
-    -- Global high-priorty usage
-    --------------------------------------
-    --Try to kill enemy hero
-    if (npcBot:GetActiveMode() ~= BOT_MODE_RETREAT)
-    then
-        if (WeakestEnemy ~= nil)
-        then
-            if (CanCast[abilityNumber](WeakestEnemy))
-            then
-                if (HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or (HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and npcBot:GetMana() > ComboMana))
-                then
-                    return BOT_ACTION_DESIRE_HIGH, WeakestEnemy;
-                end
-            end
-        end
-    end
-
-    --------------------------------------
-    -- Mode based usage
-    --------------------------------------
-    -- If we're going after someone
-    if (npcBot:GetActiveMode() == BOT_MODE_ROAM or
-            npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-            npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-            npcBot:GetActiveMode() == BOT_MODE_ATTACK)
-    then
-        local npcEnemy = npcBot:GetTarget();
-
-        if (npcEnemy ~= nil)
-        then
-            if (CanCast[abilityNumber](npcEnemy) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys)
-            then
-                return BOT_ACTION_DESIRE_MODERATE, npcEnemy
-            end
-        end
-    end
-
-    return BOT_ACTION_DESIRE_NONE, 0;
-
-end
 
 function IsLocationOverlapWeb(location, Radius)
 	local unit = GetUnitList(UNIT_LIST_ALLIES);

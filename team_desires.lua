@@ -369,7 +369,7 @@ function GetRealHero(Candidates)
 	for i,unit in pairs(Candidates) do
 		local int = unit:GetAttributeValue(2);
 		local baseRegen=0.01;
-		if unit:GetUnitName()==npc_dota_hero_techies then
+		if unit:GetUnitName()=="npc_dota_hero_techies" then
 			baseRegen=0.02;
 		end
 

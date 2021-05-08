@@ -41,4 +41,6 @@ luac.out
 
 LICENSE
 .vscode
+.DS_Store
 .idea
+

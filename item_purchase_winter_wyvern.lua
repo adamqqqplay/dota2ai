@@ -10,11 +10,7 @@ local ItemsToBuy =
 	"item_tango",
 	"item_clarity",
     "item_magic_stick",
-	"item_buckler",
-	"item_wind_lace",
-	"item_boots",
-	"item_ring_of_regen", --绿鞋
-	"item_soul_ring",
+	"item_tranquil_boots",
 	"item_urn_of_shadows",
 	"item_glimmer_cape", --微光
 	"item_force_staff",

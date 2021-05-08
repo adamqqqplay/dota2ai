@@ -21,8 +21,8 @@ local ItemsToBuy =
 }
 
 local ItemsToBuy1 = {
-	"item_tango","item_tango",
 	"item_wraith_brand",
+	"item_tango","item_tango",
 	"item_power_treads",
 	"item_manta",
 	"item_diffusal_blade",

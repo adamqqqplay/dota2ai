@@ -90,13 +90,37 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
-local function GetIncomingDodgeableProjectiles()
-    local incProj = npcBot:GetIncomingTrackingProjectiles() or {}
-    return AbilityExtensions:Filter(incProj, function(t)
-        return not t.is_attack and not AbilityExtensions:IgnoreAbilityBlock(p.ability) and t.caster:GetTeam() ~= npcBot:GetTeam()
-    end)
+local function GetBlinkAttackLocation(enemy)
+	local attackDistance = enemy:GetBoundingRadius() + npcBot:GetBoundingRadius()
+	if AbilityExtensions:HasPhasedMovement(enemy) or AbilityExtensions:HasUnobstructedMovement(enemy) then
+		attackDistance = npcBot:GetAttackRange()
+	end
+	local enemyNextStep = enemy:GetLocation() + Vector(math.cos(enemy:GetFacing()), math.sin(enemy:GetFacing())) * attackDistance
+	local distanceFromNextStep = GetUnitToLocationDistance(npcBot, enemyNextStep)
+	local blinkRadius = AbilitiesReal[2]:GetSpecialValueInt("blink_range")
+	if AbilityExtensions:HasPhasedMovement(enemy) or AbilityExtensions:HasUnobstructedMovement(enemy) then
+		
+	end
+	if blinkRadius <= distanceFromNextStep then
+		return AbilityExtensions:GetPointFromLineByDistance(npcBot:GetLocation(), enemy:GetLocation(), blinkRadius)
+	else
+		return enemyNextStep
+	end
 end
 
+local function TooDangerousToBlinkNear(npc)
+	local enoughHealth = AbilityExtensions:GetHealthPercent(npcBot) >= AbilityExtensions:GetHealthPercent(npc) + 0.2 and npcBot:GetHealth() >= npc:GetHealth() * 0.8
+	local isVeryDangerous = npc:HasModifier("modifier_medusa_stone_gaze") or npc:HasModifier("modifier_faceless_void_chronosphere_selfbuff") or npc:HasModifier("modifier_monkey_king_fur_army_soldier_in_position") or AbilityExtensions:IsInvulnerable(npc)
+	if isVeryDangerous then
+		return true
+	end
+	local isDangerous = npc:HasModifier("modifier_batrider_firefly") or npc:HasModifier("modifier_winter_wyvern_arctic_burn_flight") or npc:IsMagicImmune()
+	if isDangerous and not enoughHealth then
+		return true
+	end
+	return false
+end
+	
 Consider[2]=function()
     local abilityNumber=2
 	--------------------------------------
@@ -104,7 +128,7 @@ Consider[2]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() or not AbilityExtensions:CanMove(npcBot) then
+	if not ability:IsFullyCastable() or AbilityExtensions:CannotTeleport(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -124,7 +148,10 @@ Consider[2]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana and GetUnitToUnitDistance(npcBot,WeakestEnemy) > 200)
 				then
-					return BOT_ACTION_DESIRE_HIGH,utility.GetUnitsTowardsLocation(npcBot,WeakestEnemy,CastRange+200); 
+					if TooDangerousToBlinkNear(WeakestEnemy) then
+						return 0
+					end
+					return BOT_ACTION_DESIRE_HIGH, GetBlinkAttackLocation(WeakestEnemy)
 				end
 			end
 		end
@@ -162,7 +189,10 @@ Consider[2]=function()
 				then
 					if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys and GetUnitToUnitDistance(npcBot,npcEnemy) > 200)
 					then
-						return BOT_ACTION_DESIRE_MODERATE, utility.GetUnitsTowardsLocation(npcBot,npcEnemy,CastRange+200);
+						if TooDangerousToBlinkNear(npcEnemy) then
+							return 0
+						end
+						return BOT_ACTION_DESIRE_MODERATE, GetBlinkAttackLocation(npcEnemy)
 					end
 				end
 			end
@@ -170,10 +200,10 @@ Consider[2]=function()
 	end
 
     -- use blink to dodge ability
-    local projectiles = GetIncomingDodgeableProjectiles()
+    local projectiles = AbilityExtensions:GetIncomingDodgeWorthProjectiles(npcBot)
     local castPoint = ability:GetCastPoint()
     local defaultProjectileVelocity = 1500
-    if #projectiles ~= 0 and not AbilityToLevelUp[3]:IsFullyCastable() then
+    if #projectiles ~= 0 and not AbilitiesReal[3]:IsFullyCastable() and not npcBot:HasModifier("modifier_antimage_counterspell") then
         for _, projectile in pairs(projectiles) do
             if GetUnitToLocationDistance(npcBot, projectile.location) > castPoint * defaultProjectileVelocity then
                 local escapeLocation = utility.GetUnitsTowardsLocation(npcBot, projectile.location, 400)
@@ -226,10 +256,10 @@ Consider[3]=function()
 		then
 			if CanCast[abilityNumber]( npcTarget ) and GetUnitToUnitDistance(npcBot,npcTarget) < 600
 			then
-				local incProj = npcBot:GetIncomingTrackingProjectiles()
+				local incProj = AbilityExtensions:GetIncomingDodgeWorthProjectiles(npcBot)
 				for _,p in pairs(incProj)
 				do
-					if GetUnitToLocationDistance(npcBot, p.location) <= 300 and p.is_attack == false and not AbilityExtensions:IgnoreAbilityBlock(p.ability) then
+					if GetUnitToLocationDistance(npcBot, p.location) <= 300 then
 						return BOT_ACTION_DESIRE_HIGH
 					end
 				end
@@ -285,7 +315,6 @@ Consider[5]=function()
 
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         local targets = npcBot:GetNearbyHeroes(CastRange+400,true,BOT_MODE_NONE)
-        local filter = function(t) return CanCast[abilityNumber](t)  end
         local goodTargets = {}
         for _,t in pairs(targets) do
             if AbilityExtensions:MustBeIllusion(npcBot, t) then
@@ -322,29 +351,6 @@ Consider[5]=function()
         end
     end
 
-	--if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT )
-	--then
-	--	for i,npcEnemy in pairs(enemys)
-	--	do
-	--		if ( CanCast[abilityNumber]( npcEnemy ) )
-	--		then
-	--			local enemys = npcEnemy:GetNearbyHeroes(Radius,false,BOT_MODE_NONE)
-	--			local Damage=(npcEnemy:GetMaxMana()-npcEnemy:GetMana())*DamagePercent
-	--			local ManaPercentageEnemy=npcEnemy:GetMana()/npcEnemy:GetMaxMana()
-	--			if(enemys~=nil)
-	--			then
-	--				Damage=Damage*(1+0.2*#enemys)
-	--			end
-	--
-	--			if(npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
-	--			then
-	--				return BOT_ACTION_DESIRE_HIGH,npcEnemy;
-	--			end
-	--		end
-	--	end
-	--end
-	
-	-- Check for a channeling enemy
 	for _,npcEnemy in pairs( enemys )
 	do
 		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy )) 

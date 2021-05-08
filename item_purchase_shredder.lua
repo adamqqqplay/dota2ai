@@ -13,7 +13,7 @@ local ItemsToBuy =
     "item_magic_wand",
 	"item_arcane_boots", --秘法鞋
 	"item_bloodstone",
-	"item_pipe", --笛子
+	"item_hood_of_defiance",
 	"item_cyclone",
 	"item_ultimate_scepter", --蓝杖
 	"item_shivas_guard", --希瓦

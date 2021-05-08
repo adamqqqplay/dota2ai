@@ -103,8 +103,7 @@ Consider[1]=function()
 	local Radius = ability:GetAOERadius()
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -226,15 +225,14 @@ Consider[2]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() or not AbilityExtensions:CanMove(npcBot) then
+	if not ability:IsFullyCastable() or AbilityExtensions:CannotMove(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
 	local CastRange = ability:GetSpecialValueInt( "pounce_distance" )-100
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -253,7 +251,7 @@ Consider[2]=function()
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) and npcBot:IsFacingUnit(WeakestEnemy, 10) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange)
+			if ( CanCast[abilityNumber]( WeakestEnemy ) and npcBot:IsFacingUnit(WeakestEnemy, 10) and GetUnitToUnitDistance(npcBot,WeakestEnemy)< CastRange)
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
@@ -323,8 +321,7 @@ Consider[5]=function()
 	local CastRange = 300
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)

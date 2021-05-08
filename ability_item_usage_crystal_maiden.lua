@@ -72,7 +72,9 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,function(t)
+	return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_MAGICAL, false, true) and not AbilityExtensions:HasAbilityRetargetModifier(t)
+end,utility.NCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -99,8 +101,7 @@ Consider[1]=function()
 	local Damage = ability:GetAbilityDamage();
 	local Radius = ability:GetSpecialValueInt( "radius" );
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -227,14 +228,13 @@ Consider[2]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+150,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
-	local StrongestCreep,CreepHealth2=utility.GetStrongestUnit(creeps)
+	local StrongestCreep,CreepHealth2=utility.GetStrongestUnit(npcBot:GetNearbyNeutralCreeps(CastRange+200))
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
@@ -325,9 +325,9 @@ Consider[2]=function()
 	-- If we're farming and can kill 1
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
-		if(CreepHealth2>=600 and npcBot:GetMana()>ComboMana)
+		if(CreepHealth2>=600 and not StrongestCreep:GetUnitName() == "npc_dota_neutral_mud_golem" and not StrongestCreep:IsAncientCreep() and npcBot:GetMana()>240) and not (StrongestCreep:WasRecentlyDamagedByAnyHero(3) and not StrongestCreep:WasRecentlyDamagedByHero(npcBot, 3))
 		then
-			return BOT_ACTION_DESIRE_LOW, StrongestCreep;
+			return BOT_ACTION_DESIRE_MODERATE, StrongestCreep
 		end
 	end
 	
@@ -384,8 +384,7 @@ Consider[4]=function()
 	local Damage = ability:GetAbilityDamage();
 	local Radius = ability:GetAOERadius()
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -416,7 +415,7 @@ Consider[4]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then
@@ -433,31 +432,38 @@ end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
-
+local iceFreezingEnemy
 local freezingFieldHitSomeoneTimer
+
 function AbilityUsageThink()
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then
+		if npcBot:IsCastingAbility() and npcBot:GetCurrentActiveAbility() == AbilitiesReal[2] then
+			if iceFreezingEnemy ~= nil and AbilityExtensions:HasAbilityRetargetModifier(iceFreezingEnemy) then
+				npcBot:Action_ClearActions()
+			end
+		end
         if npcBot:IsChanneling() and npcBot:GetCurrentActiveAbility() == AbilitiesReal[4] then
-        --if npcBot:HasModifier("modifier_crystal_maiden_freezing_field") then
-            local glimmer = AbilityExtensions:GetAvailableItem(npcBot, "item_glimmer_cape")
-            if glimmer and glimmer:IsFullyCastable() then
-                npcBot:ActionImmediate_UseAbilityOnEntity(glimmer, npcBot)
-            end
-            local enemies = npcBot:GetNearbyHeroes(AbilitiesReal[4]:GetAOERadius(), true, BOT_MODE_NONE)
-            if #enemies > 0 or freezingFieldHitSomeoneTimer == nil then
-                freezingFieldHitSomeoneTimer = DotaTime()
-            else
-                if DotaTime() - freezingFieldHitSomeoneTimer >= 1.5 and #npcBot:GetNearbyHeroes(AbilitiesReal[4]:GetAOERadius() + 200, false, BOT_MODE_NONE) > 0 then
-                    local location = npcBot:GetLocation() + RandomVector(50)
-                    npcBot:Action_ClearActions(true)
-                else
-                end
-            end
-        else
-            freezingFieldHitSomeoneTimer = nil
-        end
+			if not AbilityExtensions:IsFarmingOrPushing(npcBot) then
+				local glimmer = AbilityExtensions:GetAvailableItem(npcBot, "item_glimmer_cape")
+				if glimmer and glimmer:IsFullyCastable() then
+					npcBot:ActionImmediate_UseAbilityOnEntity(glimmer, npcBot)
+				end
+				local enemies = npcBot:GetNearbyHeroes(AbilitiesReal[4]:GetAOERadius(), true, BOT_MODE_NONE)
+				if #enemies > 0 or freezingFieldHitSomeoneTimer == nil then
+					freezingFieldHitSomeoneTimer = DotaTime()
+				else
+					if DotaTime() - freezingFieldHitSomeoneTimer >= 1.5 and #npcBot:GetNearbyHeroes(AbilitiesReal[4]:GetAOERadius() + 200, false, BOT_MODE_NONE) > 0 then
+						local location = npcBot:GetLocation() + RandomVector(50)
+						npcBot:Action_ClearActions(true)
+					else
+					end
+				end
+			else
+				freezingFieldHitSomeoneTimer = nil
+			end
+		end
 		return
 	end
 	
@@ -472,8 +478,10 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
-
+	local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	if index == 2 then
+		iceFreezingEnemy = target
+	end
 end
 
 function CourierUsageThink() 

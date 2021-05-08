@@ -98,8 +98,7 @@ Consider[1]=function()	--Target Ability Example
 	local Damage = 25*ability:GetLevel()+5*(-20+30*ability:GetLevel())	-- 75/250/425/600
 	local Radius = ability:GetAOERadius()
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange + 75*#allys,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -231,8 +230,7 @@ Consider[3]=function() --Location AOE Example
 	
 	local CastRange = ability:GetCastRange();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -290,7 +288,7 @@ Consider[3]=function() --Location AOE Example
 	then
 		if ( #creeps >= 2 and (ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)) 
 		then
-			return BOT_ACTION_DESIRE_LOW, utility.RandomInCastRangePoint(npcBot,npcEnemy,CastRange,RandomRange);
+			return BOT_ACTION_DESIRE_LOW, utility.RandomInCastRangePoint(npcBot,creeps[1],CastRange,RandomRange);
 		end
 	end
 
@@ -337,8 +335,7 @@ Consider[4]=function()
 	local Damage = 0--ability:GetAbilityDamage();
 	local Radius = ability:GetAOERadius()
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -368,7 +365,7 @@ Consider[4]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then

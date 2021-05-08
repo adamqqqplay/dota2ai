@@ -276,7 +276,7 @@ Consider[3]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() or not AbilityExtensions:CanMove(npcBot) then
+	if not ability:IsFullyCastable() or AbilityExtensions:CannotMove(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -298,7 +298,7 @@ Consider[3]=function()
 		local ancient = GetAncient(GetTeam());
 		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) and npcBot:IsFacingLocation(ancient:GetLocation(),10)) 
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy;
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 	
@@ -318,13 +318,13 @@ Consider[3]=function()
 				local tableNearbyEnemyHeroes = npcEnemy:GetNearbyHeroes( 1000, false, BOT_MODE_NONE );
 				if ( tableNearbyEnemyHeroes ~= nil and #tableNearbyEnemyHeroes <= 2 )
 				then
-					return BOT_ACTION_DESIRE_MODERATE, npcEnemy
+					return BOT_ACTION_DESIRE_MODERATE
 				end
 			end
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
+	return BOT_ACTION_DESIRE_NONE
 	
 end
 

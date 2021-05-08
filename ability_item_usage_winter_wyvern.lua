@@ -73,7 +73,33 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+
+local CanCast={utility.NCanCast,utility.NCanCast,function(t)
+	if not AbilityExtensions:AllyCanCast(t) or AbilityExtensions:MustBeIllusion(npcBot, t) and not AbilityExtensions:IsTempestDouble(t) or not AbilityExtensions:IsHero(t) and not AbilityExtensions:IsLoneDruidBear(t) then
+		return false
+	end
+	if AbilityExtensions:DontInterruptAlly(t) then
+		if t:HasModifier("modifier_medusa_stone_gaze") and AbilityExtensions:IsRetreating(t) then
+			return true
+		end
+		if t:HasModifier("modifier_monkey_king_fur_army_soldier_in_position") and AbilityExtensions:GetHealthPercent(t) <= 0.35 then
+			return true
+		end
+		return false
+	end
+	if t:GetUnitName() == "npc_dota_hero_faceless_void" then
+		local allUnits = AbilityExtensions:GetNearbyAllUnits(t, 1599)
+		--  GetUnitList(UNIT_LIST_ALL)
+		return AbilityExtensions:Any(allUnits, function(t)
+			return t:HasModifier("modifier_faceless_void_chronosphere_freeze")
+		end) or AbilityExtensions:Any(t:GetNearbyHeroes(300, true, BOT_MODE_NONE, function(t)
+			return t:HasModifier("modifier_faceless_void_timelock_freeze")
+		end))
+	end
+	return AbilityExtensions:AllyCanCast(t) and (not AbilityExtensions:DontInterruptAlly(t) or t:HasModifier("modifier_medusa_stone_gaze") and t:GetActiveMode() == BOT_MODE_RETREAT) and not t:IsChanneling()
+end,function(t)
+	return AbilityExtensions:SpellCanCast(t, true, true)
+end}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -367,6 +393,9 @@ Consider[3]=function()
 	
 	local HeroHealth=10000
 	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
+    allys = AbilityExtensions:Filter(allys, function(t)
+        return AbilityExtensions:MayNotBeIllusion(npcBot, t) and not AbilityExtensions:CannotBeTargetted(t) and not AbilityExtensions:IsInvulnerable(t) and not AbilityExtensions:CannotBeKilledNormally(t)
+    end)
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local allys2 = GetUnitList(UNIT_LIST_ALLIED_HEROES)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
@@ -427,7 +456,7 @@ Consider[3]=function()
 	then
 		for _,npcTarget in pairs( allys )
 		do
-			if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<(0.35+0.4*ManaPercentage))
+			if npcTarget:GetHealth()/npcTarget:GetMaxHealth()<(0.35+0.4*ManaPercentage) and npcTarget:WasRecentlyDamagedByAnyHero(3)
 			then
 				if ( CanCast[abilityNumber]( npcTarget ) and not npcTarget:IsChanneling() )
 				then
@@ -441,6 +470,9 @@ Consider[3]=function()
 	
 end
 
+local function CanBeAffectedByCurse(t)
+	return AbilityExtensions:SpellCanCast(t, false, false)
+end
 Consider[4]=function()
 
 	local abilityNumber=4
@@ -478,7 +510,7 @@ Consider[4]=function()
 	
 	if(enemys~=nil and #enemys==1)
 	then
-		return 0,0
+		return 0
 	end
 	
 	--Try to kill enemy hero

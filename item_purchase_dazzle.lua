@@ -7,20 +7,17 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 local ItemsToBuy =
 {
 	"item_tango",
-	"item_ring_of_basilius",
+	-- "item_ring_of_basilius",
 	"item_tango",
 	"item_wind_lace",
 	"item_boots",
 	"item_magic_wand", --大魔棒7.14
-	"item_energy_booster",
-	"item_spirit_vessel", --大骨灰
+	"item_arcane_boots",
 	"item_mekansm", --梅肯
     "item_ghost",
     "item_spirit_vessel", --大骨灰
-	"item_buckler",
-	"item_recipe_guardian_greaves", --卫士胫甲
+	"item_guardian_greaves", --卫士胫甲
 	"item_solar_crest", --大勋章7.20
-	"item_pipe",
 	"item_sheepstick" --羊刀
 }
 

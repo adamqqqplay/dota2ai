@@ -14,7 +14,7 @@ require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
 local debugmode=false
-local npcBot = nil;
+local npcBot = GetBot()
 local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
@@ -114,7 +114,8 @@ Consider[1]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or npcBot:GetMana() < ability:GetManaCost() or not ability:IsCooldownReady() then
+		-- tempest double doesn't check ability:IsFullyCastable(), so manual check is required here
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -149,17 +150,17 @@ Consider[1]=function()
 	--------------------------------------
 	--protect myself
 	local enemys2 = npcBot:GetNearbyHeroes( 400, true, BOT_MODE_NONE );
-	-- --[[ If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	-- if ( (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) or #enemys2>0) 
-	-- then
-	-- 	for _,npcEnemy in pairs( enemys )
-	-- 	do
-	-- 		if ( (npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) and CanCast[abilityNumber]( npcEnemy )) or GetUnitToUnitDistance(npcBot,npcEnemy)<400) 
-	-- 		then
-	-- 			return BOT_ACTION_DESIRE_HIGH, npcEnemy;
-	-- 		end
-	-- 	end
-	-- end]]
+	--[[ If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	if ( (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) or #enemys2>0) 
+	then
+		for _,npcEnemy in pairs( enemys )
+		do
+			if ( (npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) and CanCast[abilityNumber]( npcEnemy )) or GetUnitToUnitDistance(npcBot,npcEnemy)<400) 
+			then
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy;
+			end
+		end
+	end]]
 	
 	-- If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
@@ -181,7 +182,7 @@ Consider[1]=function()
 	then
 		if ( #creeps >=1 ) 
 		then
-			if(npcBot:GetMana()>ComboMana and CanCast[abilityNumber](WeakestCreep))
+			if(npcBot:GetMana()>ComboMana*2 and CanCast[abilityNumber](WeakestCreep))
 			then
 				return BOT_ACTION_DESIRE_LOW, WeakestCreep;
 			end
@@ -240,7 +241,7 @@ Consider[2]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or npcBot:GetMana() < ability:GetManaCost() or not ability:IsCooldownReady() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -335,7 +336,7 @@ Consider[3]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or npcBot:GetMana() < ability:GetManaCost() or not ability:IsCooldownReady() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -466,7 +467,7 @@ Consider[4]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or AbilityExtensions:CannotTeleport(npcBot) or AbilityExtensions:IsTempestDouble(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -484,7 +485,7 @@ Consider[4]=function()
 	--------------------------------------
 
 	-- Stop making a huge bounty for the enemy
-	if (npcBot:GetHealth() <= 450 or HealthPercentage <= 0.3) and (npcBot:WasRecentlyDamagedByAnyHero(1.5) or AbilityExtensions:CanHardlyMove(npcBot) or not AbilityExtensions:CanMove(npcBot)) and not AbilityExtensions:Outnumber(allys, enemys) then
+	if (npcBot:GetHealth() <= 450 or HealthPercentage <= 0.3) and (npcBot:WasRecentlyDamagedByAnyHero(1.5) or AbilityExtensions:CanHardlyMove(npcBot) or AbilityExtensions:CannotTeleport(npcBot)) and not AbilityExtensions:Outnumber(npcBot, allys, enemys) then
 		return 0
 	end
 

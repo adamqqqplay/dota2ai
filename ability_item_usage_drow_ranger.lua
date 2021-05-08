@@ -74,7 +74,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.CanCastNoTarget,utility.UCanCast}
+local CanCast={AbilityExtensions.PhysicalCanCastFunction,utility.NCanCast,AbilityExtensions.PhysicalCanCastFunction,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -85,118 +85,6 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
-Consider[1]=function()
-	local abilityNumber=1
-	--------------------------------------
-	-- Generic Variable Setting
-	--------------------------------------
-	local ability=AbilitiesReal[abilityNumber];
-	
-	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
-	end
-	
-	local CastRange = ability:GetCastRange();
-	local Damage = 0
-	
-	local HeroHealth=10000
-	local CreepHealth=10000
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+100,true,BOT_MODE_NONE)
-	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange+100,true)
-	local creeps2 = npcBot:GetNearbyCreeps(300,true)
-	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
-	
-	if(ability:GetToggleState()==false)
-	then
-		local t=npcBot:GetAttackTarget()
-		if(t~=nil)
-		then
-			if (t:IsHero())
-			then
-				ability:ToggleAutoCast()
-				return BOT_ACTION_DESIRE_NONE, 0;
-			end
-		end
-	end
-	--[[else
-		local t=npcBot:GetAttackTarget()
-		if(t~=nil)
-		then
-			if (not t:IsHero())
-			then
-				ability:ToggleAutoCast()
-				return BOT_ACTION_DESIRE_NONE, 0;
-			end
-		end
-	end]]
-	
-	--try to kill enemy hero
-	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT) 
-	then
-		if (WeakestEnemy~=nil)
-		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) )
-			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_ALL))
-				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
-				end
-			end
-		end
-	end
-	--------------------------------------
-	-- Mode based usage
-	--------------------------------------
-	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
-	then
-		if AbilityExtensions:HasEnoughManaToUseAttackAttachedAbility(npcBot, AbilitiesReal[abilityNumber]) and #creeps2<=1
-		then
-			if (WeakestEnemy~=nil)
-			then
-				if ( CanCast[abilityNumber]( WeakestEnemy ) )
-				then
-					return BOT_ACTION_DESIRE_LOW-0.01,WeakestEnemy
-				end
-			end
-		end
-	end
-	
-	-- If we're farming
-	if ( npcBot:GetActiveMode() == BOT_MODE_FARM and AbilityExtensions:HasEnoughManaToUseAttackAttachedAbility(npcBot, AbilitiesReal[abilityNumber]) )
-	then
-		if(WeakestCreep~=nil)
-		then
-			if(WeakestCreep:HasModifier("modifier_drow_ranger_frost_arrows_slow")==false)
-			then
-				return BOT_ACTION_DESIRE_LOW, WeakestCreep;
-			end
-		end
-	end
-
-	-- If we're going after someone
-	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
-	then
-		local npcEnemy = npcBot:GetTarget();
-
-		if ( npcEnemy ~= nil ) 
-		then
-			if ( CanCast[abilityNumber]( npcEnemy )  and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange+100)
-			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy;
-			end
-		end
-	end
-
-	return BOT_ACTION_DESIRE_NONE, 0;
-	
-end
-
--- copied and modified from enchantress_impetus
 Consider[1] = function()
     local abilityNumber=1
     --------------------------------------
@@ -269,8 +157,7 @@ Consider[2]=function()
 	local Radius = ability:GetAOERadius()
 	local CastPoint=ability:GetCastPoint()
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -295,8 +182,7 @@ Consider[2]=function()
 	-- Check for a channeling enemy
 	for _,npcEnemy in pairs( enemys )
 	do
-		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy ) and not npcEnemy:HasModifier("modifier_teleporting") and not npcEnemy:HasModifier("modifier_boots_of_travel_incoming")) 
-		then
+		if AbilityExtensions:IsChannelingAbility(npcEnemy) and CanCast[abilityNumber](npcEnemy) then
 			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation(),"Location"
 		end
 	end
@@ -363,8 +249,7 @@ Consider[3]=function()
 	local Damage = ability:GetAbilityDamage();
 	local Radius = ability:GetAOERadius()
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -382,7 +267,7 @@ Consider[3]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy,"Target"; 
+					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetLocation(),"Location"
 				end
 			end
 		end
@@ -400,8 +285,8 @@ Consider[3]=function()
 			then
 				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy)) 
 				then
-					return BOT_ACTION_DESIRE_MODERATE, npcEnemy,"Target";
-				end
+					return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetLocation(),"Location"
+                end
 			end
 		end
 	end
@@ -447,8 +332,8 @@ Consider[3]=function()
 			then
 				if ( CanCast[abilityNumber]( WeakestEnemy ) )
 				then
-					return BOT_ACTION_DESIRE_LOW,WeakestEnemy,"Target";
-				end
+					return BOT_ACTION_DESIRE_LOW,WeakestEnemy:GetLocation(),"Location"
+                end
 			end
 		end
 	end
@@ -471,8 +356,8 @@ Consider[3]=function()
 		then
 			if ( not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy,"Target"
-			end
+				return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetLocation(),"Location"
+            end
 		end
 	end
 

@@ -18,8 +18,6 @@ local AbilitiesReal ={}
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
 
-
-
 local AbilityToLevelUp=
 {
 	Abilities[2],
@@ -146,7 +144,7 @@ Consider[1]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() or not AbilityExtensions:CanMove(npcBot) then
+	if not ability:IsFullyCastable() or AbilityExtensions:CannotMove(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -345,7 +343,7 @@ Consider[2]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() or not AbilityExtensions:CanMove(npcBot) then
+	if not ability:IsFullyCastable() or AbilityExtensions:CannotMove(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -375,7 +373,7 @@ Consider[2]=function()
 	if utility.IsStuck(npcBot)
 	then
 		local loc = utility.GetEscapeLoc();
-		return BOT_ACTION_DESIRE_HIGH, npcBot:GetLocation(),"Location";
+		return BOT_ACTION_DESIRE_HIGH, npcBot:GetLocation(), false
 	end
 
 	--Try to kill enemy hero
@@ -520,6 +518,7 @@ Consider[3]=function()
 			then
 				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy)) 
 				then
+					local stoneNearby = IsStoneNearby(npcBot:GetLocation(), nSearchRad);
 					if stoneNearby then
 						return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation(), false, true; 
 					elseif nStone >= 1 then
@@ -538,6 +537,7 @@ Consider[3]=function()
 	then
 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), nCastRange, nRadius, nCastPoint, 0 );
 		if ( locationAoE.count >= 2 ) 
+
 		then
 			local stoneNearby = IsStoneNearby(locationAoE.targetloc, nSearchRad);
 			if stoneNearby and ( nStone >= 1 or  nStone < 1 ) then
@@ -665,7 +665,7 @@ Consider[6]=function()
 			return BOT_ACTION_DESIRE_HIGH;
 		end
 
-		local npcTarget = npcBot:GetTarget();
+		local npcTarget = AbilityExtensions:GetTargetIfGood(npcBot)
 		if ( npcTarget ~= nil ) 
 		then
 			if ( CanCast[abilityNumber]( npcTarget ) and not enemyDisabled(npcTarget) and GetUnitToUnitDistance(npcBot,npcTarget)< CastRange + 75*#allys) and GetUnitToUnitDistance(npcBot,npcTarget)< nRadius-100
@@ -723,7 +723,7 @@ function AbilityUsageThink()
 
 	if ( cast.Desire[1] > 0 ) 
 	then
-		if castQStone then
+		if castQStone and AbilitiesReal[4]:IsFullyCastable() then
 			npcBot:Action_ClearActions(false);
 			npcBot:ActionQueue_UseAbilityOnLocation(AbilitiesReal[4], npcBot:GetLocation());
 			npcBot:ActionQueue_UseAbilityOnLocation(AbilitiesReal[1], castQLoc);
@@ -741,7 +741,7 @@ function AbilityUsageThink()
 	
 	if ( cast.Desire[2] > 0 ) 
 	then
-		if castWStone then
+		if castWStone and AbilitiesReal[4]:IsFullyCastable() and not npcBot:IsChanneling() and not npcBot:IsSilenced() then
 			npcBot:Action_ClearActions(false);
 			npcBot:ActionQueue_UseAbilityOnLocation(AbilitiesReal[2], castWLoc);
 			npcBot:ActionQueue_UseAbilityOnLocation(AbilitiesReal[4], npcBot:GetXUnitsTowardsLocation(castWLoc, 300));
@@ -754,7 +754,7 @@ function AbilityUsageThink()
 	
 	if ( cast.Desire[3] > 0 ) 
 	then
-		if castEStone then
+		if castEStone and AbilitiesReal[4]:IsFullyCastable() and not npcBot:IsChanneling() and not npcBot:IsSilenced() then
 			npcBot:Action_ClearActions(false);
 			npcBot:ActionQueue_UseAbilityOnLocation(AbilitiesReal[4], castELoc);
 			npcBot:ActionQueue_UseAbilityOnLocation(AbilitiesReal[3], castELoc);
@@ -765,10 +765,9 @@ function AbilityUsageThink()
 		end
 	end
 	
-	if ( cast.Desire[4] > 0 ) 
+	if  cast.Desire[4] > 0 and AbilitiesReal[4]:IsFullyCastable() and not npcBot:IsChanneling() and not npcBot:IsSilenced()
 	then
 		npcBot:Action_UseAbilityOnLocation( AbilitiesReal[4], castDLoc );
-		npcBot:ActionImmediate_Chat( "RESET BOYS", true );
 		stoneCast = DotaTime();
 		return;
 	end

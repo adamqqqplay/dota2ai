@@ -117,8 +117,6 @@ Consider[1]=function()
 		return desire,templocation
 	end
 end
-local ability1InfoTable = {}
-Consider[1] = AbilityExtensions:AddCooldownToChargeAbility(Consider[1], AbilitiesReal[1], ability1InfoTable, 0.8)
 
 function Consider1()
 
@@ -279,7 +277,7 @@ Consider[5]=function()
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
 				if(HeroHealth+WeakestEnemy:GetHealthRegen()*CastPoint<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) 
-					and GetUnitToUnitDistance(WeakestEnemy,npcBot) > AttackRange and GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange )
+					and GetUnitToUnitDistance(WeakestEnemy,npcBot) > AttackRange and GetUnitToUnitDistance(npcBot,WeakestEnemy)<CastRange )
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
 				end
@@ -317,7 +315,7 @@ Consider[5]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil and #enemys2==0) 
 		then
@@ -353,9 +351,6 @@ function AbilityUsageThink()
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
 	local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
-	if index == 1 then
-		AbilityExtensions:GetUsedAbilityInfo(AbilitiesReal[1], ability1InfoTable, target)
-	end
 end
 
 function CourierUsageThink() 

@@ -311,7 +311,7 @@ local hero_pool_test = {
 	-- "npc_dota_hero_naga_siren",
 	-- "npc_dota_hero_shadow_demon",
 }
---recording implemented bots, using in CM mode.
+--recording implemented bots, used in CM mode.
 local allBotHeroes = {
 	"npc_dota_hero_abaddon",
 	"npc_dota_hero_alchemist",
@@ -349,7 +349,7 @@ local allBotHeroes = {
 	"npc_dota_hero_enchantress",
 	"npc_dota_hero_enigma",
 	"npc_dota_hero_earthshaker",
-	--"npc_dota_hero_ember_spirit",
+	"npc_dota_hero_ember_spirit",
 
 	"npc_dota_hero_faceless_void",
 	"npc_dota_hero_furion",
@@ -458,6 +458,7 @@ local hero_pool_position_1 = {
 }
 local hero_pool_position_2 = {
 	"npc_dota_hero_leshrac",
+	"npc_dota_hero_ember_spirit",
 	"npc_dota_hero_dragon_knight",
 	"npc_dota_hero_huskar",
 	"npc_dota_hero_zuus",
@@ -914,7 +915,7 @@ function IsHumanPresentInGame()
 	return false;
 end
 
-local function IsHumanDonePickingFirstSlot()
+function IsHumanDonePickingFirstSlot()
 	if GetTeam() == TEAM_RADIANT then
 		for _,id in pairs(GetTeamPlayers(GetTeam())) do
 			if IsPlayerBot(id) == false and GetSelectedHeroName(id) ~= "" then
@@ -930,7 +931,7 @@ local function IsHumanDonePickingFirstSlot()
 	end
 end
 
-local function IsHumanPlayerInRadiant1Slot()
+function IsHumanPlayerInRadiant1Slot()
 	if GetTeam() == TEAM_RADIANT then
 		for i,id in pairs(GetTeamPlayers(GetTeam())) do
 			if i == 1 and IsPlayerBot(id) == false then
@@ -1010,7 +1011,7 @@ end
 function GetPositionedHero(team, selectedHeroes)
 	--Fill positions in random order
     local positionCounts = GetPositionCounts( team );
-	local postion
+	local position
 	repeat
 		position=RandomInt(1,5);
 	until(positionCounts[position] == 0)
@@ -1060,7 +1061,7 @@ end
 -- Returns a hero from the hero_pool_test pool
 function GetHeroInTest(selectedHeroes)
     -- Step through the "hero_pool_test" pool allocating them in order. This function will error if the pool is too small, but it's not for general use.
-	
+	local hero
 	repeat
 		hero = hero_pool_test[1]
 		table.remove(hero_pool_test,1)
@@ -1511,7 +1512,7 @@ function IsUnavailableHero(name)
 	return false;
 end
 --Check if a hero hasn't implemented yet
-function IsUnImplementedHeroes()
+function IsUnImplementedHeroes(name)
 	for _,unh in pairs(UnImplementedHeroes)
 	do
 		if name == unh then

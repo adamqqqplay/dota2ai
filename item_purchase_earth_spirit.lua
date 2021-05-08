@@ -9,7 +9,6 @@ local ItemsToBuy =
 	"item_tango",
 	"item_clarity",
 	"item_orb_of_venom", --毒球
-	"item_buckler",
 	"item_boots",
 	"item_bracer",
 	"item_magic_wand", --大魔棒7.14

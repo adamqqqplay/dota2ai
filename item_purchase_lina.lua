@@ -6,9 +6,7 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 
 local ItemsToBuy =
 {
-	"item_tango",
 	"item_null_talisman",
-	"item_enchanted_mango",
 	"item_bottle",
 	"item_phase_boots",
 	"item_magic_wand", --大魔棒7.14
@@ -20,7 +18,7 @@ local ItemsToBuy =
 	"item_shivas_guard",
     "item_sheepstick",
     "item_mystic_staff",
-    "item_recipe_wind_waker",
+    "item_wind_waker",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

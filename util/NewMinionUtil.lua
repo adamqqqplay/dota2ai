@@ -39,12 +39,6 @@ function IsHawk(unit_name)
 		or unit_name == "npc_dota_beastmaster_hawk_4";
 end
 
-function HawkThink(minion)
-	if CantMove(minion) then return end
-	minion:Action_MoveToLocation(bot:GetLocation());
-	return
-end
- 
 function IsTornado(unit_name)
 	return unit_name == "npc_dota_enraged_wildkin_tornado";
 end 
@@ -333,7 +327,7 @@ function CantBeControlled(unit_name)
 		or unit_name == "npc_dota_phoenix_sun"
 		or unit_name == "npc_dota_techies_minefield_sign"
 		or unit_name == "npc_dota_treant_eyes"
-		or unit_name == "dota_death_prophet_exorcism_spirit"
+		or unit_name == "npc_dota_death_prophet_exorcism_spirit"
 		or unit_name == "npc_dota_dark_willow_creature";
 end
 
@@ -445,7 +439,7 @@ function CastThink(minion, ability)
 	if CheckFlag(ability:GetBehavior(), ABILITY_BEHAVIOR_UNIT_TARGET) then
 		if ability:GetName() == "ogre_magi_frost_armor" then
 			local castRange = ability:GetCastRange();
-			local allies = GetNearbyHeroes(castRange+200, false, BOT_MODE_NONE);
+			local allies = minion:GetNearbyHeroes(castRange+200, false, BOT_MODE_NONE);
 			if #allies > 0 then
 				for i=1, #allies do
 					if IsValidTarget(allies[i]) and CanCastOnTarget(allies[i], ability) 

@@ -9,41 +9,19 @@ local ItemsToBuy =
 	"item_tango",
 	"item_mantle",
 	"item_circlet",
-	"item_mantle", --无用挂件
+	"item_mantle",
+	"item_null_talisman",
     "item_magic_wand",
 	"item_boots",
-	"item_recipe_null_talisman",
-	"item_circlet",
-	"item_recipe_null_talisman",
-	"item_energy_booster",
-	"item_robe",
-	"item_staff_of_wizardry", --慧光
-	"item_energy_booster",
-    "item_void_stone",
-	"item_recipe_aether_lens", --以太之镜7.06
-	"item_point_booster",
-	"item_staff_of_wizardry",
-	"item_ogre_axe",
-	"item_blade_of_alacrity", --蓝杖
-	"item_ogre_axe",
-	"item_mithril_hammer",
-	"item_recipe_black_king_bar", --bkb
-	"item_mystic_staff",
-	"item_ultimate_orb",
-	"item_void_stone" --羊刀
+	"item_null_talisman",
+	"item_arcane_boots",
+	"item_kaya",
+	"item_aether_lens", --以太之镜7.06
+	"item_ultimate_scepter",
+	"item_black_king_bar", --bkb
+	"item_aghanims_shard",
 }
 
---[[for k,v in pairs(ItemsToBuy)
-do
-	local item =  GetItemComponents(ItemsToBuy[k])
-	if item ~= nil and #item > 0
-	then
-		for k,v in pairs(item)
-		do
-			table.insert(ItemsToBuy,k,item[k])
-		end
-	end
-end]]
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
 
 

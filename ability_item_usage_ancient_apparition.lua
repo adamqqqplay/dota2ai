@@ -15,11 +15,7 @@ local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
 
-ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
-
--- utility.PrintAbilityName(Abilities)
-local abilityName =  { "ancient_apparition_cold_feet", "ancient_apparition_ice_vortex", "ancient_apparition_chilling_touch", "ancient_apparition_ice_blast", "ancient_apparition_ice_blast_release" }
-local abilityIndex = utility.ReverseTable(abilityName)
+ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 
 local AbilityToLevelUp=

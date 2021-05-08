@@ -73,7 +73,9 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={function(t)
+	return AbilityExtensions:NormalCanCast(t, true, DAMAGE_TYPE_PHYSICAL, false, true)
+end,utility.NCanCast,utility.NCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -83,6 +85,7 @@ end
 function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
+
 
 Consider[1]=function()
 	local abilityNumber=1
@@ -98,13 +101,35 @@ Consider[1]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+
+	local endDistance = ability:GetSpecialValueInt("end_distance")
+	local startRadius = ability:GetSpecialValueInt("start_radius")
+	local endRadius = ability:GetSpecialValueInt("end_radius")
+	
+	local function FindPoisonTouchAlternativeNear(target)
+		local radius = RemapVal(GetUnitToUnitDistance(npcBot, target), 0, endDistance, startRadius, endRadius)
+		local enemies = AbilityExtensions:GetNearbyEnemyUnits(target, radius)
+		enemies = AbilityExtensions:First(enemies, function (t) return CanCast[1](t) and t:HasModifier("modifier_antimage_counterspell") end)
+		return enemies
+	end
+
+	local function UseAt(target)
+		if AbilityExtensions:HasAbilityRetargetModifier(target) then
+			local alternativeEnemy = FindPoisonTouchAlternativeNear(target)
+			if alternativeEnemy then
+				return alternativeEnemy
+			end
+		else
+			return target
+		end
+	end
+
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
@@ -117,7 +142,10 @@ Consider[1]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
+					local target = UseAt(WeakestEnemy)
+					if target ~= nil then
+						return BOT_ACTION_DESIRE_HIGH, target
+					end
 				end
 			end
 		end
@@ -133,7 +161,7 @@ Consider[1]=function()
 
 		for _,npcEnemy in pairs( enemys )
 		do
-			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy))
+			if ( CanCast[abilityNumber]( npcEnemy ))
 			then
 				local Damage2 = npcEnemy:GetEstimatedDamageToTarget( false, npcBot, 3.0, DAMAGE_TYPE_ALL );
 				if ( Damage2 > nMostDangerousDamage )
@@ -144,9 +172,11 @@ Consider[1]=function()
 			end
 		end
 
-		if ( npcMostDangerousEnemy ~= nil )
-		then
-			return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy;
+		if ( npcMostDangerousEnemy ~= nil ) then
+			local target = UseAt(npcMostDangerousEnemy)
+			if target ~= nil then
+				return BOT_ACTION_DESIRE_HIGH, target
+			end
 		end
 	end
 	--------------------------------------
@@ -160,7 +190,10 @@ Consider[1]=function()
 		do
 			if ( CanCast[abilityNumber]( npcEnemy ) )
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
+				local target = UseAt(npcEnemy)
+				if target ~= nil then
+					return BOT_ACTION_DESIRE_HIGH, target
+				end
 			end
 		end
 	end
@@ -170,11 +203,11 @@ Consider[1]=function()
 	then
 		for _,npcEnemy in pairs( enemys )
 		do
-			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) 
+			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) )
 			then
-				if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy)) 
-				then
-					return BOT_ACTION_DESIRE_HIGH, npcEnemy;
+				local target = UseAt(npcEnemy)
+				if target ~= nil then
+					return BOT_ACTION_DESIRE_HIGH, target
 				end
 			end
 		end
@@ -189,7 +222,10 @@ Consider[1]=function()
 			then
 				if ( CanCast[abilityNumber]( WeakestEnemy ) )
 				then
-					return BOT_ACTION_DESIRE_LOW,WeakestEnemy;
+					local target = UseAt(WeakestEnemy)
+					if target ~= nil then
+						return BOT_ACTION_DESIRE_HIGH, target
+					end
 				end
 			end
 		end
@@ -207,7 +243,10 @@ Consider[1]=function()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
+				local target = UseAt(npcEnemy)
+				if target ~= nil then
+					return BOT_ACTION_DESIRE_MODERATE, target
+				end
 			end
 		end
 	end
@@ -230,9 +269,17 @@ Consider[2]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange+300, false)
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local enemyAxe = AbilityExtensions:First(enemys, function(t)
+		return AbilityExtensions:MayNotBeIllusion(t) and t:GetUnitName() == "npc_dota_hero_axe"
+	end)
+	local canEnemyAxeUseCullingBlade = false
+	if enemyAxe then
+		canEnemyAxeUseCullingBlade = AbilityExtensions:GetSilenceRemainingDuration(enemyAxe) <= 3 and enemyAxe:GetMana() >= Clamp(enemyAxe:GetLevel()/6, 0, 3) * 60
+	end
+
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
@@ -242,7 +289,7 @@ Consider[2]=function()
 	-- If we're seriously retreating
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
-		if(HealthPercentage<=0.3)
+		if(HealthPercentage<=0.3) and not (enemyAxe and canEnemyAxeUseCullingBlade and GetUnitToUnitDistance(npcBot, enemyAxe) <= 350)
 		then
 			return BOT_ACTION_DESIRE_HIGH+0.15, npcBot
 		end
@@ -259,7 +306,7 @@ Consider[2]=function()
 			do
 				Damage2 =Damage2 + npcEnemy:GetEstimatedDamageToTarget( true, npcBot, 2.0, DAMAGE_TYPE_ALL );
 			end
-			if not npcTarget:IsIllusion() and (npcTarget:GetHealth()<Damage2*1.25 or npcTarget:GetHealth()/npcTarget:GetMaxHealth()<=0.3)
+			if not npcTarget:IsIllusion() and (npcTarget:GetHealth()<Damage2*1.25 or npcTarget:GetHealth()/npcTarget:GetMaxHealth()<=0.3) and not (enemyAxe and canEnemyAxeUseCullingBlade and GetUnitToUnitDistance(npcBot, enemyAxe) <= 350)
 			then
 				return BOT_ACTION_DESIRE_HIGH+0.15, npcTarget
 			end
@@ -289,8 +336,7 @@ Consider[3]=function()
 	local MaxTarget=ability:GetSpecialValueInt("max_targets")
 	local DamageType=DAMAGE_TYPE_PHYSICAL
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+200,true,BOT_MODE_NONE)
@@ -366,7 +412,7 @@ Consider[3]=function()
 	end
 		
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH and not npcBot:HasModifier("modifier_ice_blast") ) 
 	then
 		if ( npcBot:WasRecentlyDamagedByAnyHero(2) ) 
 		then
@@ -377,6 +423,7 @@ Consider[3]=function()
 	-- Mode based usage
 	--------------------------------------
 	--protect teammate
+	allys = AbilityExtensions:Filter(allys, function(t) return not t:HasModifier("modifier_ice_blast") end)
 	for _,npcTarget in pairs (allys)
 	do
 		local enemys2=npcTarget:GetNearbyHeroes(600,true,BOT_MODE_NONE)

@@ -17,10 +17,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName =  { "zuus_arc_lightning", "zuus_lightning_bolt", "zuus_static_field", "zuus_cloud", "zuus_heavenly_jump", "zuus_thundergods_wrath" }
-local abilityIndex = utility.ReverseTable(abilityName)
-
 
 local AbilityToLevelUp=
 {
@@ -99,8 +95,7 @@ Consider[1]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetSpecialValueInt("arc_damage");
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -238,8 +233,7 @@ Consider[2]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -252,7 +246,7 @@ Consider[2]=function()
 	-- Check for a channeling enemy
 	for _,enemy in pairs( enemys )
 	do
-		if ( enemy:IsChanneling() and CanCast[2]( enemy )) 
+		if ( enemy:IsChanneling() and CanCast[2]( enemy ) and not enemy:HasModifier("modifier_antimage_counterspell")) 
 		then
 			return BOT_ACTION_DESIRE_HIGH, enemy,"Target";
 		end
@@ -279,7 +273,7 @@ Consider[2]=function()
 	then
 		for _,enemy in pairs( enemys2 )
 		do
-			if ( CanCast[2]( enemy ) )
+			if ( CanCast[2]( enemy ) )and not enemy:HasModifier("modifier_antimage_counterspell") and not enemy:HasModifier("modifier_item_lotus_orb_active") and not enemy:HasModifier("modifier_item_blade_mail")
 			then
 				return BOT_ACTION_DESIRE_HIGH, enemy,"Target"
 			end

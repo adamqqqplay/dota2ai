@@ -328,6 +328,29 @@ Consider[2]=function() --Location AOE Example
 	
 end
 
+local function FindNearbyTeleportTarget(target)
+	local isEnemy = not AbilityExtensions:IsOnSameTeam(npcBot, target)
+	local castDelay = AbilitiesReal[4]:GetSpecialValueInt("cast_delay")
+	local creeps = target:GetNearbyCreeps(600, isEnemy)
+	creeps = AbilityExtensions:Filter(creeps, function(t) return not t:WasRecentlyDamagedByAnyHero(3) and #t:GetNearbyHeroes(500, true, BOT_MODE_NONE) == 0 end)
+	creeps = AbilityExtensions:Max(creeps, function(t) return t:GetHealth() end)
+	local buildings = AbilityExtensions:Concat(target:GetNearbyTowers(700, isEnemy), target:GetNearbyBarracks(700, isEnemy))
+	buildings = AbilityExtensions:Filter(buildings, function(t) return t:HasModifier("modifier_backdoor_protection_active") and t:GetHealth() >= 100 or t:GetHealth() >= 300 and not t:WasRecentlyDamagedByAnyHero(castDelay-2) or t:GetHealth() >= 800 or t:HasModifier("modifier_fountain_glyph") end)
+	buildings = AbilityExtensions:Max(buildings, function(t) return AbilityExtensions:GetBuildingPhysicalHealth(t) end)
+	local hero
+	if AbilityExtensions:HasScepter(npcBot) then
+		local friends = target:GetNearbyHeroes(900, isEnemy, BOT_MODE_NONE)
+		friends = AbilityExtensions:Filter(friends, function(t) return t:NotRetreating(t) and AbilityExtensions:AllyCanCast(t) and AbilityExtensions:GetHealthPercent(t) >= 0.5 and not t:IsSeverelyDisabled(t) end)
+		friends = AbilityExtensions:FilterNot(friends, function(t) return t:IsIllusion() and t:GetModifierRemainingDuration("modifier_illusion") <= castDelay end)
+		hero = target:Max(friends, function(t) return t:GetHealth() end)
+	end
+	return buildings or hero or creeps
+end
+
+local darkRiftOriginalTarget
+local trackOriginalTargetPosition
+local darkRiftChosenTarget
+
 Consider[4]=function()
 	
 	local abilityNumber=4
@@ -336,7 +359,7 @@ Consider[4]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or npcBot:HasModifier("modifier_abyssal_underlord_dark_rift") then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -351,12 +374,11 @@ Consider[4]=function()
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	
-	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
-		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) ) 
+		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) and AbilityExtensions:GetHealthPercent(npcBot) >= 0.25 ) 
 		then
-			return BOT_ACTION_DESIRE_MODERATE, GetAncient(GetTeam()):GetLocation();
+			return BOT_ACTION_DESIRE_MODERATE, GetAncient(GetTeam()):GetLocation(), "Location"
 		end
 	end
 
@@ -366,13 +388,17 @@ Consider[4]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( #enemys==0 and #creeps==0 and #allys>=2 and GetUnitToUnitDistance( npcEnemy, npcBot ) > 3000 )
+			if ( #enemys==0 and #allys>=2 and GetUnitToUnitDistance( npcEnemy, npcBot ) > 3000 )
 			then
-				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation(CastPoint);
+				local target = FindNearbyTeleportTarget(npcEnemy)
+				if target ~= nil then
+					darkRiftOriginalTarget = npcEnemy
+					return BOT_ACTION_DESIRE_HIGH, target, "Target"
+				end
 			end
 		end
 	end
@@ -380,9 +406,36 @@ Consider[4]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
 
+local darkRiftCancelRange = 1200^2
+Consider[5] = function()
+	local ability = AbilitiesReal[5]
+	if not ability:IsFullyCastable() or ability:IsHidden() then
+		return 0
+	end
+	local target = AbilityExtensions:GetTargetIfGood(npcBot)
+	if darkRiftChosenTarget then
+		if darkRiftOriginalTarget:IsAlive() then
+			if GetUnitToUnitDistanceSqr(darkRiftChosenTarget, darkRiftOriginalTarget) >= darkRiftCancelRange then
+				coroutine.yield(BOT_ACTION_DESIRE_MODERATE)
+			end
+		else
+			if GetUnitToLocationDistanceSqr(darkRiftChosenTarget, trackOriginalTargetPosition) >= darkRiftCancelRange and (target == nil or target:CanBeSeen() and GetUnitToLocationDistanceSqr(darkRiftChosenTarget, target) >= darkRiftCancelRange) then
+				coroutine.yield(BOT_ACTION_DESIRE_HIGH)
+			elseif AbilityExtensions:IsRetreating(npcBot) then
+				coroutine.yield(BOT_ACTION_DESIRE_MODERATE)
+			end
+		end
+	end 
+	return 0
+end
+
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
-
+	if npcBot:HasModifier("modifier_abyssal_underlord_dark_rift") then
+		if darkRiftOriginalTarget and darkRiftOriginalTarget:IsAlive() and darkRiftOriginalTarget:CanBeSeen() then
+			trackOriginalTargetPosition = darkRiftOriginalTarget:GetLocation()
+		end
+	end
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then 

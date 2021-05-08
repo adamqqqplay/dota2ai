@@ -173,8 +173,7 @@ Consider[1]=function()
 	then
 		local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 150, true, BOT_MODE_NONE );
 
-		if ( npcBot:WasRecentlyDamagedByAnyHero(3) and #tableNearbyEnemyHeroes==0)
-		then
+		if AbilityExtensions:MayNotBeSeen(npcBot) then
 			return UseAtTarget(BOT_ACTION_DESIRE_VERYHIGH, npcBot)
 		end
 	end
@@ -183,7 +182,7 @@ Consider[1]=function()
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT) 
 	then
 		local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( 200, true, BOT_MODE_NONE );
-		if #tableNearbyEnemyHeroes==0 and npcBot:WasRecentlyDamagedByAnyHero(3) then
+		if AbilityExtensions:MayNotBeSeen(npcBot) then
             return UseAtTarget(BOT_ACTION_DESIRE_VERYHIGH, npcBot)
 		end
 	end
@@ -220,7 +219,7 @@ Consider[2]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() or not AbilityExtensions:CanMove(npcBot) then
+	if not ability:IsFullyCastable() or AbilityExtensions:CannotTeleport(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -353,8 +352,7 @@ Consider[4]=function()
 	
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local CastRange=1600;
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(1200,true,BOT_MODE_NONE)
@@ -387,7 +385,7 @@ Consider[4]=function()
 			then
 				if(WeakestCreep~=nil)
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestCreep; 
+					return BOT_ACTION_DESIRE_HIGH,WeakestCreep,"Target"
 				end
 				if(WeakestEnemy~=nil)
 				then
@@ -410,18 +408,6 @@ Consider[4]=function()
 					return BOT_ACTION_DESIRE_MODERATE+0.05,WeakestCreep,"Target"; 
 				end
 			end		
-		end
-	end
-	
-	-- If we're farming and can hit 2+ creeps and kill 1+ 
-	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
-	then
-		if ( #Allcreeps >= 2 ) 
-		then
-			if(CreepHealth<=Allcreeps[1]:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and ManaPercentage>0.45 and npcBot:GetMana()>ComboMana)
-			then
-				return BOT_ACTION_DESIRE_LOW, Allcreeps[1],"Target";
-			end
 		end
 	end
 

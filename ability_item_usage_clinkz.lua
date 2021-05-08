@@ -186,8 +186,7 @@ Consider[2]=function()
 	local Damage = ability:GetSpecialValueInt("damage_bonus")+npcBot:GetAttackDamage()
 	--print(ability:GetName().." :Damage is "..Damage)
 
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+100,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -302,8 +301,7 @@ Consider[3]=function()
 	local Damage = ability:GetAbilityDamage();
 	local Radius = ability:GetAOERadius()
 
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -352,7 +350,7 @@ local goodNeutral=
 	"npc_dota_neutral_enraged_wildkin",  -- 枭兽撕裂者
 }
 
-function IsGoodNeutralCreeps(npcCreep)
+local function IsGoodNeutralCreeps(npcCreep)
 	local name=npcCreep:GetUnitName();
 	for k,creepName in pairs(goodNeutral) do
 		if(name==creepName)
@@ -363,8 +361,8 @@ function IsGoodNeutralCreeps(npcCreep)
 	return false;
 end
 
-Consider[5]=function()
-	local abilityNumber=5
+Consider[4]=function()
+	local abilityNumber=4
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -378,8 +376,7 @@ Consider[5]=function()
 	local Damage = ability:GetAbilityDamage();
 	local Radius = ability:GetAOERadius()
 
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -420,6 +417,47 @@ Consider[5]=function()
 
 	return BOT_ACTION_DESIRE_NONE, 0;
 
+end
+
+
+Consider[5]=function()
+    local abilityNumber=5
+    --------------------------------------
+    -- Generic Variable Setting
+    --------------------------------------
+    local ability=AbilitiesReal[abilityNumber];
+
+    if not ability:IsFullyCastable() then
+        return BOT_ACTION_DESIRE_NONE, 0;
+    end
+
+    local CastRange = ability:GetCastRange();
+    local Damage = 0;
+    local CastPoint = ability:GetCastPoint();
+
+    local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+    local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+    local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+    local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+    local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+    local creepsNeutral = npcBot:GetNearbyNeutralCreeps(1600)
+    local StrongestCreep,CreepHealth2=utility.GetStrongestUnit(creepsNeutral)
+    --------------------------------------
+    -- Mode based usage
+    --------------------------------------
+
+    -- Find neural creeps
+    if(ManaPercentage>=0.4)
+    then
+        for k,creep in pairs(creepsNeutral) do
+            if(IsGoodNeutralCreeps(creep) and not creep:WasRecentlyDamagedByAnyHero(1.5))
+            then
+                return BOT_ACTION_DESIRE_MODERATE, creep
+            end
+        end
+    end
+
+    return BOT_ACTION_DESIRE_NONE
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)

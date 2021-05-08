@@ -299,7 +299,7 @@ function Consider2()
 	then
 		local npcEnemy = npcBot:GetTarget();
 
-		if ( npcEnemy ~= nil ) 
+		if ( npcEnemy ~= nil ) and npcEnemy:IsHero()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
@@ -392,6 +392,7 @@ Consider[4]=function()
     local CastPoint = ability:GetCastPoint();
 
     local allys = npcBot:GetNearbyHeroes( CastRange+200, false, BOT_MODE_NONE );
+	local enemys = npcBot:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
     -- use at myself when chemical rage is not available
     local useTable = {}
     if not npcBot:HasModifier("modifier_alchemist_chemical_rage") and not npcBot:HasModifier("modifier_alchemist_berserk_potion") then
@@ -535,7 +536,7 @@ Consider[6]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then
@@ -548,10 +549,17 @@ Consider[6]=function()
 			end
 		end
 	end
-	
-	if(TimeSinceCast>=5)
-	then
-		return BOT_ACTION_DESIRE_HIGH+0.1,enemys[1]
+
+	if TimeSinceCast >= 4 or TimeSinceCast >= 3 and enemys[1]:GetStunDuration(true) >= 2 then
+		return BOT_ACTION_DESIRE_VERYHIGH,enemys[1]
+	end
+	if TimeSinceCast >= 2.5 then
+		local silencer = AbilityExtensions:Count(enemys, function(t)
+			return AbilityExtensions:MayNotBeIllusion(t) and t:HasSilence()
+		end)
+		if silencer > 0 then
+			return BOT_ACTION_DESIRE_HIGH, enemys[1]
+		end
 	end
 	
 	-- throw when I'm hurt
@@ -564,6 +572,40 @@ Consider[6]=function()
 	return BOT_ACTION_DESIRE_NONE, 0
 end
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
+
+local function HasRealScepter(t)
+	return t:HasScepter() or t:HasModifier("modifier_item_ultimate_scepter") or t:HasModifier("modifier_item_ultimate_scepter_consumed_alchemist") 
+end
+
+local function GetNonScepterFriends()
+	local friends = GetTeamPlayers(GetTeam())
+	return AbilityExtensions:FilterNot(friends, function(t) return HasRealScepter(t) end)
+end
+
+local function GetFeedScepterDesire(t)
+	if npcBot == t then
+		return 0.1
+	end
+	if HasRealScepter(t) then
+		return 0
+	end
+	local tb = t.itemInformationTable
+	local scepterIndex = AbilityExtensions:IndexOf(tb, function(tp) return tp.name == "item_ultimate_scepter" or tp.name == "item_recipe_ultimate_scepter" end)
+	if scepterIndex == -1 then
+		return 0.02
+	elseif scepterIndex == 1 then
+		return 0
+	end
+	local desire = RemapValClamped(scepterIndex, 2, 4, 0.8, 0.2)
+	return desire
+end
+
+local function CheckFeedScepter()
+	local friends = GetNonScepterFriends()
+	friends = AbilityExtensions:Filter(friends, function(t) return t:IsAlive() and AbilityExtensions:AllyCanCast(t) and GetUnitToUnitDistance(t, npcBot) <= 1400 end)
+	AbilityExtensions:ForEach(friends, function(t) coroutine.yield(GetFeedScepterDesire(t), t) end)
+end
+CheckFeedScepter = AbilityExtensions:EveryManySeconds(1, CheckFeedScepter)
 
 function AbilityUsageThink()
 
@@ -584,7 +626,19 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	local index, target, castType = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	if index == nil then
+		local scepter = AbilityExtensions:GetAvailableItem(npcBot, "item_ultimate_scepter")
+		if scepter and not AbilityExtensions:IsMuted(npcBot) then
+			local desirePairs = AbilityExtensions:ResumeUntilReturn(CheckFeedScepter)
+			if AbilityExtensions:CalledOnThisFrame(desirePairs) then
+				local bestDesire = AbilityExtensions:Max(desirePairs, function(t) return t[1] end)
+				if bestDesire[1] ~= 0 then
+					npcBot:Action_UseAbilityOnEntity(scepter, bestDesire[2])
+				end
+			end
+		end
+	end
 end
 
 function CourierUsageThink() 

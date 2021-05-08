@@ -104,11 +104,10 @@ Consider[1]=function()
 	local CastRange = 1600;
 	local Damage = ability:GetSpecialValueInt("shard_damage");
 	local Radius = ability:GetSpecialValueInt( "shard_width" );
-	local CastPoint = ability:GetCastPoint()+ability:GetSpecialValueFloat( "delay" );
+	local CastPoint = ability:GetCastPoint()--+ability:GetSpecialValueFloat( "delay" );
 	local Speed = ability:GetSpecialValueInt("shard_speed");
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -207,6 +206,7 @@ end
 
 end]]
 
+
 Consider[2]=function()
 
 	local abilityNumber=2
@@ -215,21 +215,41 @@ Consider[2]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() or not AbilityExtensions:CanMove(npcBot) then
+	if not ability:IsFullyCastable() or AbilityExtensions:CannotMove(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetSpecialValueInt( "snowball_damage" );
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	
+	if npcBot:HasModifier("tusk_snowball") then
+		local IsLongRanger = function(ally)
+			local longRangers = {
+				"npc_dota_hero_sniper",
+				"npc_dota_hero_enchantress",
+				"npc_dota_hero_drow_ranger",
+			}
+			return AbilityExtensions:Contains(longRangers, ally:GetUnitName())
+		end
+		local CanCast = function(ally)
+			return ally:IsIllusion() or not ally:IsInvulnerable() and not AbilityExtensions:CannotBeTargetted(ally) and not AbilityExtensions:MayNotBeSeen(ally) and not AbilityExtensions:DontInterruptAlly(ally) and (not IsLongRanger(ally) or AbilityExtensions:IsSeverelyDisabled(ally))
+		end
+		local radius = ability:GetSpecialValueInt("snowball_windup_radius")
+		local allys = npcBot:GetNearbyHeroes(radius, false, BOT_MODE_NONE)
+		allys = AbilityExtensions:Filter(allys, function(t) return not t:IsBot() or AbilityExtensions:NotRetreating(t) end)
+		allys = AbilityExtensions:Filter(allys, CanCast)
+		if allys[1] then
+			return BOT_ACTION_DESIRE_HIGH, allys[1]
+		end
+	end
+
 	-- Check for a channeling enemy
 	for _,enemy in pairs( enemys )
 	do
@@ -354,8 +374,6 @@ Consider[3]=function()
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
-	--local ability=npcBot:GetAbilityByName( "tusk_frozen_sigil" )
-
 	local ability=AbilitiesReal[abilityNumber];
 	
 	if not ability:IsFullyCastable() then
@@ -363,8 +381,7 @@ Consider[3]=function()
 	end
 	
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(1200,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -431,8 +448,7 @@ Consider[6]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -510,7 +526,7 @@ Consider[6]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcTarget = npcBot:GetTarget();
+		local npcTarget = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcTarget ~= nil ) 
 		then
@@ -523,6 +539,41 @@ Consider[6]=function()
 
 	return BOT_ACTION_DESIRE_NONE, 0 
 end
+
+local function IsSnowballTarget(t) return t:HasModifier("modifier_tusk_snowball_target") end
+local snowballTarget
+local function RefreshSnowballTarget()
+	snowballTarget = AbilityExtensions:First(GetUnitList(UNIT_LIST_ENEMY_HEROES), IsSnowballTarget)
+end
+RefreshSnowballTarget()
+
+Consider[7] = function()
+	local ability = AbilitiesReal[7]
+	if not ability:IsFullyCastable() or ability:IsHidden() then
+		return 0
+	end
+	if snowballTarget == nil then
+		RefreshSnowballTarget()
+	end
+	
+	if AbilityExtensions:HasAbilityRetargetModifier(snowballTarget) and not snowballTarget:IsChanneling() then
+		return 0
+	end
+	if snowballTarget:IsChanneling() or GetUnitToUnitDistance(snowballTarget, npcBot) >= 600 then
+		return BOT_ACTION_DESIRE_VERYHIGH
+	end
+	local snowballFriends = npcBot:GetNearbyHeroes(100, false, BOT_MODE_NONE)
+	snowballFriends = AbilityExtensions:Filter(snowballFriends, function (t)
+		return t:HasModifier("modifier_tusk_snowball_movement_friendly")
+	end)
+	if #snowballFriends > 0 and AbilityExtensions:All(snowballFriends, function (t)
+		return AbilityExtensions:MustBeIllusion(npcBot, t) or AbilityExtensions:GetHealthPercent(t) >= AbilityExtensions:GetHealthPercent(snowballTarget) * 1.5
+	end) then
+		return BOT_ACTION_DESIRE_HIGH
+	end
+	return 0
+end
+
 
 Consider[4]=function() --A杖大
 
@@ -539,8 +590,7 @@ Consider[4]=function() --A杖大
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -633,7 +683,10 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	if index == 2 then
+		snowballTarget = target
+	end
 end
 
 function CourierUsageThink() 

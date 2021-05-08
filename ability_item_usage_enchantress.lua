@@ -74,7 +74,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast}
+local CanCast={AbilityExtensions.PhysicalCanCastFunction,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -98,7 +98,7 @@ local goodNeutral=
 	"npc_dota_neutral_enraged_wildkin",  -- 枭兽撕裂者
 }
 
-function IsGoodNeutralCreeps(npcCreep)
+local function IsGoodNeutralCreeps(npcCreep)
 	local name=npcCreep:GetUnitName();
 	for k,creepName in pairs(goodNeutral) do
 		if(name==creepName)
@@ -148,7 +148,7 @@ Consider[2]=function()
 	if(ManaPercentage>=0.4)
 	then
 		for k,creep in pairs(creepsNeutral) do
-			if(IsGoodNeutralCreeps(creep) and not creep:WasRecentlyDamagedByAnyHero(1.5) or (creep:IsAncientCreep() and npcBot:HasScepter()))
+			if IsGoodNeutralCreeps(creep) and not creep:WasRecentlyDamagedByAnyHero(1.5)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, creep;
 			end
@@ -179,7 +179,7 @@ Consider[2]=function()
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
+			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end
@@ -204,9 +204,8 @@ Consider[3]=function()
 	local Radius = ability:GetAOERadius();
 	local Damage = 0
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
-	local allys = npcBot:GetNearbyHeroes( Radius+300, false, BOT_MODE_NONE );
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, Radius+100, false)
+	allys = AbilityExtensions:Filter(npcBot, function(t) return not t:HasModifier("modifier_ice_blast") end)
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(Radius+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -218,7 +217,7 @@ Consider[3]=function()
 	-- If we're seriously retreating
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
-		if ( HealthPercentage<=0.5 and npcBot:WasRecentlyDamagedByAnyHero(2.0)) 
+		if HealthPercentage<=0.5 and npcBot:WasRecentlyDamagedByAnyHero(2.0) and not npcBot:HasModifier("modifier_ice_blast")
 		then
 			return BOT_ACTION_DESIRE_HIGH
 		end
@@ -249,10 +248,10 @@ Consider[3]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT) 
 	then
-		if #creeps2<=2 then
+		if #creeps2<=1 then
 			for _,npcTarget in pairs( allys )
 			do
-				if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<(0.4+0.4*ManaPercentage))
+				if(npcTarget:GetHealth()/npcTarget:GetMaxHealth()<(0.4+0.4*ManaPercentage)) and not npcTarget:HasModifier("modifier_ice_blast")
 				then
 					return BOT_ACTION_DESIRE_MODERATE
 				end
@@ -260,105 +259,7 @@ Consider[3]=function()
 		end
 	end
 	
-	return BOT_ACTION_DESIRE_NONE, 0;
-	
-end
-
-Consider[1]=function()
-	local abilityNumber=1
-	--------------------------------------
-	-- Generic Variable Setting
-	--------------------------------------
-	local ability=AbilitiesReal[abilityNumber];
-	
-	if not ability:IsFullyCastable() or AbilityExtensions:IsPhysicalOutputDisabled(npcBot) then
-		return BOT_ACTION_DESIRE_NONE, 0;
-	end
-	
-	local CastRange = ability:GetCastRange();
-	local Damage = 0
-	
-	local HeroHealth=10000
-	local CreepHealth=10000
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+100,true,BOT_MODE_NONE)
-	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange+100,true)
-	local creeps2 = npcBot:GetNearbyCreeps(300,true)
-	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
-	
-	if(ability:GetToggleState()==false)
-	then
-		local t=npcBot:GetAttackTarget()
-		if(t~=nil)
-		then
-			if (t:IsHero() or t:IsTower()) or AbilityExtensions:MustBeIllusion(npcBot, t) and (AbilityExtensions:GetManaPercent(npcBot) >= 0.8)
-			then
-				ability:ToggleAutoCast()
-				return BOT_ACTION_DESIRE_NONE, 0;
-			end
-		end
-	else
-		local t=npcBot:GetAttackTarget()
-		if(t~=nil)
-		then
-			if (not(t:IsHero() or t:IsTower()))
-			then
-				ability:ToggleAutoCast()
-				return BOT_ACTION_DESIRE_NONE, 0;
-			end
-		end
-	end
-	
-	--try to kill enemy hero
-	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT) 
-	then
-		if (WeakestEnemy~=nil)
-		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) )
-			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_ALL))
-				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
-				end
-			end
-		end
-	end
-	--------------------------------------
-	-- Mode based usage
-	--------------------------------------
-	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
-	then
-		if AbilityExtensions:HasEnoughManaToUseAttackAttachedAbility(npcBot, AbilitiesReal[abilityNumber]) and #creeps2<=1
-		then
-			if (WeakestEnemy~=nil)
-			then
-				if ( CanCast[abilityNumber]( WeakestEnemy ) )
-				then
-					return BOT_ACTION_DESIRE_LOW-0.01,WeakestEnemy
-				end
-			end
-		end
-	end
-
-	-- If we're going after someone
-	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
-	then
-		local npcEnemy = npcBot:GetTarget();
-
-		if ( npcEnemy ~= nil ) 
-		then
-			if ( CanCast[abilityNumber]( npcEnemy )  and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange+100)
-			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy;
-			end
-		end
-	end
-
-	return BOT_ACTION_DESIRE_NONE, 0;
+	return BOT_ACTION_DESIRE_NONE
 	
 end
 

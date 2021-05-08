@@ -100,8 +100,7 @@ Consider[1]=function()
 	local Radius = ability:GetAOERadius()
 	local CastPoint = ability:GetCastPoint()
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+150,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -245,8 +244,7 @@ Consider[2]=function()
 	local searchcreeps = npcBot:GetNearbyCreeps(Radius,true)
 	local Damage = math.min(#searchcreeps,ability:GetSpecialValueInt("max_units"))*ability:GetSpecialValueInt("damage_per_unit")
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
@@ -347,8 +345,7 @@ Consider[3]=function()
 	local CastRange = ability:GetCastRange();
 	local Radius = ability:GetAOERadius()
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+150,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -387,7 +384,7 @@ Consider[3]=function()
 	then
 		if ( npcBot:WasRecentlyDamagedByAnyHero(2) ) 
 		then
-			if(trees1~=nil and #trees>=1 and #enemys>=1)
+			if(trees~=nil and #trees>=1 and #enemys>=1)
 			then
 				return BOT_ACTION_DESIRE_MODERATE-0.05,GetTreeLocation(trees[#trees])
 			else
@@ -411,7 +408,7 @@ Consider[3]=function()
 			then
 				return BOT_ACTION_DESIRE_MODERATE-0.03, locationAoE.targetloc;
 			end
-			if(trees1~=nil and #trees>=1)
+			if(trees~=nil and #trees>=1)
 			then
 				return BOT_ACTION_DESIRE_MODERATE-0.03,GetTreeLocation(trees[#trees])
 			end
@@ -424,7 +421,7 @@ Consider[3]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 		
 		if ( npcEnemy ~= nil ) 
 		then
@@ -471,8 +468,7 @@ Consider[4]=function()
 	local CastRange = ability:GetCastRange();
 	local Radius = ability:GetAOERadius()
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -511,7 +507,7 @@ Consider[4]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then

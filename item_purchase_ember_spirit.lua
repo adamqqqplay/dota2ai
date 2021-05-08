@@ -6,23 +6,19 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 
 local ItemsToBuy =
 {
-	"item_tango",
-	"item_tango",
 	"item_quelling_blade",
-	"item_wraith_band",
+	"item_circlet",
 	"item_bottle",
+	"item_wraith_band",
 	"item_phase_boots",
-	"item_broadsword",
-	"item_ring_of_health",
-	"item_claymore",
-	"item_void_stone",
+    "item_bfury",
 	"item_magic_wand", --大魔棒7.14
+    "item_lesser_crit",
 	"item_black_king_bar",
 	"item_greater_crit",
-	"item_maelstrom", --电锤7.14
-	"item_octarine_core", --玲珑心
-	"item_hyperstone",
-	"item_recipe_mjollnir", --大雷锤
+    "item_ultimate_scepter",
+    "item_aghanims_shard",
+    "item_octarine_core", --玲珑心
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

@@ -11,29 +11,46 @@ local ItemUsageSystem = dofile(GetScriptDirectory() .. "/util/ItemUsageSystem")
 local ChatSystem = dofile(GetScriptDirectory() .. "/util/ChatSystem")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
-local function ConsiderGlyph()
-	local Towers = {
-		TOWER_TOP_1,
-		TOWER_TOP_2,
-		TOWER_TOP_3,
-		TOWER_MID_1,
-		TOWER_MID_2,
-		TOWER_MID_3,
-		TOWER_BOT_1,
-		TOWER_BOT_2,
-		TOWER_BOT_3,
-		TOWER_BASE_1,
-		TOWER_BASE_2
-	}
+local towerId = {
+    TOWER_TOP_1,
+    TOWER_TOP_2,
+    TOWER_TOP_3,
+    TOWER_MID_1,
+    TOWER_MID_2,
+    TOWER_MID_3,
+    TOWER_BOT_1,
+    TOWER_BOT_2,
+    TOWER_BOT_3,
+    TOWER_BASE_1,
+    TOWER_BASE_2,
+}
+local RefreshBuildingHealth = AbilityExtensions:SingleForTeam(AbilityExtensions:EveryManySeconds(0.5, function()
+    for _, id in ipairs(towerId) do
+        local tower = GetTower(GetTeam(), id)
+        if tower ~= nil and tower:GetHealth() > 0 then
+            tower.health0SecondsAgo = tower:GetHealth()
+            if tower:IsAlive() then
+                for _, i in ipairs({0.5,1,1.5,2}) do
+                    tower["health"..tostring(i).."SecondsAgo"] = tower["health"..tostring(i-0.5).."SecondsAgo"]
+                end
+            end
+        end
+    end
+end))
 
+local function ConsiderGlyph()
+    RefreshBuildingHealth()
 	if GetGlyphCooldown() > 0 then
 		return false
 	end
 
-	for i, BuildingID in pairs(Towers) do
+	for i, BuildingID in pairs(towerId) do
 		local tower = GetTower(GetTeam(), BuildingID)
-		if tower ~= nil then
+		if tower ~= nil and tower:GetHealth() > 0 then
 			local tableNearbyEnemyHeroes = utility.GetEnemiesNearLocation(tower:GetLocation(), 700)
+            if tableNearbyEnemyHeroes ~= nil and #tableNearbyEnemyHeroes >= 1 and tower["health1SecondsAgo"] and tower:GetHealth() - tower["health1SecondsAgo"] >= 7.5 * DotaTime() / 60 and DotaTime() >= 12 * 60 then
+                GetBot():ActionImmediate_Glyph()
+            end
 			if tower:GetHealth() >= 200 and tower:GetHealth() <= 1000 and #tableNearbyEnemyHeroes >= 2 then
 				GetBot():ActionImmediate_Glyph()
 				break
@@ -59,6 +76,11 @@ local function RecordStuckState()
 	end
 end
 
+local function AncientBelow(team, health)
+	local ancient = GetAncient(team)
+	return ancient:IsInvulnerable() and ancient:GetHealth() < health
+end
+
 local function SecondaryOperation()
 	ConsiderGlyph()
 	ItemUsageSystem.UnImplementedItemUsage()
@@ -68,10 +90,20 @@ local function SecondaryOperation()
 	then
 		ChatSystem.SendVersionAnnouncement()
 	end
+	if AncientBelow(TEAM_RADIANT, 1500) or AncientBelow(TEAM_DIRE, 1500) then
+		AbilityExtensions:AnnounceGroups1(GetBot())
+	end
+	if AncientBelow(TEAM_RADIANT, 1200) or AncientBelow(TEAM_DIRE, 1200) then
+		AbilityExtensions:AnnounceGroups2(GetBot())
+	end
 end
 
 function CourierUsageThink()
-	Courier.CourierUsageThink()
+	if not GetBot():IsAlive() then
+		return
+	end
+	AbilityExtensions:TickFromDota()
+	--Courier.CourierUsageThink()
 	SecondaryOperation()
 end
 
@@ -84,7 +116,7 @@ local ExecuteAbilityLevelUp = function(AbilityToLevelUp, TalentTree)
     local npcBot = GetBot()
     local function GetNextTalent()
         return AbilityExtensions:First(AbilityExtensions:GetTalents(npcBot), function(t)
-            return t:CanAbilityBeUpgraded()
+            return not t:IsTrained()
         end)
     end
 
@@ -329,6 +361,30 @@ function ConsiderAbility(AbilitiesReal, Consider)
 	return cast
 end
 
+function ConsiderAbilityCoroutine(AbilitiesReal, Consider)
+	local npcBot = GetBot()
+	local cast = {}
+	cast.Desire = {}
+	cast.Target = {}
+	cast.Type = {}
+	for i, ability in pairs(AbilitiesReal) do
+		if Consider[i] ~= nil then
+			local consider1 = AbilityExtensions:ResumeUntilReturn(Consider[i])
+			consider1 = AbilityExtensions:Max(consider1, function(t) return t[1] end)
+			if consider1 then
+				cast.Desire[i], cast.Target[i], cast.Type[i] = AbilityExtensions:Unpack(consider1)
+			else
+				cast.Desire[i] = 0
+			end
+		end
+	end
+	return cast
+end
+
+local worldBounds = GetWorldBounds()
+local function OutOfBound(vector)
+    return worldBounds[1] >= vector.x or worldBounds[2] >= vector.y or worldBounds[3] <= vector.x or worldBounds[4] <= vector.y
+end
 function UseAbility(AbilitiesReal, cast)
 	local npcBot = GetBot()
 	local HighestDesire = 0
@@ -343,24 +399,78 @@ function UseAbility(AbilitiesReal, cast)
 	if (HighestDesire > 0) then
 		local j = HighestDesireAbilityNumber
 		local ability = AbilitiesReal[j]
+		if not ability:IsCooldownReady() then
+			print("Ability still in cooldown: "..ability:GetName())
+			AbilityExtensions:DebugPause()
+			return
+		end
+        if npcBot:GetMana() < ability:GetManaCost() then
+            print("Ability mana not enough: "..ability:GetName())
+			AbilityExtensions:DebugPause()
+			return
+        end
+        if ability:IsHidden() then
+            print("Ability is hidden: "..ability:GetName())
+			AbilityExtensions:DebugPause()
+			return
+        end
+		-- if npcBot:IsRooted() then
+		-- 	print("use when rooted: "..ability:GetName())
+		-- end
+
+        local function CallWithTarget()
+            cast.Type[j] = "Target"
+			-- if not AbilityExtensions:IsHero(cast.Target[j]) then
+			-- 	print("target at creep"..ability:GetName())
+			-- end
+            -- print("target ability :"..ability:GetName())
+            if AbilityExtensions:IsVector(cast.Target[j]) then
+                print("Wrong target type")
+                print(ability:GetName(), cast.Target[j], cast.Type[j])
+				AbilityExtensions:DebugPause()
+				return
+            else
+                npcBot:Action_UseAbilityOnEntity(ability, cast.Target[j])
+            end
+        end
+        local function CallWithLocation()
+            cast.Type[j] = "Location"
+            if not AbilityExtensions:IsVector(cast.Target[j]) then
+                print("Wrong target type")
+                print(ability:GetName(), cast.Target[j], cast.Type[j])
+				AbilityExtensions:DebugPause()
+				return
+            elseif OutOfBound(cast.Target[j]) then
+                print("Ability cast out of world bounds!")
+                print(ability:GetName(), cast.Target[j], cast.Type[j])
+				AbilityExtensions:DebugPause()
+				return
+            else
+                npcBot:Action_UseAbilityOnLocation(ability, cast.Target[j])
+            end
+        end
+
 		if (cast.Type[j] == nil) then
 			if (utility.CheckFlag(ability:GetBehavior(), ABILITY_BEHAVIOR_NO_TARGET)) then
 				npcBot:Action_UseAbility(ability)
 			elseif (utility.CheckFlag(ability:GetBehavior(), ABILITY_BEHAVIOR_POINT)) then
-				npcBot:Action_UseAbilityOnLocation(ability, cast.Target[j])
+                CallWithLocation()
 			elseif (utility.CheckFlag(ability:GetTargetType(), ABILITY_TARGET_TYPE_TREE)) then
+                cast.Type[j] = "Tree"
 				npcBot:Action_UseAbilityOnTree(ability, cast.Target[j])
 			else
-				npcBot:Action_UseAbilityOnEntity(ability, cast.Target[j])
+                CallWithTarget()
 			end
 		else
-			if (cast.Type[j] == "Target") then
-				npcBot:Action_UseAbilityOnEntity(ability, cast.Target[j])
-			elseif (cast.Type[j] == "Location") then
-				npcBot:Action_UseAbilityOnLocation(ability, cast.Target[j])
-			else
-				npcBot:Action_UseAbility(ability)
-			end
+            if cast.Type[j] == "Target" then
+                CallWithTarget()
+            elseif cast.Type[j] == "Location" then
+                CallWithLocation()
+            elseif cast.Type[j] == "Tree" then
+                npcBot:Action_UseAbilityOnTree(ability, cast.Target[j])
+            else
+                npcBot:Action_UseAbility(ability)
+            end
 		end
         return j, cast.Target[j], cast.Type[j]
 	end

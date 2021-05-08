@@ -207,7 +207,7 @@ Consider[1]=function()
 				then
 					if ( CanCast[abilityNumber]( WeakestEnemy ) )
 					then
-						return BOT_ACTION_DESIRE_LOW, WeakestEnemy,"Target";
+						return BOT_ACTION_DESIRE_LOW, WeakestEnemy:GetLocation(),"Location"
 					end
 				end
 			end
@@ -393,7 +393,7 @@ Consider[4]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then

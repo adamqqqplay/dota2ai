@@ -14,12 +14,13 @@ local ItemsToBuy =
 	"item_dragon_lance", --魔龙枪
 	"item_yasha", --夜叉
     "item_mjollnir",
+    "item_black_king_bar",
     "item_manta",
 	"item_hurricane_pike", --大推推7.20
 	"item_ultimate_scepter", --蓝杖
 	"item_monkey_king_bar",
     "item_recipe_ultimate_scepter",
-    "item_black_king_bar",
+    "item_butterfly",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

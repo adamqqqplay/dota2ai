@@ -19,7 +19,7 @@ local ItemsToBuy =
 	"item_black_king_bar",
 	"item_butterfly",
     "item_ultimate_scepter",
-    "item_recipe_ultimate_scepter",
+    -- "item_recipe_ultimate_scepter",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

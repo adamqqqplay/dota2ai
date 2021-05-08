@@ -10,9 +10,7 @@ local ItemsToBuy =
 	"item_flask",
 	"item_quelling_blade",
 	"item_wraith_band",
-	"item_branches",
-	"item_branches",
-	"item_magic_stick",
+	"item_magic_wand",
 	"item_phase_boots", --相位
 	"item_recipe_magic_wand", --大魔棒7.14
 	"item_blade_mail", --刃甲

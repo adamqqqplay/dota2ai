@@ -4,7 +4,6 @@ local MoveDesire = 0;
 
 
 function  MinionThink(  hMinionUnit ) 
-
 	if hMinionUnit:IsIllusion() then
 		local target = bot:GetAttackTarget()
 		AttackDesire, Target = ConsiderAttack(hMinionUnit, target)

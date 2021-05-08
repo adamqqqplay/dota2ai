@@ -24,19 +24,19 @@ local AbilityToLevelUp=
 	Abilities[1], --3
 	Abilities[3], --4
 	Abilities[1], --5
-    Abilities[4], --6
+    Abilities[6], --6
 	Abilities[1], --7
 	Abilities[3], --8
 	Abilities[3], --9
 	Abilities[2], --10
 	"talent", --11
-	Abilities[4], --12
+	Abilities[6], --12
 	Abilities[2], --13
 	Abilities[2], --14
 	"talent", --15
     Abilities[2], --16
     "nil", --17
-	Abilities[4], --18
+	Abilities[6], --18
 	"nil", --19
 	"talent", --20
 	"nil", --21
@@ -100,8 +100,7 @@ Consider[1]=function()
 	local Damage = ability:GetAbilityDamage();
 	local Radius = ability:GetAOERadius();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+0,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -117,7 +116,7 @@ Consider[1]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetLocation(); 
+					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy:GetLocation(),"Location"
 				end
 			end
 		end
@@ -134,7 +133,7 @@ Consider[1]=function()
 			then
 				local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 				if ( locationAoE.count >= 1 ) then
-					return BOT_ACTION_DESIRE_LOW-0.02, locationAoE.targetloc;
+					return BOT_ACTION_DESIRE_LOW-0.02, locationAoE.targetloc,"Location"
 				end
 			end		
 		end
@@ -146,7 +145,7 @@ Consider[1]=function()
 		then
 			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 			if ( locationAoE.count >= 2 ) then
-				return BOT_ACTION_DESIRE_LOW-0.01, locationAoE.targetloc;
+				return BOT_ACTION_DESIRE_LOW-0.01, locationAoE.targetloc,"Location"
 			end
 		end
 	end
@@ -156,7 +155,7 @@ Consider[1]=function()
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 
 		if ( locationAoE.count >= 3 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc,"Location"
 		end
 	end
 
@@ -172,7 +171,7 @@ Consider[1]=function()
 
 		if ( locationAoE.count >= 4 ) 
 		then
-			return BOT_ACTION_DESIRE_LOW+0.01, locationAoE.targetloc;
+			return BOT_ACTION_DESIRE_LOW+0.01, locationAoE.targetloc,"Location"
 		end
 	end
 
@@ -188,7 +187,7 @@ Consider[1]=function()
 		then
 			if ( CanCast[abilityNumber]( npcTarget ) )
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcTarget:GetLocation();
+				return BOT_ACTION_DESIRE_MODERATE, npcTarget:GetLocation(),"Location"
 			end
 		end
 	end
@@ -232,11 +231,11 @@ Consider[2]=function()
 			for _,myFriend in pairs(allys) do
 				if ( GetUnitToUnitDistance( myFriend, npcBot  ) < CastRange and not myFriend:HasModifier(modifierName) ) 
 				then
-					return BOT_ACTION_DESIRE_MODERATE, myFriend, "Target"
+					return BOT_ACTION_DESIRE_MODERATE, myFriend:GetLocation()
 				end
 			end	
 			if not npcBot:HasModifier(modifierName) then
-				return BOT_ACTION_DESIRE_MODERATE, npcBot, "Target"
+				return BOT_ACTION_DESIRE_MODERATE, npcBot:GetLocation()
 			end
 		end
 	end
@@ -248,12 +247,12 @@ Consider[2]=function()
 		do
 			if ( not ally:HasModifier(modifierName) ) 
 			then
-				return BOT_ACTION_DESIRE_MODERATE,ally, "Target"
+				return BOT_ACTION_DESIRE_MODERATE,ally:GetLocation()
 			end
 		end
 		
 		if not npcBot:HasModifier(modifierName) then
-			return BOT_ACTION_DESIRE_MODERATE, npcBot, "Target"
+			return BOT_ACTION_DESIRE_MODERATE, npcBot:GetLocation()
 		end
 		
 	end
@@ -287,33 +286,18 @@ Consider[3]=function()
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
-	-- Check for a channeling enemy
-	for _,npcEnemy in pairs( enemys )
-	do
-		if ( npcEnemy:IsChanneling() ) 
-		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation(), "Location"
-		end
-	end
 
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-	-- If we're farming and can kill 3+ creeps with LSA
-	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
-		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 
-		if ( locationAoE.count >= 3 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc, "Location"
-		end
-	end
 
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
 		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) )
 		then
-			return BOT_ACTION_DESIRE_HIGH, utility.Fountain(GetTeam()), "Location"
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 
@@ -325,7 +309,7 @@ Consider[3]=function()
 	then
 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 		if ( locationAoE.count >= 2 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc, "Location"
+			return BOT_ACTION_DESIRE_LOW
 		end
 	
 		local npcEnemy = npcBot:GetTarget();
@@ -334,7 +318,7 @@ Consider[3]=function()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) )
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetExtrapolatedLocation(CastPoint), "Location"
+				return BOT_ACTION_DESIRE_MODERATE
 			end
 		end
 	end
@@ -359,12 +343,7 @@ Consider[6]=function()
 	local Radius = ability:GetAOERadius()-50
 	local CastPoint = ability:GetCastPoint()
 	
-	local i=npcBot:FindItemSlot("item_blink")
-	if(i>=0 and i<=5)
-	then
-		blink=npcBot:GetItemInSlot(i)
-		i=nil
-	end
+	local blink = AbilityExtensions:GetAvailableBlink(npcBot)
 	if(blink~=nil and blink:IsFullyCastable())
 	then
 		CastRange=CastRange+1200
@@ -379,8 +358,7 @@ Consider[6]=function()
 		end
 	end
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)

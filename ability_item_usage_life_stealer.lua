@@ -17,10 +17,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName =  { "life_stealer_rage", "life_stealer_feast", "life_stealer_ghoul_frenzy", "life_stealer_open_wounds", "life_stealer_infest", "life_stealer_consume" }
-local abilityIndex = utility.ReverseTable(abilityName)
-
 
 local AbilityToLevelUp=
 {
@@ -78,7 +74,15 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,
+utility.NCanCast,function(t)
+	if npcBot:GetTeam() == t:GetTeam() then
+		return AbilityExtensions:SpellCanCast(t, true)
+	else
+		return AbilityExtensions:HasScepter(t) and AbilityExtensions:SpellCanCast(t)
+	end
+end,utility.NCanCast,
+utility.NCanCast,utility.NCanCast,utility.NCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -104,8 +108,7 @@ Consider[1]=function()
 	local Damage = ability:GetAbilityDamage();
 	local CastPoint = ability:GetCastPoint();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+150,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -175,8 +178,7 @@ Consider[4]=function()
 	local Damage = ability:GetAbilityDamage();
 	local CastPoint = ability:GetCastPoint();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -265,16 +267,6 @@ Consider[4]=function()
 	
 end
 
-function RemoveMyself(allys)
-	for _,hero in pairs (allys)
-	do
-		if (hero==npcBot)
-		then
-			table.remove(allys,_)
-		end
-	end
-end
-
 Consider[5]=function()
 
 	local abilityNumber=5
@@ -283,7 +275,7 @@ Consider[5]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or AbilityExtensions:CannotMove(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -292,10 +284,9 @@ Consider[5]=function()
 	local CastPoint = ability:GetCastPoint();
 	local Radius = ability:GetAOERadius()
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	RemoveMyself(allys)
+	allys = AbilityExtensions:Remove(allys, npcBot)
 	local StrongestAlly,AllyHealth=utility.GetStrongestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -315,12 +306,24 @@ Consider[5]=function()
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
 				local allys2 = WeakestEnemy:GetNearbyHeroes( Radius-50, true, BOT_MODE_NONE );
-				RemoveMyself(allys2)
+				allys2 = AbilityExtensions:Remove(allys2, npcBot)
 				if(allys2~=nil and HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 				then
 					return BOT_ACTION_DESIRE_HIGH,allys2[#allys2]; 
 				end
 			end
+		end
+	end
+
+	if AbilityExtensions:HasScepter(npcBot) and (AbilityExtensions:IsSeverelyDisabled(npcBot) or AbilityExtensions:GetHealthPercent(npcBot) <= 0.3) then
+		local enemies = npcBot:GetNearbyHeroes(CastRange,true,BOT_MODE_NONE)
+		enemies = AbilityExtensions:Filter(enemies, CanCast[5])
+		local realEnemies = AbilityExtensions:Filter(npcBot, function(t) return AbilityExtensions:MayNotBeIllusion(npcBot, t) end)
+		if #realEnemies ~= 0 then
+			return BOT_ACTION_DESIRE_HIGH, AbilityExtensions:Max(realEnemies, function(t) return t:GetMaxHealth() * RemapValClamped(AbilityExtensions:GetHealthPercent(t), 0, 0.4, 2, 1) end)
+		end
+		if #enemies ~= 0 then
+			return BOT_ACTION_DESIRE_HIGH, AbilityExtensions:Max(enemies, function(t) return t:GetMaxHealth() * RemapValClamped(AbilityExtensions:GetHealthPercent(t), 0, 0.4, 2, 1) end)
 		end
 	end
 	--------------------------------------
@@ -370,9 +373,7 @@ Consider[5]=function()
 			end
 		end
 	end
-
-	return BOT_ACTION_DESIRE_NONE, 0;
-	
+	return BOT_ACTION_DESIRE_NONE
 end
 
 Consider[7]=function()
@@ -383,8 +384,8 @@ Consider[7]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if (not ability:IsFullyCastable() or ability:IsHidden()) then
-		return BOT_ACTION_DESIRE_NONE, 0;
+	if not ability:IsFullyCastable() or ability:IsHidden() then
+		return BOT_ACTION_DESIRE_NONE
 	end
 	
 	local CastRange = ability:GetCastRange();
@@ -392,8 +393,7 @@ Consider[7]=function()
 	local CastPoint = ability:GetCastPoint();
 	local Radius = 600
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -416,46 +416,45 @@ Consider[7]=function()
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_GANK or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY ) 
 	then
 		local npcTarget = npcBot:GetTarget();
 		if ( npcTarget~= nil and GetUnitToUnitDistance( npcTarget, npcBot ) < Radius )
 		then
-			return BOT_ACTION_DESIRE_ABSOLUTE;
+			return BOT_ACTION_DESIRE_VERYHIGH
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE;
-	
+	return BOT_ACTION_DESIRE_NONE
 end
 
 local lastInfestTime
 local lastInfestTarget
-local lastInfestTable = {}
+
 Consider[6] = function()
 	local ability = AbilitiesReal[6]
 	if not ability:IsFullyCastable() or ability:IsHidden() or lastInfestTarget == nil then
 		return 0
 	end
-	if lastInfestTarget ~= nil and not lastInfestTarget:IsAlive() then
+	if lastInfestTarget ~= nil or not lastInfestTarget:IsAlive() or not npcBot:IsInvulnerable() then
 		lastInfestTarget = nil
 		lastInfestTime = nil
 	end
-	local infest3 = AbilityExtensions:LastForAtLeastSeconds(function() return lastInfestTarget ~= nil end, 3, lastInfestTable)
-	local infest10 = AbilityExtensions:LastForAtLeastSeconds(function() return lastInfestTarget ~= nil end, 10, lastInfestTable)
+	local infestTime = DotaTime() - lastInfestTime
+	local infest3 = infestTime > 3
+	local infest10 = infestTime > 10
 	
 	local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1000, true)
 	local friends = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, false)
 
 	if AbilityExtensions:IsAttackingEnemies(npcBot) then
 		local nearbyEnemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, ability:GetAOERadius(), true)
-		if #nearbyEnemies >= 3 or AbilityExtensions:IsSeverlyDisabled(lastInfestTarget) and #nearbyEnemies <= 2 then
-			return BOT_ACTION_DESIRE_MODERATE
+		if #nearbyEnemies >= 3 or npcBot:GetTeam() == lastInfestTarget:GetTeam() and AbilityExtensions:IsSeverelyDisabled(lastInfestTarget) and #nearbyEnemies <= 2 or #nearbyEnemies == 1 then
+			return BOT_ACTION_DESIRE_MODERATE + 0.1
 		end
 	end
-	if infest3 and (#enemies == 0 or AbilityExtensions:Outnumber(friends, enemies)) then
+	if infest3 and (#enemies == 0 or AbilityExtensions:Outnumber(npcBot, friends, enemies)) then
 		return BOT_ACTION_DESIRE_HIGH
 	end
 	if infest10 then

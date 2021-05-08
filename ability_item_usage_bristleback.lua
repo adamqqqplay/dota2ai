@@ -110,15 +110,14 @@ Consider[1]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = 0;
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	
-	if npcBot:HasScepter() then
+	if AbilityExtensions:HasScepter(npcBot) then
 		local enemies = npcBot:GetNearbyHeroes(CastRange, true, BOT_MODE_NONE)
 		enemies = AbilityExtensions:Filter(enemies, function(t) 
 			local m = t:GetModifierByName("modifier_bristleback_viscous_nasal_goo")
@@ -127,7 +126,7 @@ Consider[1]=function()
 			end
 			return true
 		end)
-		if AbilityExtensions:IsAttackingEnemies(npcBot) or AbilityExtensions:IsRetreating(npcBot) then
+		if (AbilityExtensions:IsAttackingEnemies(npcBot) or AbilityExtensions:IsRetreating(npcBot)) and npcBot:GetMana() >= 120 then
 			if #enemies == 0 then
 				return 0
 			end
@@ -188,10 +187,8 @@ Consider[1]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcTarget = npcBot:GetTarget();
-
-		if ( npcTarget ~= nil ) 
-		then
+		local npcTarget = AbilityExtensions:GetTargetIfGood(npcBot)
+		if npcTarget ~= nil then
 			if ( CanCast[abilityNumber]( npcTarget )  and GetUnitToUnitDistance(npcBot,npcTarget)< CastRange)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcTarget
@@ -220,8 +217,7 @@ Consider[2]=function()
 	local Radius = ability:GetAOERadius() - 50
 	local CastPoint = ability:GetCastPoint()
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)

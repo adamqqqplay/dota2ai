@@ -75,13 +75,19 @@ end
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
 
-function CanCast1( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable() and not npcEnemy:HasModifier( "modifier_bane_enfeeble" ) 
+
+local CanCast = {}
+CanCast[1] = function(t)
+	return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_MAGICAL, false, true)
 end
-function CanCast2( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable() and not npcEnemy:WasRecentlyDamagedByAnyHero(2.0)
+CanCast[2] = function(t)
+	return AbilityExtensions:NormalCanCast(t, true, DAMAGE_TYPE_PURE, false, true) and not AbilityExtensions:HasAbilityRetargetModifier(t) and not (AbilityExtensions:HasModifier("modifier_item_blade_mail") and AbilityExtensions:IsRetreating(npcBot))
 end
-local CanCast={CanCast1,CanCast2,utility.NCanCast,utility.UCanCast}
+CanCast[3] = CanCast[1]
+CanCast[4] = function(t)
+	return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_PURE, true, true) and not AbilityExtensions:HasAbilityRetargetModifier(t)
+end
+
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -524,8 +530,8 @@ Consider[4]=function()
 		end
 	end]]
 
-	if AbilityExtensions:IsRetreating(npcBot) and #enemys == 0 and not AbilityExtensions:HasAbilityRetargetModifier(enemys[1]) then
-		return BOT_ACTION_DESIRE_HIGH, enemys[0]
+	if AbilityExtensions:IsRetreating(npcBot) and #enemys == 1 and not AbilityExtensions:HasAbilityRetargetModifier(enemys[1]) then
+		return BOT_ACTION_DESIRE_HIGH, enemys[1]
 	end
 	
 	-- If we're going after someone
@@ -545,7 +551,7 @@ Consider[4]=function()
 		end
 	end
 
-	local disabledAllies = AbilityExtensions:Filter(allys, function(t) return AbilityExtensions:IsSeverlyDisabled(t) and not t:IsChanneling() end)
+	local disabledAllies = AbilityExtensions:Filter(allys, function(t) return AbilityExtensions:IsSeverelyDisabled(t) and not t:IsChanneling() end)
 	disabledAllies = AbilityExtensions:SortByMinFirst(disabledAllies, function(t) return t:GetHealth() end)
 	if #disabledAllies ~= 0 then
 		return BOT_ACTION_DESIRE_MODERATE, disabledAllies[1]
@@ -572,8 +578,14 @@ Consider[5]=function()
 	local friends = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, false, BOT_MODE_NONE)
 	local nightmaredFriends = AbilityExtensions:Filter(friends, function(t) return t:HasModifier("modifier_bane_nightmare") end)
 	if #nightmaredEnemies ~= 0 then
-		if #enemies == 1 and #friends >= 2 and AbilityExtensions:GetModifierRemainingDuration(nightmaredFriends[1], "modifier_bane_nightmare") <= 4 
-		or AbilityExtensions:All(nightmaredEnemies, function(t) return AbilityExtensions:GetHealthPercent(t) <= 0.3 and AbilityExtensions:GetModifierRemainingDuration(nightmaredFriends[1], "modifier_bane_nightmare") <= 4 end) and AbilityExtensions:All(friends, function(t) return AbilityExtensions:GetHealthPercent(t) >= 0.5 end) then
+		if #enemies == 1 and #friends >= 2 and AbilityExtensions:GetModifierRemainingDuration(nightmaredEnemies[1], "modifier_bane_nightmare") <= 4
+		or AbilityExtensions:All(nightmaredEnemies, function(t) 
+			return AbilityExtensions:GetHealthPercent(t) <= 0.3
+		end) and AbilityExtensions:All(nightmaredFriends, function(t) 
+			return AbilityExtensions:GetModifierRemainingDuration(t, "modifier_bane_nightmare") <= 4 
+		end) and AbilityExtensions:All(friends, function(t) 
+			return AbilityExtensions:GetHealthPercent(t) >= 0.5 
+		end) then
 			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
@@ -589,11 +601,26 @@ end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
+local drainSnapTarget
+local fiendsGripTarget
+
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then 
+		if npcBot:IsCastingAbility() then
+			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[2] then
+				if drainSnapTarget and AbilityExtensions:HasAbilityRetargetModifier(drainSnapTarget) then
+					npcBot:Action_ClearActions(true)
+				end
+			end
+			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[4] and not npcBot:IsChanneling() then
+				if fiendsGripTarget and AbilityExtensions:HasAbilityRetargetModifier(fiendsGripTarget) then
+					npcBot:Action_ClearActions(true)
+				end
+			end
+		end
 		return
 	end
 	
@@ -608,7 +635,12 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	if index == 2 then
+		drainSnapTarget = target
+	elseif index == 4 then
+		fiendsGripTarget = target
+	end
 end
 
 function CourierUsageThink() 

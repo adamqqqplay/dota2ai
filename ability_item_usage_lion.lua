@@ -101,8 +101,7 @@ Consider[1]=function()
 	local Radius = ability:GetAOERadius()
 	local CastPoint=ability:GetCastPoint()
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -250,8 +249,7 @@ Consider[2]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -348,8 +346,7 @@ Consider[3]=function()
 	local Damage = ability:GetAbilityDamage();
 	local DrainMana=ability:GetSpecialValueFloat("duration")*ability:GetSpecialValueInt("mana_per_second")
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+150,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -434,8 +431,7 @@ Consider[4]=function()
 	local Damage = ability:GetSpecialValueInt( "damage" );
 	local Radius = ability:GetSpecialValueInt( "light_strike_array_aoe" );
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -456,7 +452,7 @@ Consider[4]=function()
 	end
 	
 	-- If a mode has set a target, and we can kill them, do it
-	local npcTarget = npcBot:GetTarget();
+	local npcTarget = AbilityExtensions:GetTargetIfGood(npcBot)
 	if ( npcTarget ~= nil and CanCast[abilityNumber]( npcTarget ) )
 	then
 		if ( npcTarget:GetActualIncomingDamage( Damage, DAMAGE_TYPE_MAGICAL ) > npcTarget:GetHealth() and GetUnitToUnitDistance( npcTarget, npcBot ) < ( CastRange + 200 ) )

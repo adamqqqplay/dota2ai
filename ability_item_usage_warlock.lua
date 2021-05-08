@@ -73,7 +73,9 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,function(t)
+	return t:GetTeam() == npcBot:GetTeam() and AbilityExtensions:AllyCanCast(t) and not t:HasModifier("modifier_ice_blast") or AbilityExtensions:NormalCanCast(t) 
+end,utility.NCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -240,8 +242,7 @@ Consider[2]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetDuration()*ability:GetSpecialValueInt("AbilityDamage")
 	
-	local HeroHealth=10000
-	local CreepHealth=10000
+
 	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
@@ -530,18 +531,6 @@ local upheavelTimer
 local upheavelLocation
 local upheavelRadius
 
-local function GetSpellImmuneRemainingTime(target)
-    local spellImmuneModifiers = {
-        "modifier_black_king_bar_immune",
-        "modifier_minotaur_horn_immune",
-        "modifier_life_stealer_rage",
-    }
-    local c = AbilityExtensions:Map(spellImmuneModifiers, function(t) return AbilityExtensions:GetModifierRemainingDuration(t)  end)
-    c = AbilityExtensions:Filter(c, function(t) return t ~= nil  end)
-    c = AbilityExtensions:SortByMaxFirst(c, function(t) return t  end)
-    c = c[1] or 0
-    return c
-end
 
 function AbilityUsageThink()
 
@@ -563,7 +552,7 @@ function AbilityUsageThink()
                 local enemies = npcBot:GetNearbyHeroes(1500, true, BOT_MODE_NONE)
                 enemies = AbilityExtensions:Count(enemies, function(t)
                     return t:HasModifier("modifier_warlock_upheavel")
-                            or GetUnitToLocationDistance(t, upheavelLocation) <= upheavelRadius and GetSpellImmuneRemainingTime(t) <= 1
+                            or GetUnitToLocationDistance(t, upheavelLocation) <= upheavelRadius and AbilityExtensions:GetMagicImmuneRemainingDuration(t) <= 1
                 end)
                 if enemies == 0 then
                     if DotaTime() > upheavelTimer + 1.5 then

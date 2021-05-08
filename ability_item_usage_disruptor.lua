@@ -469,6 +469,14 @@ Consider[4]=function()
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
+	local channelingEnemies = AbilityExtensions:Filter(enemys, function(t)
+		return CanCast[4](t) and AbilityExtensions:IsChannelingAbility(t) and AbilityExtensions:IsChannelingBreakWorthAbility(t)
+	end)
+	channelingEnemies = AbilityExtensions:Max(channelingEnemies, function(t) return t:GetCurrentActiveAbility():GetCooldown() end)
+	if channelingEnemies ~= nil and channelingEnemies[1]:GetCurrentActiveAbility():GetCooldown() >= ability:GetCooldown() * 0.7 then
+		return BOT_ACTION_DESIRE_MODERATE, AbilityExtensions:FindAOELocationAtSingleTarget(npcBot, channelingEnemies, Radius, CastRange, CastPoint)
+	end
+
 	--try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
 	then
@@ -536,11 +544,11 @@ Consider[4]=function()
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 		end
 	
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) )
+			if CanCast[abilityNumber]( npcEnemy ) and AbilityExtensions:IsNonIllusionHero(npcEnemy)
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation(CastPoint);
 			end
