@@ -9,27 +9,27 @@ Let the script control the entire team, and then players on the other side, so y
 
 After the script is updated, you may need to re-subscribe this script to update. If you find any bug in the game, or have any suggestions, please contact me by e-mail: adamqqq@163.com
 
-Thanks to PLATINUM ,FURIOUSPUPPY and GXC, their code helped me a lot.Finally, wish you a happy game!
+Thanks to PLATINUM ,FURIOUSPUPPY and GXC, their code helped me a lot. Finally, wish you a happy game!
 adamqqq
 2017.2.3
 
 This product is licensed under GPLv3.
 Copyright 2017 [adamqqq]
 
-����ƥ��ģ���� AI v1.1
+天梯匹配模拟器 AI v1.1
 
-��Һã�����adamqqq����ӭ�����ս���ǵĻ����ˣ����ű�ּ��ʵ�ָ�ˮƽ���˻���Ϸ�Կ������ǵ�����Ŀ����ģ������ƥ�����Ϸ���飨�������������ű����ֿ����˻�����Ӣ�ۣ����ಿ����Ĭ�ϳ���ʵ�֡���ҿ��Դ�������λ�ã�Ĭ��֧��5v5����Ϸ��֧��60+Ӣ�ۡ�
+大家好，我是adamqqq，欢迎大家挑战我们的机器人，本脚本旨在实现高水平的人机游戏对抗。我们的最终目标是模拟天梯匹配的游戏体验（哈哈哈）。本脚本部分控制了机器人英雄，其余部分由默认程序实现。玩家可以处于任意位置，默认支持5v5的游戏。支持60+英雄。
 
-���������ɵ����κη���ҵ��Ŀ��ʹ�ñ�����Ĵ��룬��ע��ԭ���ߡ� ��Ҫ��������κ��ļ�������ҵ�򲻿�Դ�ĳ���
+您可以自由地在任何非商业项目上使用本程序的代码，并注明原作者。 不要将这里的任何文件用于商业或不开源的程序。
 
-�Ƽ���Ϸ������
-�ñ��ű������������飬Ȼ����Ҵ�����һ�ߣ������������鵽���ű�����ǿʵ����
+推荐游戏方法：
+让本脚本控制整个队伍，然后玩家处于另一边，这样可以体验到本脚本的最强实力。
 
-�ڽű����º󣬿�����Ҫ���¶��ı��ű������������°汾�����������Ϸ�з����κδ��󣬻������κν��飬��ͨ�������ʼ�������ϵ:adamqqq@163.com
+在脚本更新后，可能需要重新订阅本脚本以升级至最新版本。如果你在游戏中发现任何错误，或者有任何建议，请通过电子邮件与我联系:adamqqq@163.com
 
-��лPLATINUM��FURIOUSPUPPY��GXC�����ǵĴ���������Һܶࡣ���ף����Ϸ��죡
+感谢PLATINUM，FURIOUSPUPPY和GXC，他们的代码帮助了我很多。最后祝您游戏愉快！
 adamqqq
 2017.2.3
 
-����Ʒ����GPLv3��Ȩ��
+本产品采用GPLv3授权。
 Copyright 2017 [adamqqq]

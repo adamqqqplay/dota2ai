@@ -2824,7 +2824,7 @@ end
 local groupAnnounceTimes1 = 0
 function M:AnnounceGroups1(npcBot)
     if groupAnnounceTimes1 == 0 then
-        npcBot:ActionImmediate_Chat("Thanks for choosing RMMAI. Join our new discord group at ... to put suggestions or devloping issues!", true)
+        npcBot:ActionImmediate_Chat("Thanks for choosing RMM AI. Join our new discord group at https://discord.gg/Agd632pvhA to put suggestions or devloping issues!", true)
         groupAnnounceTimes1 = 1
     end
 end

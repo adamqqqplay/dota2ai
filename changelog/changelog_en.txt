@@ -354,3 +354,6 @@ v1.7.3 (2021.04.26) Updated by AaronSong321
 4. Implement Life_stealer, Dragon_knight, Leshrac, Magnataur, Phantom_assassin shard abilities;
 5. Try to improve Kunkka’s x-mark combo;
 6. Fix bugs in Alchemist, Bane, Kunkka;
+v1.7.4 (2021.05.08) Updated by AaronSong321
+1. Fix lots of bugs;
+2. Add Ember Spirit.
