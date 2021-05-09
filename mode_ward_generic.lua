@@ -7,6 +7,7 @@ if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot(
 	return;
 end
 
+local utility = require( GetScriptDirectory() .. "/utility" ) 
 local wardUtils = require(GetScriptDirectory() ..  "/util/WardUtility")
 local role = require(GetScriptDirectory() .. "/util/RoleUtility");
 local bot = GetBot();
@@ -18,32 +19,81 @@ local targetLoc = nil;
 local smoke = nil;
 local wardCastTime = -90;
 local swapTime = -90;
+local enemyPids = nil;
 
 bot.ward = false;
 bot.steal = false;
 
 local route = {
-	Vector(-108.000000, 2271.000000, 0.000000),
-	Vector(-1276.000000, 3644.000000, 0.000000),
-	Vector(-3148.000000, 3720.000000, 0.000000)
+	Vector(-6263.000000, 2265.000000, 0.000000),
+	Vector(-5012.000000, 4765.000000, 0.000000),
+	Vector(-3212.000000, 4865.000000, 0.000000),
+	Vector(-3706.000000, 2950.000000, 0.000000)
 }
 
 local route2 = {
-	Vector(3597.000000, 351.000000, 0.000000),
-	Vector(2186.000000, -3656.000000, 0.000000),
-	Vector(3689.000000, -3625.000000, 0.000000)
+	Vector(6041.000000, -1978.000000, 0.000000),
+	Vector(4622.000000, -4873.000000, 0.000000),
+	Vector(3561.000000, -4297.000000, 0.000000),
+	Vector(3957.000000, -2808.000000, 0.000000)
 }
 
 local vNonStuck = Vector(-2610.000000, 538.000000, 0.000000);
 
 local chat = false;
-
+local height = -1;
 function GetDesire()
+	-- "morphling_replicate"
+	-- "morphling_morph_replicate"
 
-	--[[local pg = wardUtils.GetHumanPing();
-	if pg ~= nil and pg.time > 0 and GameTime() - pg.time < 0.25 then
-		print(tostring(pg.location)..":Vis:"..tostring(IsLocationVisible(pg.location))..":Pas:"..tostring(IsLocationPassable(pg.location)));
+	-- local numPlayer =  GetTeamPlayers(GetTeam());
+	-- for i = 1, #numPlayer
+	-- do
+	-- 	local player = GetTeamMember(i);
+	-- 	if player ~= nil and not IsPlayerBot(player:GetPlayerID()) then
+	-- 		local ab = player:GetAbilityInSlot(0);
+	-- 		print(ab:GetName());
+	-- 		local m1 = player:GetAbilityByName('morphling_replicate');
+	-- 		local m2 = player:GetAbilityByName('morphling_morph_replicate');
+	-- 		if m1:IsHidden() == false then
+	-- 			print('morphling_replicate');
+	-- 		end	
+
+	-- 		if m2:IsHidden() == false then
+	-- 			print('morphling_morph_replicate');
+	-- 		end	
+	-- 			-- local mods = player:GetModifierList( );
+	-- 			-- for _,r in pairs(mods) do
+	-- 			-- 	if r ~= nil then
+	-- 			-- 		print(r);
+	-- 			-- 	end
+	-- 			-- end
+	-- 	end
+	-- end
+
+	-- if bot:GetPlayerID() == 2 then
+		-- print(bot:GetUnitName())
+		-- local at = GetAmountAlongLane(LANE_TOP, bot:GetLocation())
+		-- local am = GetAmountAlongLane(LANE_MID, bot:GetLocation())
+		-- local ab = GetAmountAlongLane(LANE_BOT, bot:GetLocation())
+		-- print("AT: "..tostring(at.amount).."|"..tostring(at.distance))
+		-- print("AM: "..tostring(am.amount).."|"..tostring(am.distance))
+		-- print("AB: "..tostring(ab.amount).."|"..tostring(ab.distance))
+	-- end
+	
+	--[[print(bot:GetUnitName())
+	print("tp:"..tostring(bot:FindItemSlot('item_tpscroll')))
+	for i=0, 23 do
+		local it = bot:GetItemInSlot(i)
+		if(it ~= nil) then
+			print("Slot "..tostring(i)..":"..it:GetName());
+		end
 	end]]--
+
+	-- local pg = wardUtils.GetHumanPing();
+	-- if pg ~= nil and pg.time > 0 and GameTime() - pg.time < 0.25 then
+		-- print(tostring(pg.location)..":Vis:"..tostring(IsLocationVisible(pg.location))..":Pas:"..tostring(IsLocationPassable(pg.location)).."HLvl:"..tostring(GetHeightLevel(pg.location)));
+	-- end
 
 	--[[if bot.lastPlayerChat ~= nil and string.find(bot.lastPlayerChat.text, "ward") then
 		bot:ActionImmediate_Chat("Catch this in mode_ward_generic", false);
@@ -57,23 +107,23 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE;
 	end
 	
-	--[[if DotaTime() < 0 then
-		local enemies = bot:GetNearbyHeroes(500, true, BOT_MODE_NONE)
-		if not IsSafelaneCarry() and bot:GetAssignedLane() ~= LANE_MID 
-		   and ( (GetTeam() == TEAM_RADIANT and bot:GetAssignedLane() == LANE_TOP) 
-		      or (GetTeam() == TEAM_DIRE and bot:GetAssignedLane() == LANE_BOT) 
-			  or  role.CanBeSupport(bot:GetUnitName()) 
-			  --or ( bot:GetUnitName() == "npc_dota_hero_elder_titan" and DotaTime() > -59 ) 
-			  --or ( bot:GetUnitName() == 'npc_dota_hero_wisp' and DotaTime() > -59 )
-			  ) 
-		  and #enemies == 0 
-		then
-			--bot.steal = true;
-			return BOT_MODE_DESIRE_ABSOLUTE;
-		end
-	else	
-		bot.steal = false;
-	end]]
+	-- if DotaTime() < 0 then
+	-- 	local enemies = bot:GetNearbyHeroes(500, true, BOT_MODE_NONE)
+	-- 	if not IsSafelaneCarry() and bot:GetAssignedLane() ~= LANE_MID 
+	-- 	   and ( (GetTeam() == TEAM_RADIANT and bot:GetAssignedLane() == LANE_TOP) 
+	-- 	      or (GetTeam() == TEAM_DIRE and bot:GetAssignedLane() == LANE_BOT) 
+	-- 		  or  role.IsSupport(bot:GetUnitName()) 
+	-- 		  or ( bot:GetUnitName() == "npc_dota_hero_elder_titan" and DotaTime() > -59 ) 
+	-- 		  or ( bot:GetUnitName() == 'npc_dota_hero_wisp' and DotaTime() > -59 )
+	-- 		  ) 
+	-- 	  and #enemies == 0 
+	-- 	then
+	-- 		bot.steal = true;
+	-- 		return BOT_MODE_DESIRE_ABSOLUTE;
+	-- 	end
+	-- else	
+	-- 	bot.steal = false;
+	-- end
 	
 	itemWard = wardUtils.GetItemWard(bot);
 	
@@ -99,7 +149,7 @@ function GetDesire()
 		
 		AvailableSpots = wardUtils.GetAvailableSpot(bot);
 		targetLoc, targetDist = wardUtils.GetClosestSpot(bot, AvailableSpots);
-		if targetLoc ~= nil and DotaTime() > wardCastTime + 1.0 then
+		if targetLoc ~= nil and DotaTime() > wardCastTime + 1.0 and IsEnemyCloserToWardLoc(targetLoc, targetDist) == false then
 			bot.ward = true;
 			return RemapValClamped(targetDist, 6000, 0, BOT_MODE_DESIRE_MODERATE, BOT_MODE_DESIRE_VERYHIGH);
 		end
@@ -119,6 +169,8 @@ function OnStart()
 				bot:ActionImmediate_SwapItems( wardSlot, leastCostItem );
 				return
 			end
+			local active = bot:GetItemInSlot(leastCostItem);
+			print(tostring(active:IsFullyCastable()));
 		end
 	end
 end
@@ -128,14 +180,14 @@ function OnEnd()
 	bot.steal = false;
 	itemWard = nil;
 	wt = nil;
-	-- local wardSlot = bot:FindItemSlot('item_ward_observer');
-	-- if wardSlot >=0 and wardSlot <= 5 then
-	-- 	local mostCostItem = FindMostItemSlot();
-	-- 	if mostCostItem ~= -1 then
-	-- 		bot:ActionImmediate_SwapItems( wardSlot, mostCostItem );
-	-- 		return
-	-- 	end
-	-- end
+	local wardSlot = bot:FindItemSlot('item_ward_observer');
+	if wardSlot >=0 and wardSlot <= 5 then
+		local mostCostItem = FindMostItemSlot();
+		if mostCostItem ~= -1 then
+			bot:ActionImmediate_SwapItems( wardSlot, mostCostItem );
+			return
+		end
+	end
 end
 
 function Think()
@@ -145,7 +197,7 @@ function Think()
 	end
 	
 	if wt ~= nil then
-		-- bot:Action_UseAbilityOnEntity(itemWard, wt);
+		bot:Action_UseAbilityOnEntity(itemWard, wt);
 		return
 	end
 	
@@ -175,7 +227,7 @@ function Think()
 		end
 	end
 	
-	--[[if bot.steal == true then
+	if bot.steal == true then
 		local stealCount = CountStealingUnit();
 		smoke = HasItem('item_smoke_of_deceit');
 		local loc = nil;
@@ -226,7 +278,7 @@ function Think()
 			end
 		end
 		
-	end]]
+	end
 
 end
 
@@ -298,6 +350,7 @@ function IsSuitableToWard()
 	local mode = bot:GetActiveMode();
 	if ( ( mode == BOT_MODE_RETREAT and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH )
 		or mode == BOT_MODE_ATTACK
+		or mode == BOT_MODE_RUNE 
 		or mode == BOT_MODE_DEFEND_ALLY
 		or mode == BOT_MODE_DEFEND_TOWER_TOP
 		or mode == BOT_MODE_DEFEND_TOWER_MID
@@ -322,4 +375,21 @@ end
 
 function IsSafelaneCarry()
 	return role.CanBeSafeLaneCarry(bot:GetUnitName()) and ( (GetTeam()==TEAM_DIRE and bot:GetAssignedLane()==LANE_TOP) or (GetTeam()==TEAM_RADIANT and bot:GetAssignedLane()==LANE_BOT)  )	
+end
+
+function IsEnemyCloserToWardLoc(wardLoc, botDist)
+	if enemyPids == nil then
+		enemyPids = GetTeamPlayers(GetOpposingTeam())
+	end	
+	for i = 1, #enemyPids do
+		local info = GetHeroLastSeenInfo(enemyPids[i])
+		if info ~= nil then
+			local dInfo = info[1]; 
+			if dInfo ~= nil and dInfo.time_since_seen < 3.0  and utility.GetDistance(dInfo.location, wardLoc) <  botDist
+			then	
+				return true;
+			end
+		end	
+	end
+	return false;
 end

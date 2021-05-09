@@ -126,6 +126,18 @@ X["hero_roles"] = {
 		['support'] = 0,
 		['pusher'] = 0
 	},
+	
+	["npc_dota_hero_dawnbreaker"] = {
+		['carry'] = 2,
+		['disabler'] = 2,
+		['durable'] = 2,
+		['escape'] = 1,
+		['initiator'] = 3,
+		['jungler'] = 0,
+		['nuker'] = 1,
+		['support'] = 0,
+		['pusher'] = 0
+	},
 
 	["npc_dota_hero_doom_bringer"] = {
 		['carry'] = 1,
@@ -208,6 +220,18 @@ X["hero_roles"] = {
 		['jungler'] = 0,
 		['nuker'] = 0,
 		['support'] = 0,
+		['pusher'] = 0
+	},
+
+	["npc_dota_hero_hoodwink"] = {
+		['carry'] = 3,
+		['disabler'] = 1,
+		['durable'] = 0,
+		['escape'] = 2,
+		['initiator'] = 0,
+		['jungler'] = 0,
+		['nuker'] = 2,
+		['support'] = 1,
 		['pusher'] = 0
 	},
 
@@ -1314,6 +1338,18 @@ X["hero_roles"] = {
 		['support'] = 2,
 		['pusher'] = 0
 	},
+	
+	["npc_dota_hero_snapfire"] = {
+		['carry'] = 0,
+		['disabler'] = 2,
+		['durable'] = 0,
+		['escape'] = 1,
+		['initiator'] = 0,
+		['jungler'] = 0,
+		['nuker'] = 3,
+		['support'] = 3,
+		['pusher'] = 0
+	},
 
 	["npc_dota_hero_storm_spirit"] = {
 		['carry'] = 2,
@@ -1361,6 +1397,18 @@ X["hero_roles"] = {
 		['nuker'] = 2,
 		['support'] = 1,
 		['pusher'] = 1
+	},
+	
+	["npc_dota_hero_void_spirit"] = {
+		['carry'] = 2,
+		['disabler'] = 1,
+		['durable'] = 0,
+		['escape'] = 3,
+		['initiator'] = 1,
+		['jungler'] = 0,
+		['nuker'] = 1,
+		['support'] = 0,
+		['pusher'] = 0
 	},
 
 	["npc_dota_hero_warlock"] = {
@@ -1444,6 +1492,7 @@ X["bottle"] = {
 	["npc_dota_hero_dragon_knight"] = 1;
 	["npc_dota_hero_pugna"] = 1;
 	["npc_dota_hero_naga_siren"] = 1;
+	["npc_dota_hero_void_spirit"] = 1;
 }
 
 X["phase_boots"] = {
@@ -1456,6 +1505,7 @@ X["phase_boots"] = {
 		["npc_dota_hero_spectre"] = 1,
 		["npc_dota_hero_tiny"] = 1,
 		["npc_dota_hero_troll_warlord"] = 1,
+		["npc_dota_hero_alchemist"] = 1,
 		["npc_dota_hero_life_stealer"] = 1,
 		["npc_dota_hero_monkey_king"] = 1,
 		["npc_dota_hero_ember_spirit"] = 1,
@@ -1482,14 +1532,13 @@ X['invisHeroes'] = {
 	['npc_dota_hero_clinkz'] = 1,
 	['npc_dota_hero_mirana'] = 1,
 	['npc_dota_hero_riki'] = 1,
-    ["npc_dota_hero_rubic"] = 1,
 	['npc_dota_hero_nyx_assassin'] = 1,
 	['npc_dota_hero_bounty_hunter'] = 1,
 	['npc_dota_hero_invoker'] = 1,
 	['npc_dota_hero_sand_king'] = 1,
-	['npc_dota_hero_slark'] = 1,
-	['npc_dota_hero_weaver'] = 1,
-    ["npc_dota_hero_wind_runner"] = 1,
+	['npc_dota_hero_treant'] = 1,
+	['npc_dota_hero_broodmother'] = 1,
+	['npc_dota_hero_weaver'] = 1
 } 
 
 function X.IsCarry(hero)
@@ -1556,10 +1605,10 @@ X['off'] = {
 	'npc_dota_hero_beastmaster',
 	'npc_dota_hero_brewmaster',
 	'npc_dota_hero_bristleback',
-    'npc_dota_hero_broodmother',
 	'npc_dota_hero_centaur',
 	'npc_dota_hero_dark_seer',
 	'npc_dota_hero_doom_bringer',
+	'npc_dota_hero_dawnbreaker',
 	'npc_dota_hero_enchantress',
 	'npc_dota_hero_furion',
 	'npc_dota_hero_legion_commander',
@@ -1576,13 +1625,14 @@ X['off'] = {
 	'npc_dota_hero_tidehunter',
 	'npc_dota_hero_tusk',
 	'npc_dota_hero_venomancer',
-	'npc_dota_hero_windrunner',
+	'npc_dota_hero_windrunner'
 }
 
 X['mid'] = {
 	'npc_dota_hero_alchemist',
 	'npc_dota_hero_arc_warden',
 	'npc_dota_hero_bloodseeker',
+	'npc_dota_hero_broodmother',
 	'npc_dota_hero_clinkz',
 	'npc_dota_hero_death_prophet',
 	'npc_dota_hero_dragon_knight',
@@ -1590,6 +1640,7 @@ X['mid'] = {
 	'npc_dota_hero_huskar',
 	'npc_dota_hero_invoker',
 	'npc_dota_hero_kunkka',
+	'npc_dota_hero_leshrac',
 	'npc_dota_hero_lina',
 	'npc_dota_hero_lone_druid',
 	'npc_dota_hero_medusa',
@@ -1608,6 +1659,7 @@ X['mid'] = {
 	'npc_dota_hero_tinker',
 	'npc_dota_hero_tiny',
 	'npc_dota_hero_viper',
+	'npc_dota_hero_void_spirit',
 	'npc_dota_hero_zuus',
 }
 
@@ -1619,7 +1671,6 @@ X['safe'] = {
 	'npc_dota_hero_gyrocopter',
 	'npc_dota_hero_juggernaut',
 	'npc_dota_hero_life_stealer',
-    'npc_dota_hero_leshrac',
 	'npc_dota_hero_luna',
 	'npc_dota_hero_lycan',
 	'npc_dota_hero_monkey_king',
@@ -1636,6 +1687,7 @@ X['safe'] = {
 	'npc_dota_hero_troll_warlord',
 	'npc_dota_hero_ursa',
 	'npc_dota_hero_weaver',
+	'npc_dota_hero_hoodwink',
 }
 
 X['supp'] = {
@@ -1666,6 +1718,7 @@ X['supp'] = {
 	'npc_dota_hero_shadow_shaman',
 	'npc_dota_hero_silencer',
 	'npc_dota_hero_skywrath_mage',
+	'npc_dota_hero_snapfire',
 	'npc_dota_hero_techies',
 	'npc_dota_hero_treant',
 	'npc_dota_hero_undying',
@@ -1674,7 +1727,7 @@ X['supp'] = {
 	'npc_dota_hero_warlock',
 	'npc_dota_hero_winter_wyvern',
 	'npc_dota_hero_wisp',
-	'npc_dota_hero_witch_doctor'
+	'npc_dota_hero_witch_doctor',
 }
 
 
