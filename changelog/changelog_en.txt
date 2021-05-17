@@ -357,3 +357,6 @@ v1.7.3 (2021.04.26) Updated by AaronSong321
 v1.7.4 (2021.05.08) Updated by AaronSong321
 1. Fix lots of bugs;
 2. Add Ember Spirit.
+v1.7.5 (2021.05.17)
+1. Fix warding system；
+2. Temporarily removing armlet to fix game slowdown.
