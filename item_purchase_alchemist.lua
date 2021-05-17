@@ -12,7 +12,7 @@ local ItemsToBuy =
 	"item_soul_ring", --灵魂之戒7.07
 	"item_power_treads", --假腿7.21
 	"item_radiance",
-	"item_armlet", --臂章
+	--"item_armlet", --臂章
 	"item_blink",
 	"item_black_king_bar", --BKB
 	"item_basher", --晕锤7.14

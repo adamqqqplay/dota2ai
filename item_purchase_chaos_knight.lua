@@ -12,7 +12,7 @@ local ItemsToBuy =
 	"item_bracer",
 	"item_magic_wand", --大魔棒7.14
 	"item_power_treads", --假腿7.21
-	"item_armlet", --臂章
+	--"item_armlet", --臂章
 	"item_manta", --分身
 	"item_black_king_bar",
 	"item_heart", --龙心7.20
