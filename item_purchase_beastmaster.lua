@@ -14,7 +14,6 @@ local ItemsToBuy =
 	"item_phase_boots", --相位7.21
     "item_magic_wand",
 	"item_lifesteal", --祭品
-	"item_necronomicon_3", --死灵书
 	"item_solar_crest", --大勋章7.20
 	"item_black_king_bar", --BKB
 	"item_lotus_orb", --清莲宝珠
