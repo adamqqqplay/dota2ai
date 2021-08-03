@@ -14,8 +14,8 @@ local ItemsToBuy =
 	"item_boots",
 	"item_bracer",
 	"item_energy_booster",
-	"item_mekansm", --梅肯
 	"item_vladmir", --祭品7.21
+	"item_mekansm", --梅肯
 	"item_guardian_greaves", --卫士胫甲
 	"item_pipe", --笛子
 	"item_ultimate_scepter", --蓝杖
