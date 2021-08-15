@@ -19,6 +19,7 @@ local ItemsToBuy =
 	"item_sphere", --林肯
     "item_ultimate_scepter",
     "item_recipe_ultimate_scepter",
+    "item_moon_shard",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

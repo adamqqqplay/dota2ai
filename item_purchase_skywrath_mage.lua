@@ -23,6 +23,8 @@ local ItemsToBuy =
 	"item_octarine_core",
 	"item_aghanims_shard",
     "item_kaya_and_yasha",
+	"item_recipe_ultimate_scepter",
+	"item_wind_waker",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

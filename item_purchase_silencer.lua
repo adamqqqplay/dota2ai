@@ -20,6 +20,7 @@ local ItemsToBuy =
     "item_gleipnir",
 	"item_ultimate_scepter", --蓝杖
 	"item_recipe_ultimate_scepter",
+	"item_moon_shard",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

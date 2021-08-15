@@ -24,6 +24,7 @@ local ItemsToBuy =
 	"item_assault", --强袭
 	"item_ultimate_scepter", --蓝杖
     "item_recipe_ultimate_scepter",
+    "item_monkey_king_bar",
 }
 
 if AbilityExtensions:Contains(enemyTeamMemberNames, "antimage") then

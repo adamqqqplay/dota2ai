@@ -23,6 +23,7 @@ local ItemsToBuy =
     "item_ultimate_scepter",
     "item_swift_blink",
     "item_recipe_ultimate_scepter",
+	"item_skadi",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

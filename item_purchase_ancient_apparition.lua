@@ -23,7 +23,7 @@ local ItemsToBuy =
 	"item_sheepstick", --羊刀
 	"item_recipe_ultimate_scepter",
 	"item_lotus_orb", --清莲宝珠
-	"item_wind_waker"
+	"item_wind_waker",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

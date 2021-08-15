@@ -17,9 +17,10 @@ local ItemsToBuy =
     "item_black_king_bar",
 	"item_shivas_guard",
     "item_sheepstick",
-	"item_recipe_ultimate_scepter",
     "item_mystic_staff",
     "item_wind_waker",
+	"item_recipe_ultimate_scepter",
+	"item_refresher",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

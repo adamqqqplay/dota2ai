@@ -16,8 +16,9 @@ local ItemsToBuy =
 	"item_heavens_halberd", --天堂
 	"item_hurricane_pike", --大推推7.20
 	"item_ultimate_scepter", --蓝杖
+	"item_satanic", --撒旦7.07
 	"item_recipe_ultimate_scepter",
-	"item_satanic" --撒旦7.07
+	"item_sange_and_yasha"
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

@@ -18,12 +18,12 @@ local ItemsToBuy =
 	"item_glimmer_cape", --微光
 	"item_cyclone", --风杖
 	"item_ultimate_scepter", --蓝杖
-	"item_recipe_ultimate_scepter",
-	"item_sheepstick", --羊刀
 	"item_mekansm", --梅肯
 	"item_guardian_greaves", --卫士胫甲
 	"item_octarine_core",
-	"item_wind_waker"
+	"item_recipe_ultimate_scepter",
+	"item_sheepstick", --羊刀
+	"item_wind_waker",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
