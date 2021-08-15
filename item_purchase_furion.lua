@@ -17,6 +17,7 @@ local p = {
     "item_desolator",
     "item_orchid",
     "item_black_king_bar",
+    "item_aghanims_shard",
     "item_bloodthorn",
     "item_ultimate_scepter",
     "item_silver_edge",
