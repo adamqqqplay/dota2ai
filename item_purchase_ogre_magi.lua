@@ -17,6 +17,7 @@ local ItemsToBuy =
     "item_aghanims_shard",
 	"item_force_staff", --推推7.14
 	"item_cyclone", --风杖
+	"item_recipe_ultimate_scepter",
 	"item_lotus_orb",
 	"item_octarine_core",
 	"item_wind_waker",

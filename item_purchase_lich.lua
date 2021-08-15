@@ -19,6 +19,7 @@ local ItemsToBuy =
 	"item_lotus_orb", --清莲宝珠
 	"item_sheepstick", --羊刀
     "item_ultimate_scepter", --蓝杖
+	"item_recipe_ultimate_scepter",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

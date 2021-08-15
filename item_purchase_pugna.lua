@@ -18,6 +18,7 @@ local ItemsToBuy =
 	"item_kaya",
 	"item_aether_lens", --以太之镜7.06
 	"item_ultimate_scepter",
+	"item_recipe_ultimate_scepter",
 	"item_black_king_bar", --bkb
 	"item_aghanims_shard",
 	"item_octarine_core",

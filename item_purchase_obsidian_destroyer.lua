@@ -18,6 +18,7 @@ local ItemsToBuy =
     "item_hurricane_pike", --大推推7.20
 	"item_sphere", --林肯
     "item_ultimate_scepter",
+    "item_recipe_ultimate_scepter",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

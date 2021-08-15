@@ -16,7 +16,9 @@ local ItemsToBuy =
 	"item_glimmer_cape",
 	"item_blink", --跳刀
 	"item_cyclone",	--风杖
-	"item_ultimate_scepter" --蓝杖
+	"item_ultimate_scepter", --蓝杖
+	"item_recipe_ultimate_scepter",
+	"item_wind_waker"
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

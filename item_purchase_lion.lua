@@ -18,6 +18,7 @@ local ItemsToBuy =
 	"item_glimmer_cape", --微光
 	"item_force_staff",
 	"item_ultimate_scepter", --蓝杖
+	"item_recipe_ultimate_scepter",
 	"item_lotus_orb", --清莲宝珠
 	"item_octarine_core",
 }

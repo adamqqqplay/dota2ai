@@ -23,6 +23,7 @@ local ItemsToBuy =
     "item_blink",
 	"item_assault", --强袭
 	"item_ultimate_scepter", --蓝杖
+    "item_recipe_ultimate_scepter",
 }
 
 if AbilityExtensions:Contains(enemyTeamMemberNames, "antimage") then

@@ -18,6 +18,7 @@ local ItemsToBuy =
     "item_ghost",
     "item_ultimate_scepter",
     "item_refresher",
+	"item_recipe_ultimate_scepter",
     "item_sheepstick",
 }
 

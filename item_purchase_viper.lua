@@ -16,6 +16,7 @@ local ItemsToBuy =
 	"item_black_king_bar", --bkb
 	"item_ultimate_scepter",
 	"item_manta", --分身斧
+	"item_recipe_ultimate_scepter",
 	"item_heart", --龙心7.20
 	"item_hyperstone",
 	"item_recipe_mjollnir" --大雷锤

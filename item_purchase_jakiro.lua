@@ -19,6 +19,7 @@ local ItemsToBuy =
 	"item_ultimate_scepter", --蓝杖
 	"item_mekansm",
 	"item_guardian_greaves",
+	"item_recipe_ultimate_scepter",
     "item_dragon_lance",
     "item_hurricane_pike",
 	"item_wind_waker",

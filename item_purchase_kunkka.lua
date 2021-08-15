@@ -16,6 +16,7 @@ local p = {
     "item_greater_crit", --大炮
     "item_ultimate_scepter",
     "item_silver_edge",
+    "item_recipe_ultimate_scepter",
     "item_assault",
 }
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), p)

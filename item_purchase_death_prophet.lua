@@ -18,6 +18,7 @@ local ItemsToBuy =
 	"item_shivas_guard", --希瓦
 	"item_black_king_bar", --bkb
 	"item_octarine_core", --玲珑心
+	"item_recipe_ultimate_scepter",
 	"item_heart", --龙心7.20
 	"item_wind_waker"
 }

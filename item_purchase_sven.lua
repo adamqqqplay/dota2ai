@@ -16,6 +16,7 @@ local ItemsToBuy =
 	"item_ultimate_scepter",
 	"item_blink",
 	"item_sange_and_yasha",
+	"item_recipe_ultimate_scepter",
 	"item_assault" --强袭
 }
 

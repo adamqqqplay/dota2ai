@@ -21,6 +21,7 @@ local ItemsToBuy =
 	"item_guardian_greaves",
 	"item_recipe_dagon",
 	"item_recipe_dagon",
+	"item_recipe_ultimate_scepter",
 	"item_sheepstick",
 	"item_recipe_dagon",
 	"item_recipe_dagon" --红杖

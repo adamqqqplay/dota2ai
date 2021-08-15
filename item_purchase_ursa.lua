@@ -19,6 +19,7 @@ local ItemsToBuy =
 	"item_basher", --晕锤7.14
 	"item_black_king_bar", --bkb
 	"item_ultimate_scepter",
+	"item_recipe_ultimate_scepter",
 	"item_abyssal_blade" --大晕锤
 }
 

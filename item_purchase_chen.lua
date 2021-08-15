@@ -19,6 +19,7 @@ local ItemsToBuy =
 	"item_guardian_greaves", --卫士胫甲
 	"item_ultimate_scepter",
 	"item_force_staff",
+	"item_recipe_ultimate_scepter",
 	"item_lotus_orb",
 }
 

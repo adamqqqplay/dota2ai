@@ -18,6 +18,7 @@ local ItemsToBuy =
 	"item_ultimate_scepter", --蓝杖
 	"item_octarine_core", --玲珑心
 	"item_wind_waker",
+	"item_recipe_ultimate_scepter",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
