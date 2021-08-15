@@ -21,6 +21,7 @@ local ItemsToBuy =
 	"item_sheepstick", --羊刀
 	"item_mekansm", --梅肯
 	"item_guardian_greaves", --卫士胫甲
+	"item_octarine_core",
 	"item_wind_waker"
 }
 

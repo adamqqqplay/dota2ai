@@ -18,6 +18,7 @@ local ItemsToBuy =
 	"item_force_staff", --推推7.14
 	"item_cyclone", --风杖
 	"item_lotus_orb",
+	"item_octarine_core",
 	"item_wind_waker",
 }
 

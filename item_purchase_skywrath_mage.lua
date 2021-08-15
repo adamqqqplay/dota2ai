@@ -20,6 +20,7 @@ local ItemsToBuy =
 	"item_force_staff",
 	"item_ultimate_scepter", --蓝杖
 	"item_sheepstick", --羊刀
+	"item_octarine_core",
     "item_kaya_and_yasha",
 }
 

@@ -18,6 +18,7 @@ local ItemsToBuy =
 	"item_force_staff",
 	"item_ultimate_scepter", --蓝杖
 	"item_lotus_orb", --清莲宝珠
+	"item_octarine_core",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
