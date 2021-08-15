@@ -18,6 +18,7 @@ local ItemsToBuy =
 	"item_black_king_bar", --bkb
 	"item_cyclone", --风杖
 	"item_lotus_orb",
+	"item_wind_waker"
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

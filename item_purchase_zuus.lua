@@ -16,7 +16,8 @@ local ItemsToBuy =
 	"item_aether_lens", --以太之镜7.06
 	"item_cyclone", --风杖
 	"item_ultimate_scepter", --蓝杖
-	"item_octarine_core" --玲珑心
+	"item_octarine_core", --玲珑心
+	"item_wind_waker",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

@@ -15,7 +15,8 @@ local ItemsToBuy =
     "item_cyclone",
 	"item_black_king_bar",
 	"item_sphere",
-	"item_sheepstick"
+	"item_sheepstick",
+	"item_wind_waker",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

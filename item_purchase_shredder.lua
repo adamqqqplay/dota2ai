@@ -19,6 +19,7 @@ local ItemsToBuy =
 	"item_shivas_guard", --希瓦
 	"item_octarine_core",
 	"item_black_king_bar",
+	"item_wind_waker",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
