@@ -14,6 +14,7 @@ local ItemsToBuy =
 	"item_blink", --跳刀
 	"item_guardian_greaves", --卫士胫甲
 	"item_black_king_bar", --bkb
+	"item_aghanims_shard",
 	"item_vitality_booster",
 	"item_energy_booster",
 	"item_recipe_aeon_disk", -- 永恒之盘

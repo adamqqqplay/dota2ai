@@ -12,6 +12,7 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
 	"item_ancient_janggo", --战鼓
     "item_ghost",
+	"item_aghanims_shard",
     "item_ultimate_scepter",
 	"item_spirit_vessel", --大骨灰7.07
 	"item_force_staff", --推推7.14

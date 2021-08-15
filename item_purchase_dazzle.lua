@@ -14,6 +14,7 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
 	"item_arcane_boots",
 	"item_mekansm", --梅肯
+	"item_aghanims_shard",
     "item_ghost",
     "item_spirit_vessel", --大骨灰
 	"item_guardian_greaves", --卫士胫甲

@@ -17,6 +17,7 @@ local ItemsToBuy =
 	"item_blink", --跳刀
 	"item_crimson_guard", --赤红甲
 	"item_pipe", --笛子
+	"item_aghanims_shard",
     "item_heart", --龙心7.20
 	"item_ultimate_scepter", --蓝杖
 }

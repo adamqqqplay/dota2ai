@@ -17,6 +17,7 @@ local ItemsToBuy =
 	"item_black_king_bar", --bkb
 	"item_ultimate_scepter", --蓝杖
 	"item_shivas_guard", --希瓦
+	"item_aghanims_shard",
 	"item_bloodthorn" --血棘
 }
 

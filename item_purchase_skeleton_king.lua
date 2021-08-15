@@ -18,6 +18,7 @@ local ItemsToBuy =
     "item_hand_of_midas",
     "item_power_treads",
     "item_radiance",
+    "item_aghanims_shard",
 	"item_black_king_bar", --bkb
     "item_blink",
 	"item_assault", --强袭

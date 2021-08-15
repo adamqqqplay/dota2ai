@@ -14,6 +14,7 @@ local ItemsToBuy =
 	"item_blink",
     "item_ghost",
     "item_aether_lens",
+	"item_aghanims_shard",
 	"item_glimmer_cape", --微光
 	"item_force_staff",
 	"item_ultimate_scepter", --蓝杖

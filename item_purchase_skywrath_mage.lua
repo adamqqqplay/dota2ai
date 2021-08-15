@@ -21,6 +21,7 @@ local ItemsToBuy =
 	"item_ultimate_scepter", --蓝杖
 	"item_sheepstick", --羊刀
 	"item_octarine_core",
+	"item_aghanims_shard",
     "item_kaya_and_yasha",
 }
 

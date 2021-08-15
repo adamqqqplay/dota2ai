@@ -17,6 +17,7 @@ local ItemsToBuy =
 	"item_yasha", --夜叉
 	"item_ultimate_orb",
 	"item_recipe_manta", --分身
+	"item_aghanims_shard",
 	"item_abyssal_blade", --大晕锤
 	"item_butterfly", --蝴蝶
     "item_ultimate_scepter",
