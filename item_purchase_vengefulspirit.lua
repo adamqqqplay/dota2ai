@@ -19,6 +19,8 @@ local ItemsToBuy =
 	"item_glimmer_cape",
 	"item_black_king_bar",
 	"item_ultimate_scepter",
+	"item_recipe_ultimate_scepter",
+	"item_sheepstick",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

@@ -18,6 +18,7 @@ local ItemsToBuy =
 	"item_vladmir",
 	"item_medallion_of_courage",
 	"item_solar_crest",
+	"item_aghanims_shard",
 	"item_shivas_guard" --希瓦
 }
 

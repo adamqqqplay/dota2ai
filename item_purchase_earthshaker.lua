@@ -15,6 +15,7 @@ local ItemsToBuy =
 	"item_blink", --跳刀
 	"item_force_staff", --推推7.14
 	"item_ultimate_scepter", --蓝杖
+	"item_recipe_ultimate_scepter",
 	"item_black_king_bar",
 }
 

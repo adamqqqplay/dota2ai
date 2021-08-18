@@ -20,6 +20,7 @@ local ItemsToBuy =
     "item_bloodthorn",
 	"item_ultimate_scepter", --蓝杖
 	"item_guardian_greaves", --卫士胫甲
+	"item_recipe_ultimate_scepter",
 	"item_black_king_bar", --bkb
 }
 

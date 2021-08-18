@@ -17,6 +17,7 @@ local ItemsToBuy =
 	"item_diffusal_blade", --散失刀
 	"item_manta",
 	"item_heart", --龙心7.20
+	"item_aghanims_shard",
 	"item_skadi", --冰眼
 	"item_butterfly"
 }

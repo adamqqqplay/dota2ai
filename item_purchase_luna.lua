@@ -17,8 +17,10 @@ local ItemsToBuy =
 	"item_recipe_manta",
 	"item_hurricane_pike", --大推推7.20
 	"item_black_king_bar",
+	"item_aghanims_shard",
 	"item_ultimate_scepter", --蓝杖
 	"item_butterfly", --蝴蝶
+	"item_recipe_ultimate_scepter",
 	"item_satanic",
 }
 

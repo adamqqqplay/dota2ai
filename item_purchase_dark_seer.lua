@@ -15,9 +15,11 @@ local ItemsToBuy =
 	"item_energy_booster",
 	"item_mekansm", --梅肯
 	"item_guardian_greaves", --卫士胫甲
+	"item_ultimate_scepter",
 	"item_blink", --跳刀
 	"item_lotus_orb", --清莲宝珠
 	"item_shivas_guard", --希瓦
+	"item_recipe_ultimate_scepter",
 	"item_heart" --龙心7.20
 }
 

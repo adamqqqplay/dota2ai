@@ -21,6 +21,9 @@ local ItemsToBuy =
 	"item_guardian_greaves",
     "item_dragon_lance",
     "item_hurricane_pike",
+	"item_wind_waker",
+	"item_recipe_ultimate_scepter",
+	"item_sheepstick",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

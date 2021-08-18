@@ -21,6 +21,7 @@ local ItemsToBuy =
 	"item_force_staff", --推推7.14
 	"item_recipe_hurricane_pike", --大推推7.28
 	"item_sheepstick", --羊刀
+	"item_recipe_ultimate_scepter",
 	"item_monkey_king_bar" --金箍棒7.14
 }
 

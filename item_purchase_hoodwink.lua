@@ -17,6 +17,7 @@ local ItemsToBuy =
     
 	"item_blink",
 	"item_octarine_core",
+	"item_wind_waker",
 
 }
 

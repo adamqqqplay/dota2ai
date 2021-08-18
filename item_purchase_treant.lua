@@ -19,7 +19,8 @@ local ItemsToBuy =
 	"item_solar_crest", --大勋章7.20
 	"item_lotus_orb", --清莲宝珠
 	"item_ultimate_scepter", --蓝杖
-	"item_efresher" --刷新球
+	"item_recipe_ultimate_scepter",
+	"item_refresher" --刷新球
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

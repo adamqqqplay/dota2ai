@@ -15,11 +15,13 @@ local ItemsToBuy =
     "item_magic_wand",
 	"item_arcane_boots",
 	"item_veil_of_discord", --纷争7.20
+	"item_aghanims_shard",
 	"item_hurricane_pike", --大推推7.20
 	"item_mekansm", --梅肯
 	"item_guardian_greaves", --卫士胫甲
 	"item_ultimate_scepter", --蓝杖
 	"item_black_king_bar",
+	"item_recipe_ultimate_scepter",
 	"item_lotus_orb" --清莲宝珠
 }
 

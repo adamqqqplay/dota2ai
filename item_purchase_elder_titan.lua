@@ -19,6 +19,7 @@ local ItemsToBuy =
 	"item_rod_of_atos", --阿托斯7.20
 	"item_ultimate_scepter", --蓝杖
 	"item_lotus_orb",
+	"item_recipe_ultimate_scepter",
 	"item_black_king_bar" --bkb
 }
 

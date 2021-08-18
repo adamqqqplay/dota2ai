@@ -17,6 +17,7 @@ local ItemsToBuy =
 	"item_guardian_greaves",
 	"item_pipe",
 	"item_lotus_orb", --清莲宝珠
+	"item_recipe_ultimate_scepter",
 	"item_diffusal_blade" --散失刀
 }
 
