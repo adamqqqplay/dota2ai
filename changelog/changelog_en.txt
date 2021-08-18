@@ -360,3 +360,14 @@ v1.7.4 (2021.05.08) Updated by AaronSong321
 v1.7.5 (2021.05.17)
 1. Fix warding system；
 2. Temporarily removing armlet to fix game slowdown.
+v1.7.6 (2021.08.18)
+Optimize Item Purchase for 7.29.
+1. Add Wind Waker for heroes who plan to buy Cyclone.
+2. Add Octarine Core for heroes who plan to buy Aether Lens.
+3. Add Aghanim's Shard for heroes who's Shard is powerful and easy to use.
+4. Add Aghanim's Blessing for heroes who have Aghanim's Scepter in late game.
+5. Add an extra item for heroes who's last item is Aghanim's Blessing.
+6. Optimize item purchasing list of Dark Seeker and Orge Magi.
+7. Fix typo in item_purchase_treant.
+8. Remove Item Necronomicon.
+9. Change item purchase order to relieve backpack congestion.
