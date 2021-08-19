@@ -17,8 +17,7 @@ local ItemsToBuy =
 	"item_invis_sword", --隐刀
 	"item_mjollnir", --大雷锤
 	"item_ravel_boots", --飞鞋
-	"item_ultimate_orb",
-	"item_recipe_silver_edge", --大隐刀
+	"item_silver_edge", --大隐刀
 	"item_orchid", --紫苑
 	"item_black_king_bar", --BKB
 	"item_bloodthorn", --血棘
