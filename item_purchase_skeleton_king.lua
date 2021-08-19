@@ -27,9 +27,11 @@ local ItemsToBuy =
     "item_monkey_king_bar",
 }
 
+--[[
 if AbilityExtensions:Contains(enemyTeamMemberNames, "antimage") then
     AbilityExtensions:InsertAfter_Modify(ItemsToBuy, "item_radiance", "item_aghanims_shard")
 end
+--]]
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
 
