@@ -44,7 +44,6 @@ function M.SellExtraItem(ItemsToBuy)
 		end
 		if(GameTime()>40*60 or level>=20)
 		then
-			M.SellSpecifiedItem("item_vladmir")
 			M.SellSpecifiedItem("item_urn_of_shadows")
 			M.SellSpecifiedItem("item_drums_of_endurance")
 			M.SellSpecifiedItem("item_hand_of_midas")

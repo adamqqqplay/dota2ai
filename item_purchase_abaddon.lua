@@ -18,6 +18,7 @@ local ItemsToBuy =
 	"item_mekansm", --梅肯
 	"item_guardian_greaves", --卫士胫甲
 	"item_pipe", --笛子
+	"item_helm_of_the_overlord", --level 2 helm dominator 7.30
 	"item_ultimate_scepter", --蓝杖
 	"item_recipe_ultimate_scepter",
 	"item_lotus_orb" --清莲宝珠

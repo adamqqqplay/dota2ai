@@ -12,6 +12,7 @@ local ItemsToBuy =
 	"item_power_treads", --假腿7.21
 	"item_helm_of_the_dominator",
 	"item_vladmir", --祭品7.21
+	"item_helm_of_the_overlord", --level 2 helm dominator 7.30
 	"item_black_king_bar", --bkb
 	"item_assault", --强袭
 	"item_heart",

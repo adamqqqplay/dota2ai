@@ -14,7 +14,6 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
 	"item_phase_boots",
 	"item_orb_of_corrosion",
-	"item_vladmir", --祭品7.21
 	"item_blink", --跳刀
 	"item_basher", --晕锤7.14
 	"item_black_king_bar", --bkb
