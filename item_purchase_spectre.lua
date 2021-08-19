@@ -16,6 +16,7 @@ local ItemsToBuy =
 	"item_manta", --分身
 	"item_diffusal_blade", --散失刀
 	"item_heart", --龙心7.20
+	"item_aghanims_shard",
 	"item_black_king_bar",
 	"item_butterfly",
     "item_ultimate_scepter",

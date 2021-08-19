@@ -22,7 +22,8 @@ local ItemsToBuy =
 	"item_orchid", --紫苑
 	"item_black_king_bar", --BKB
 	"item_bloodthorn", --血棘
-	"item_butterfly" --蝴蝶
+	"item_butterfly", --蝴蝶
+	"item_aghanims_shard"
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

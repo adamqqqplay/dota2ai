@@ -15,6 +15,7 @@ local ItemsToBuy =
 	"item_blade_mail", --刃甲
 	"item_mekansm", --梅肯
 	"item_guardian_greaves", --卫士胫甲
+	"item_aghanims_shard",
 	"item_force_staff",
 	"item_pipe", --笛子
 	"item_lotus_orb",
