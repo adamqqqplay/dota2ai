@@ -17,7 +17,7 @@ local ItemsToBuy =
 	"item_black_king_bar", --BKB
 	"item_ultimate_scepter", --蓝杖
 	"item_lotus_orb", --清莲宝珠
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_assault" --强袭
 }
 

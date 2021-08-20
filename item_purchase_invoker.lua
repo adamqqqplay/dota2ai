@@ -15,7 +15,7 @@ local ItemsToBuy =
     "item_cyclone",
 	"item_black_king_bar",
 	"item_sphere",
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_sheepstick",
 	"item_wind_waker",
 }

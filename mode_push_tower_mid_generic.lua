@@ -1,7 +1,7 @@
 require( GetScriptDirectory().."/util/PushUtility");
 
 local npcBot = GetBot()
-local lane = LANE_BOT
+local lane = LANE_MID
 
 function GetDesire()
 	return PushUtility.GetUnitPushLaneDesire(npcBot,lane)

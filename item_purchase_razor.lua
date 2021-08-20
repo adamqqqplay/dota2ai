@@ -15,7 +15,7 @@ local ItemsToBuy =
 	"item_black_king_bar", --bkb
 	"item_ultimate_scepter", --蓝杖
 	"item_heart",
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_shivas_guard" --希瓦
 }
 

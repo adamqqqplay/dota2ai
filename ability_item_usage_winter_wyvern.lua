@@ -525,11 +525,14 @@ Consider[4]=function()
 			local creeps2 = npcEnemy:GetNearbyCreeps(Radius,true)
 			if(npcEnemy~=nil)
 			then
-				for j,npcEnemyAttacker in pairs(enemys2)
-				do
-					if(npcEnemy~=npcEnemyAttacker)
-					then
-						sumdamage=sumdamage+npcEnemyAttacker:GetEstimatedDamageToTarget(true,npcEnemy,Duration,DAMAGE_TYPE_PHYSICAL)
+				if(enemys2~=nil)
+				then
+					for j,npcEnemyAttacker in pairs(enemys2)
+					do
+						if(npcEnemy~=npcEnemyAttacker)
+						then
+							sumdamage=sumdamage+npcEnemyAttacker:GetEstimatedDamageToTarget(true,npcEnemy,Duration,DAMAGE_TYPE_PHYSICAL)
+						end
 					end
 				end
 				for j,npcEnemyAttacker in pairs(creeps2)

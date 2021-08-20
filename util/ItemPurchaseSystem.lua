@@ -39,14 +39,13 @@ function M.SellExtraItem(ItemsToBuy)
 			M.SellSpecifiedItem("item_soul_ring")
 			M.SellSpecifiedItem("item_buckler")
 			M.SellSpecifiedItem("item_headdress")
-			
-
 		end
 		if(GameTime()>40*60 or level>=20)
 		then
-			M.SellSpecifiedItem("item_vladmir")
 			M.SellSpecifiedItem("item_urn_of_shadows")
 			M.SellSpecifiedItem("item_drums_of_endurance")
+            M.SellSpecifiedItem("item_witch_blade")
+            M.SellSpecifiedItem("item_mask_of_madness")
 			M.SellSpecifiedItem("item_hand_of_midas")
 			M.SellSpecifiedItem("item_dust")
 		end
@@ -743,7 +742,7 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable)
             end
         end
         if npcBot:HasModifier("modifier_item_ultimate_scepter") then
-            AbilityExtensions:Remove_Modify(infoTable, function(t) return t.name == "item_ultimate_scepter" or t.name == "item_recipe_ultimate_scepter"  end)
+            AbilityExtensions:Remove_Modify(infoTable, function(t) return t.name == "item_ultimate_scepter" or t.name == "item_ultimate_scepter_2"  end)
         end
 
     end

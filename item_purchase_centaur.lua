@@ -20,7 +20,7 @@ local ItemsToBuy =
 	"item_aghanims_shard",
     "item_heart", --龙心7.20
 	"item_ultimate_scepter", --蓝杖
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_assault",
 }
 

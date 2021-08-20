@@ -19,7 +19,7 @@ local ItemsToBuy =
 	"item_blink", --跳刀
 	"item_lotus_orb", --清莲宝珠
 	"item_shivas_guard", --希瓦
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_heart" --龙心7.20
 }
 

@@ -18,7 +18,7 @@ local ItemsToBuy =
 	"item_black_king_bar",
 	"item_monkey_king_bar",
 	"item_ultimate_scepter",
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_sphere", --林肯
 	"item_mjollnir" --大雷锤
 }

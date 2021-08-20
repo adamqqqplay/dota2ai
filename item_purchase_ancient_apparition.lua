@@ -21,7 +21,7 @@ local ItemsToBuy =
 	"item_ultimate_scepter", --蓝杖
     "item_cyclone", --风杖
 	"item_sheepstick", --羊刀
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_lotus_orb", --清莲宝珠
 	"item_wind_waker",
 }

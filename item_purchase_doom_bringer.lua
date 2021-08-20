@@ -17,7 +17,7 @@ local ItemsToBuy =
 	"item_invis_sword", --隐刀
 	"item_ultimate_scepter",
 	"item_blade_mail", --刃甲
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_shivas_guard", --希瓦
 	"item_aghanims_shard",
 	"item_silver_edge", --大隐刀

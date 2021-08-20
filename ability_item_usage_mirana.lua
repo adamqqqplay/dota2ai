@@ -155,9 +155,12 @@ Consider[1]=function()
 	then
 		if ( #creeps >= 2 ) 
 		then
-			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_PHYSICAL) and (ManaPercentage>0.4 or npcBot:GetMana()>ComboMana))
+			if(WeakestCreep~=nil)
 			then
-				return BOT_ACTION_DESIRE_LOW,WeakestCreep
+				if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_PHYSICAL) and (ManaPercentage>0.4 or npcBot:GetMana()>ComboMana))
+				then
+					return BOT_ACTION_DESIRE_LOW,WeakestCreep
+				end
 			end
 		end
 	end

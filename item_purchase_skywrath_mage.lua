@@ -23,7 +23,7 @@ local ItemsToBuy =
 	"item_octarine_core",
 	"item_aghanims_shard",
     "item_kaya_and_yasha",
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_wind_waker",
 }
 

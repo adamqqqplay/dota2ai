@@ -14,13 +14,15 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
 	"item_phase_boots",
 	"item_orb_of_corrosion",
-	"item_vladmir", --祭品7.21
+	"item_lifesteal",
+	"item_diffusal_blade",
 	"item_blink", --跳刀
 	"item_basher", --晕锤7.14
 	"item_black_king_bar", --bkb
+	"item_aghanims_shard",
 	"item_ultimate_scepter",
 	"item_abyssal_blade", --大晕锤
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_skadi",
 }
 

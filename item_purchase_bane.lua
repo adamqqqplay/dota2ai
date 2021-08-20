@@ -21,7 +21,7 @@ local ItemsToBuy =
 	"item_mekansm", --梅肯
 	"item_guardian_greaves", --卫士胫甲
 	"item_octarine_core",
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_sheepstick", --羊刀
 	"item_wind_waker",
 }

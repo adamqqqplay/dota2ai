@@ -590,7 +590,7 @@ local function GetFeedScepterDesire(t)
 		return 0
 	end
 	local tb = t.itemInformationTable
-	local scepterIndex = AbilityExtensions:IndexOf(tb, function(tp) return tp.name == "item_ultimate_scepter" or tp.name == "item_recipe_ultimate_scepter" end)
+	local scepterIndex = AbilityExtensions:IndexOf(tb, function(tp) return tp.name == "item_ultimate_scepter" or tp.name == "item_ultimate_scepter_2" end)
 	if scepterIndex == -1 then
 		return 0.02
 	elseif scepterIndex == 1 then

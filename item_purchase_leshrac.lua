@@ -20,7 +20,7 @@ local ItemsToBuy =
 	-- "item_mekansm",
 	-- "item_uardian_greaves",
 	"item_ultimate_scepter",
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_shivas_guard", --希瓦
 	"item_wind_waker",
 }
