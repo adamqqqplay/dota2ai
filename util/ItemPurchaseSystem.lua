@@ -742,7 +742,7 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable)
             end
         end
         if npcBot:HasModifier("modifier_item_ultimate_scepter") then
-            AbilityExtensions:Remove_Modify(infoTable, function(t) return t.name == "item_ultimate_scepter" or t.name == "item_recipe_ultimate_scepter"  end)
+            AbilityExtensions:Remove_Modify(infoTable, function(t) return t.name == "item_ultimate_scepter" or t.name == "item_ultimate_scepter_2"  end)
         end
 
     end

@@ -20,7 +20,7 @@ local ItemsToBuy =
 	"item_pipe", --笛子
 	"item_helm_of_the_overlord", --level 2 helm dominator 7.30
 	"item_ultimate_scepter", --蓝杖
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_lotus_orb" --清莲宝珠
 }
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

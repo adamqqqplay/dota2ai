@@ -22,7 +22,7 @@ local ItemsToBuy =
 	"item_butterfly", --蝴蝶
     "item_ultimate_scepter",
     "item_swift_blink",
-    "item_recipe_ultimate_scepter",
+    "item_ultimate_scepter_2",
 	"item_skadi",
 }
 

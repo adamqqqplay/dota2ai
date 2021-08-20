@@ -22,7 +22,7 @@ local ItemsToBuy =
     "item_dragon_lance",
     "item_hurricane_pike",
 	"item_wind_waker",
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_sheepstick",
 }
 

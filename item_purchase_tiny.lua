@@ -17,7 +17,7 @@ local ItemsToBuy =
 	"item_black_king_bar", --bkb
 	"item_assault", --强袭
 	"item_ultimate_scepter",
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_greater_crit",
 }
 

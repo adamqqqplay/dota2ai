@@ -19,7 +19,7 @@ local ItemsToBuy =
 	"item_helm_of_the_overlord", --level 2 helm dominator 7.30
 	"item_lotus_orb", --清莲宝珠
 	"item_ultimate_scepter",
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_heart" --龙心7.20
 }
 

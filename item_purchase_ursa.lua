@@ -22,7 +22,7 @@ local ItemsToBuy =
 	"item_aghanims_shard",
 	"item_ultimate_scepter",
 	"item_abyssal_blade", --大晕锤
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_skadi",
 }
 

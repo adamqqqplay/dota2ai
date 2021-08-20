@@ -19,7 +19,7 @@ local ItemsToBuy =
 	"item_blink",
 	"item_glimmer_cape", --微光
 	"item_force_staff",
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_lotus_orb", --清莲宝珠
 }
 

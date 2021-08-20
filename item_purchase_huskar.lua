@@ -18,7 +18,7 @@ local ItemsToBuy =
 	"item_ultimate_scepter", --蓝杖
 	"item_satanic", --撒旦7.07
 	"item_aghanims_shard",
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_sange_and_yasha"
 }
 

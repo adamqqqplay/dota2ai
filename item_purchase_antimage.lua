@@ -18,7 +18,7 @@ local p = {
     "item_black_king_bar",
     "item_butterfly",
     "item_ultimate_scepter",
-    "item_recipe_ultimate_scepter",
+    "item_ultimate_scepter_2",
     "item_moon_shard",
 }
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), p)

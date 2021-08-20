@@ -19,7 +19,7 @@ local ItemsToBuy =
 	"item_hurricane_pike", --大推推7.20
 	"item_ultimate_scepter", --蓝杖
 	"item_monkey_king_bar",
-    "item_recipe_ultimate_scepter",
+    "item_ultimate_scepter_2",
 	"item_aghanims_shard",
     "item_butterfly",
 }

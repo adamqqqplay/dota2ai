@@ -17,7 +17,7 @@ local ItemsToBuy =
     "item_guardian_greaves",
 	"item_ultimate_scepter", --蓝杖
     "item_force_staff",
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_lotus_orb", --清莲宝珠
 }
 

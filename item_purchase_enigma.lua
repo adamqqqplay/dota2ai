@@ -20,7 +20,7 @@ local ItemsToBuy =
 	"item_recipe_aeon_disk", -- 永恒之盘
 	"item_ultimate_scepter", --蓝杖
 	"item_octarine_core", --玲珑心
-	"item_recipe_ultimate_scepter",
+	"item_ultimate_scepter_2",
 	"item_refresher" --刷新球
 }
 

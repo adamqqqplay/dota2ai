@@ -19,7 +19,7 @@ local ItemsToBuy =
     "item_hurricane_pike", --大推推7.20
 	"item_sphere", --林肯
     "item_ultimate_scepter",
-    "item_recipe_ultimate_scepter",
+    "item_ultimate_scepter_2",
     "item_moon_shard",
     "item_bloodthorn",
 }
