@@ -220,7 +220,7 @@ Consider[4]=function()
 	local creeps = npcBot:GetNearbyCreeps(Radius,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
     local damage = AbilitiesReal[1]:GetAbilityDamage()
-    damage = damage * (1 + ability:GetSpecialValueInt("beams" + 1))
+    damage = damage * (1 + ability:GetSpecialValueInt("beams"))
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
