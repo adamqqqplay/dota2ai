@@ -1946,7 +1946,7 @@ M.IsSeverelyDisabledOrSlowed = function(self, npc)
 end
 
 M.HasSeverelyDisableProjectiles = function(self, npc)
-    local projectiles = self:GetIncomingDodgeableProjectiles(npc)
+    local projectiles = self:GetIncomingDodgeWorthProjectiles(npc)
     return self:Any(projectiles, function(t)
         return self:Contains(self.targetTrackingStunAbilities, t.ability:GetName())
     end)
