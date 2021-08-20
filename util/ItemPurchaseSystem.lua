@@ -39,13 +39,13 @@ function M.SellExtraItem(ItemsToBuy)
 			M.SellSpecifiedItem("item_soul_ring")
 			M.SellSpecifiedItem("item_buckler")
 			M.SellSpecifiedItem("item_headdress")
-			
-
 		end
 		if(GameTime()>40*60 or level>=20)
 		then
 			M.SellSpecifiedItem("item_urn_of_shadows")
 			M.SellSpecifiedItem("item_drums_of_endurance")
+            M.SellSpecifiedItem("item_witch_blade")
+            M.SellSpecifiedItem("item_mask_of_madness")
 			M.SellSpecifiedItem("item_hand_of_midas")
 			M.SellSpecifiedItem("item_dust")
 		end
