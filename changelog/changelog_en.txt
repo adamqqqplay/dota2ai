@@ -371,3 +371,12 @@ Optimize Item Purchase for 7.29.
 7. Fix typo in item_purchase_treant.
 8. Remove Item Necronomicon.
 9. Change item purchase order to relieve backpack congestion.
+v1.7.7 (2021.08.27)
+Full update for 7.30.
+1. Optimize AI's lane desire, now AI will lane more in the early game.
+2. Optimize AI's push desire, now AI will not push too fast in the early game.
+3. Add the function to get Outpost.
+4. Improve the function of shopping in mysterious stores.
+5. Remove some outdated files.
+6. Update item purchasing for 7.30.
+7. Many small bug fixes.
