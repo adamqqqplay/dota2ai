@@ -1,16 +1,16 @@
 function GetCommonPushLaneDesires()
 
-	local common = 0.25
+	local common = 0.20
 
 	local mega = IsMega()
 	if mega then
-		common = 0.4
+		common = 0.40
 	end
 
 	local time = DotaTime()
-	if(time>5*60)
+	if(time >= 12*60)
 	then
-		common=common+(time/60-12)*0.01
+		common = Min(0.50,common+(time/60-12)*0.005)
 	end
 	
 	local itemtable=GetItemCount()
@@ -96,7 +96,7 @@ function GetCommonPushLaneDesires()
 		common = common + 210 * itemtable["item_necronomicon3"].count / time
 	end
 
-	return common
+	return Min(common,0.75)
 end
 
 function GetItemCount( )
@@ -127,7 +127,7 @@ function UpdatePushLaneDesires()
 	local time = DotaTime()
 	local common =GetCommonPushLaneDesires()
 
-	if(time<=6*60) then
+	if(time <= 12*60) then
 		return {0,0,0}
 	end
 
