@@ -555,6 +555,9 @@ Consider[7] = function()
 	if snowballTarget == nil then
 		RefreshSnowballTarget()
 	end
+	if snowballTarget == nil then
+		return 0
+	end
 	
 	if AbilityExtensions:HasAbilityRetargetModifier(snowballTarget) and not snowballTarget:IsChanneling() then
 		return 0

@@ -350,26 +350,6 @@ Consider[5]=function()
 		end
 	end
 	
-	-- If we're pushing or defending a lane and can hit 4+ creeps, go for it
-	--[[if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
-	then
-		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
-		if ( locationAoE.count >= 3 ) 
-		then
-			local TargetLocation=locationAoE.targetloc;
-			local Allies = utility.GetAlliesNearLocation(TargetLocation,Radius)
-			if(#Allies<=1)
-			then
-				return BOT_ACTION_DESIRE_LOW, TargetLocation
-			end
-		end
-	end]]
-	
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or

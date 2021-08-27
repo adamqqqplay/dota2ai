@@ -15,9 +15,9 @@ local ItemsToBuy =
 	"item_greater_crit", --大炮
 	"item_ultimate_scepter",
 	"item_blink",
-	"item_sange_and_yasha",
+	"item_assault",
+	"item_overwhelming_blink",
 	"item_ultimate_scepter_2",
-	"item_assault" --强袭
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

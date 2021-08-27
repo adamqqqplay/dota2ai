@@ -20,6 +20,7 @@ local ItemsToBuy =
 	"item_wind_waker",
 	"item_ultimate_scepter_2",
 	"item_sheepstick",
+	"item_overwhelming_blink",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

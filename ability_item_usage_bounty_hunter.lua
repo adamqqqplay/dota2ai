@@ -51,13 +51,13 @@ local TalentTree={
 		return Talents[1]
 	end,
 	function()
-		return Talents[4]
+		return Talents[3]
 	end,
 	function()
 		return Talents[5]
 	end,
 	function()
-		return Talents[8]
+		return Talents[7]
 	end
 }
 
@@ -303,7 +303,7 @@ Consider[3]=function()
 	
 end
 
-local EnlargeCastRange = AbilityExtensions:EveryManySeconds(0.5, function() CastRange = AbilitiesReal[4]:GetCastRange() end)
+-- local EnlargeCastRange = AbilityExtensions:EveryManySeconds(0.5, function() CastRange = AbilitiesReal[4]:GetCastRange() end)
 
 CanCast[4] = function(t)
 	return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_PHYSICAL, true, true) and t:IsHero() 
@@ -326,7 +326,7 @@ Consider[4]=function()
 	end
 	
 	local CastRange = Clamp(ability:GetCastRange(), 0, 1599)
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local enemys = npcBot:GetNearbyHeroes(CastRange,true,BOT_MODE_NONE)
 	local realEnemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange)
 	realEnemies = AbilityExtensions:Filter(realEnemies, CanCast[4])
 	realEnemies = AbilityExtensions:Map(realEnemies, function(t)

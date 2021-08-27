@@ -441,8 +441,7 @@ Consider[4]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if (#enemys > 1 or not WeakestEnemy:WasRecentlyDamagedByAnyHero(1.5)) and (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
-				then
+				if (#enemys > 1 or not WeakestEnemy:WasRecentlyDamagedByAnyHero(1.5) and #allys == 0) and HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) then
 					return BOT_ACTION_DESIRE_MODERATE
 				end
 			end

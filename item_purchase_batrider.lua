@@ -19,7 +19,8 @@ local ItemsToBuy =
 	"item_cyclone", --风杖
 	"item_ultimate_scepter_2",
 	"item_lotus_orb",
-	"item_wind_waker"
+	"item_arcane_blink",
+	"item_wind_waker",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

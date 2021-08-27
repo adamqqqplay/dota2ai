@@ -429,6 +429,23 @@ Consider[3]=function()
 		end
 	end
 
+	local disabledAllies = AbilityExtensions:Filter(allys, function(t) return AbilityExtensions:IsSeverelyDisabled(t) and not t:IsChanneling() and not AbilityExtensions:DontInterruptAlly(t) end)
+	disabledAllies = AbilityExtensions:SortByMinFirst(disabledAllies, function(t) return t:GetHealth() end)
+	if #disabledAllies ~= 0 then
+		return BOT_ACTION_DESIRE_MODERATE, disabledAllies[1]
+	end
+
+	disabledAllies = AbilityExtensions:Filter(allys, function(t) 
+		local b = t:GetIncomingTrackingProjectiles()
+		return AbilityExtensions:Any(b, function(s)
+			return GetUnitToLocationDistance(t, s.location) <= 400 and not s.is_attack
+		end)
+	end)
+	if disabledAllies ~= 0 then
+		disabledAllies = AbilityExtensions:SortByMinFirst(disabledAllies, function(t) return t:GetHealth() end)
+		return BOT_ACTION_DESIRE_MODERATE, disabledAllies[1]
+	end
+
 	return BOT_ACTION_DESIRE_NONE, 0;
 	
 end
@@ -549,23 +566,6 @@ Consider[4]=function()
 				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end
 		end
-	end
-
-	local disabledAllies = AbilityExtensions:Filter(allys, function(t) return AbilityExtensions:IsSeverelyDisabled(t) and not t:IsChanneling() end)
-	disabledAllies = AbilityExtensions:SortByMinFirst(disabledAllies, function(t) return t:GetHealth() end)
-	if #disabledAllies ~= 0 then
-		return BOT_ACTION_DESIRE_MODERATE, disabledAllies[1]
-	end
-
-	disabledAllies = AbilityExtensions:Filter(allys, function(t) 
-		local b = t:GetIncomingTrackingProjectiles()
-		return AbilityExtensions:Any(b, function(s)
-			return GetUnitToLocationDistance(t, s.location) <= 400 and not s.is_attack
-		end)
-	end)
-	if disabledAllies ~= 0 then
-		disabledAllies = AbilityExtensions:SortByMinFirst(disabledAllies, function(t) return t:GetHealth() end)
-		return BOT_ACTION_DESIRE_MODERATE, disabledAllies[1]
 	end
 
 	return BOT_ACTION_DESIRE_NONE, 0;

@@ -17,7 +17,8 @@ local ItemsToBuy =
 	"item_blink",
 	"item_mjollnir", --大雷锤
 	"item_assault", --强袭
-	"item_greater_crit" --大炮
+	"item_greater_crit",
+	"item_overwhelming_blink",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

@@ -21,17 +21,17 @@ local AbilityToLevelUp=
 {
 	Abilities[1],
 	Abilities[2],
+	Abilities[1],
+	Abilities[3],
+	Abilities[1],
+	Abilities[4],
+	Abilities[1],
 	Abilities[2],
 	Abilities[3],
-	Abilities[2],
-	Abilities[4],
-	Abilities[2],
-	Abilities[1],
-	Abilities[1],
 	"talent",
-	Abilities[1],
+	Abilities[2],
 	Abilities[4],
-	Abilities[3],
+	Abilities[2],
 	Abilities[3],
 	"talent",
 	Abilities[3],
@@ -47,7 +47,7 @@ local AbilityToLevelUp=
 }
 local TalentTree={
 	function()
-		return Talents[2]
+		return Talents[1]
 	end,
 	function()
 		return Talents[3]
@@ -424,21 +424,28 @@ end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
+local stompLosingTarget
+
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability
-	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
-	then
+	if npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() then
 		if npcBot:IsCastingAbility() then
 			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[1] then
 				if not AbilityExtensions:IsFarmingOrPushing(npcBot) then
 					local nearbyEnemies = AbilityExtensions:GetNearbyEnemyUnits(npcBot, AbilitiesReal[1]:GetAOERadius() + 40)
-					if AbilityExtensions:Count(nearbyEnemies, CanCast[1]) then
-						npcBot:Action_ClearActions()
+					if AbilityExtensions:Count(nearbyEnemies, CanCast[1]) == 0 then
+						if stompLosingTarget == nil then
+							stompLosingTarget = DotaTime()
+						elseif DotaTime() - stompLosingTarget > 0.15 then
+							npcBot:Action_ClearActions(true)
+						end
+						return
 					end
 				end
 			end
 		end
+		stompLosingTarget = nil
 		return
 	end
 	

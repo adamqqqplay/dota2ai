@@ -18,6 +18,7 @@ local ItemsToBuy =
 	"item_basher",
 	"item_black_king_bar", --bkb
 	"item_diffusal_blade", --散失
+    "item_basher",
 	"item_abyssal_blade", --大晕锤
 	"item_butterfly",
 }

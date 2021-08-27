@@ -159,10 +159,10 @@ Consider[1]=function()	--Target Ability Example
 		end
 	end
 
-	-- If my mana is enough,use it at enemy
+	-- If my mana is enough, use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING )
 	then
-		if((ManaPercentage>0.4 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 and CreepHealth>=150)
+		if (ManaPercentage>0.4 and ability:GetLevel()>=3 or ManaPercentage>0.7 and ability:GetLevel()>=2) and CreepHealth>=150
 		then
 			if (WeakestEnemy~=nil)
 			then
@@ -175,12 +175,7 @@ Consider[1]=function()	--Target Ability Example
 	end
 
 	-- If we're pushing or defending a lane
-	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT )
+	if AbilityExtensions:IsFarmingOrPushing(npcBot)
 	then
 		if ( #enemys>=1)
 		then
@@ -333,7 +328,7 @@ Consider[3]=function()
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 
 	local dispellRadius = ability:GetCastRange()
-	local realEnemiesNearby = AbilityExtensions:GetNearbyNonIllusionHeroes(dispellRadius)
+	local realEnemiesNearby = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, dispellRadius)
 
 	--------------------------------------
 	-- Mode based usage

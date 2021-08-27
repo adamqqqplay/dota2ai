@@ -469,7 +469,7 @@ end
 
 Consider[4] = function()
     local ability = AbilitiesReal[4]
-    if not ability:IsFullyCastable() or ability:GetCurrentCharges() == 0 then
+    if not ability:IsFullyCastable() or ability:IsHidden() then
         return 0
     end
     local abilityLevel = ability:GetLevel()
@@ -484,7 +484,7 @@ Consider[4] = function()
         return RemapValClamped(AbilityExtensions:GetEnemyHeroNumber(npcBot, enemies), 2, 4, 0.3, 0.9)
     end
     if AbilityExtensions:Contains(targettableEnemies, target) then
-        return BOT_ACTION_DESIRE_MODERATE, true
+        return BOT_ACTION_DESIRE_MODERATE
     end
     return 0
 end

@@ -87,14 +87,14 @@ function GetComboMana()
 end
 
 local CanCast = {}
-CanCast[1] = function(t)
+CanCast[1] = function(target)
 	if target:HasModifier("modifier_shadow_demon_disruption") then
 		return false
 	end
-	if npcBot:GetTeam() == t:GetTeam() then
-		return AbilityExtensions:SpellCanCast(t, true, true, true) and not AbilityExtensions:DontInterruptAlly(t) and not t:IsMagicImmune()
+	if npcBot:GetTeam() == target:GetTeam() then
+		return AbilityExtensions:SpellCanCast(target, true, true, true) and not AbilityExtensions:DontInterruptAlly(target) and not target:IsMagicImmune()
 	else
-		return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_MAGICAL) and not target:HasModifier("modifier_antimage_counterspell")
+		return AbilityExtensions:NormalCanCast(target, false, DAMAGE_TYPE_MAGICAL) and not target:HasModifier("modifier_antimage_counterspell")
 	end
 end
 CanCast[2] = function(target)
@@ -276,7 +276,7 @@ Consider[2] = function()
     if AbilityExtensions:NotRetreating(npcBot) then
         local findPlace = npcBot:FindAoELocation(true, true, npcBot:GetLocation(), castRange+100, radius, 0, 0)
         if findPlace.count >= 3 then
-            if GetUnitToLocationDistance(npcBot, findPlace) <= castRange then
+            if GetUnitToLocationDistance(npcBot, findPlace.targetloc) <= castRange then
                 return BOT_ACTION_DESIRE_VERYHIGH, findPlace.targetloc
             else
                 return BOT_ACTION_DESIRE_MODERATE, findPlace.targetloc

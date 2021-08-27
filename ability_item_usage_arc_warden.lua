@@ -28,14 +28,14 @@ local AbilityToLevelUp=
 	Abilities[3],
 	Abilities[1],
 	Abilities[1],
-	Abilities[3],
+	Abilities[2],
 	Abilities[1],
 	Abilities[4],
 	Abilities[1],
 	Abilities[3],
 	Abilities[3],
 	"talent",
-	Abilities[2],
+	Abilities[3],
 	Abilities[4],
 	Abilities[2],
 	Abilities[2],
@@ -373,22 +373,10 @@ Consider[3]=function()
 	-- Mode based usage
 	--------------------------------------
 	local enemys2 = npcBot:GetNearbyHeroes( 400, true, BOT_MODE_NONE );
-	--[[ If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH or #enemys2>0) 
-	then
-		for _,npcEnemy in pairs( enemys )
-		do
-			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) and CanCast[abilityNumber]( npcEnemy ) or GetUnitToUnitDistance(npcBot,npcEnemy)<400) 
-			then
-				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation(CastPoint+Delay); 
-			end
-		end
-	end]]
-	
-	-- If my mana is enough,use it at enemy
+
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if(ManaPercentage>0.6)
+		if ManaPercentage>0.7 or ManaPercentage >= 0.4 and ability:GetLevel() >= 2
 		then
 			if (WeakestEnemy~=nil)
 			then

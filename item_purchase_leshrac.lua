@@ -16,9 +16,7 @@ local ItemsToBuy =
 	"item_veil_of_discord", --纷争7.20
 	"item_cyclone", --风杖
 	"item_aghanims_shard",
-	"item_octarine_core", --玲珑心
-	-- "item_mekansm",
-	-- "item_uardian_greaves",
+	"item_octarine_core",
 	"item_ultimate_scepter",
 	"item_ultimate_scepter_2",
 	"item_shivas_guard", --希瓦

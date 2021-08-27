@@ -27,16 +27,16 @@ local AbilityToLevelUp=
 	Abilities[2],
 	Abilities[1],
 	Abilities[2],
-	Abilities[4],
+	Abilities[5],
 	"talent",
 	Abilities[2],
-	Abilities[4],
+	Abilities[5],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
 	"nil",
-	Abilities[4],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -73,7 +73,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -351,9 +351,9 @@ local darkRiftOriginalTarget
 local trackOriginalTargetPosition
 local darkRiftChosenTarget
 
-Consider[4]=function()
+Consider[5]=function()
 	
-	local abilityNumber=4
+	local abilityNumber=5
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -407,8 +407,8 @@ Consider[4]=function()
 end
 
 local darkRiftCancelRange = 1200^2
-Consider[5] = function()
-	local ability = AbilitiesReal[5]
+Consider[6] = function()
+	local ability = AbilitiesReal[6]
 	if not ability:IsFullyCastable() or ability:IsHidden() then
 		return 0
 	end

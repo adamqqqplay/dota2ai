@@ -9,8 +9,7 @@ local ItemsToBuy =
 	"item_tango",
 	"item_tango",
 	"item_clarity",
-	"item_boots",
-	-- "item_ring_of_basilius", --圣殿
+	"item_boots", --圣殿
 	"item_magic_wand", --大魔棒7.14
 	"item_energy_booster",
 	"item_null_talisman",

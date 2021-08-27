@@ -17,8 +17,9 @@ local ItemsToBuy =
 	"item_black_king_bar", --BKB
 	"item_ultimate_scepter", --蓝杖
 	"item_lotus_orb", --清莲宝珠
+	"item_overwhelming_blink",
 	"item_ultimate_scepter_2",
-	"item_assault" --强袭
+	"item_assault",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

@@ -13,7 +13,7 @@ local ItemsToBuy =
 	"item_boots",
 	"item_tranquil_boots",
 	"item_urn_of_shadows",
-    "item_ghost",
+    -- "item_ghost",
 	"item_glimmer_cape", --微光
 	"item_force_staff",
 	"item_lotus_orb", --清莲宝珠

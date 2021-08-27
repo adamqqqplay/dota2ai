@@ -16,7 +16,8 @@ local ItemsToBuy =
 	"item_echo_sabre", --连击刀
 	"item_black_king_bar", --bkb
 	"item_assault", --强袭
-	"item_heart" --龙心7.20
+	"item_heart",
+	"item_overwhelming_blink",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

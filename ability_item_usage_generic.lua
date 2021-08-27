@@ -304,7 +304,7 @@ function GetComboMana(AbilitiesReal)
 	local npcBot = GetBot()
 	local tempComboMana = 0
 	for i, ability in pairs(AbilitiesReal) do
-		if ability:IsPassive() == false then
+		if ability and ability:GetLevel() >= 1 and ability:IsPassive() == false and not ability:IsHidden() then
 			if ability:IsUltimate() == false or ability:GetCooldownTimeRemaining() <= 30 then
 				tempComboMana = tempComboMana + ability:GetManaCost()
 			end

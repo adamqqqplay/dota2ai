@@ -509,6 +509,8 @@ Consider[4]=function()
 	
 end
 
+local slamLosingTarget
+
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
 
@@ -519,12 +521,18 @@ function AbilityUsageThink()
 			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[1] then
 				if not AbilityExtensions:IsFarmingOrPushing(npcBot) then
 					local nearbyEnemies = AbilityExtensions:GetNearbyEnemyUnits(npcBot, AbilitiesReal[1]:GetAOERadius() + 40)
-					if AbilityExtensions:Count(nearbyEnemies, CanCast[1]) then
-						npcBot:Action_ClearActions()
+					if AbilityExtensions:Count(nearbyEnemies, CanCast[1]) == 0 then
+						if slamLosingTarget == nil then
+							slamLosingTarget = DotaTime()
+							return
+						elseif DotaTime() - slamLosingTarget > 0.15 then
+							npcBot:Action_ClearActions(false)
+						end
 					end
 				end
 			end
 		end
+		slamLosingTarget = nil
 		return
 	end
 	

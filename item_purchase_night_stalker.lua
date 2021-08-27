@@ -17,7 +17,8 @@ local ItemsToBuy =
 	"item_ultimate_scepter",
 	"item_assault", --强袭
 	"item_ultimate_scepter_2",
-	"item_heart"
+	"item_heart",
+	"item_overwhelming_blink",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

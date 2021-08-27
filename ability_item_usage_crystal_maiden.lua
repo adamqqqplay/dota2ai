@@ -53,7 +53,7 @@ local TalentTree={
 		return Talents[4]
 	end,
 	function()
-		return Talents[6]
+		return Talents[5]
 	end,
 	function()
 		return Talents[8]
@@ -441,7 +441,7 @@ function AbilityUsageThink()
 	then
 		if npcBot:IsCastingAbility() and npcBot:GetCurrentActiveAbility() == AbilitiesReal[2] then
 			if iceFreezingEnemy ~= nil and AbilityExtensions:HasAbilityRetargetModifier(iceFreezingEnemy) then
-				npcBot:Action_ClearActions()
+				npcBot:Action_ClearActions(true)
 			end
 		end
         if npcBot:IsChanneling() and npcBot:GetCurrentActiveAbility() == AbilitiesReal[4] then
