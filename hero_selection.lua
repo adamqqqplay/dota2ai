@@ -1260,69 +1260,82 @@ end
 -- end
 
 function APLaneAssignment()
-	local gamestate=GetGameState();
-	if(gamestate==GAME_STATE_HERO_SELECTION or gamestate==GAME_STATE_STRATEGY_TIME or gamestate==GAME_STATE_TEAM_SHOWCASE or gamestate==GAME_STATE_WAIT_FOR_MAP_TO_LOAD or gamestate==GAME_STATE_WAIT_FOR_PLAYERS_TO_LOAD)
-	then
-		return;
-	end
-
-	local lanes = GetAssaignedLanes();
-	
-	if(DotaTime()<-15)
-	then
-		return lanes
-	end
 
 	local lanecount = {
         [LANE_NONE] = 5,
         [LANE_MID] = 1,
         [LANE_TOP] = 2,
         [LANE_BOT] = 2,
-	};
+    };
 
-	--adjust the lane assignement when player occupied the other lane.
-	--TODO: Assign lane at Team level not hero level.
+    local lanes = {
+        [1] = LANE_MID,
+        [2] = LANE_TOP,
+        [3] = LANE_TOP,
+        [4] = LANE_BOT,
+        [5] = LANE_BOT,
+        };
+
     local playercount = 0
-	local ids = GetTeamPlayers(GetTeam())
-	for i,v in pairs(ids) do
-		if not IsPlayerBot(v) then
-			playercount = playercount + 1
-		end
-	end
-	if(playercount>0)
-	then
-		for i=1,playercount do
-			local lane = GetLane( GetTeam(),GetTeamMember( i ) )
-			lanecount[lane] = lanecount[lane] - 1
-			lanes[i] = lane 
-		end
-		
-		for i=(playercount + 1), 5 do
-			local hero = GetTeamMember(i);
-			local heroName = hero:GetUnitName();
-			local position = GetHeroPostion(heroName);
-			local laneTable = GetLanesTable();
-			local bestLane = laneTable[position];
-			local positionAssaignedLanes = GetPositionAssaignedLanes();
-			local safeLane=GetSafeLane();
-			local offLane=GetOffLane();
-			--try to assign the most suitable lane, if can't try other lane.
-			if lanecount[bestLane] > 0 then
-				lanes[i] = bestLane
-				lanecount[bestLane] = lanecount[bestLane] - 1
-			elseif lanecount[offLane] > 0 then
-				lanes[i] = offLane
-				lanecount[offLane] = lanecount[offLane] - 1
-			elseif lanecount[safeLane] > 0 then
-				lanes[i] = safeLane
-				lanecount[safeLane] = lanecount[safeLane] - 1
-			elseif lanecount[LANE_MID] > 0 then
-				lanes[i] = LANE_MID
-				lanecount[LANE_MID] = lanecount[LANE_MID] - 1
-			end
-		end
-	end
-    return lanes
+
+    if ( GetTeam() == TEAM_RADIANT )
+    then 
+        local ids = GetTeamPlayers(TEAM_RADIANT)
+        for i,v in pairs(ids) do
+            if not IsPlayerBot(v) then
+                playercount = playercount + 1
+            end
+        end
+        for i=1,playercount do
+            local lane = GetLane( TEAM_RADIANT,GetTeamMember( i ) )
+            lanecount[lane] = lanecount[lane] - 1
+            lanes[i] = lane 
+        end
+	
+        for i=(playercount + 1), 5 do
+            if lanecount[LANE_MID] > 0 then
+                lanes[i] = LANE_MID
+                lanecount[LANE_MID] = lanecount[LANE_MID] - 1
+            elseif lanecount[LANE_TOP] > 0 then
+                lanes[i] = LANE_TOP
+                lanecount[LANE_TOP] = lanecount[LANE_TOP] - 1
+            else
+                lanes[i] = LANE_BOT
+            end
+        end
+		--print("RAD")
+		--utils.print_r(lanes)
+        return lanes
+    elseif ( GetTeam() == TEAM_DIRE )
+    then
+        local ids = GetTeamPlayers(TEAM_DIRE)
+        for i,v in pairs(ids) do
+            --print(tostring(IsPlayerBot(v)))
+            if not IsPlayerBot(v) then
+                playercount = playercount + 1
+            end
+        end
+        for i=1,playercount do
+            local lane = GetLane( TEAM_DIRE, GetTeamMember( i ) )
+            lanecount[lane] = lanecount[lane] - 1
+            lanes[i] = lane 
+        end
+
+        for i=(playercount + 1), 5 do
+            if lanecount[LANE_MID] > 0 then
+                lanes[i] = LANE_MID
+                lanecount[LANE_MID] = lanecount[LANE_MID] - 1
+            elseif lanecount[LANE_TOP] > 0 then
+                lanes[i] = LANE_TOP
+                lanecount[LANE_TOP] = lanecount[LANE_TOP] - 1
+            else
+                lanes[i] = LANE_BOT
+            end
+        end
+		--print("DIRE")
+        --utils.print_r(lanes)
+        return lanes
+    end
 end
 
 function GetLane( nTeam ,hHero )
