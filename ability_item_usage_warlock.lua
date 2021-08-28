@@ -556,7 +556,7 @@ function AbilityUsageThink()
                 end)
                 if enemies == 0 then
                     if DotaTime() > upheavelTimer + 1.5 then
-                        npcBot:Action_ClearActions()
+                        npcBot:Action_ClearActions(true)
                         upheavelTimer = nil
                     end
                 else

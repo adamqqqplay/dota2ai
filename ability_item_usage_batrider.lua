@@ -578,7 +578,7 @@ Consider[4]=function()
 	then
 		local npcEnemy = npcBot:GetTarget();
 
-		if npcEnemy ~= nil and npcEnemy:IsHero() and AbilityExtensions:MayNotBeIllusion(npcEnemy) then
+		if npcEnemy ~= nil and npcEnemy:IsHero() and AbilityExtensions:MayNotBeIllusion(npcBot, npcEnemy) then
 			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcEnemy

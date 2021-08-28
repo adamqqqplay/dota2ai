@@ -20,8 +20,10 @@ local ItemsToBuy =
 	"item_basher", --晕锤7.14
 	"item_black_king_bar", --bkb
 	"item_aghanims_shard",
+    "item_basher",
 	"item_ultimate_scepter",
-	"item_abyssal_blade", --大晕锤
+	"item_abyssal_blade",
+	"item_overwhelming_blink",
 	"item_ultimate_scepter_2",
 	"item_skadi",
 }

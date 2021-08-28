@@ -375,11 +375,29 @@ Consider[4]=function()
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
+
+local crushLosingTarget
+
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability
-	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
-	then 
+	if npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() then
+		if npcBot:IsCastingAbility() then
+			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[2] then
+				if not AbilityExtensions:IsFarmingOrPushing(npcBot) then
+					local nearbyEnemies = AbilityExtensions:GetNearbyEnemyUnits(npcBot, AbilitiesReal[2]:GetAOERadius() + 40)
+					if AbilityExtensions:Count(nearbyEnemies, CanCast[1]) == 0 then
+						if crushLosingTarget == nil then
+							crushLosingTarget = DotaTime()
+						elseif DotaTime() - crushLosingTarget > 0.15 then
+							npcBot:Action_ClearActions(true)
+						end
+						return
+					end
+				end
+			end
+		end
+		crushLosingTarget = nil
 		return
 	end
 	

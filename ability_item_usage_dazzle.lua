@@ -24,8 +24,8 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[3],
 	Abilities[1],
-	Abilities[2],
 	Abilities[4],
+	Abilities[2],
 	Abilities[3],
 	Abilities[2],
 	"talent",
@@ -273,7 +273,7 @@ Consider[2]=function()
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local enemyAxe = AbilityExtensions:First(enemys, function(t)
-		return AbilityExtensions:MayNotBeIllusion(t) and t:GetUnitName() == "npc_dota_hero_axe"
+		return AbilityExtensions:MayNotBeIllusion(npcBot, t) and t:GetUnitName() == "npc_dota_hero_axe"
 	end)
 	local canEnemyAxeUseCullingBlade = false
 	if enemyAxe then

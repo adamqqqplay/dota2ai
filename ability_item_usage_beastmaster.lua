@@ -472,7 +472,7 @@ Consider[6]=function()	--Target Ability Example
 	then
 		for _,npcEnemy in pairs( enemys )
 		do
-			if ( (npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) and CanCast[abilityNumber]( npcEnemy )) or GetUnitToUnitDistance(npcBot,npcEnemy)<400) and not AbilityExtensions:HasDamageRetargetModifier(npcEnemy)
+			if ( (npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) and CanCast[abilityNumber]( npcEnemy )) or GetUnitToUnitDistance(npcBot,npcEnemy)<400) and not AbilityExtensions:HasAbilityRetargetModifier(npcEnemy)
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy;
 			end

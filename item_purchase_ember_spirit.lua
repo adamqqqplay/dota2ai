@@ -8,11 +8,11 @@ local ItemsToBuy =
 {
 	"item_quelling_blade",
 	"item_circlet",
-	"item_bottle",
+	-- "item_bottle",
 	"item_wraith_band",
 	"item_phase_boots",
     "item_bfury",
-	"item_magic_wand", --大魔棒7.14
+	"item_magic_wand",
     "item_lesser_crit",
 	"item_black_king_bar",
 	"item_greater_crit",

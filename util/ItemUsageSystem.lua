@@ -327,7 +327,6 @@ function M.UnImplementedItemUsage()
             return
         end
         if GetWantedPowerTreadsAttribute() ~= treads:GetPowerTreadsStat() then
-            print(npcBot:GetUnitName()..": power treads attribute "..treads:GetPowerTreadsStat()..", but I want "..GetWantedPowerTreadsAttribute())
             npcBot:Action_UseAbility(treads)
             return true
         end
@@ -601,7 +600,7 @@ function M.UnImplementedItemUsage()
                 else
                     if npcBot:GetHealth() <= 250 and not npcBot:WasRecentlyDamagedByAnyHero(0.8) then
                         npcBot:Action_UseAbility(itemArmlet)
-                        itemArmlet.lastOpenTime = DotaTime()
+                        itemArmlet.lastOpenTime = nil
                     end
                 end
             else
@@ -613,21 +612,26 @@ function M.UnImplementedItemUsage()
             end
         elseif AbilityExtensions:IsAttackingEnemies(npcBot) or AbilityExtensions:IsRetreating(npcBot) then
             if not IsUsingArmlet then
-                if #npcBot:GetNearbyHeroes(1599, true, BOT_MODE_NONE) > 0 or npcBot:WasRecentlyDamagedByAnyHero(2.5) then
+                if #npcBot:GetNearbyHeroes(1000, true, BOT_MODE_NONE) > 0 or npcBot:WasRecentlyDamagedByAnyHero(1.5) then
                     npcBot:Action_UseAbility(itemArmlet)
                     itemArmlet.lastOpenTime = DotaTime()
                     return
                 end
             else
                 if npcBot:GetHealth() <= 300 then
-                    local projectiles = npcBot:GetIncomingTrackingProjectiles()
-                    if (#projectiles == 0 or AbilityExtensions:CannotBeKilledNormally(npcBot)) and DotaTime() - itemArmlet.lastOpenTime >= 0.6 then
+                    local projectiles = AbilityExtensions:FilterNot(npcBot:GetIncomingTrackingProjectiles(), function(t) return AbilityExtensions:IsOnSameTeam(t, npcBot) end)
+                    if (#projectiles == 0 or AbilityExtensions:CannotBeKilledNormally(npcBot)) and DotaTime() - itemArmlet.lastOpenTime >= 1 then
                         npcBot:Action_UseAbility(itemArmlet)
-                        npcBot:ActionQueue_UseAbility(itemArmlet)
                         itemArmlet.lastOpenTime = DotaTime()
                         return
                     end
                 end
+            end
+        else
+            if IsUsingArmlet then
+                npcBot:Action_UseAbility(itemArmlet)
+                itemArmlet.lastOpenTime = nil
+                return
             end
         end
     end]]
@@ -838,12 +842,11 @@ function M.UnImplementedItemUsage()
     end
 
     local function NotSuitableForGuardianGreaves(t)
-        return not t:HasModifier("modifier_ice_blast") and not t:HasModifier("modifier_item_mekansm_noheal") and not t:HasModifier("modifier_item:guardian_greaves_noheal")
+        return AbilityExtensions:AllyCanCast(t) and not t:HasModifier("modifier_ice_blast") and not t:HasModifier("modifier_item_mekansm_noheal") and not t:HasModifier("modifier_item_guardian_greaves_noheal")
     end
     local guardian = IsItemAvailable("item_guardian_greaves")
     if guardian ~= nil and guardian:IsFullyCastable() then
-        local allys = npcBot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
-        allys = AbilityExtensions:Filter(allys, NotSuitableForGuardianGreaves)
+        local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(900, false):Filter(allys, NotSuitableForGuardianGreaves)
         for _, ally in pairs(allys) do
             if ally:GetHealth() / ally:GetMaxHealth() < 0.35 and tableNearbyEnemyHeroes ~= nil and #tableNearbyEnemyHeroes > 0 then
                 npcBot:Action_UseAbility(guardian)

@@ -54,7 +54,7 @@ local TalentTree={
 		return Talents[4]
 	end,
 	function()
-		return Talents[6]
+		return Talents[5]
 	end,
 	function()
 		return Talents[7]
@@ -550,15 +550,17 @@ Consider[6]=function()
 		end
 	end
 
-	if TimeSinceCast >= 4 or TimeSinceCast >= 3 and enemys[1]:GetStunDuration(true) >= 2 then
-		return BOT_ACTION_DESIRE_VERYHIGH,enemys[1]
-	end
-	if TimeSinceCast >= 2.5 then
-		local silencer = AbilityExtensions:Count(enemys, function(t)
-			return AbilityExtensions:MayNotBeIllusion(t) and t:HasSilence()
-		end)
-		if silencer > 0 then
-			return BOT_ACTION_DESIRE_HIGH, enemys[1]
+	if #enemys > 0 then
+		if TimeSinceCast >= 4 or TimeSinceCast >= 3 and enemys[1]:GetStunDuration(true) >= 2 then
+			return BOT_ACTION_DESIRE_VERYHIGH,enemys[1]
+		end
+		if TimeSinceCast >= 2.5 then
+			local silencer = AbilityExtensions:Count(enemys, function(t)
+				return AbilityExtensions:MayNotBeIllusion(npcBot, t) and t:HasSilence()
+			end)
+			if silencer > 0 then
+				return BOT_ACTION_DESIRE_HIGH, enemys[1]
+			end
 		end
 	end
 	

@@ -342,7 +342,6 @@ function M.WeNeedTpscroll()
 				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 			elseif ( DotaTime() >= 20 * 60 ) then
 				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
-				npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
 			end
 		else
 			npcBot:ActionImmediate_PurchaseItem( "item_tpscroll" );
@@ -657,13 +656,6 @@ M.Consumables = {
 M.IsConsumableItem = function(self, item)
     return AbilityExtensions:Contains(self.Consumables, string.sub(item, 6))
 end
-
-
-local function HasScepter(npc)
-    return npc:HasScepter() or npc:HasModifier("modifier_item_ultimate_scepter")
-end
-
-
 
 M.CreateItemInformationTable = function(self, npcBot, itemTable)
     local function ExpandFirstLevel(item)

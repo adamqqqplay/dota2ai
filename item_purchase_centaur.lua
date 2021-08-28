@@ -21,6 +21,7 @@ local ItemsToBuy =
     "item_heart", --龙心7.20
 	"item_ultimate_scepter", --蓝杖
 	"item_ultimate_scepter_2",
+	"item_overwhelming_blink",
 	"item_assault",
 }
 

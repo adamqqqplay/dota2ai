@@ -74,39 +74,19 @@ end
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
 
-local function CanCast2(npcTarget)
-	if(utility.NCanCast(npcTarget)==false)
-	then
-		return false
-	end
-	
-	if(npcTarget:GetTeam()==npcBot:GetTeam())
-	then
-		local AttackTarget=npcTarget:GetAttackTarget()
-		if(AttackTarget==nil)
-		then
-			return true
-		else
-			return false
-		end
+
+local function CanCast2(t)
+	if AbilityExtensions:IsOnSameTeam(npcBot, t) then
+		return AbilityExtensions:AllyCanCast(t) and not AbilityExtensions:DontInterruptAlly(t) and t:GetAttackTarget() == nil
 	else
-		local allys = npcTarget:GetNearbyHeroes( 600, false, BOT_MODE_ATTACK );
-		local IsAttacked=false
-		for i,ally in pairs(allys)
-		do
-			local AttackTarget=ally:GetAttackTarget()
-			if(AttackTarget~=nil and AttackTarget==npcTarget)
-			then
-				IsAttacked=true
-			end
-		end
-		return IsAttacked
+		return AbilityExtensions:NormalCanCast(t) and not AbilityExtensions:GetNearbyNonIllusionHeroes(600, false):Any(function(t)
+			local target = t:GetAttackTarget()
+			return target == t
+		end)
 	end
-	
-	return true
 end
 
-local CanCast={utility.NCanCast,CanCast2,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,CanCast2,utility.NCanCast,AbilityExtensions.NormalCanCastFunction}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()

@@ -48,7 +48,7 @@ local AbilityToLevelUp=
 
 local TalentTree={
 	function()
-		return Talents[2]
+		return Talents[1]
 	end,
 	function()
 		return Talents[3]
@@ -377,7 +377,7 @@ Consider[4]=function()
 			end
 		else -- only kill illusions when there are no real heroes 
 			local weakEnemy = AbilityExtensions:First(enemys, IsWeak)
-			if AbilityExtensions:GetHealthPercent(npcBot) <= 0.3 and AbilityExtensions:GetManaPercent(npcBot) >= 0.5 + AbilitiesReal[4]:GetManaCost() and not npcBot:HasModifier("modifier_axe_culling_blade_boost") and weakEnemy then
+			if AbilityExtensions:GetHealthPercent(npcBot) <= 0.3 and AbilityExtensions:GetManaPercent(npcBot) >= 0.5 + AbilitiesReal[4]:GetManaCost() and not npcBot:HasModifier("modifier_axe_culling_blade_boost") and weakEnemy and npcBot:GetMana() > npcBot:GetMaxMana() * 0.4 + ability:GetManaCost() then
 				return BOT_ACTION_DESIRE_MODERATE, weakEnemy
 			end
 		end
@@ -389,28 +389,39 @@ end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
+local roarLosingTarget
 local cullingBladeTarget
 
 function AbilityUsageThink()
-
+	if roarLosingTarget ~= nil then
+		print(roarLosingTarget)
+	end
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then 
 		if npcBot:IsCastingAbility() then
 			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[1] then
 				if not AbilityExtensions:IsFarmingOrPushing(npcBot) then
-					local nearbyEnemies = AbilityExtensions:GetNearbyHeroes(npcBot, AbilitiesReal[1]:GetAOERadius())
-					nearbyEnemies = AbilityExtensions:Filter(nearbyEnemies, CanCast[1])
+					local nearbyEnemies = AbilityExtensions:GetNearbyHeroes(npcBot, AbilitiesReal[1]:GetAOERadius()*1.15):Filter(CanCast[1])
 					if #nearbyEnemies == 0 then
-						npcBot:Action_ClearActions()
+						if roarLosingTarget == nil then
+							roarLosingTarget = DotaTime()
+						elseif DotaTime() - roarLosingTarget > 0.15 then
+							npcBot:Action_ClearActions(true)
+						end
+						return
 					end
 				end
-			elseif npcBot:GetCurrentActiveAbility() == AbilitiesReal[4] and cullingBladeTarget then
-				if cullingBladeTarget:GetHealth() > AbilitiesReal[4]:GetSpecialValueInt("kill_threshold") then
-					npcBot:Action_ClearActions()
+			else
+				if npcBot:GetCurrentActiveAbility() == AbilitiesReal[4] and cullingBladeTarget then
+					if cullingBladeTarget:CanBeSeen() and cullingBladeTarget:GetHealth() > AbilitiesReal[4]:GetSpecialValueInt("kill_threshold") then
+						print(cullingBladeTarget:GetHealth())
+						npcBot:Action_ClearActions(true)
+					end
 				end
 			end
 		end
+		roarLosingTarget = nil
 		return
 	end
 	

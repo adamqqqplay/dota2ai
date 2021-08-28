@@ -351,7 +351,7 @@ Consider[4] = function()
 	if healthPercent >= 0.75 and manaPercent >= 0.9 and AbilityExtensions:GetDistanceFromAncient(npcBot) <= 1000 and DotaTime() <= 15 * 60 then
 		if AbilityExtensions:IsLaning(npcBot) then
 			local laneFront = GetLaneFrontLocation(GetTeam(), npcBot:GetAssignedLane(), 0)
-			local remnantUnderTower = AbilityExtensions:Filter(activeRemnants, function(t) return GetUnitToUnitDistance(t, laneFront) <= 1000 end)
+			local remnantUnderTower = AbilityExtensions:Filter(activeRemnants, function(t) return GetUnitToLocationDistance(t, laneFront) <= 1000 end)
 			if remnantUnderTower[1] then
 				return BOT_ACTION_DESIRE_MODERATE, remnantUnderTower[1]:GetLocation()
 			end
@@ -379,7 +379,7 @@ Consider[4] = function()
     if AbilityExtensions:IsRetreating(npcBot) then
         local distanceToFountain = AbilityExtensions:Filter(activeRemnants, function(t) 
             local distance = GetUnitToUnitDistance(t, npcBot)
-            return distance >= npcBot:GetCurrentMovementSpeed() * 2 and distance > AbilityExtensions:GetDistanceFromAncient(t) + 600
+            return distance >= npcBot:GetCurrentMovementSpeed() * 2.5 and distance >= 700 and distance > AbilityExtensions:GetDistanceFromAncient(t) + 600
         end)
         distanceToFountain = AbilityExtensions:Map(distanceToFountain, function(t) return { t, AbilityExtensions:GetDistanceFromAncient(t) } end)
         distanceToFountain = AbilityExtensions:SortByMinFirst(distanceToFountain, function(t) return t[2] end)

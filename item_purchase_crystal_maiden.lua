@@ -9,7 +9,6 @@ local ItemsToBuy =
 	"item_tango",
 	"item_flask",
 	"item_clarity",
-	-- "item_ring_of_basilius",
 	"item_tranquil_boots",
 	"item_bracer",
 	"item_glimmer_cape", --微光

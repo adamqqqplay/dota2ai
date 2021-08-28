@@ -17,6 +17,7 @@ local ItemsToBuy =
     "item_blink",
 	"item_butterfly", --蝴蝶
 	"item_bloodthorn",
+	"item_swift_blink",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

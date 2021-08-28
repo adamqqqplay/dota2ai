@@ -18,7 +18,8 @@ local ItemsToBuy =
 	"item_black_king_bar", --bkb
 	"item_aghanims_shard",
 	"item_ultimate_scepter_2",
-	"item_lotus_orb" --清莲宝珠
+	"item_lotus_orb",
+	"item_overwhelming_blink",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

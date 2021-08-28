@@ -548,7 +548,7 @@ Consider[4]=function()
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if CanCast[abilityNumber]( npcEnemy ) and AbilityExtensions:IsNonIllusionHero(npcEnemy)
+			if CanCast[abilityNumber]( npcEnemy ) and AbilityExtensions:IsNonIllusionHero(npcBot, npcEnemy)
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation(CastPoint);
 			end

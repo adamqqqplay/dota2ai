@@ -21,6 +21,7 @@ local ItemsToBuy =
 	"item_ultimate_scepter_2",
 	"item_lotus_orb", --清莲宝珠
 	"item_octarine_core",
+	"item_arcane_blink",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

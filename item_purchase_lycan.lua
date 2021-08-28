@@ -10,6 +10,7 @@ local ItemsToBuy =
 	"item_flask",
 	"item_quelling_blade", --补刀斧
 	"item_power_treads", --假腿7.21
+	"item_orb_of_corrosion",
 	"item_helm_of_the_dominator",
 	"item_vladmir", --祭品7.21
 	"item_helm_of_the_overlord", --level 2 helm dominator 7.30

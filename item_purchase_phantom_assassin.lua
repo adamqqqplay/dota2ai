@@ -15,6 +15,7 @@ local ItemsToBuy =
 	"item_bfury",
 	"item_desolator",
 	"item_black_king_bar", --bkb
+    "item_basher",
 	"item_abyssal_blade", --大晕锤
 	"item_satanic", --撒旦7.07
 	"item_assault"

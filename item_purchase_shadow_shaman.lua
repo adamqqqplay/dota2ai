@@ -21,6 +21,7 @@ local ItemsToBuy =
 	"item_ultimate_scepter_2",
 	"item_sheepstick", --羊刀
 	"item_octarine_core",
+	"item_arcane_blink",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

@@ -23,6 +23,7 @@ local ItemsToBuy =
     "item_blink",
 	"item_assault", --强袭
 	"item_ultimate_scepter", --蓝杖
+	"item_overwhelming_blink",
     "item_ultimate_scepter_2",
     "item_monkey_king_bar",
 }

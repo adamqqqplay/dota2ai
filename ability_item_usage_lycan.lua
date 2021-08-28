@@ -202,63 +202,20 @@ Consider[2]=function()
 	local CastRange = ability:GetCastRange();
 	local CastPoint = ability:GetCastPoint();
 	
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
-	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
-	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
-	--------------------------------------
-	-- Mode based usage
-	--------------------------------------
-	-- If we're farming and can kill 3+ creeps with LSA
-	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT  )  
-	then
-		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), 600, 300, 0, 0 );
-		if ( locationAoE.count >= 3 and npcBot:GetMana()/npcBot:GetMaxMana() > 0.65 ) then
-			return BOT_ACTION_DESIRE_LOW;
-		end
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(1600, false)
+	local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(1600, true)
+	local radius = 2000
+
+	if allys:Any(function(t) return AbilityExtensions:GetHealthPercent(t) <= 0.5 and t:WasRecentlyDamagedByAnyHero(1.5) end) then
+		return BOT_ACTION_DESIRE_MODERATE
 	end
 	
-	if npcBot:GetActiveMode() == BOT_MODE_FARM 
-	then
-		local npcTarget = npcBot:GetAttackTarget();
-		if npcTarget ~= nil then
-			return BOT_ACTION_DESIRE_LOW;
-		end
-	end	
-	
-	if ( npcBot:GetActiveMode() == BOT_MODE_ROSHAN  ) 
-	then
-		local npcTarget = npcBot:GetAttackTarget();
-		if npcTarget~=nil 
+	if npcBot:GetActiveMode() == BOT_MODE_RETREAT and #enemies > 0 then
+		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 )) 
 		then
-			if string.find(npcTarget:GetUnitName(), "roshan") and GetUnitToUnitDistance(npcBot,npcTarget)< 600  then
-				return BOT_ACTION_DESIRE_LOW;
-			end
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
-	
-	-- If we're going after someone
-	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
-	then
-		local npcEnemy = npcBot:GetTarget();
-
-		if ( npcEnemy ~= nil ) 
-		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< 300 + 75*#allys )
-			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
-			end
-		end
-	end
-
-	return BOT_ACTION_DESIRE_NONE;
-
 end
 
 Consider[5]=function()

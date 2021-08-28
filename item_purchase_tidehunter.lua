@@ -19,8 +19,9 @@ local ItemsToBuy =
 	"item_medallion_of_courage",
 	"item_solar_crest",
 	"item_aghanims_shard",
+	"item_overwhelming_blink",
 	"item_helm_of_the_overlord", --level 2 helm dominator 7.30
-	"item_shivas_guard" --希瓦
+	"item_shivas_guard",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

@@ -87,7 +87,8 @@ local function GetLagunaBladeDamageType()
 	return AbilityExtensions:HasScepter(npcBot) and DAMAGE_TYPE_PURE or DAMAGE_TYPE_MAGICAL
 end
 function CanCast4(t)
-	local hasShard = false -- AbilityExtensions:HasShard(t)
+	-- local hasShard = AbilityExtensions:HasShard(npcBot)
+	local hasShard = false
 	return AbilityExtensions:NormalCanCast(t, false, GetLagunaBladeDamageType(), nil, not hasShard, not hasShard)
 end
 local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,CanCast4}
@@ -457,14 +458,11 @@ local ShardLagunaBlade = function()
 end
 
 Consider[4] = function()
-	--[[
-	if AbilityExtensions:HasShard(npcBot) then
+	-- if AbilityExtensions:HasShard(npcBot) then
 		return NormalLagnuaBladeConsider()
-	else
-		return ShardLagunaBlade()
-	end
-	--]]
-	return NormalLagnuaBladeConsider()
+	-- else
+		-- return ShardLagunaBlade()
+	-- end
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)

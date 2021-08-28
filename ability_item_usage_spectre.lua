@@ -48,16 +48,16 @@ local AbilityToLevelUp=
 
 local TalentTree={
 	function()
-		return Talents[1]
+		return Talents[2]
 	end,
 	function()
 		return Talents[4]
 	end,
 	function()
-		return Talents[6]
+		return Talents[5]
 	end,
 	function()
-		return Talents[8]
+		return Talents[7]
 	end
 }
 
@@ -286,7 +286,7 @@ Consider[6]=function()
 	-- Mode based usage
 	--------------------------------------
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH )  and AbilityExtensions:GetHealthPercent(npcBot) >= 0.4
 	then
 		for _,npcEnemy in pairs( enemys )
 		do
@@ -324,7 +324,89 @@ Consider[6]=function()
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
+	return BOT_ACTION_DESIRE_NONE
+	
+end
+
+Consider[5]=function()
+	local abilityNumber=5
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber];
+	
+	if not ability:IsFullyCastable() or ability:IsHidden() then
+		return BOT_ACTION_DESIRE_NONE, 0;
+	end
+	
+	local CastRange = ability:GetCastRange();
+	local Damage = ability:GetAbilityDamage();
+	local CastPoint = ability:GetCastPoint();
+	
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local enemys = npcBot:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	--------------------------------------
+	-- Global high-priorty usage
+	--------------------------------------
+	--Try to kill enemy hero
+	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
+	then
+		if (WeakestEnemy~=nil)
+		then
+			if ( CanCast[abilityNumber]( WeakestEnemy ) )
+			then
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+				then
+					return BOT_ACTION_DESIRE_HIGH, WeakestEnemy:GetLocation()
+				end
+			end
+		end
+	end
+	
+	--------------------------------------
+	-- Mode based usage
+	--------------------------------------
+	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH )  and AbilityExtensions:GetHealthPercent(npcBot) >= 0.4
+	then
+		for _,npcEnemy in pairs( enemys )
+		do
+			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) 
+			then
+				if ( CanCast[abilityNumber]( npcEnemy )) 
+				then
+					return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation()
+				end
+			end
+		end
+	end
+	
+	-- If we're in a teamfight, use it on the scariest enemy
+	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
+	if ( #tableNearbyAttackingAlliedHeroes+#enemys >= 5 and #enemys>=1)
+	then
+		return BOT_ACTION_DESIRE_MODERATE, enemys[1]:GetLocation()
+	end
+	
+	-- If we're going after someone
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+	then
+		local npcEnemy = npcBot:GetTarget();
+
+		if ( npcEnemy ~= nil ) 
+		then
+			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
+			then
+				return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetLocation()
+			end
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
 	
 end
 
@@ -373,7 +455,7 @@ Consider[4]=function()
 	-- Mode based usage
 	--------------------------------------
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
+	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) 
 	then
 		for _,npcEnemy in pairs( enemys )
 		do

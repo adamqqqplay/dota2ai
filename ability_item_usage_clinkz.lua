@@ -197,76 +197,9 @@ Consider[1]=function()
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
-	
+	return BOT_ACTION_DESIRE_NONE	
 end
---[[
-	--------------------------------------
-	-- Global high-priorty usage
-	--------------------------------------
-	--Try to kill enemy hero
-	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT )
-	then
-		if (WeakestEnemy~=nil)
-		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) )
-			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana) and GetUnitToUnitDistance( WeakestEnemy,npcBot ) <= AttackRange+100)
-				then
-					return BOT_ACTION_DESIRE_HIGH
-				end
-			end
-		end
-	end
 
-	--------------------------------------
-	-- Mode based usage
-	--------------------------------------
-	-- If we're pushing or defending a lane
-	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT )
-	then
-		local t=npcBot:GetAttackTarget()
-		if(t~=nil)
-		then
-			if (ManaPercentage>0.4 and t:IsTower() and GetUnitToUnitDistance(  t, npcBot  ) <= AttackRange+100)
-			then
-				return BOT_ACTION_DESIRE_MODERATE
-			end
-		end
-	end
-
-	if ( npcBot:GetActiveMode() == BOT_MODE_ROSHAN )
-	then
-		local npcTarget = npcBot:GetTarget();
-		if ( npcTarget ~= nil and GetUnitToUnitDistance(  npcTarget, npcBot  ) <= AttackRange+100  )
-		then
-			return BOT_ACTION_DESIRE_MODERATE;
-		end
-	end
-
-	-- If we're going after someone
-	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-		 npcBot:GetActiveMode() == BOT_MODE_ATTACK )
-	then
-		local npcEnemy = npcBot:GetTarget();
-
-		if ( npcEnemy ~= nil )
-		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)<= AttackRange+100)
-			then
-				return BOT_ACTION_DESIRE_MODERATE
-			end
-		end
-	end
-
-	return BOT_ACTION_DESIRE_NONE, 0;
-
-end
---]]
 
 Consider[2]=function()
 	local abilityNumber=2

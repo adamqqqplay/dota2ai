@@ -100,7 +100,7 @@ Consider[1]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or ability:IsHidden() then -- all abilities are hidden when using ultimate
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -170,7 +170,7 @@ Consider[4]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
+	if not ability:IsFullyCastable() or ability:IsHidden() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -276,7 +276,7 @@ Consider[5]=function()
 	local ability=AbilitiesReal[abilityNumber];
 	
 	if not ability:IsFullyCastable() or AbilityExtensions:CannotMove(npcBot) then
-		return BOT_ACTION_DESIRE_NONE, 0;
+		return BOT_ACTION_DESIRE_NONE
 	end
 	
 	local CastRange = ability:GetCastRange();

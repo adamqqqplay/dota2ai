@@ -14,6 +14,7 @@ local p = {
     "item_orb_of_corrosion",
     "item_bfury",
     "item_manta",
+    "item_basher",
     "item_abyssal_blade",
     "item_black_king_bar",
     "item_butterfly",

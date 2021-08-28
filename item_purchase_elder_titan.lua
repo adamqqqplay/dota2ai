@@ -13,8 +13,7 @@ local ItemsToBuy =
 	"item_tranquil_boots",
 	"item_circlet",
 	"item_ring_of_protection",
-	"item_recipe_urn_of_shadows",
-	"item_infused_raindrop", --骨灰盒7.06
+	"item_urn_of_shadows",
 	"item_pipe", --笛子
 	"item_rod_of_atos", --阿托斯7.20
 	"item_ultimate_scepter", --蓝杖
