@@ -4,10 +4,10 @@ function MinionThink(  hMinionUnit )
 	if minionutils.IsValidUnit(hMinionUnit) then
 		if hMinionUnit:IsIllusion() then
 			minionutils.IllusionThink(hMinionUnit);
-		elseif hMinionUnit:HasModifier"modifier_terrorblade_reflection_invulnerability" then
-			minionutils.CantBeControlledThink(hMinionUnit);
+		elseif hMinionUnit:GetName() == "npc_dota_slark_visual" then
+			minionutils.CantBeControlledThink(hMinionUnit)
 		else
 			return;
 		end
 	end
-end	
+end

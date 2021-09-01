@@ -107,6 +107,16 @@ Consider[1]=function() --Location AOE Example
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 
+	local mana = npcBot:GetMana()
+	local maxMana = npcBot:GetMaxMana()
+	local abilityLevel = ability:GetLevel()
+    local radius = ability:GetAOERadius()-100
+    local castPoint = ability:GetCastPoint()
+    local manaCost = ability:GetManaCost()
+    local duration = ability:GetDuration()
+    local damage = ability:GetAbilityDamage()
+	local castRange = ability:GetCastRange()
+
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
@@ -128,7 +138,7 @@ Consider[1]=function() --Location AOE Example
 	-- Mode based usage
 	--------------------------------------
 	-- If we're farming and can kill 3+ creeps with LSA
-	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
+	if npcBot:GetActiveMode() == BOT_MODE_FARM and mana > maxMana * 0.35 + manaCost then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 
 		if ( locationAoE.count >= 3 ) then
@@ -137,15 +147,12 @@ Consider[1]=function() --Location AOE Example
 	end
 	
 	-- If my mana is enough,use it at enemy
-	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+	if npcBot:GetActiveMode() == BOT_MODE_LANING and mana > maxMana * 0.5 + manaCost
 	then
-		if(ManaPercentage>0.6)
-		then
 			local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 			if ( locationAoE.count >= 4 ) then
-				return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+				return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
 			end
-		end
 	end
 	
 	-- If my mana is enough,use it at enemy

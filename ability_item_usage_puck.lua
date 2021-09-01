@@ -1,3 +1,8 @@
+---------------------------------------------
+-- Generated from Mirana Compiler version 1.0.0
+-- Do not modify
+-- https://github.com/AaronSong321/Mirana
+---------------------------------------------
 local utility = require(GetScriptDirectory().."/utility")
 local ability_item_usage_generic = require(GetScriptDirectory().."/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")

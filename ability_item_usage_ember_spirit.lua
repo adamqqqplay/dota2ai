@@ -65,6 +65,10 @@ end
 local cast= {} cast.Desire= {} cast.Target= {} cast.Type= {}
 local Consider = {}
 
+local CanCast = {function(t)
+	return AbilityExtensions:StunCanCast(t, Abilities[1], false, false, true, false) 
+end
+}
 
 local attackRange
 local healthPercent

@@ -385,7 +385,7 @@ function AbilityUsageThink()
 		if npcBot:IsCastingAbility() then
 			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[2] then
 				if not AbilityExtensions:IsFarmingOrPushing(npcBot) then
-					local nearbyEnemies = AbilityExtensions:GetNearbyEnemyUnits(npcBot, AbilitiesReal[2]:GetAOERadius() + 40)
+					local nearbyEnemies = AbilityExtensions:GetNearbyEnemyUnits(npcBot, AbilitiesReal[2]:GetAOERadius() + 190)
 					if AbilityExtensions:Count(nearbyEnemies, CanCast[1]) == 0 then
 						if crushLosingTarget == nil then
 							crushLosingTarget = DotaTime()

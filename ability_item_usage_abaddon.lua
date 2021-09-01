@@ -93,21 +93,18 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
---Target Judement
-function CanCast1( npcEnemy )
-	if utility.IsEnemy(npcEnemy)== true
-	then
-		return npcEnemy:CanBeSeen() and not npcEnemy:IsMagicImmune() and not npcEnemy:IsInvulnerable() and not utility.HasImmuneDebuff(npcEnemy)
-	else
-		return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable();
-	end
-end
 
 function CanCast2( npcEnemy )
-	return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable() and not npcEnemy:HasModifier("modifier_abaddon_aphotic_shield");
+	return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable() and not npcEnemy:HasModifier "modifier_abaddon_aphotic_shield"
 end
 
-local CanCast={CanCast1,CanCast2}
+local CanCast={function(t)
+	if AbilityExtensions:IsOnSameTeam(npcBot, t) then
+		return AbilityExtensions:AllyCanCast(t) and not t:HasModifier "modifier_ice_blast"
+	else
+		return AbilityExtensions:NormalCanCast(t)
+	end
+end,CanCast2}
 
 Consider[1]=function() -- TODO: lv 25 AOE mist coil
 	local abilityNumber=1

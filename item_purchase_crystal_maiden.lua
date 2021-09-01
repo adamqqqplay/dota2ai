@@ -13,8 +13,8 @@ local ItemsToBuy =
 	"item_bracer",
 	"item_glimmer_cape", --微光
 	"item_force_staff", --推推7.14
-	"item_ultimate_scepter", --蓝杖
 	"item_black_king_bar", --bkb
+	"item_ultimate_scepter", --蓝杖
 	"item_ultimate_scepter_2",
 	"item_sheepstick", --羊刀
 }

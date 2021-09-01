@@ -74,12 +74,16 @@ end
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
 local CanCast = {
+	function(t)
+		return AbilityExtensions:StunCanCast(t, AbilitiesReal[1], false, false) 
+	end,
     utility.NCanCast,
     utility.NCanCast,
     utility.NCanCast,
     utility.NCanCast,
-    utility.NCanCast,
-    utility.NCanCast,
+    function(t)
+		return AbilityExtensions:StunCanCast(t, AbilitiesReal[6], false, false, true, false) 
+	end,
 }
 local enemyDisabled=utility.enemyDisabled
 

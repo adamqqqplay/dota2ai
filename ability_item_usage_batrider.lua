@@ -73,7 +73,9 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast, function(t)
+	return AbilityExtensions:StunCanCast(t, AbilitiesReal[4], true, true)
+end}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()

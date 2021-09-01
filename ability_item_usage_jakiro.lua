@@ -74,7 +74,9 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast,function(t)
+local CanCast={utility.NCanCast,function(t)
+	return AbilityExtensions:StunCanCast(t, AbilitiesReal[2], false, false, true, true) 
+end,utility.NCanCast,utility.NCanCast,function(t)
 	return AbilityExtensions:NormalCanCast(t, true, AbilityExtensions:HasScepter(npcBot) and DAMAGE_TYPE_PURE or DAMAGE_TYPE_MAGICAL, false, false)
 end}
 local enemyDisabled=utility.enemyDisabled

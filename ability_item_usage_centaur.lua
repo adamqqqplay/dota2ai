@@ -72,7 +72,9 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={function(t)
+	return AbilityExtensions:StunCanCast(t, AbilitiesReal[1], false, false) 
+end,utility.NCanCast,utility.NCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -433,7 +435,7 @@ function AbilityUsageThink()
 		if npcBot:IsCastingAbility() then
 			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[1] then
 				if not AbilityExtensions:IsFarmingOrPushing(npcBot) then
-					local nearbyEnemies = AbilityExtensions:GetNearbyEnemyUnits(npcBot, AbilitiesReal[1]:GetAOERadius() + 40)
+					local nearbyEnemies = AbilityExtensions:GetNearbyEnemyUnits(npcBot, AbilitiesReal[1]:GetAOERadius() + 190)
 					if AbilityExtensions:Count(nearbyEnemies, CanCast[1]) == 0 then
 						if stompLosingTarget == nil then
 							stompLosingTarget = DotaTime()

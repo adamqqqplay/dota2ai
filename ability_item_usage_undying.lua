@@ -384,6 +384,12 @@ Consider[3]=function()
 	then
 		if ( npcBot:WasRecentlyDamagedByAnyHero(2) ) 
 		then
+			-- don't give the bounty of the tombstome to enemies if there's no chance
+			if HealthPercentage <= 0.3 and AbilityExtensions:All(enemys, function(t)
+				return AbilityExtensions:GetHealthPercent(t) >= 0.7
+			end) and npcBot:GetHeroLevel() <= 15 then
+				return 0
+			end
 			if(trees~=nil and #trees>=1 and #enemys>=1)
 			then
 				return BOT_ACTION_DESIRE_MODERATE-0.05,GetTreeLocation(trees[#trees])

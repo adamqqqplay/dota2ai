@@ -17,7 +17,6 @@ local ItemsToBuy =
 	"item_black_king_bar", --BKB
 	"item_basher", --晕锤7.14
 	"item_assault", --强袭
-	-- "item_mjollnir", --大电锤
 	"item_abyssal_blade", --大晕
     "item_travel_boots",
 	"item_overwhelming_blink",

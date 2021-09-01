@@ -68,11 +68,6 @@ function AbilityLevelUpThink()
 	ability_item_usage_generic.AbilityLevelUpThink2(abilityTree, talentTree)
 end
 
---utility.PrintAbilityName(abilities)
-local abilityName =  { "lich_frost_nova","lich_frost_shield","lich_sinister_gaze","lich_ice_spire","lich_chain_frost"}
-local abilityIndexes = utility.ReverseTable(abilityName)
-
-
 --------------------------------------
 -- Ability Usage Thinking
 --------------------------------------
@@ -91,7 +86,9 @@ local consider = {}
 local CanCast = {
 	AbilityHelper.normalCanCast,
 	AbilityHelper.normalCanCast,
-	AbilityHelper.normalCanCast,
+	function(t)
+		return AbilityExtensions:StunCanCast(t, abilities[3], false, false) 
+	end,
     AbilityHelper.normalCanCast,
 	AbilityHelper.ultimateCanCast
 }
