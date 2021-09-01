@@ -84,8 +84,8 @@ end
 CanCast[2] = function(t)
 	return AbilityExtensions:NormalCanCast(t, true, DAMAGE_TYPE_PURE, false, true) and not AbilityExtensions:HasAbilityRetargetModifier(t) and not (t:HasModifier("modifier_item_blade_mail") and AbilityExtensions:IsRetreating(npcBot))
 end
-CanCast[3] = t -> fun1:StunCanCast(t, AbilitiesReal[3], false, true)
-CanCast[4] = t -> fun1:StunCanCast(t, AbilitiesReal[4], true, true)
+CanCast[3] = t -> fun1:StunCanCast(t, AbilitiesReal[3], false, true, true, false)
+CanCast[4] = t -> fun1:StunCanCast(t, AbilitiesReal[4], true, true, true, false)
 
 local enemyDisabled=utility.enemyDisabled
 

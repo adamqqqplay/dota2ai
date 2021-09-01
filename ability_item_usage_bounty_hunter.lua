@@ -192,7 +192,7 @@ Consider[4] = function()
     local abilityNumber = 4
     local ability = AbilitiesReal[abilityNumber]
     local function HasTrackModifierPenalty(t)
-        return AbilityExtensions:GetModifierRemainingDuration("modifier_bounty_hunter_track") <= 5 and 0.5 or 1
+        return AbilityExtensions:GetModifierRemainingDuration(t, "modifier_bounty_hunter_track") <= 5 and 0.5 or 1
     end
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE

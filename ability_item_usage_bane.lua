@@ -71,8 +71,8 @@ end
 CanCast[2] = function(t)
     return AbilityExtensions:NormalCanCast(t, true, DAMAGE_TYPE_PURE, false, true) and not AbilityExtensions:HasAbilityRetargetModifier(t) and not (t:HasModifier("modifier_item_blade_mail") and AbilityExtensions:IsRetreating(npcBot))
 end
-CanCast[3] = function(t) return fun1:StunCanCast(t, AbilitiesReal[3], false, true) end
-CanCast[4] = function(t) return fun1:StunCanCast(t, AbilitiesReal[4], true, true) end
+CanCast[3] = function(t) return fun1:StunCanCast(t, AbilitiesReal[3], false, true, true, false) end
+CanCast[4] = function(t) return fun1:StunCanCast(t, AbilitiesReal[4], true, true, true, false) end
 local enemyDisabled = utility.enemyDisabled
 function GetComboDamage()
     return ability_item_usage_generic.GetComboDamage(AbilitiesReal)

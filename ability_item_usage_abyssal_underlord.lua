@@ -348,7 +348,7 @@ local function FindNearbyTeleportTarget(target)
 	if AbilityExtensions:HasScepter(npcBot) then
 		local friends = target:GetNearbyHeroes(900, isEnemy, BOT_MODE_NONE)
 		friends = AbilityExtensions:Filter(friends, function(t) return t:NotRetreating(t) and AbilityExtensions:AllyCanCast(t) and AbilityExtensions:GetHealthPercent(t) >= 0.5 and not t:IsSeverelyDisabled(t) end)
-		friends = AbilityExtensions:FilterNot(friends, function(t) return t:IsIllusion() and t:GetModifierRemainingDuration("modifier_illusion") <= castDelay end)
+		friends = AbilityExtensions:FilterNot(friends, function(t) return t:IsIllusion() and AbilityExtensions:GetModifierRemainingDuration(t, "modifier_illusion") <= castDelay end)
 		hero = target:Max(friends, function(t) return t:GetHealth() end)
 	end
 	return buildings or hero or creeps

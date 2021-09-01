@@ -64,7 +64,7 @@ cast.Target = {}
 cast.Type = {}
 local Consider = {}
 local CanCast = {
-    function(t) return fun1:StunCanCast(t, AbilitiesReal[1], true, false, false) end,
+    function(t) return fun1:StunCanCast(t, AbilitiesReal[1], true, false, false, false) end,
     fun1.NormalCanCastFunction,
     utility.NCanCast,
     function(t) return fun1:NormalCanCast(t, true, DAMAGE_TYPE_PURE, true, true, true) end,
