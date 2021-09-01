@@ -1769,8 +1769,12 @@ M.AbilityRetargetModifiers = {
 M.HasAbilityRetargetModifier = function(self, npc)
     return self:HasAnyModifier(npc, self.AbilityRetargetModifiers)
 end
-function M:HasDarkPact(npc)
-    return npc:HasModifier "modifier_slark_dark_pact" or npc:HasModifier "modifier_slark_dark_pact_pulses"
+function M:DarkPactRemainingTime(npc)
+    if npc:HasModifier "modifier_slark_dark_pact" then
+        return npc:GetModifierRemainingDuration "modifier_slark_dark_pact" + 1
+    else
+        return self:GetModifierRemainingDuration(npc, "modifier_slark_dark_pact_pulses")
+    end
 end
 M.CanMove = function(self, npc)
     return not npc:IsStunned() and not npc:IsRooted() and not self:IsNightmared(npc) and not self:IsTaunted(npc)
@@ -2106,7 +2110,7 @@ function M:StunCanCast(target, ability, pierceMagicImmune, targetCast, dispellab
     if considerDamage and target:GetHealth() <= target:GetActualIncomingDamage(ability:GetDamage(), ability:GetDamageType()) then
         return true
     end
-    if dispellable and self:GetModifierRemainingDuration(target, "modifier_slark_dark_pact") > ability:GetCastPoint() then
+    if dispellable and self:DarkPactRemainingTime(target) > ability:GetCastPoint() then
         return false
     end
     return true
