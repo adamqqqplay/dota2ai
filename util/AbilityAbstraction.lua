@@ -1771,7 +1771,7 @@ M.HasAbilityRetargetModifier = function(self, npc)
 end
 function M:DarkPactRemainingTime(npc)
     if npc:HasModifier "modifier_slark_dark_pact" then
-        return npc:GetModifierRemainingDuration "modifier_slark_dark_pact" + 1
+        return npc:GetModifierRemainingDuration("modifier_slark_dark_pact") + 1
     else
         return self:GetModifierRemainingDuration(npc, "modifier_slark_dark_pact_pulses")
     end
