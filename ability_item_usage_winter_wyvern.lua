@@ -521,8 +521,8 @@ Consider[4]=function()
 		for i,npcEnemy in pairs(enemys)
 		do
 			local sumdamage=0
-			local enemys2 = npcEnemy:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
-			local creeps2 = npcEnemy:GetNearbyCreeps(Radius,true)
+			local enemys2 = npcEnemy:GetNearbyHeroes(Radius,true,BOT_MODE_NONE) or {}
+			local creeps2 = npcEnemy:GetNearbyCreeps(Radius,true) or {}
 			if(npcEnemy~=nil)
 			then
 				if(enemys2~=nil)

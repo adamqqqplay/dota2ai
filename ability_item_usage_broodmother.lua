@@ -73,7 +73,7 @@ end
 --------------------------------------
 local cast = {}cast.Desire = {}cast.Target = {}cast.Type = {}
 local Consider = {}
-local CanCast = {utility.UCanCast, utility.NCanCast, utility.NCanCast, utility.NCanCast}
+local CanCast = {utility.UCanCast, utility.NCanCast, utility.NCanCast, utility.UCanCast, utility.NCanCast }
 local enemyDisabled = utility.enemyDisabled
 
 function GetComboDamage()

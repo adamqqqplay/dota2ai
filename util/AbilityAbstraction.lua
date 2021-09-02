@@ -2105,9 +2105,6 @@ function M:StunCanCast(target, ability, pierceMagicImmune, targetCast, dispellab
     if target:IsInvulnerable() then
         return false
     end
-    if considerDamage and target:GetHealth() <= target:GetActualIncomingDamage(ability:GetDamage(), ability:GetDamageType()) then
-        return true
-    end
     if dispellable and self:DarkPactRemainingTime(target) > ability:GetCastPoint() then
         return false
     end
