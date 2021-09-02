@@ -160,17 +160,17 @@ Consider[2] = function()
     local damage = ability:GetAbilityDamage()
     local castRange = ability:GetCastRange()
     local enemyHeroes = fun1:GetNearbyHeroes(npcBot, castRange + 200, true)
-    local enemies,enemyIllusions = enemyHeroes:Partition(function(__mira_lpar_it)
-        fun1:MayNotBeIllusion(npcBot, __mira_lpar_it)
+    local enemies,enemyIllusions = enemyHeroes:Partition(function(it)
+        fun1:MayNotBeIllusion(npcBot, it)
     end)
     local allies = fun1:GetNearbyNonIllusionHeroes(npcBot, 900, false)
     local nearbyCreeps = fun1:GetNearbyAttackableCreeps(npcBot, castRange + 150, true)
     if fun1:NotRetreating(npcBot) then
         do
-            local target = enemies:Filter(CanCast[2]):Filter(function(__mira_lpar_it)
-                return __mira_lpar_it:GetHealth() <= __mira_lpar_it:GetActualIncomingDamage(damage, DAMAGE_TYPE_PURE) or __mira_lpar_it:GetHealth() <= __mira_lpar_it:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_PURE) and mana > ComboMana
-            end):SortByMaxFirst(function(__mira_lpar_it)
-                __mira_lpar_it:GetHealth()
+            local target = enemies:Filter(CanCast[2]):Filter(function(it)
+                return it:GetHealth() <= it:GetActualIncomingDamage(damage, DAMAGE_TYPE_PURE) or it:GetHealth() <= it:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_PURE) and mana > ComboMana
+            end):SortByMaxFirst(function(it)
+                it:GetHealth()
             end):First()
             if target then
                 return BOT_ACTION_DESIRE_HIGH, target
@@ -195,8 +195,8 @@ Consider[2] = function()
             end
         end
         do
-            local target = enemies:First(function(__mira_lpar_it)
-                return CanCast[2](__mira_lpar_it) and npcBot:WasRecentlyDamagedByHero(__mira_lpar_it, 2) and GetUnitToUnitDistance(npcBot, __mira_lpar_it) <= castRange + __mira_lpar_it:GetBoundingRadius()
+            local target = enemies:First(function(it)
+                return CanCast[2](it) and npcBot:WasRecentlyDamagedByHero(it, 2) and GetUnitToUnitDistance(npcBot, it) <= castRange + it:GetBoundingRadius()
             end)
             if target then
                 return BOT_ACTION_DESIRE_HIGH, target
@@ -214,8 +214,8 @@ Consider[2] = function()
     if npcBot:GetActiveMode() == BOT_MODE_LANING then
         if (manaPercentage > healthPercentage or mana > ComboMana) and abilityLevel >= 2 then
             do
-                local target = enemies:SortByMinFirst(function(__mira_lpar_it)
-                    __mira_lpar_it:GetHealth()
+                local target = enemies:SortByMinFirst(function(it)
+                    it:GetHealth()
                 end):First()
                 if target then
                     return BOT_ACTION_DESIRE_MODERATE, target
@@ -226,8 +226,8 @@ Consider[2] = function()
     if fun1:IsFarmingOrPushing(npcBot) and #enemies == 0 then
         if mana > maxMana * 0.7 + manaCost or manaPercentage > healthPercentage + 0.2 then
             do
-                local target = nearbyCreeps:SortByMinFirst(function(__mira_lpar_it)
-                    __mira_lpar_it:GetHealth()
+                local target = nearbyCreeps:SortByMinFirst(function(it)
+                    it:GetHealth()
                 end):First()
                 if target then
                     return BOT_ACTION_DESIRE_MODERATE - 0.1, target
@@ -263,18 +263,18 @@ Consider[3] = function()
     local enemies = fun1:GetNearbyNonIllusionHeroes(npcBot, castRange + 240)
     local allies = fun1:GetNearbyNonIllusionHeroes(npcBot, castRange + 240, false)
     do
-        local target = enemies:First(function(__mira_lpar_it)
-            return fun1:IsChannelingBreakWorthAbility(__mira_lpar_it) and CanCast[abilityNumber](__mira_lpar_it)
+        local target = enemies:First(function(it)
+            return fun1:IsChannelingBreakWorthAbility(it) and CanCast[abilityNumber](it)
         end)
         if target then
             return BOT_ACTION_DESIRE_HIGH, target
         end
     end
     do
-        local target = enemies:Filter(function(__mira_lpar_it)
-            return CanCast[abilityNumber](__mira_lpar_it) and not fun1:IsOrGoingToBeSeverelyDisabled(__mira_lpar_it) and #allies <= 1
-        end):SortByMaxFirst(function(__mira_lpar_it)
-            __mira_lpar_it:GetEstimatedDamageToTarget(false, npcBot, 3.0, DAMAGE_TYPE_ALL)
+        local target = enemies:Filter(function(it)
+            return CanCast[abilityNumber](it) and not fun1:IsOrGoingToBeSeverelyDisabled(it) and #allies <= 1
+        end):SortByMaxFirst(function(it)
+            it:GetEstimatedDamageToTarget(false, npcBot, 3.0, DAMAGE_TYPE_ALL)
         end):First()
         if target then
             return BOT_ACTION_DESIRE_HIGH, target
@@ -282,8 +282,8 @@ Consider[3] = function()
     end
     if fun1:IsRetreating(npcBot) and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH then
         do
-            local target = fun1:GetNearbyNonIllusionHeroes(npcBot, castRange + 120):First(function(__mira_lpar_it)
-                return CanCast[3](__mira_lpar_it) and not fun1:IsOrGoingToBeSeverelyDisabled(__mira_lpar_it)
+            local target = fun1:GetNearbyNonIllusionHeroes(npcBot, castRange + 120):First(function(it)
+                return CanCast[3](it) and not fun1:IsOrGoingToBeSeverelyDisabled(it)
             end)
             if target then
                 return BOT_ACTION_DESIRE_HIGH, target
@@ -301,16 +301,16 @@ Consider[3] = function()
         end
     end
     do
-        local target = allies:First(function(__mira_lpar_it)
-            return AbilityExtensions:IsOrGoingToBeSeverelyDisabled(__mira_lpar_it) and not __mira_lpar_it:IsChanneling() and not fun1:DontInterruptAlly(__mira_lpar_it)
+        local target = allies:First(function(it)
+            return AbilityExtensions:IsOrGoingToBeSeverelyDisabled(it) and not it:IsChanneling() and not fun1:DontInterruptAlly(it)
         end)
         if target then
             return BOT_ACTION_DESIRE_MODERATE, target
         end
     end
     do
-        local target = allies:First(function(__mira_lpar_it)
-            fun1:Any(fun1:GetIncomingDodgeWorthProjectiles(__mira_lpar_it), function(t) return GetUnitToLocationDistance(__mira_lpar_it, t.location) <= 400 and not t.is_attack end)
+        local target = allies:First(function(it)
+            fun1:Any(fun1:GetIncomingDodgeWorthProjectiles(it), function(t) return GetUnitToLocationDistance(it, t.location) <= 400 and not t.is_attack end)
         end)
         if target then
             return BOT_ACTION_DESIRE_MODERATE, target
@@ -401,10 +401,10 @@ Consider[5] = function()
         return t:HasModifier("modifier_bane_nightmare")
     end)
     if #nightmaredEnemies ~= 0 then
-        if #enemies == 1 and #friends >= 2 and AbilityExtensions:GetModifierRemainingDuration(nightmaredEnemies[1], "modifier_bane_nightmare") <= 4 or nightmaredEnemies:All(function(__mira_lpar_it)
-            return fun1:GetHealthPercent(__mira_lpar_it) <= 0.3 and fun1:GetModifierRemainingDuration(__mira_lpar_it, "modifier_bane_nightmare") <= 4
-        end) and friends:All(function(__mira_lpar_it)
-            return fun1:GetHealthPercent(__mira_lpar_it) >= 0.5
+        if #enemies == 1 and #friends >= 2 and AbilityExtensions:GetModifierRemainingDuration(nightmaredEnemies[1], "modifier_bane_nightmare") <= 4 or nightmaredEnemies:All(function(it)
+            return fun1:GetHealthPercent(it) <= 0.3 and fun1:GetModifierRemainingDuration(it, "modifier_bane_nightmare") <= 4
+        end) and friends:All(function(it)
+            return fun1:GetHealthPercent(it) >= 0.5
         end) then
             return BOT_ACTION_DESIRE_HIGH
         end

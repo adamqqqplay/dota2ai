@@ -13,30 +13,30 @@ local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstract
 local enableDebug = true
 local npcBot = GetBot()
 local talents = {}
+local abilityNames = {}
 local abilities = {}
-local abilityHandles = {}
 
-ability_item_usage_generic.InitAbility(abilities, abilityHandles, talents)
+ability_item_usage_generic.InitAbility(abilityNames, abilities, talents)
 
 local abilityTree = {
-	abilities[2],
-	abilities[1],
-	abilities[2],
-	abilities[3],
-	abilities[2],
-	abilities[5],
-	abilities[2],
-	abilities[1],
-	abilities[1],
+	abilityNames[2],
+	abilityNames[1],
+	abilityNames[2],
+	abilityNames[3],
+	abilityNames[2],
+	abilityNames[5],
+	abilityNames[2],
+	abilityNames[1],
+	abilityNames[1],
 	"talent",
-	abilities[1],
-	abilities[5],
-	abilities[3],
-	abilities[3],
+	abilityNames[1],
+	abilityNames[5],
+	abilityNames[3],
+	abilityNames[3],
 	"talent",
-	abilities[3],
+	abilityNames[3],
 	"nil",
-	abilities[5],
+	abilityNames[5],
 	"nil",
 	"talent",
 	"nil",
@@ -87,7 +87,7 @@ local CanCast = {
 	AbilityHelper.normalCanCast,
 	AbilityHelper.normalCanCast,
 	function(t)
-		return AbilityExtensions:StunCanCast(t, abilities[3], false, false) 
+		return AbilityExtensions:StunCanCast(t, abilities[3], false, false, true, false) 
 	end,
     AbilityHelper.normalCanCast,
 	AbilityHelper.ultimateCanCast
@@ -102,7 +102,7 @@ consider[1] = function()
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
-	local ability = abilityHandles[abilityIndex]
+	local ability = abilities[abilityIndex]
 
 	if not ability:IsFullyCastable() then
 		return BOT_ACTION_DESIRE_NONE, 0
@@ -197,7 +197,7 @@ consider[1] = function()
 			npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
 			npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT)
 	 then
-		if (isManaEnough and abilityHandles[abilityIndex]:GetLevel() >= 1) then
+		if (isManaEnough and abilities[abilityIndex]:GetLevel() >= 1) then
 			if (#enemys >= 1) then
 				if (CanCast[abilityIndex](weakestEnemy)) then
 					if (GetUnitToUnitDistance(npcBot, weakestEnemy) < castRange + 75 * #allys) then
@@ -238,7 +238,7 @@ consider[2] = function()
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
-	local ability = abilityHandles[abilityIndex]
+	local ability = abilities[abilityIndex]
 
 	if not ability:IsFullyCastable() then
 		return BOT_ACTION_DESIRE_NONE, 0
@@ -333,7 +333,7 @@ consider[2] = function()
 	 then
 		local allyCreeps = npcBot:GetNearbyCreeps(serachDistance, false)
 		local strongestAllyCreep = AbilityHelper.getStrongestUnit(allyCreeps)
-		if (isManaEnough and abilityHandles[abilityIndex]:GetLevel() >= 1) then
+		if (isManaEnough and abilities[abilityIndex]:GetLevel() >= 1) then
 			if (#allyCreeps >= 1) then
 				if (CanCast[abilityIndex](strongestAllyCreep)) then
 					if (GetUnitToUnitDistance(npcBot, strongestAllyCreep) < castRange + 75 * #allys) then
@@ -373,7 +373,7 @@ consider[3] = function()
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
-	local ability = abilityHandles[abilityIndex]
+	local ability = abilities[abilityIndex]
 
 	if not ability:IsFullyCastable() then
 		return BOT_ACTION_DESIRE_NONE, 0
@@ -474,7 +474,7 @@ consider[4]=function()
     --------------------------------------
     -- Generic Variable Setting
     --------------------------------------
-    local ability=abilityHandles[abilityNumber];
+    local ability=abilities[abilityNumber];
 
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE, 0;
@@ -542,7 +542,7 @@ consider[5] = function()
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
-	local ability = abilityHandles[abilityIndex]
+	local ability = abilities[abilityIndex]
 
 	if not ability:IsFullyCastable() then
 		return BOT_ACTION_DESIRE_NONE, 0
@@ -619,7 +619,7 @@ consider[5] = function()
 end
 
 
-AbilityExtensions:AutoModifyConsiderFunction(npcBot, consider, abilityHandles)
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, consider, abilities)
 
 
 function AbilityUsageThink()
@@ -628,20 +628,20 @@ function AbilityUsageThink()
 		return
 	end
 
-	comboMana = getComboMana(abilityHandles)
-	comboDamage = getComboDamage(abilityHandles)
+	comboMana = getComboMana(abilities)
+	comboDamage = getComboDamage(abilities)
 	attackRange = npcBot:GetAttackRange()
 	manaPercent = npcBot:GetMana() / npcBot:GetMaxMana()
 	healthPercent = npcBot:GetHealth() / npcBot:GetMaxHealth()
 	activeMode = npcBot:GetActiveMode()
 	activeModeDesire = npcBot:GetActiveModeDesire()
 
-	caster = ability_item_usage_generic.ConsiderAbility(abilityHandles, consider)
+	caster = ability_item_usage_generic.ConsiderAbility(abilities, consider)
 	---------------------------------debug--------------------------------------------
 	if (enableDebug == true) then
-		ability_item_usage_generic.PrintDebugInfo(abilityHandles, caster)
+		ability_item_usage_generic.PrintDebugInfo(abilities, caster)
 	end
-	ability_item_usage_generic.UseAbility(abilityHandles, caster)
+	ability_item_usage_generic.UseAbility(abilities, caster)
 end
 
 function CourierUsageThink()

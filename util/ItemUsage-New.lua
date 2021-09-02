@@ -151,10 +151,10 @@ function M.ItemUsageThink()
                 return
             end
             do
-                local weakestAlly = nearbyAllies:Filter(function(__mira_lpar_it)
-                    return fun1:GetHealthPercent(__mira_lpar_it) < 0.25 and not __mira_lpar_it:WasRecentlyDamagedByAnyHero(1.5) and __mira_lpar_it:GetActiveMode() ~= BOT_MODE_RETREAT
-                end):SortByMinFirst(function(__mira_lpar_it)
-                    __mira_lpar_it:GetHealth()
+                local weakestAlly = nearbyAllies:Filter(function(it)
+                    return fun1:GetHealthPercent(it) < 0.25 and not it:WasRecentlyDamagedByAnyHero(1.5) and it:GetActiveMode() ~= BOT_MODE_RETREAT
+                end):SortByMinFirst(function(it)
+                    it:GetHealth()
                 end):First()
                 if weakestAlly then
                     npcBot:Action_UseAbilityOnEntity(weakestAlly, npcBot)
@@ -172,10 +172,10 @@ function M.ItemUsageThink()
                 return
             end
             do
-                local weakestAlly = nearbyAllies:Filter(function(__mira_lpar_it)
-                    return fun1:GetManaPercent(__mira_lpar_it) < 0.4 and not __mira_lpar_it:WasRecentlyDamagedByAnyHero(3) and __mira_lpar_it:GetActiveMode() ~= BOT_MODE_RETREAT
-                end):SortByMinFirst(function(__mira_lpar_it)
-                    __mira_lpar_it:GetMana()
+                local weakestAlly = nearbyAllies:Filter(function(it)
+                    return fun1:GetManaPercent(it) < 0.4 and not it:WasRecentlyDamagedByAnyHero(3) and it:GetActiveMode() ~= BOT_MODE_RETREAT
+                end):SortByMinFirst(function(it)
+                    it:GetMana()
                 end):First()
                 if weakestAlly then
                     npcBot:Action_UseAbilityOnEntity(weakestAlly, npcBot)
@@ -265,8 +265,8 @@ function M.ItemUsageThink()
         do
             local ally = nearbyAllies:Filter(AbilityExtensions.PhysicalCanCastFunction):Filter(function()
                 return not t:HasModifier("modifier_item_medallion_of_courage_armor_addition") and not t:HasModifier("modifier_item_solar_crest_armor_addition")
-            end):First(function(__mira_lpar_it)
-                fun1:IsSeverelyDisabledOrSlowed(__mira_lpar_it)
+            end):First(function(it)
+                fun1:IsSeverelyDisabledOrSlowed(it)
             end)
             if ally then
                 npcBot:Action_UseAbilityOnEntity(sc, ally)
@@ -282,8 +282,8 @@ function M.ItemUsageThink()
     end
     if sc ~= nil and sc:IsFullyCastable() then
         do
-            local ally = nearbyAllies:Filter(function(__mira_lpar_it)
-                return (fun1:GetHealthPercent(__mira_lpar_it) < 0.35 and #tableNearbyEnemyHeroes > 0 or fun1:IsSeverelyDisabled(__mira_lpar_it)) and fun1:AllyCanCast(__mira_lpar_it)
+            local ally = nearbyAllies:Filter(function(it)
+                return (fun1:GetHealthPercent(it) < 0.35 and #tableNearbyEnemyHeroes > 0 or fun1:IsSeverelyDisabled(it)) and fun1:AllyCanCast(it)
             end)
             if ally then
                 npcBot:Action_UseAbilityOnEntity(sc, Ally)

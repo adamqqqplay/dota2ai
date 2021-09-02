@@ -198,15 +198,15 @@ Consider[4] = function()
         return BOT_ACTION_DESIRE_NONE
     end
     local CastRange = Clamp(ability:GetCastRange(), 0, 1599)
-    local realEnemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange):Filter(function(__mira_lpar_it)
-        return AbilityExtensions:SpellCanCast(__mira_lpar_it) and __mira_lpar_it:IsHero() and AbilityExtensions:MayNotBeIllusion(npcBot, __mira_lpar_it)
-    end):Map(function(__mira_lpar_it)
+    local realEnemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange):Filter(function(it)
+        return AbilityExtensions:SpellCanCast(it) and it:IsHero() and AbilityExtensions:MayNotBeIllusion(npcBot, it)
+    end):Map(function(it)
         return {
-            __mira_lpar_it,
-            __mira_lpar_it:GetHealth() * HasTrackModifierPenalty(__mira_lpar_it),
+            it,
+            it:GetHealth() * HasTrackModifierPenalty(it),
         }
-    end):SortByMinFirst(function(__mira_lpar_it)
-        return __mira_lpar_it[2]
+    end):SortByMinFirst(function(it)
+        return it[2]
     end)
     if AbilityExtensions:Any(realEnemies) then
         local desire = RemapValClamped(realEnemies[2], 300 + ability:GetLevel() * 100, 1000, 0.8, 0.4)

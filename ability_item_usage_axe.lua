@@ -226,8 +226,8 @@ Consider[4] = function()
         return c
     end
     local CastPoint = ability:GetCastPoint()
-    local enemies,enemyIllusions = fun1:GetNearbyHeroes(npcBot, CastRange + 300):Filter(IsWeak):Partition(function(__mira_lpar_it)
-        fun1:MayNotBeIllusion(npcBot, __mira_lpar_it)
+    local enemies,enemyIllusions = fun1:GetNearbyHeroes(npcBot, CastRange + 300):Filter(IsWeak):Partition(function(it)
+        fun1:MayNotBeIllusion(npcBot, it)
     end)
     if fun1:NotRetreating(npcBot) and #enemies == 0 then
         do

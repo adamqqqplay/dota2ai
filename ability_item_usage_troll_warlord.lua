@@ -85,6 +85,10 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
+local function IsInBattleTrance()
+	return npcBot:HasModifier "modifier_troll_warlord_battle_trance"
+end
+
 Consider[1]=function()
 	local abilityNumber=1
 	--------------------------------------

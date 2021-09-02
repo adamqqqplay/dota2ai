@@ -36,6 +36,7 @@ Welcome everyone to improve this project! This project is mainly developed using
 5. Push the change to origin repository.  (git push origin new-feature)
 6. Then go to the github site and launch the pull request under the new-feature branch of the git remote repository.
 If you have any questions or suggestions or tips, please feel free to ask Questions and everyone will communicate.
+We use both normal Lua and Mirana to develop this project. The Mirana compiler can be found at [Mirana](https://github.com/AaronSong321/Mirana). Mirana is an extension to Lua, supporting lambda expressions and other features. It supports all the syntax of Lua and compiles to Lua. For files written in Mirana, DON'T modify the Lua directly since the modifications are discarded after recompilation.
 ### Refer Link
 Here are some helpful information for developers.
 https://developer.valvesoftware.com/wiki/Dota_Bot_Scripting 
@@ -103,6 +104,7 @@ https://steamcommunity.com/workshop/filedetails/discussion/855965029/22173114443
 5.将您的改动记录提交到远程 git 仓库 (git push origin new-feature)
 6.然后到 github 网站的该 git 远程仓库的 new-feature 分支下发起 Pull Request
 如果你有任何疑问或者建议、技巧，欢迎提出Issues，大家一起交流。
+这个项目由Lua和Mirana共同写成。Mirana编译器可以在[Mirana](https://github.com/AaronSong321/Mirana)找到。Mirana是Lua的扩展，包含lambda表达式等功能。它支持所有Lua的语法且以Lua为目标语言。对于由Mirana写成的源码，直接修改Lua会导致修改在重新编译后丢失。
 ### 参考资料
 以下是一些对开发者有用的参考资料
 https://developer.valvesoftware.com/wiki/Dota_Bot_Scripting  (中文页面右上角点击国旗可切换，但英文版更齐全，右上角search可搜索任何资料)
