@@ -24,19 +24,19 @@ local AbilityToLevelUp =
 	Abilities[3],
 	Abilities[2],
 	Abilities[2],
-	Abilities[4],
+	Abilities[5],
 	Abilities[2],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
-	Abilities[4],
+	Abilities[5],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[1],
 	"nil",
-	Abilities[4],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -73,7 +73,7 @@ end
 --------------------------------------
 local cast = {}cast.Desire = {}cast.Target = {}cast.Type = {}
 local Consider = {}
-local CanCast = {utility.UCanCast, utility.NCanCast, utility.NCanCast, utility.NCanCast}
+local CanCast = {utility.UCanCast, utility.NCanCast, utility.NCanCast, utility.UCanCast, utility.NCanCast }
 local enemyDisabled = utility.enemyDisabled
 
 function GetComboDamage()
@@ -84,8 +84,8 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
-Consider[4] = function()
-	local abilityNumber = 4
+Consider[5] = function()
+	local abilityNumber = 5
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

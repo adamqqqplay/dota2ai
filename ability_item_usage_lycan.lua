@@ -202,8 +202,8 @@ Consider[2]=function()
 	local CastRange = ability:GetCastRange();
 	local CastPoint = ability:GetCastPoint();
 	
-	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(1600, false)
-	local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(1600, true)
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1600, false)
+	local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1600, true)
 	local radius = 2000
 
 	if allys:Any(function(t) return AbilityExtensions:GetHealthPercent(t) <= 0.5 and t:WasRecentlyDamagedByAnyHero(1.5) end) then

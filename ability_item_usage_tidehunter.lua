@@ -73,7 +73,9 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={AbilityExtensions.NormalCanCastFunction,utility.UCanCast,AbilityExtensions.NormalCanCastFunction,AbilityExtensions.NormalCanCastFunction}
+local CanCast={AbilityExtensions.NormalCanCastFunction,utility.UCanCast,AbilityExtensions.NormalCanCastFunction,function(t)
+	return AbilityExtensions:StunCanCast(t, AbilitiesReal[4], false, false, true, true) 
+end}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -313,7 +315,7 @@ Consider[3]=function()
 
 
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(Radius, true):Filter(CanCast[abilityNumber])
+	local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, Radius, true):Filter(CanCast[abilityNumber])
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(Radius,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)

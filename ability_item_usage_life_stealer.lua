@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local fun1 = AbilityExtensions
 
 local debugmode=false
 local npcBot = GetBot()
@@ -75,7 +76,10 @@ end
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
 local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,
-utility.NCanCast,function(t)
+function(t)
+	return AbilityExtensions:StunCanCast(t, AbilitiesReal[4], false, false) 
+end,
+function(t)
 	if npcBot:GetTeam() == t:GetTeam() then
 		return AbilityExtensions:SpellCanCast(t, true)
 	else
@@ -93,6 +97,12 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
+-- invulnerable after using infest
+local invulnerableTime
+local function infestInvulnerable()
+	return invulnerableTime
+end
+
 Consider[1]=function()
 	local abilityNumber=1
 	--------------------------------------
@@ -100,7 +110,7 @@ Consider[1]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() or ability:IsHidden() then -- all abilities are hidden when using ultimate
+	if not ability:IsFullyCastable() or ability:IsHidden() or infestInvulnerable() then -- all abilities are hidden when using ultimate
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -162,6 +172,7 @@ Consider[1]=function()
 	
 end
 
+-- open wounds
 Consider[4]=function()
 
 	local abilityNumber=4
@@ -170,7 +181,7 @@ Consider[4]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() or ability:IsHidden() then
+	if not ability:IsFullyCastable() or ability:IsHidden() or infestInvulnerable() then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
@@ -267,15 +278,17 @@ Consider[4]=function()
 	
 end
 
-Consider[5]=function()
-
-	local abilityNumber=5
+-- infest
+local infestThink =function()
+	local abilityNumber=6
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
-	local ability=AbilitiesReal[abilityNumber];
-	
-	if not ability:IsFullyCastable() or AbilityExtensions:CannotMove(npcBot) then
+	local ability=AbilitiesReal[abilityNumber]
+	if ability:IsHidden() then
+		return 0
+	end
+	if not ability:IsFullyCastable() or AbilityExtensions:CannotMove(npcBot) or infestInvulnerable() then
 		return BOT_ACTION_DESIRE_NONE
 	end
 	
@@ -376,74 +389,79 @@ Consider[5]=function()
 	return BOT_ACTION_DESIRE_NONE
 end
 
-Consider[7]=function()
+-- obsolete since dota 2 7.30
+-- Consider[7]=function()
+-- 	local abilityNumber=7
+-- 	--------------------------------------
+-- 	-- Generic Variable Setting
+-- 	--------------------------------------
+-- 	local ability=AbilitiesReal[abilityNumber];
+	
+-- 	if not ability:IsFullyCastable() or ability:IsHidden() or infestInvulnerable() then
+-- 		return BOT_ACTION_DESIRE_NONE
+-- 	end
+	
+-- 	local CastRange = ability:GetCastRange();
+-- 	local Damage = ability:GetAbilityDamage();
+-- 	local CastPoint = ability:GetCastPoint();
+-- 	local Radius = 600
+	
 
-	local abilityNumber=7
-	--------------------------------------
-	-- Generic Variable Setting
-	--------------------------------------
-	local ability=AbilitiesReal[abilityNumber];
+-- 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+-- 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+-- 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+-- 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
+-- 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	
-	if not ability:IsFullyCastable() or ability:IsHidden() then
-		return BOT_ACTION_DESIRE_NONE
-	end
-	
-	local CastRange = ability:GetCastRange();
-	local Damage = ability:GetAbilityDamage();
-	local CastPoint = ability:GetCastPoint();
-	local Radius = 600
-	
+-- 	--------------------------------------
+-- 	-- Mode based usage
+-- 	--------------------------------------
 
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
-	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
-	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+-- 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+-- 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT ) 
+-- 	then
+-- 		if ( #enemys == 0 or AbilitiesReal[1]:IsFullyCastable() and npcBot:DistanceFromFountain()>=1000) 
+-- 		then
+-- 			return BOT_ACTION_DESIRE_HIGH;
+-- 		end
+-- 	end
 	
-	--------------------------------------
-	-- Mode based usage
-	--------------------------------------
+-- 	-- If we're going after someone
+-- 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+-- 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+-- 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK or
+-- 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY ) 
+-- 	then
+-- 		local npcTarget = npcBot:GetTarget();
+-- 		if ( npcTarget~= nil and GetUnitToUnitDistance( npcTarget, npcBot ) < Radius )
+-- 		then
+-- 			return BOT_ACTION_DESIRE_VERYHIGH
+-- 		end
+-- 	end
 
-	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT ) 
-	then
-		if ( #enemys == 0 or AbilitiesReal[1]:IsFullyCastable() and npcBot:DistanceFromFountain()>=1000) 
-		then
-			return BOT_ACTION_DESIRE_HIGH;
-		end
-	end
-	
-	-- If we're going after someone
-	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_ATTACK or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY ) 
-	then
-		local npcTarget = npcBot:GetTarget();
-		if ( npcTarget~= nil and GetUnitToUnitDistance( npcTarget, npcBot ) < Radius )
-		then
-			return BOT_ACTION_DESIRE_VERYHIGH
-		end
-	end
-
-	return BOT_ACTION_DESIRE_NONE
-end
+-- 	return BOT_ACTION_DESIRE_NONE
+-- end
 
 local lastInfestTime
 local lastInfestTarget
 
-Consider[6] = function()
-	local ability = AbilitiesReal[6]
-	if not ability:IsFullyCastable() or ability:IsHidden() or lastInfestTarget == nil then
+
+-- consume
+local consumeThink = function()
+	local ability = AbilitiesReal[5]
+	if not ability:IsFullyCastable() or ability:IsHidden() then
 		return 0
 	end
-	if lastInfestTarget ~= nil or not lastInfestTarget:IsAlive() or not npcBot:IsInvulnerable() then
-		lastInfestTarget = nil
-		lastInfestTime = nil
+	if invulnerableTime and DotaTime() - invulnerableTime > 7 then
+		return BOT_ACTION_DESIRE_VERYHIGH
 	end
+	if lastInfestTime == nil then
+		return 0
+	end
+
 	local infestTime = DotaTime() - lastInfestTime
 	local infest3 = infestTime > 3
-	local infest10 = infestTime > 10
+	local infest10 = infestTime > 7
 	
 	local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1000, true)
 	local friends = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, false)
@@ -460,15 +478,44 @@ Consider[6] = function()
 	if infest10 then
 		return BOT_ACTION_DESIRE_VERYHIGH
 	end
+
 	return 0
 end
 
+Consider[5] = function()
+	if AbilitiesReal[5]:GetName() == "life_stealer_consume" then
+		return consumeThink()
+	end
+	if AbilitiesReal[5]:GetName() == "life_stealer_infest" then
+		return infestThink()
+	end
+	return 0
+end
+Consider[6] = function()
+	if AbilitiesReal[6]:GetName() == "life_stealer_consume" then
+		return consumeThink()
+	end
+	if AbilitiesReal[6]:GetName() == "life_stealer_infest" then
+		return infestThink()
+	end
+	return 0
+end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
 
 function AbilityUsageThink()
-
+	if lastInfestTarget == nil or not lastInfestTarget:IsAlive() or not npcBot:IsInvulnerable() then
+		lastInfestTarget = nil
+		lastInfestTime = nil
+	end
+	if npcBot:IsInvulnerable() then
+		if invulnerableTime == nil then
+			invulnerableTime = DotaTime()
+		end
+	else
+		invulnerableTime = nil
+	end
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then 

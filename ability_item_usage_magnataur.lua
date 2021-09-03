@@ -74,7 +74,7 @@ end
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
 local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,function(t)
-    return not AbilityExtensions:IsInvulnerable(t)
+	return AbilityExtensions:StunCanCast(t, AbilitiesReal[4], false, false) 
 end}
 local enemyDisabled=utility.enemyDisabled
 

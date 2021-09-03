@@ -72,7 +72,9 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={function(t)
+	return AbilityExtensions:NormalCanCast(t) and not AbilityExtensions:HasAbilityRetargetModifier(t)
+end,utility.NCanCast,utility.NCanCast, AbilityExtensions.NormalCanCastFunction}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()

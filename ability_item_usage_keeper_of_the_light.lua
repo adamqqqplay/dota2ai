@@ -40,19 +40,19 @@ local AbilityToLevelUp =
 	Abilities[1],
 	Abilities[3],
 	Abilities[1],
-	Abilities[5], -- lvl 6
+	Abilities[6], -- lvl 6
 	Abilities[1],
 	Abilities[3],
 	Abilities[2],
 	"talent",
 	Abilities[3],
-	Abilities[5], -- lvl 12
+	Abilities[6], -- lvl 12
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
 	"nil",
-	Abilities[5], -- lvl 18
+	Abilities[6], -- lvl 18
 	"nil",
 	"talent",
 	"nil",
@@ -120,8 +120,8 @@ Consider[1]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if ( not ability:IsFullyCastable() ) then 
-		return BOT_ACTION_DESIRE_NONE, 0;
+	if not ability:IsFullyCastable() or ability:IsHidden() then 
+		return BOT_ACTION_DESIRE_NONE
 	end
 	
 	local CastRange = ability:GetCastRange();
@@ -158,7 +158,7 @@ Consider[1]=function()
 	--------------------------------------
 	-- If we're farming and can kill 3+ creeps with LSA
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
-		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, Damage );
 
 		if ( locationAoE.count >= 3 ) then
 			return BOT_ACTION_DESIRE_LOW, npcBot:GetXUnitsTowardsLocation(locationAoE.targetloc,300);
@@ -184,7 +184,7 @@ Consider[1]=function()
 	then
 		if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )
 		then
-			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, 0 );
+			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, Damage );
 			if ( locationAoE.count >= 4 ) then
 				return BOT_ACTION_DESIRE_LOW-0.01, npcBot:GetXUnitsTowardsLocation(locationAoE.targetloc,300);
 			end
@@ -199,7 +199,7 @@ Consider[1]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
 	then
-		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, Damage );
 
 		if ( locationAoE.count >= 4 ) 
 		then
@@ -213,7 +213,7 @@ Consider[1]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK) 
 	then
-		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, Damage );
 		if ( locationAoE.count >= 2 ) then
 			return BOT_ACTION_DESIRE_LOW, npcBot:GetXUnitsTowardsLocation(locationAoE.targetloc,300);
 		end
@@ -229,7 +229,7 @@ Consider[1]=function()
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
+	return BOT_ACTION_DESIRE_NONE
 	
 end
 
@@ -243,7 +243,7 @@ end
 	
 -- 	if ( not ability:IsFullyCastable() ) 
 -- 	then 
--- 		return BOT_ACTION_DESIRE_NONE, 0;
+-- 		return BOT_ACTION_DESIRE_NONE
 -- 	end
 	
 -- 	local CastRange = ability:GetCastRange();
@@ -264,7 +264,7 @@ end
 -- 	then
 -- 		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) ) 
 -- 		then
--- 			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+-- 			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius );
 -- 			if ( locationAoE.count >= 2 ) then
 -- 				return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 -- 			end
@@ -279,7 +279,7 @@ end
 -- 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 -- 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK) 
 -- 	then
--- 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+-- 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius );
 -- 		if ( locationAoE.count >= 2 ) then
 -- 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 -- 		end
@@ -295,7 +295,7 @@ end
 -- 		end
 -- 	end
 
--- 	return BOT_ACTION_DESIRE_NONE, 0;
+-- 	return BOT_ACTION_DESIRE_NONE
 	
 -- end
 
@@ -309,7 +309,7 @@ Consider[2]=function()
 	local ability=AbilitiesReal[abilityNumber];
 	
 	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
+		return BOT_ACTION_DESIRE_NONE
 	end
 	
 	local CastRange = ability:GetCastRange();
@@ -456,7 +456,7 @@ Consider[2]=function()
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
+	return BOT_ACTION_DESIRE_NONE
 	
 end
 
@@ -468,7 +468,7 @@ Consider[3]=function()
 	local ability=AbilitiesReal[abilityNumber];
 	
 	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
+		return BOT_ACTION_DESIRE_NONE
 	end
 	
 	local CastRange = ability:GetCastRange();
@@ -493,7 +493,7 @@ Consider[3]=function()
 		return BOT_ACTION_DESIRE_MODERATE, bestTarget; 
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
+	return BOT_ACTION_DESIRE_NONE
 end
 
 Consider[abilityIndex.keeper_of_the_light_blind_light] = function()
@@ -505,8 +505,8 @@ Consider[abilityIndex.keeper_of_the_light_blind_light] = function()
 	--------------------------------------
 	local ability = AbilitiesReal[abilityNumber]
 
-	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0
+	if not ability:IsFullyCastable() or ability:IsHidden() then
+		return BOT_ACTION_DESIRE_NONE
 	end
 
 	local CastRange = ability:GetCastRange()
@@ -541,7 +541,7 @@ Consider[abilityIndex.keeper_of_the_light_blind_light] = function()
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
-		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 10000 )
 		if ( locationAoE.count >= 2 ) 
 		then
 			return BOT_ACTION_DESIRE_LOW-0.15, locationAoE.targetloc
@@ -581,14 +581,14 @@ Consider[abilityIndex.keeper_of_the_light_blind_light] = function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK  ) 
 	then
-		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 10000 )
 		if ( locationAoE.count >= 2 ) then
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
 		end
 	end
 
 	-- If we're in a teamfight, use it 
-	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
+	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK )
 	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 
 	then
 		local npcEnemy = npcBot:GetTarget();
@@ -599,7 +599,7 @@ Consider[abilityIndex.keeper_of_the_light_blind_light] = function()
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
+	return BOT_ACTION_DESIRE_NONE
 
 end
 
@@ -607,8 +607,8 @@ Consider[5] = function()
 	local abilityNumber = 5
 	local ability = AbilitiesReal[abilityNumber]
 
-	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0
+	if not ability:IsFullyCastable() or ability:IsHidden() then
+		return BOT_ACTION_DESIRE_NONE
 	end
 
 	local CastRange = ability:GetCastRange()
@@ -651,7 +651,7 @@ Consider[5] = function()
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
-		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint );
 		if ( locationAoE.count >= 2 ) 
 		then
 			return BOT_ACTION_DESIRE_LOW-0.15, locationAoE.targetloc
@@ -664,7 +664,7 @@ Consider[5] = function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK  ) 
 	then
-		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
+		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint );
 		if ( locationAoE.count >= 2 ) then
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
 		end
@@ -682,7 +682,7 @@ Consider[5] = function()
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
+	return BOT_ACTION_DESIRE_NONE
 
 end
 
@@ -694,8 +694,8 @@ Consider[6]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber]
 	
-	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
+	if not ability:IsFullyCastable() or ability:IsHidden() then
+		return BOT_ACTION_DESIRE_NONE
 	end
 	
 	local CastRange = 0;
@@ -730,7 +730,7 @@ Consider[6]=function()
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0
+	return BOT_ACTION_DESIRE_NONE
 end
 
 Consider[8] = Consider[1]

@@ -73,7 +73,7 @@ end
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
 local CanCast={utility.NCanCast,function(t)
-	return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_MAGICAL, false, true) and not AbilityExtensions:HasAbilityRetargetModifier(t)
+	return AbilityExtensions:StunCanCast(t, AbilitiesReal[2], false, false) 
 end,utility.NCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 

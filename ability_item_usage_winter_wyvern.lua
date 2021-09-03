@@ -98,7 +98,7 @@ local CanCast={utility.NCanCast,utility.NCanCast,function(t)
 	end
 	return AbilityExtensions:AllyCanCast(t) and (not AbilityExtensions:DontInterruptAlly(t) or t:HasModifier("modifier_medusa_stone_gaze") and t:GetActiveMode() == BOT_MODE_RETREAT) and not t:IsChanneling()
 end,function(t)
-	return AbilityExtensions:SpellCanCast(t, true, true)
+	return AbilityExtensions:StunCanCast(t, AbilitiesReal[1], false, true, true, false) 
 end}
 local enemyDisabled=utility.enemyDisabled
 
@@ -521,8 +521,8 @@ Consider[4]=function()
 		for i,npcEnemy in pairs(enemys)
 		do
 			local sumdamage=0
-			local enemys2 = npcEnemy:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
-			local creeps2 = npcEnemy:GetNearbyCreeps(Radius,true)
+			local enemys2 = npcEnemy:GetNearbyHeroes(Radius,true,BOT_MODE_NONE) or {}
+			local creeps2 = npcEnemy:GetNearbyCreeps(Radius,true) or {}
 			if(npcEnemy~=nil)
 			then
 				if(enemys2~=nil)

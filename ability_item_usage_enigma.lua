@@ -71,17 +71,14 @@ end
 --------------------------------------
 -- Ability Usage Thinking
 --------------------------------------
-function CanCast2(npcTarget)
-	if(utility.NCanCast(npcTarget) and npcTarget:GetLevel()<=5 and npcTarget:IsAncientCreep()==false )
-	then
-		return true;
-	end
-	return false;
-end
 
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,CanCast2,utility.NCanCast,utility.UCanCast}
+local CanCast={function(t)
+	return AbilityExtensions:StunCanCast(t, AbilitiesReal[1], false, false, true, false) 
+end,function(npcTarget)
+	return utility.NCanCast(npcTarget) and npcTarget:GetLevel()<=5 and not npcTarget:IsAncientCreep()
+end,utility.NCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()

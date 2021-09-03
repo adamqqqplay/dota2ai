@@ -13,6 +13,7 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
     "item_soul_ring",
 	"item_arcane_boots", --秘法鞋
+	"item_ghost",
 	"item_mekansm", --梅肯
     "item_guardian_greaves",
 	"item_ultimate_scepter", --蓝杖

@@ -72,8 +72,8 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={function(target) 
-	return (npcBot:GetLevel()>=25 and utility.UCanCast(target)) or utility.NCanCast(target) and not AbilityExtensions:HasAbilityRetargetModifier(target)
+local CanCast={function(t)
+	return AbilityExtensions:StunCanCast(t, AbilitiesReal[1], npcBot:GetLevel() >= 25, true, true, true) 
 end,
 	utility.NCanCast,
 	utility.NCanCast,

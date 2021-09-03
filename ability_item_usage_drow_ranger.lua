@@ -74,7 +74,9 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={AbilityExtensions.PhysicalCanCastFunction,utility.NCanCast,AbilityExtensions.PhysicalCanCastFunction,utility.UCanCast}
+local CanCast={AbilityExtensions.PhysicalCanCastFunction,function(t)
+	return AbilityExtensions:StunCanCast(t, AbilitiesReal[2], false, false) 
+end,AbilityExtensions.PhysicalCanCastFunction,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -106,7 +108,7 @@ Consider[1] = function()
         end
         if target:IsHero() then
             local modifier = target:GetModifierByName("modifier_drow_ranger_frost_arrows_slow")
-            if modifier ~= nil and target:GetModifierRemainingDuration(modifier) > npcBot:GetAttackSpeed()/100*0.7/1.7 + 0.2 then
+            if modifier ~= -1 and target:GetModifierRemainingDuration(modifier) > npcBot:GetAttackSpeed()/100*0.7/1.7 + 0.2 then
                 return AbilityExtensions:GetManaPercent(npcBot) >= 0.8
             end
             if AbilityExtensions:MustBeIllusion(npcBot, target) then

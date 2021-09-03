@@ -142,7 +142,7 @@ end
 
 function getTargetLocation(npcBot,lane)
 	local front = GetLaneFrontLocation( GetTeam(), lane, 0 )
-	local EnemyTower = GetNearestBuilding(GetOpposingTeam(), front)
+	local EnemyTower = GetNearestBuilding(GetOpposingTeam(), front) or GetAncient(GetOpposingTeam())
 	local AllyTower = GetNearestBuilding(GetTeam(), front)
 	local TowerDistance = GetUnitToUnitDistance(npcBot,EnemyTower)
 	local EnemySpawnLocation=GetEnemySpawnLocation()

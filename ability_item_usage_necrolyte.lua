@@ -73,7 +73,13 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={function(t)
+	if AbilityExtensions:IsOnSameTeam(npcBot, t) then
+		return AbilityExtensions:AllyCanCast(t) and not t:HasModifier "modifier_ice_blast"
+	else
+		return AbilityExtensions:NormalCanCast(t)
+	end
+end,utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
