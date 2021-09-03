@@ -191,14 +191,14 @@ end
 function IsEnemyCreepBetweenMeAndTarget(hSource, hTarget, vLoc, nRadius)
 	local vStart = hSource:GetLocation();
 	local vEnd = vLoc;
-	local creeps = hSource:GetNearbyLaneCreeps(1600, true);
+	local creeps = hSource:GetNearbyLaneCreeps(1600, true) or {}
 	for i,creep in pairs(creeps) do
 		local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation());
 		if tResult ~= nil and tResult.within and tResult.distance <= nRadius + 50 then
 			return true;
 		end
 	end
-	creeps = hTarget:GetNearbyLaneCreeps(1600, false);
+	creeps = hTarget:GetNearbyLaneCreeps(1600, false) or {}
 	for i,creep in pairs(creeps) do
 		local tResult = PointToLineDistance(vStart, vEnd, creep:GetLocation());
 		if tResult ~= nil and tResult.within and tResult.distance <= nRadius + 50 then

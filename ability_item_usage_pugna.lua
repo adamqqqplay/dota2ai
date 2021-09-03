@@ -79,7 +79,7 @@ local function CanCast2(t)
 	if AbilityExtensions:IsOnSameTeam(npcBot, t) then
 		return AbilityExtensions:AllyCanCast(t) and not AbilityExtensions:DontInterruptAlly(t) and t:GetAttackTarget() == nil
 	else
-		return AbilityExtensions:NormalCanCast(t) and not AbilityExtensions:GetNearbyNonIllusionHeroes(600, false):Any(function(t)
+		return AbilityExtensions:NormalCanCast(t) and not AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 600, false):Any(function(t)
 			local target = t:GetAttackTarget()
 			return target == t
 		end)
