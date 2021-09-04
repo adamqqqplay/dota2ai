@@ -33,7 +33,8 @@ function GetDesire()
 	--	return ShrineDesire
 	--else
 	--	HeroMode="TeamRoam"
-    return TeamRoamDesire
+    -- return TeamRoamDesire
+	return 0
 	--end
 end
 

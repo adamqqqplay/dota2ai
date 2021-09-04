@@ -1924,7 +1924,7 @@ M.CanMove = function(self, npc)
 end
 
 function M:CannotMove(npc)
-    return -- npc:IsStunned() or self:IsNightmared(npc) or --actually still able to cast abilities or move while stunned or nightmared, but provides no dfference
+    return -- npc:IsStunned() or self:IsNightmared(npc) or --actually still able to cast abilities or move while stunned or nightmared, but makes no dfference
             npc:IsRooted() or self:IsTaunted(npc)or self:IsHypnosed(npc) or self:IsFeared(npc)
 end
 
@@ -1938,6 +1938,10 @@ end
 
 function M:IsTaunted(npc)
     return npc:HasModifier "modifier_axe_berserkers_call" or npc:HasModifier "modifier_legion_commander_duel"
+end
+
+function M:DontControlAgain(npc)
+    return npc:IsStunned() or self:IsNightmared(npc) or self:IsTaunted(npc) or self:IsHypnosed(npc)
 end
 
 function M:IsDuelCaster(npc)
@@ -2641,7 +2645,9 @@ M.CannotBeTargettedModifiers = {
 
 M.IgnorePhysicalDamageModifiers = {
     "modifier_winter_wyvern_cold_embrace",
+    "modifier_omniknight_guardian_angle",
 }
+
 M.IgnoreMagicalDamageModifiers = {
     "modifier_oracle_fates_edict",
 }

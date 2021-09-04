@@ -86,6 +86,6 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
-function CourierUsageThink() 
+function CourierUsageThink()
 	ability_item_usage_generic.CourierUsageThink()
 end
