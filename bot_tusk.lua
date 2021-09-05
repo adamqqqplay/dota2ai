@@ -1,6 +1,6 @@
 local minionutils = dofile(GetScriptDirectory().."/util/NewMinionUtil")
 
-local t = "npc_dota_gyrocopter_homing_missile"
+local t = "npc_dota_tusk_frozen_sigil"
 
 function MinionThink(u)
 	if minionutils.IsValidUnit(u) then

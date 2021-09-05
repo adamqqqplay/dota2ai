@@ -1,7 +1,7 @@
 local bot = GetBot();
 local AttackDesire = 0;
 local MoveDesire = 0;
-
+local minionutils = dofile(GetScriptDirectory().."/util/NewMinionUtil")
 
 function  MinionThink(  hMinionUnit ) 
 
@@ -20,7 +20,9 @@ function  MinionThink(  hMinionUnit )
 			return
 		end
 	end
-		
+	if hMinionUnit:GetUnitName() == "npc_dota_wisp_spirit" then
+		minionutils.CantBeControlledThink(hMinionUnit)
+	end
 end
 
 function ConsiderAttack(hMinionUnit, target)

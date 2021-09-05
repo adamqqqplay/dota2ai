@@ -2,9 +2,15 @@ local npcBot = GetBot();
 local MoveDesire = 0;
 local AttackDesire = 0;
 local npcBotAR = 200;
-local ProxRange = 1300;
+local ProxRange = 1300
+local minionutils = dofile(GetScriptDirectory().."/util/NewMinionUtil")
 
-function  MinionThink(  hMinionUnit ) 	
+
+function  MinionThink(  hMinionUnit )
+	if hMinionUnit:GetUnitName() == "npc_dota_broodmother_sticky_web" then
+		minionutils.CantBeControlledThink(hMinionUnit)
+		return
+	end
 	if not hMinionUnit:IsNull() and hMinionUnit ~= nil and ( hMinionUnit:GetUnitName() == 'npc_dota_broodmother_spiderling' or hMinionUnit:IsIllusion() ) then 
 		AttackDesire, AttackTarget = ConsiderAttacking(hMinionUnit); 
 		MoveDesire, Location = ConsiderMove(hMinionUnit); 
