@@ -173,7 +173,6 @@ local function deepCopy(self, tb)
             g[k] = v
         else
             if self:Contains(copiedTables, v) then
-                print "!"
                 return {}
             end
             g[k] = deepCopy(self, v)
@@ -1487,7 +1486,7 @@ function M:GetSilenceRemainingDuration(npc)
     return silenceModifierRemainings
 end
 function M:GetStunRemainingDuration(npc)
-    return self:IsStunned(npc) and 1 or 0
+    return self:DontControlAgain(npc) and 1 or 0
 end
 M.GetEnemyHeroNumber = function(self, npcBot, enemies)
     return #self:GetEnemyHeroUnique(npcBot, enemies)
@@ -1789,6 +1788,9 @@ end
 function M:IsTaunted(npc)
     return npc:HasModifier "modifier_axe_berserkers_call" or npc:HasModifier "modifier_legion_commander_duel"
 end
+function M:DontControlAgain(npc)
+    return npc:IsStunned() or self:IsNightmared(npc) or self:IsTaunted(npc) or self:IsHypnosed(npc)
+end
 function M:IsDuelCaster(npc)
     local function IsTaunting(_npc)
         local ability = _npc:GetAbilityByName "modifier_legion_commander_duel"
@@ -2030,6 +2032,9 @@ M.PrintAbilities = function(self, npcBot)
     abilityNames = abilityNames.."}"
     print(npcBot:GetUnitName())
     print(abilityNames)
+end
+function M:PrintMode(npc)
+    print("bot "..npc:GetUnitName().." in mode "..npc:GetActiveMode()..", desire = "..npc:GetActiveModeDesire())
 end
 function M:NormalCanCast(target, isPureDamageWithoutDisable, damageType, pierceMagicImmune, targetMustBeSeen, mustBeTargettable)
     damageType = damageType or DAMAGE_TYPE_MAGICAL
@@ -2377,7 +2382,10 @@ M.CannotBeTargettedModifiers = {
     "modifier_item_book_of_shadows",
     "modifier_dark_willow_shadow_realm_buff",
 }
-M.IgnorePhysicalDamageModifiers = { "modifier_winter_wyvern_cold_embrace" }
+M.IgnorePhysicalDamageModifiers = {
+    "modifier_winter_wyvern_cold_embrace",
+    "modifier_omniknight_guardian_angle",
+}
 M.IgnoreMagicalDamageModifiers = { "modifier_oracle_fates_edict" }
 M.LastForAtLeastSeconds = function(self, predicate, time, infoTable)
     if infoTable.lastTrueTime == nil then

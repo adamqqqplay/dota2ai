@@ -780,7 +780,7 @@ function M.UnImplementedItemUsage()
         end
     end
 
-    local itemDagon = AbilityExtensions:Aggregate(nil, AbilityExtensions:Range(1, 5), function(seed, dagonLevelIndex)
+    local itemDagon = AbilityExtensions:Aggregate(IsItemAvailable("item_dagon_"), AbilityExtensions:Range(2, 5), function(seed, dagonLevelIndex)
         return seed or IsItemAvailable("item_dagon_"..dagonLevelIndex)
     end)
     if itemDagon and itemDagon:IsFullyCastable() then

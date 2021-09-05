@@ -71,8 +71,8 @@ end
 CanCast[2] = function(t)
     return AbilityExtensions:NormalCanCast(t, true, DAMAGE_TYPE_PURE, false, true) and not AbilityExtensions:HasAbilityRetargetModifier(t) and not (t:HasModifier("modifier_item_blade_mail") and AbilityExtensions:IsRetreating(npcBot))
 end
-CanCast[3] = function(t) return fun1:StunCanCast(t, AbilitiesReal[3], false, true, true, false) end
-CanCast[4] = function(t) return fun1:StunCanCast(t, AbilitiesReal[4], true, true, true, false) end
+CanCast[3] = function(t) return fun1:StunCanCast(t, AbilitiesReal[3], false, true, true, false) and not fun1:DontControlAgain(t) end
+CanCast[4] = function(t) return fun1:StunCanCast(t, AbilitiesReal[4], true, true, true, false) and not fun1:DontControlAgain(t) end
 local enemyDisabled = utility.enemyDisabled
 function GetComboDamage()
     return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
@@ -377,11 +377,13 @@ Consider[4] = function()
     if AbilityExtensions:IsRetreating(npcBot) and #enemys == 1 and not AbilityExtensions:HasAbilityRetargetModifier(enemys[1]) then
         return BOT_ACTION_DESIRE_HIGH, enemys[1]
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
-        local npcEnemy = npcBot:GetTarget()
-        if npcEnemy ~= nil then
-            if CanCast[abilityNumber](npcEnemy) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys then
-                return BOT_ACTION_DESIRE_MODERATE, npcEnemy
+    if fun1:IsAttackingEnemies(npcBot) then
+        do
+            local target = npcBot:GetTargetIfGood()
+            if target then
+                if CanCast[abilityNumber](target) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys then
+                    return BOT_ACTION_DESIRE_MODERATE, target
+                end
             end
         end
     end

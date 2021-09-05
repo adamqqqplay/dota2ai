@@ -556,7 +556,7 @@ Consider[6]=function()
 		end
 		if TimeSinceCast >= 2.5 then
 			local silencer = AbilityExtensions:Count(enemys, function(t)
-				return AbilityExtensions:MayNotBeIllusion(npcBot, t) and t:HasSilence()
+				return AbilityExtensions:MayNotBeIllusion(npcBot, t) and t:HasSilence(true)
 			end)
 			if silencer > 0 then
 				return BOT_ACTION_DESIRE_HIGH, enemys[1]
@@ -643,6 +643,6 @@ function AbilityUsageThink()
 	end
 end
 
-function CourierUsageThink() 
+function CourierUsageThink()
 	ability_item_usage_generic.CourierUsageThink()
 end

@@ -185,7 +185,6 @@ local function deepCopy(self, tb)
             g[k] = v
         else
             if self:Contains(copiedTables, v) then
-                print "!"
                 return {}
             end
             g[k] = deepCopy(self, v)
@@ -1602,7 +1601,7 @@ function M:GetSilenceRemainingDuration(npc)
 end
 
 function M:GetStunRemainingDuration(npc)
-    return self:IsStunned(npc) and 1 or 0
+    return self:DontControlAgain(npc) and 1 or 0
 end
 
 M.GetEnemyHeroNumber = function(self, npcBot, enemies)
@@ -2206,6 +2205,10 @@ M.PrintAbilities = function(self, npcBot)
     abilityNames = abilityNames.."}"
     print(npcBot:GetUnitName())
     print(abilityNames)
+end
+
+function M:PrintMode(npc)
+    print("bot "..npc:GetUnitName().." in mode "..npc:GetActiveMode()..", desire = "..npc:GetActiveModeDesire())
 end
 
 -- ability function

@@ -304,10 +304,15 @@ function GetComboMana(AbilitiesReal)
 	local npcBot = GetBot()
 	local tempComboMana = 0
 	for i, ability in pairs(AbilitiesReal) do
-		if ability and ability:GetLevel() >= 1 and ability:IsPassive() == false and not ability:IsHidden() then
-			if ability:IsUltimate() == false or ability:GetCooldownTimeRemaining() <= 30 then
-				tempComboMana = tempComboMana + ability:GetManaCost()
+		local success, message = pcall(function()
+			if ability and ability:GetLevel() >= 1 and not ability:IsPassive() and not ability:IsHidden() then
+				if ability:IsUltimate() == false or ability:GetCooldownTimeRemaining() <= 30 then
+					tempComboMana = tempComboMana + ability:GetManaCost()
+				end
 			end
+		end)
+		if not success then
+			print("Invalid ability to get mana cost: "..ability:GetName())
 		end
 	end
 	return math.max(tempComboMana, 300)
