@@ -380,3 +380,10 @@ Full update for 7.30.
 5. Remove some outdated files.
 6. Update item purchasing for 7.30.
 7. Many small bug fixes.
+v1.7.8 (2021.09.05)
+1. Fix many ability usage issues in the 7.30 version
+2. Fix the issue of AI picking up runes.
+3. Update warding position for 7.30.
+4. Fix the issue of AI selecting lane in the early game.
+5. Fix many abilities that could not be used.
+6. Temporarily remove Hoodwink.
