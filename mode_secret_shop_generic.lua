@@ -78,6 +78,8 @@ function Think()
 		return
 	end
 	
+	preferedShop = X.GetPreferedSecretShop();
+
 	if bot:DistanceFromSecretShop() == 0
 	then
 		bot:Action_MoveToLocation(preferedShop + RandomVector(200))
