@@ -440,7 +440,7 @@ function AbilityUsageThink()
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then
 		if npcBot:IsCastingAbility() and npcBot:GetCurrentActiveAbility() == AbilitiesReal[2] then
-			if iceFreezingEnemy ~= nil and AbilityExtensions:HasAbilityRetargetModifier(iceFreezingEnemy) then
+			if iceFreezingEnemy ~= nil and (not iceFreezingEnemy:IsAlive() or AbilityExtensions:HasAbilityRetargetModifier(iceFreezingEnemy)) then
 				npcBot:Action_ClearActions(true)
 			end
 		end
@@ -448,7 +448,7 @@ function AbilityUsageThink()
 			if not AbilityExtensions:IsFarmingOrPushing(npcBot) then
 				local glimmer = AbilityExtensions:GetAvailableItem(npcBot, "item_glimmer_cape")
 				if glimmer and glimmer:IsFullyCastable() then
-					npcBot:ActionImmediate_UseAbilityOnEntity(glimmer, npcBot)
+					npcBot:Action_UseAbilityOnEntity(glimmer, npcBot)
 				end
 				local enemies = npcBot:GetNearbyHeroes(AbilitiesReal[4]:GetAOERadius(), true, BOT_MODE_NONE)
 				if #enemies > 0 or freezingFieldHitSomeoneTimer == nil then

@@ -1,14 +1,17 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.0.0
+-- Generated from Mirana Compiler version 1.1.0
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
 local M = {}
 local binlib = require(GetScriptDirectory().."/util/BinDecHex")
 local magicTable = {}
+local function GiveLinqFunctions(t)
+    setmetatable(t, magicTable)
+end
 local function NewTable()
     local a = {}
-    setmetatable(a, magicTable)
+    GiveLinqFunctions(a, magicTable)
     return a
 end
 magicTable.__index = magicTable
@@ -1374,8 +1377,30 @@ M.GetNearbyHeroes = function(self, npcBot, range, getEnemy, botModeMask)
     end
     botModeMask = botModeMask or BOT_MODE_NONE
     local heroes = npcBot:GetNearbyHeroes(range, getEnemy, botModeMask)
-    setmetatable(heroes, magicTable)
+    GiveLinqFunctions(heroes, magicTable)
     return heroes
+end
+function M:GetAllHeores(npcBot, getEnemy)
+    if getEnemy == nil then
+        getEnemy = true
+    end
+    if getEnemy then
+        return self:GetEnemyHeroUnique(npcBot, GetUnitList(UNIT_LIST_ENEMY_HEROES)):Filter(function(it)
+            self:MayNotBeIllusion(npcBot, it)
+        end)
+    else
+        return self:Filter(GetUnitList(UNIT_LIST_ALLIED_HEROES), function(it)
+            self:MayNotBeIllusion(npcBot, it)
+        end)
+    end
+end
+function M:GetNearbyCreeps(npcBot, range, getEnemy)
+    if getEnemy == nil then
+        getEnemy = true
+    end
+    local t = npcBot:GetNearbyCreeps(range, getEnemy)
+    GiveLinqFunctions(t, magicTable)
+    return t
 end
 M.GetNearbyNonIllusionHeroes = function(self, npcBot, range, getEnemy, botModeMask)
     range = range or 1200
@@ -1401,7 +1426,7 @@ function M:GetNearbyAttackableCreeps(npcBot, range, getEnemy)
             return t:HasModifier "modifier_fountain_glyph"
         end)
     end
-    setmetatable(creeps, magicTable)
+    GiveLinqFunctions(creeps, magicTable)
     return creeps
 end
 M.GetNearbyAllUnits = function(self, npcBot, range)
@@ -1552,7 +1577,7 @@ M.TryUseTp = function(self, npc)
         else
             distanceFromFountain = direAncientLocation + Vector(-400, -400)
         end
-        npc:ActionImmediate_UseAbilityOnLocation(item, distanceFromFountain)
+        npc:Action_UseAbilityOnLocation(item, distanceFromFountain)
         return true
     end
 end

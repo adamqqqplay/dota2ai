@@ -313,6 +313,7 @@ end
 local activeRemnants
 local refreshRemnantToken
 local function RefreshActiveRemnants()
+    print("called at time "..DotaTime()..", frame "..AbilityExtensions.GetFrameNumber())
     activeRemnants = AbilityExtensions:Filter(GetUnitList(UNIT_LIST_ALL), function(t) return t:GetUnitName() == "npc_dota_ember_spirit_remnant" end)
 end
 local DetectRemnant = AbilityExtensions:EveryManySeconds(2, RefreshActiveRemnants)

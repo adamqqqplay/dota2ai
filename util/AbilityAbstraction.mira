@@ -5,9 +5,13 @@ local binlib = require(GetScriptDirectory().."/util/BinDecHex")
 -- LINQ functions
 
 local magicTable = {}
+local function GiveLinqFunctions(t)
+    setmetatable(t, magicTable)
+end
+
 local function NewTable()
     local a = {}
-    setmetatable(a, magicTable)
+    GiveLinqFunctions(a, magicTable)
     return a
 end
 magicTable.__index = magicTable
@@ -1492,8 +1496,32 @@ M.GetNearbyHeroes = function(self, npcBot, range, getEnemy, botModeMask)
     end
     botModeMask = botModeMask or BOT_MODE_NONE
     local heroes = npcBot:GetNearbyHeroes(range, getEnemy, botModeMask)
-    setmetatable(heroes, magicTable)
+    GiveLinqFunctions(heroes, magicTable)
     return heroes
+end
+
+function M:GetAllHeores(npcBot, getEnemy)
+    if getEnemy == nil then
+        getEnemy = true 
+    end
+    if getEnemy then 
+        return self:GetEnemyHeroUnique(npcBot, GetUnitList(UNIT_LIST_ENEMY_HEROES)):Filter fun {
+            self:MayNotBeIllusion(npcBot, it)
+        }
+    else
+        return self:Filter(GetUnitList(UNIT_LIST_ALLIED_HEROES)) fun {
+            self:MayNotBeIllusion(npcBot, it)
+        }
+    end
+end
+
+function M:GetNearbyCreeps(npcBot, range, getEnemy)
+    if getEnemy == nil then
+        getEnemy = true 
+    end
+    local t = npcBot:GetNearbyCreeps(range, getEnemy)
+    GiveLinqFunctions(t, magicTable)
+    return t 
 end
 
 M.GetNearbyNonIllusionHeroes = function(self, npcBot, range, getEnemy, botModeMask)
@@ -1518,7 +1546,7 @@ function M:GetNearbyAttackableCreeps(npcBot, range, getEnemy)
     if getEnemy then
         creeps = self:Filter(creeps, function(t) return t:HasModifier "modifier_fountain_glyph" end)
     end
-    setmetatable(creeps, magicTable)
+    GiveLinqFunctions(creeps, magicTable)
     return creeps
 end
 
@@ -1675,7 +1703,7 @@ M.TryUseTp = function(self, npc)
         else
             distanceFromFountain = direAncientLocation + Vector(-400, -400)
         end
-        npc:ActionImmediate_UseAbilityOnLocation(item, distanceFromFountain)
+        npc:Action_UseAbilityOnLocation(item, distanceFromFountain)
         return true
     end
 end

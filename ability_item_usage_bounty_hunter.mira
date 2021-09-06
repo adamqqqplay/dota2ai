@@ -298,11 +298,7 @@ Consider[3]=function()
 	end
 
 	return BOT_ACTION_DESIRE_NONE
-	
 end
-
--- local EnlargeCastRange = AbilityExtensions:EveryManySeconds(0.5, function() CastRange = AbilitiesReal[4]:GetCastRange() end)
-
 
 Consider[4]=function()
 	local abilityNumber=4
@@ -325,6 +321,7 @@ Consider[4]=function()
 	}:Map fun {
 		{ it, it:GetHealth() * HasTrackModifierPenalty(it) }
 	}:SortByMinFirst fun { it[2] }
+
 	if AbilityExtensions:Any(realEnemies) then
 		local desire = RemapValClamped(realEnemies[2], 300+ability:GetLevel()*100, 1000, 0.8, 0.4)
 		if desire >= 0.5 and ManaPercentage >= 0.4 or desire >= 0.7 then
