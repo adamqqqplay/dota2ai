@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.1.0
+-- Generated from Mirana Compiler version 1.3.0
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -242,7 +242,7 @@ M.GroupBy = function(self, collection, keySelector, elementSelector, resultSelec
         end
         if not keyFound then
             table.insert(keys, keySelector(k))
-            table.insert(values, { elementSelector(k)             })
+            table.insert(values, { elementSelector(k) })
         end
     end
     return self:Map2(keys, values, resultSelector)
@@ -1949,7 +1949,13 @@ function M:GetManaDeficit(npc)
 end
 function M:GetTargetIfGood(npc)
     local target = npc:GetTarget()
-    if target ~= nil and target:IsHero() and self:MayNotBeIllusion(npc, target) then
+    if target and target:IsHero() and self:MayNotBeIllusion(npc, target) then
+        return target
+    end
+end
+function M:GetTargetIfBad(npc)
+    local target = npc:GetTarget()
+    if target and (not target:IsHero() or self:MustBeIllusion(npc, target)) then
         return target
     end
 end
@@ -2302,6 +2308,21 @@ function M:GetDegree(loc1, loc2)
     local x = loc2.x - loc1.x
     return math.atan2(y, x) * 180 / math.pi
 end
+function M:MultiplyBetween(down, up)
+    local result = 1
+    local g = down
+    while g <= up do
+        result = result * g
+        g = g + 1
+    end
+    return result
+end
+function M:Combination(down, up)
+    return self:MultiplyBetween(down - up + 1, down) / self:MultiplyBetween(1, up)
+end
+function M:Arrange(down, up)
+    return self:MultiplyBetween(down - up + 1, down)
+end
 M.FindAOELocationAtSingleTarget = function(self, npcBot, target, radius, castRange, castPoint)
     radius = radius - 80
     local distance = GetUnitToUnitDistance(npcBot, target)
@@ -2579,9 +2600,9 @@ M.HasScepter = function(self, npc)
     return npc:HasScepter() or npc:HasModifier "modifier_wisp_tether_scepter" or npc:HasModifier "modifier_item_ultimate_scepter" or npc:HasModifier "modifier_item_ultimate_scepter_consumed_alchemist"
 end
 local locationAOEAbilities = {
-    cone = { "lina_dragon_slave"     },
-    circle = { "lina_light_strike_array"     },
-    isoscelesTrapezoid = { "kunkka_tidebringer"     },
+    cone = { "lina_dragon_slave" },
+    circle = { "lina_light_strike_array" },
+    isoscelesTrapezoid = { "kunkka_tidebringer" },
 }
 function M:RecordAbility(npc, index, target, castType, abilities)
     local abilityRecords = npc.abilityRecords
@@ -2626,7 +2647,7 @@ local defaultReturn = NewTable()
 local everySecondsCallRegistry = NewTable()
 function M:EveryManySeconds(second, oldFunction)
     local functionName = tostring(oldFunction)
-    everySecondsCallRegistry[functionName.."lastCallTime"] = RandomFloat(0, second)
+    everySecondsCallRegistry[functionName.."lastCallTime"] = DotaTime() + RandomFloat(0, second)
     return function(...)
         if everySecondsCallRegistry[functionName.."lastCallTime"] <= DotaTime() - second then
             everySecondsCallRegistry[functionName.."lastCallTime"] = DotaTime()
@@ -2683,7 +2704,7 @@ local coroutineExempt = NewTable()
 function M:TickFromDota()
     local time = DotaTime()
     local function ResumeCoroutine(thread)
-        local coroutineResult = { coroutine.resume(thread[1], time - dotaTimer)         }
+        local coroutineResult = { coroutine.resume(thread[1], time - dotaTimer) }
         if not coroutineResult[1] then
             error(coroutineResult[2])
         end
@@ -2740,7 +2761,7 @@ function M:ResumeUntilReturn(func)
     local g = NewTable()
     local thread = coroutine.create(func)
     while true do
-        local values = { coroutine.resume(thread)         }
+        local values = { coroutine.resume(thread) }
         if values[1] then
             table.remove(values, 1)
             table.insert(g, values)
@@ -2791,7 +2812,7 @@ local function Append__Index(tb, __index)
         m.__index = __index
     elseif type(oldIndex) == "function" then
         m.__index = function(ability, i)
-            local oldResult = { oldIndex(ability, i)             }
+            local oldResult = { oldIndex(ability, i) }
             if oldResult[1] == nil then
                 return __index(ability, i)
             else
@@ -2801,7 +2822,7 @@ local function Append__Index(tb, __index)
     elseif type(oldIndex) == "table" then
         if oldIndex == m then
             m.__index = function(g, h)
-                local newResult = { __index(g, h)                 }
+                local newResult = { __index(g, h) }
                 if newResult[1] == nil then
                     return oldIndex[h]
                 else
@@ -2815,7 +2836,7 @@ local function Append__Index(tb, __index)
 end
 Append__Index(CDOTABaseAbility_BotScript, GetDataFromAbility)
 function M:pcall(func, ...)
-    local result = { func(...)     }
+    local result = { func(...) }
     if result[1] then
         table.remove(result, 1)
         return self:Unpack(result)

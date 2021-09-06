@@ -312,7 +312,7 @@ function GetComboMana(AbilitiesReal)
 			end
 		end)
 		if not success then
-			print("Invalid ability to get mana cost: "..ability:GetName())
+			-- abilites acquired by doom_bringer_devour
 		end
 	end
 	return math.max(tempComboMana, 300)

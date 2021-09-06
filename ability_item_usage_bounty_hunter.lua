@@ -1,11 +1,11 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.1.0
+-- Generated from Mirana Compiler version 1.3.0
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
 local utility = require(GetScriptDirectory().."/utility")
 require(GetScriptDirectory().."/ability_item_usage_generic")
-local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
 local debugmode = false
 local npcBot = GetBot()
 local Talents = {}
@@ -179,7 +179,7 @@ Consider[3] = function()
         end
     end
     if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
-        local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
+        local npcEnemy = fun1:GetTargetIfGood(npcBot)
         if npcEnemy ~= nil then
             if GetUnitToUnitDistance(npcBot, npcEnemy) <= 2000 then
                 return BOT_ACTION_DESIRE_MODERATE
@@ -188,18 +188,18 @@ Consider[3] = function()
     end
     return BOT_ACTION_DESIRE_NONE
 end
+local function HasTrackModifierPenalty(t)
+    return fun1:GetModifierRemainingDuration(t, "modifier_bounty_hunter_track") <= 5 and 1 or 0.5
+end
 Consider[4] = function()
     local abilityNumber = 4
     local ability = AbilitiesReal[abilityNumber]
-    local function HasTrackModifierPenalty(t)
-        return AbilityExtensions:GetModifierRemainingDuration(t, "modifier_bounty_hunter_track") <= 5 and 0.5 or 1
-    end
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE
     end
     local CastRange = Clamp(ability:GetCastRange(), 0, 1599)
-    local realEnemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange):Filter(function(it)
-        return AbilityExtensions:SpellCanCast(it) and it:IsHero() and AbilityExtensions:MayNotBeIllusion(npcBot, it)
+    local realEnemies = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange):Filter(function(it)
+        return fun1:SpellCanCast(it) and it:IsHero() and fun1:MayNotBeIllusion(npcBot, it)
     end):Map(function(it)
         return {
             it,
@@ -208,17 +208,31 @@ Consider[4] = function()
     end):SortByMinFirst(function(it)
         return it[2]
     end)
-    if AbilityExtensions:Any(realEnemies) then
-        local desire = RemapValClamped(realEnemies[2], 300 + ability:GetLevel() * 100, 1000, 0.8, 0.4)
-        if desire >= 0.5 and ManaPercentage >= 0.4 or desire >= 0.7 then
-            return desire, realEnemies[1]
-        else
-            return desire - 0.2, realEnemies[1]
+    do
+        local t = realEnemies:First()
+        if t then
+            local target = t[1]
+            if fun1:IsFarmingOrPushing(npcBot) or npcBot:GetActiveMode() == BOT_MODE_LANING then
+                if ManaPercentage >= 0.7 then
+                    return BOT_ACTION_DESIRE_MODERATE, target
+                end
+                if fun1:GetHealthPercent(target) <= 0.5 then
+                    return BOT_ACTION_DESIRE_HIGH, target
+                end
+            else
+                return BOT_ACTION_DESIRE_HIGH, target
+            end
+        end
+    end
+    do
+        local target = fun1:GetTargetIfGood(npcBot)
+        if target then
+            return BOT_ACTION_DESIRE_HIGH, target
         end
     end
     return BOT_ACTION_DESIRE_NONE
 end
-AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
+fun1:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
     if npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() then
         return

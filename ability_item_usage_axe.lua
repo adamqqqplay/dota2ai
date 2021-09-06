@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.1.0
+-- Generated from Mirana Compiler version 1.3.0
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -244,7 +244,7 @@ Consider[4] = function()
         end
     end
     do
-        local target = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange + 300):Filter(IsWeak):SortByMinFirst { GetUnitToUnitDistance(npcBot, it)         }:First()
+        local target = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange + 300):Filter(IsWeak):SortByMinFirst { GetUnitToUnitDistance(npcBot, it) }:First()
         if target then
             local dis = GetUnitToUnitDistance(npcBot, target)
             if AbilityExtensions:NotRetreating(npcBot) then

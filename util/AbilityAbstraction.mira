@@ -2123,10 +2123,18 @@ end
 
 function M:GetTargetIfGood(npc)
     local target = npc:GetTarget()
-    if target~=nil and target:IsHero() and self:MayNotBeIllusion(npc, target) then
+    if target and target:IsHero() and self:MayNotBeIllusion(npc, target) then
         return target
     end
 end
+
+function M:GetTargetIfBad(npc)
+    local target = npc:GetTarget()
+    if target and (not target:IsHero() or self:MustBeIllusion(npc, target)) then
+        return target
+    end
+end
+
 
 -- function M:GetAcrossAbilityStatusPerFrame(npc)
 --     local g = {}
@@ -2488,6 +2496,23 @@ function M:GetDegree(loc1, loc2)
     local y = loc2.y-loc1.y 
     local x = loc2.x-loc1.x
     return math.atan2(y, x) * 180 / math.pi
+end
+
+function M:MultiplyBetween(down, up)
+    local result = 1
+    local g = down
+    while g <= up do
+        result *= g 
+        ++g
+    end
+    return result
+end
+
+function M:Combination(down, up)
+    return self:MultiplyBetween(down - up + 1, down) / self:MultiplyBetween(1, up)
+end
+function M:Arrange(down, up)
+    return self:MultiplyBetween(down - up + 1, down)
 end
 -- Find the location to use a aoe at a single target with the least distance the hero needs to walk before casting
 --M.FindAOELocationAtSingleTarget = function(self, npcBot, target, radius, castRange, castPoint)
@@ -2892,7 +2917,7 @@ local everySecondsCallRegistry = NewTable()
 
 function M:EveryManySeconds(second, oldFunction)
     local functionName = tostring(oldFunction)
-    everySecondsCallRegistry[functionName.."lastCallTime"] = RandomFloat(0, second)
+    everySecondsCallRegistry[functionName.."lastCallTime"] = DotaTime() + RandomFloat(0, second)
     return function(...)
         if everySecondsCallRegistry[functionName.."lastCallTime"] <= DotaTime() - second then
             everySecondsCallRegistry[functionName.."lastCallTime"] = DotaTime()
