@@ -409,7 +409,7 @@ function UseAbility(AbilitiesReal, cast)
 			AbilityExtensions:DebugPause()
 			return
 		end
-        if npcBot:GetMana() < ability:GetManaCost() then
+        if npcBot:GetMana() < ability:GetManaCost() * 0.65 then --GetManaCost() doesn't count mana cost reduction
             print("Ability mana not enough: "..ability:GetName())
 			AbilityExtensions:DebugPause()
 			return

@@ -2,6 +2,7 @@ local BotsInit = require("game/botsinit")
 local M = BotsInit.CreateGeneric()
 local utility = require( GetScriptDirectory().."/utility" )
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local TeamItemThink = require(GetScriptDirectory().."/util/TeamItemThink")
 
 function M.SellExtraItem(ItemsToBuy)
 	local npcBot=GetBot()
@@ -657,7 +658,8 @@ M.IsConsumableItem = function(self, item)
     return AbilityExtensions:Contains(self.Consumables, string.sub(item, 6))
 end
 
-M.CreateItemInformationTable = function(self, npcBot, itemTable)
+local p
+p = function(self, npcBot, itemTable, noRemove)
     local function ExpandFirstLevel(item)
         if isLeaf(item) then
             return { name = item, isSingleItem = true }
@@ -740,6 +742,7 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable)
     end
 
     local g = {}
+    g.hero = npcBot
     for _, item in pairs(itemTable) do
         local itemInformation = ExpandFirstLevel(item)
         if itemInformation.isSingleItem then
@@ -773,14 +776,38 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable)
         table.insert(g, itemInformation)
     end
     npcBot.itemInformationTable = g
-    if DotaTime() > -60 then
-        RemoveBoughtItems()
+    
+    local function RemoveTeamItems(t) 
+        local implmentedItems = TeamItemThink.ImplmentedTeamItems or {}
+        AbilityExtensions:ForEach(implmentedItems, function(itemName)
+            AbilityExtensions:Remove_Modify(t, function(itemInfo)
+                return itemInfo.name == itemName or itemInfo.usedAsRecipeOf == itemName or itemInfo.recipe and AbilityExtensions:Contains(itemInfo.recipe, itemName) 
+            end)
+        end)
+        return t
+    end
+
+    if noRemove then
+        if DotaTime() > -60 then
+            RemoveBoughtItems()
+        end
+    else
+        RemoveTeamItems(g)
+        npcBot.itemInformationTable_Pre = AbilityExtensions:Map(npcBot.itemInformationTable, function(it) return it.name end)
+        npcBot.itemInformationTable = nil
+        local res, t = TeamItemThink.Think(npcBot)
+        if res == "reset" then
+            AbilityExtensions:ForEach(t, function(it)
+                p(self, it, it.itemInformationTable_Pre, true)
+            end)
+        end
     end
     --print(npcBot:GetUnitName()..": item table:")
     --AbilityExtensions:DebugArray(g)
     --print("bought items: ")
     --AbilityExtensions:DebugArray(AbilityExtensions:Map(AbilityExtensions:GetAllBoughtItems(npcBot), function(t) return t:GetName() end))
 end
+M.CreateItemInformationTable = p
 
 local sNextItem
 local UseCourier = function()

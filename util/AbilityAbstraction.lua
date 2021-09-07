@@ -101,6 +101,11 @@ M.ForEach = function(self, tb, action)
         action(v, k)
     end
 end
+function M:ForEachDic(tb, action)
+    for k, v in pairs(tb) do
+        action(v, k)
+    end
+end
 M.Any = function(self, tb, filter)
     for k, v in ipairs(tb) do
         if filter == nil or filter(v, k) then
@@ -517,8 +522,8 @@ function M:InsertAfter_Modify(tb, item, after)
         table.insert(tb, item)
     else
         for index, value in ipairs(tb) do
-            if item == value then
-                table.insert(tb, index)
+            if after == value then
+                table.insert(tb, index, item)
                 return
             end
         end
@@ -1285,7 +1290,8 @@ function M:IsChannelingBreakWorthAbility(npc)
     end
     return true
 end
-M.RadiantPlayerId = GetTeamPlayers(TEAM_RADIANT)
+M.RadiantPlayerId = M:Map(GetTeamPlayers(TEAM_RADIANT), function()
+end)
 M.DirePlayerId = GetTeamPlayers(TEAM_DIRE)
 M.GetTeamPlayers = function(self, team)
     if team == TEAM_RADIANT then
@@ -1744,7 +1750,7 @@ M.GetHeroFullName = function(self, s)
     return "npc_dota_hero_"..s
 end
 M.GetHeroShortName = function(self, s)
-    return string.sub(s, 12)
+    return string.sub(s, 15)
 end
 M.IsMeleeHero = function(self, npc)
     local range = npc:GetAttackRange()
@@ -2706,7 +2712,8 @@ function M:TickFromDota()
     local function ResumeCoroutine(thread)
         local coroutineResult = { coroutine.resume(thread[1], time - dotaTimer) }
         if not coroutineResult[1] then
-            error(coroutineResult[2])
+            table.remove(coroutineResult, 1)
+            error(coroutineResult)
         end
     end
     if dotaTimer == nil then
