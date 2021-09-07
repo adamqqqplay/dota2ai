@@ -343,8 +343,9 @@ Consider[3] = function()
             return GetUnitToLocationDistance(npcBot, t.location) <= 400
         end)
         if projectiles and abilityLevel >= 3 then
-            return BOT_ACTION_DESIRE_MODERATE
+            return BOT_ACTION_DESIRE_HIGH
         end
+        return BOT_ACTION_DESIRE_MODERATE
     end
     do
         local target = fun1:GetTargetIfGood(npcBot)

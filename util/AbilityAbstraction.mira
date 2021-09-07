@@ -2987,7 +2987,7 @@ local coroutineExempt = NewTable()
 function M:TickFromDota()
     local time = DotaTime()
     local function ResumeCoroutine(thread)
-        local coroutineResult = { coroutine.resume(thread[1], time - dotaTimer) }
+        local coroutineResult = { coroutine.resume(thread, time - dotaTimer) }
         if not coroutineResult[1] then
             table.remove(coroutineResult, 1)
             error(coroutineResult)

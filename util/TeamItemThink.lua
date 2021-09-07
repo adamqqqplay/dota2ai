@@ -124,10 +124,7 @@ setmetatable(zeroTable, { __index = function()
     return 0
 end })
 setmetatable(roles, zeroTable)
-local humanPlayers = fun1:FilterNot(GetTeamPlayers(GetTeam()), function(it)
-    IsPlayerBot(it)
-end)
-humanPlayers = fun1:Range(1, 5):Filter(function(it)
+local humanPlayers = fun1:Range(1, 5):Filter(function(it)
     return not GetTeamMember(it):IsBot()
 end)
 local teamMembers = {}
@@ -177,7 +174,12 @@ function M.Think(npcBot)
         table.insert(teamMembers, npcBot)
     end
     if #teamMembers + #humanPlayers == 5 then
-        AddMekansm()
+        fun1:StartCoroutine(function()
+            while DotaTime() <= -70 do
+                coroutine.yield()
+            end
+            AddMekansm()
+        end)
     end
     return "reset", teamMembers
 end

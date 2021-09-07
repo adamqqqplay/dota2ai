@@ -332,8 +332,9 @@ Consider[3] = function()
         local projectiles = fun1:GetIncomingDodgeWorthProjectiles(npcBot)
         projectiles = fun1:Any(projectiles, function(t) return GetUnitToLocationDistance(npcBot, t.location) <= 400  end)
         if projectiles and abilityLevel >= 3 then
-            return BOT_ACTION_DESIRE_MODERATE
+            return BOT_ACTION_DESIRE_HIGH
         end
+        return BOT_ACTION_DESIRE_MODERATE
     end
     if local target = fun1:GetTargetIfGood(npcBot) then
         if CanCast[3](target) and GetUnitToUnitDistance(npcBot, target) < radius + 50 and abilityLevel >= 3 then
