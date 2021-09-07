@@ -75,7 +75,8 @@ end
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
 local CanCast = { t -> fun1:StunCanCast(t, AbilitiesReal[1], true, false, false, false)
-	, fun1.NormalCanCastFunction,utility.NCanCast
+	, fun1.NormalCanCastFunction
+	, utility.NCanCast
 	, t -> fun1:NormalCanCast(t, true, DAMAGE_TYPE_PURE, true, true, true)
 }
 

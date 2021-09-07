@@ -264,7 +264,7 @@ Consider[2] = function()
     end
     return false
 end
-Consider[2] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, Consider[2], AbilitiesReal[2])
+Consider[2] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[2], Consider[2])
 
 Consider[3]=function()
 	local abilityNumber=3

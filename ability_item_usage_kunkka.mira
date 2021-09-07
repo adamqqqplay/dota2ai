@@ -254,7 +254,7 @@ end
 -- 		end
 		
 -- end
--- Consider[2] = fun1:ToggleFunctionToAutoCast(npcBot, Consider[2], AbilitiesReal[2])
+-- Consider[2] = fun1:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[2], Consider[2])
 
 -- Consider[4] = function()
 -- 	return 0

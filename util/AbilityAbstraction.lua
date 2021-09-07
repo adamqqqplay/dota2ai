@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.3.0
+-- Generated from Mirana Compiler version 1.5.1
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -604,6 +604,9 @@ M.IsAttackingEnemies = function(self, npcBot)
     local mode = npcBot:GetActiveMode()
     return mode == BOT_MODE_ROAM or mode == BOT_MODE_TEAM_ROAM or mode == BOT_MODE_ATTACK or mode == BOT_MODE_DEFEND_ALLY
 end
+function M:CanBeEngaged(npcBot)
+    return self:IsAttackingEnemies(npcBot) or self:IsFarmingOrPushing(npcBot) or self:IsLaning(npcBot) or not npcBot:IsBot()
+end
 M.IsRetreating = function(self, npcBot)
     return npcBot:GetActiveMode() == BOT_MODE_RETREAT
 end
@@ -630,13 +633,13 @@ M.ToggleFunctionToAction = function(self, npcBot, oldConsider, ability)
         end
     end
 end
-M.ToggleFunctionToAutoCast = function(self, npcBot, oldConsider, ability)
+M.ToggleFunctionToAutoCast = function(self, npcBot, ability, oldToggle)
     return function()
-        local value,target,castType = oldConsider()
+        local value,target,castType = oldToggle()
         if type(value) == "number" then
             return value, target, castType
         end
-        if ability:IsFullyCastable() and value ~= ability:GetAutoCastState() then
+        if ability:IsFullyCastable() and value ~= ability:GetAutoCastState() or not ability:IsHidden() then
             ability:ToggleAutoCast()
         end
         return 0
@@ -1382,7 +1385,7 @@ M.GetNearbyHeroes = function(self, npcBot, range, getEnemy, botModeMask)
         getEnemy = true
     end
     botModeMask = botModeMask or BOT_MODE_NONE
-    local heroes = npcBot:GetNearbyHeroes(range, getEnemy, botModeMask)
+    local heroes = npcBot:GetNearbyHeroes(range, getEnemy, botModeMask) or {}
     GiveLinqFunctions(heroes, magicTable)
     return heroes
 end
@@ -1404,7 +1407,15 @@ function M:GetNearbyCreeps(npcBot, range, getEnemy)
     if getEnemy == nil then
         getEnemy = true
     end
-    local t = npcBot:GetNearbyCreeps(range, getEnemy)
+    local t = npcBot:GetNearbyCreeps(range, getEnemy) or {}
+    GiveLinqFunctions(t, magicTable)
+    return t
+end
+function M:GetNearbyLaneCreeps(npcBot, range, getEnemy)
+    if getEnemy == nil then
+        getEnemy = true
+    end
+    local t = npcBot:GetNearbyLaneCreeps(range, getEnemy) or {}
     GiveLinqFunctions(t, magicTable)
     return t
 end
@@ -1835,7 +1846,7 @@ function M:IsDuelCaster(npc)
         local tauntingPlayer = self:First(players, function(t)
             return IsTaunting(t) and t:GetAttackTarget() == npc
         end)
-        return not IsTaunting(tauntingPlayer)
+        return IsTaunting and not IsTaunting(tauntingPlayer)
     end
 end
 function M:IsMuted(npc)
@@ -2328,6 +2339,32 @@ function M:Combination(down, up)
 end
 function M:Arrange(down, up)
     return self:MultiplyBetween(down - up + 1, down)
+end
+function M:FindAoELocation(npcBot, target, ability, hero, maxHealth)
+    if hero == nil then
+        hero = true
+    end
+    if maxHealth == nil then
+        maxHealth = 10000
+    end
+    return npcBot:FindAoELocation(true, hero, npcBot:GetLocation(), ability:GetCastRange(), ability:GetAOERadius(), ability:GetCastPoint(), maxHealth)
+end
+function M:FindAOELocationAtSingleTarget(npcBot, target, radius, castRange, castPoint)
+    local targetLoc = target:GetLocation()
+    local npcLoc = npcBot:GetLocation()
+    local targetMove = target:GetCurrentMovementSpeed() * castPoint
+    local ntDis = self:GetLocationToLocationDistance(targetLoc, npcLoc) - target:GetBoundingRadius()
+    if ntDis >= targetMove + radius then
+        local centre = (function()
+            if target:IsFacingLocation(npcLoc, 180) then
+                return ntDis - targetMove
+            else
+                return ntDis + targetMove
+            end
+        end)()
+        return self:GetPointFromLineByDistance(npcLoc, targetLoc, centre)
+    end
+    return self:GetPointFromLineByDistance(npcLoc, targetLoc, ntDis + targetMove + target:GetBoundingRadius())
 end
 M.FindAOELocationAtSingleTarget = function(self, npcBot, target, radius, castRange, castPoint)
     radius = radius - 80

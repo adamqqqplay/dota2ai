@@ -425,7 +425,7 @@ Consider[4] = function()
     end
     return false
 end
-Consider[4] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, Consider[4], AbilitiesReal[4])
+Consider[4] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[4], Consider[4])
 
 Consider[5]=function()
 

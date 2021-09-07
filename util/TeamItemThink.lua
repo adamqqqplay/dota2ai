@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.3.0
+-- Generated from Mirana Compiler version 1.5.1
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -124,12 +124,25 @@ setmetatable(zeroTable, { __index = function()
     return 0
 end })
 setmetatable(roles, zeroTable)
-local humanPlayers = fun1:Range(1, 5):Filter(function(it)
-    return not GetTeamMember(it):IsBot()
-end)
+local humanPlayers
+local finishInit
+local runned
+local function Init()
+    if finishInit then
+        return
+    else
+        finishInit = true
+    end
+    humanPlayers = fun1:Range(1, 5):Filter(function(it)
+        return not GetTeamMember(it):IsBot()
+    end)
+end
 local teamMembers = {}
 local function AddMekansm()
     local function AddMekansmAfter(itemName)
+        if itemName == "item_glimmer_cape" or itemName == "item_ghost" then
+            return true
+        end
         return GetItemCost(itemName) < 2000 or string.match(itemName, "boots") or itemName == "item_hand_of_midas" or itemName == "item_bfury"
     end
     local function Rate(hero)
@@ -151,6 +164,7 @@ local function AddMekansm()
     local function BuyMekansm(hero)
         print(hero:GetUnitName().." will buy mekansm")
         hero.itemInformationTable_Pre:InsertAfter_Modify("item_mekansm", AddMekansmAfter)
+        hero.itemInformationTable_Pre:Remove_Modify("item_urn_of_shadows")
     end
     if #heroRates >= 3 then
         local hero = heroRates[1][1]
@@ -173,14 +187,20 @@ function M.Think(npcBot)
     if not fun1:Contains(teamMembers, npcBot) then
         table.insert(teamMembers, npcBot)
     end
-    if #teamMembers + #humanPlayers == 5 then
-        fun1:StartCoroutine(function()
-            while DotaTime() <= -70 do
-                coroutine.yield()
+    fun1:StartCoroutine(function()
+        while DotaTime() <= -70 do
+            coroutine.yield()
+        end
+        Init()
+        if #teamMembers + #humanPlayers == 5 then
+            if runned then
+                return
+            else
+                runned = true
             end
             AddMekansm()
-        end)
-    end
+        end
+    end)
     return "reset", teamMembers
 end
 return M
