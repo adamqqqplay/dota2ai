@@ -124,12 +124,18 @@ setmetatable(zeroTable, { __index = function()
     return 0
 end })
 setmetatable(roles, zeroTable)
-local humanPlayers = fun1:Range(1, 5):Filter(function(it)
-    return not GetTeamMember(it):IsBot()
-end)
+local humanPlayers = {}
 local teamMembers = {}
+local function InitHumanPlayers()
+    humanPlayers = fun1:Range(1, 5):Filter(function(it)
+        return not GetTeamMember(it):IsBot()
+    end)
+end
 local function AddMekansm()
     local function AddMekansmAfter(itemName)
+        if itemName == "item_glimmer_cape" then
+            return true
+        end
         return GetItemCost(itemName) < 2000 or string.match(itemName, "boots") or itemName == "item_hand_of_midas" or itemName == "item_bfury"
     end
     local function Rate(hero)
@@ -151,6 +157,7 @@ local function AddMekansm()
     local function BuyMekansm(hero)
         print(hero:GetUnitName().." will buy mekansm")
         hero.itemInformationTable_Pre:InsertAfter_Modify("item_mekansm", AddMekansmAfter)
+        hero.itemInformationTable_Pre:Remove_Modify("item_urn_of_shadows")
     end
     if #heroRates >= 3 then
         local hero = heroRates[1][1]
@@ -166,6 +173,15 @@ local function AddMekansm()
         end
     end
 end
+local addOnce
+local function AddAllItems()
+    if addOnce then
+        return
+    else
+        addOnce = true
+    end
+    AddMekansm()
+end
 function M.Think(npcBot)
     if npcBot:IsIllusion() then
         return
@@ -173,14 +189,15 @@ function M.Think(npcBot)
     if not fun1:Contains(teamMembers, npcBot) then
         table.insert(teamMembers, npcBot)
     end
-    if #teamMembers + #humanPlayers == 5 then
-        fun1:StartCoroutine(function()
-            while DotaTime() <= -70 do
-                coroutine.yield()
-            end
-            AddMekansm()
-        end)
-    end
+    fun1:StartCoroutine(function()
+        while DotaTime() <= -70 do
+            coroutine.yield()
+        end
+        InitHumanPlayers()
+        if #teamMembers + #humanPlayers == 5 then
+            AddAllItems()
+        end
+    end)
     return "reset", teamMembers
 end
 return M
