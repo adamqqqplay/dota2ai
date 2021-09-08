@@ -376,8 +376,8 @@ Consider[4]=function()
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
+	if not ability:IsFullyCastable() or ability:IsHidden() then
+		return BOT_ACTION_DESIRE_NONE
 	end
 	
 	local CastRange = ability:GetCastRange();
@@ -427,13 +427,25 @@ Consider[4]=function()
 		end
 	end
 	
-	return BOT_ACTION_DESIRE_NONE;
+	return BOT_ACTION_DESIRE_NONE
 end
-
-AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
 local iceFreezingEnemy
 local freezingFieldHitSomeoneTimer
+
+-- stop freezing field
+Consider[5] = function() 
+	local ability = AbilitiesReal[5]
+	if ability:IsHidden() or not ability:IsFullyCastable() then
+		return 0
+	end
+	if DotaTime() - freezingFieldHitSomeoneTimer >= 1.5 and #npcBot:GetNearbyHeroes(AbilitiesReal[4]:GetAOERadius() + 280, false, BOT_MODE_NONE) > 0 then
+		return BOT_ACTION_DESIRE_HIGH
+	end
+	return 0
+end
+
+AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
 function AbilityUsageThink()
 	-- Check if we're already using an ability
@@ -454,7 +466,7 @@ function AbilityUsageThink()
 				if #enemies > 0 or freezingFieldHitSomeoneTimer == nil then
 					freezingFieldHitSomeoneTimer = DotaTime()
 				else
-					if DotaTime() - freezingFieldHitSomeoneTimer >= 1.5 and #npcBot:GetNearbyHeroes(AbilitiesReal[4]:GetAOERadius() + 200, false, BOT_MODE_NONE) > 0 then
+					if DotaTime() - freezingFieldHitSomeoneTimer >= 1.5 and #npcBot:GetNearbyHeroes(AbilitiesReal[4]:GetAOERadius() + 150, false, BOT_MODE_NONE) > 0 then
 						local location = npcBot:GetLocation() + RandomVector(50)
 						npcBot:Action_ClearActions(true)
 					else

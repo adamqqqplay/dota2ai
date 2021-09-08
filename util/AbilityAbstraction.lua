@@ -1139,6 +1139,7 @@ M.magicImmuneModifiers = {
     "modifier_legion_commander_press_the_attack_immunity",
     "modifier_lion_mana_drain_immunity",
 }
+M.stunModifiers = { "" }
 M.muteModifiers = {
     "modifier_tusk_snowball",
     "modifier_doom_bringer_doom",
@@ -1885,6 +1886,11 @@ M.IsEthereal = function(self, npc)
 end
 function M:NotBlasted(self, npc)
     return not npc:HasModifier "modifier_ice_blast"
+end
+function M:NearbyBatteryAssault(npc)
+    return self:GetNearbyNonIllusionHeroes(npc, 275 + npc:GetBoundingRadius()):Any(function(t)        
+        t:HasModifier "modifier_rattletrap_battery_assault"
+    end)
 end
 M.CannotBeTargetted = function(self, npc)
     return self:HasAnyModifier(npc, self.CannotBeTargettedModifiers)
