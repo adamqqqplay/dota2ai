@@ -103,7 +103,8 @@ function CourierUsageThink()
 		return
 	end
 	AbilityExtensions:TickFromDota()
-	--Courier.CourierUsageThink()
+	local fun2 = require(GetScriptDirectory().."/util/CommonBehaviours")
+	fun2.Think()
 	SecondaryOperation()
 end
 

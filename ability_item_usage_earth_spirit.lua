@@ -733,7 +733,7 @@ function AbilityUsageThink()
 				npcBot:Action_UseAbilityOnLocation( AbilitiesReal[1], castQLoc );
 				return;
 			else
-				npcBot:Action_UseAbilityOnEntity( AbilitiesReal[1], castQLoc );
+				npcBot:Action_UseAbilityOnLocation( AbilitiesReal[1], castQLoc );
 				return;
 			end
 		end

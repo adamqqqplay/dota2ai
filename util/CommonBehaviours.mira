@@ -1,0 +1,27 @@
+
+local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local M = {}
+
+local bot = GetBot()
+local function AvoidWintersCurse()
+    if local cursedOne = fun1:GetNearbyHeroes(bot, 800, false):First { t -> t:HasModifier "modifier_winter_wyvern_winters_curse_aura" } then
+        local location = cursedOne:GetLocation()
+        location.z = 525 + bot:GetBoundingRadius()
+        local zone = AddAvoidanceZone(location)
+        print("add zone "..tostring(zone))
+        fun1:StartCoroutine { deltaTime ->
+            fun1:WaitForSeconds(cursedOne:GetModifierRemainingDuration "modifier_winter_wyvern_winters_curse_aura")
+            RemoveAvoidanceZone(zone)
+        }
+    end
+end
+
+local Think = fun1:EveryManySeconds(0.5) { deltaTime -> 
+    AvoidWintersCurse()
+}
+
+function M.Think()
+    Think()
+end
+
+return M
