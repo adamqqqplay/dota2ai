@@ -379,7 +379,7 @@ Consider[4] = function()
     end
     if fun1:IsAttackingEnemies(npcBot) then
         do
-            local target = npcBot:GetTargetIfGood()
+            local target = AbilityExtensions:GetTargetIfGood(npcBot)
             if target then
                 if CanCast[abilityNumber](target) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys then
                     return BOT_ACTION_DESIRE_MODERATE, target

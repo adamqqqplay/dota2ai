@@ -138,13 +138,39 @@ local function Init()
     end)
 end
 local teamMembers = {}
-local function AddMekansm()
-    local function AddMekansmAfter(itemName)
-        if itemName == "item_glimmer_cape" or itemName == "item_ghost" then
-            return true
-        end
-        return GetItemCost(itemName) < 2000 or string.match(itemName, "boots") or itemName == "item_hand_of_midas" or itemName == "item_bfury"
+local function AddBefore(tb, item, before)
+    if type(before) ~= "function" then
+        before = function(t) return t == before end
     end
+    for index, v in ipairs(tb) do
+        if not before(item) then
+            table.insert(tb, index, item)
+            return
+        end
+    end
+    table.insert(tb, 1, item)
+end
+local function GenerateFilter(maxCost, putBefore, putAfter)
+    return function(itemName)        
+        local shortName = string.sub(itemName, 6)
+        return (function()
+            if fun1:Contains(putAfter, shortName) then
+                return false
+            else
+                return fun1:Contains(putBefore, shortName) or GetItemCost(itemName) < maxCost
+            end
+        end)()
+    end
+end
+local function AddMekansm()
+    local AddMekansmAfter = GenerateFilter(2000, {
+        "glimmer_cape",
+        "ghost",
+    }, {
+        "travel_boots",
+        "hand_of_midas",
+        "bfury",
+    })
     local function Rate(hero)
         local heroName = fun1:GetHeroShortName(hero:GetUnitName())
         local rate = roles[heroName].mekansm + math.random(0, 1.5)
@@ -163,7 +189,7 @@ local function AddMekansm()
     end)
     local function BuyMekansm(hero)
         print(hero:GetUnitName().." will buy mekansm")
-        hero.itemInformationTable_Pre:InsertAfter_Modify("item_mekansm", AddMekansmAfter)
+        AddBefore(hero.itemInformationTable_Pre, "item_mekansm", AddMekansmAfter)
         hero.itemInformationTable_Pre:Remove_Modify("item_urn_of_shadows")
     end
     if #heroRates >= 3 then
@@ -188,7 +214,7 @@ function M.Think(npcBot)
         table.insert(teamMembers, npcBot)
     end
     fun1:StartCoroutine(function()
-        while DotaTime() <= -70 do
+        while DotaTime() <= -80 do
             coroutine.yield()
         end
         Init()

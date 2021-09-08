@@ -2366,15 +2366,6 @@ function M:FindAOELocationAtSingleTarget(npcBot, target, radius, castRange, cast
     end
     return self:GetPointFromLineByDistance(npcLoc, targetLoc, ntDis + targetMove + target:GetBoundingRadius())
 end
-M.FindAOELocationAtSingleTarget = function(self, npcBot, target, radius, castRange, castPoint)
-    radius = radius - 80
-    local distance = GetUnitToUnitDistance(npcBot, target)
-    if distance < radius + castRange then
-        return self:GetPointFromLineByDistance(npcBot:GetLocation(), target:GetLocation(), castRange)
-    else
-        return self:GetPointFromLineByDistance(target:GetLocation(), npcBot:GetLocation(), radius)
-    end
-end
 M.MinValue = function(self, coefficients, min, max)
     max = max or 10000
     min = min or -10000
@@ -2750,7 +2741,7 @@ function M:TickFromDota()
         local coroutineResult = { coroutine.resume(thread, time - dotaTimer) }
         if not coroutineResult[1] then
             table.remove(coroutineResult, 1)
-            error(coroutineResult)
+            print("error in coroutine "..tostring(coroutineResult))
         end
     end
     if dotaTimer == nil then
@@ -2810,7 +2801,8 @@ function M:ResumeUntilReturn(func)
             table.remove(values, 1)
             table.insert(g, values)
         else
-            error(values[2])
+            table.remove(values, 1)
+            print("error in coroutine "..tostring(values))
             break
 
         end
@@ -2885,8 +2877,7 @@ function M:pcall(func, ...)
         table.remove(result, 1)
         return self:Unpack(result)
     else
-        error(result[2])
-        DebugPause()
+        self:DebugPause()
     end
 end
 function M:DebugPause()

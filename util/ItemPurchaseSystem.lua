@@ -655,7 +655,8 @@ M.Consumables = {
     "tpscroll",
 }
 M.IsConsumableItem = function(self, item)
-    return AbilityExtensions:Contains(self.Consumables, string.sub(item, 6))
+    return false
+    -- return AbilityExtensions:Contains(self.Consumables, string.sub(item, 6))
 end
 
 local p
