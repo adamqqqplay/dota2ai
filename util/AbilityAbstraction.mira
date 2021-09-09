@@ -16,6 +16,10 @@ local function NewTable()
 end
 magicTable.__index = magicTable
 
+function M:NewTable()
+    return NewTable()
+end
+
 M.Range = function(self, min, max, step)
     if step == nil then step = 1 end
     local g = NewTable()
@@ -3034,7 +3038,8 @@ function M:TickFromDota()
         local coroutineResult = { coroutine.resume(thread, time - dotaTimer) }
         if not coroutineResult[1] then
             table.remove(coroutineResult, 1)
-            print("error in coroutine "..tostring(coroutineResult))
+            print("error in coroutine:")
+            self:DebugTable(coroutineResult)
         end
     end
     if dotaTimer == nil then
@@ -3097,7 +3102,8 @@ function M:ResumeUntilReturn(func)
             table.insert(g, values)
         else
             table.remove(values, 1)
-            print("error in coroutine "..tostring(values))
+            print("error in coroutine:")
+            self:DebugTable(values)
             break
         end
     end

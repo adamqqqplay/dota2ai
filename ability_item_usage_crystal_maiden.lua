@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -460,7 +461,7 @@ function AbilityUsageThink()
 			if not AbilityExtensions:IsFarmingOrPushing(npcBot) then
 				local glimmer = AbilityExtensions:GetAvailableItem(npcBot, "item_glimmer_cape")
 				if glimmer and glimmer:IsFullyCastable() then
-					npcBot:Action_UseAbilityOnEntity(glimmer, npcBot)
+					ItemUsage.UseItemOnEntity(npcBot, glimmer, npcBot)
 				end
 				local enemies = npcBot:GetNearbyHeroes(AbilitiesReal[4]:GetAOERadius(), true, BOT_MODE_NONE)
 				if #enemies > 0 or freezingFieldHitSomeoneTimer == nil then

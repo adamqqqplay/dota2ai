@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -88,7 +89,7 @@ function ConsiderSoulRing()
 	local soulring=IsItemAvailable("item_soul_ring");
 	if(soulring~=nil and soulring:IsFullyCastable() and HealthPercentage>0.6)
 	then
-		npcBot:Action_UseAbility(soulring);
+		ItemUsage.UseItemNoTarget(npcBot, soulring)
 	end
 end
 
@@ -642,7 +643,7 @@ function AbilityUsageThink()
 			if AbilityExtensions:CalledOnThisFrame(desirePairs) then
 				local bestDesire = AbilityExtensions:Max(desirePairs, function(t) return t[1] end)
 				if bestDesire[1] ~= 0 then
-					npcBot:Action_UseAbilityOnEntity(scepter, bestDesire[2])
+					ItemUsage.UseItemOnEntity(npcBot, scepter, bestDesire[2])
 				end
 			end
 		end

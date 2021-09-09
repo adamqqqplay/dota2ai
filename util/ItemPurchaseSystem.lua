@@ -256,28 +256,6 @@ function M.ItemPurchase(ItemsToBuy)
 end
 
 function M.BuyCourier()
-	-- no longer need to buy courier
-	
-	-- local npcBot=GetBot()
-	-- local courier=GetCourier(0)
-	-- if(courier==nil)
-	-- then
-	-- 	if(npcBot:GetGold()>=GetItemCost("item_courier"))
-	-- 	then
-	-- 		local info=npcBot:ActionImmediate_PurchaseItem("item_courier");
-	-- 		if info ==PURCHASE_ITEM_SUCCESS then
-	-- 			npcBot:ActionImmediate_Chat('I bought the courier 我买了鸡。',false);
-	-- 		end
-	-- 	end
-	-- end
-	--[[else
-		if DotaTime()>60*3 and npcBot:GetGold()>=GetItemCost("item_flying_courier") and (courier:GetMaxHealth()==75) then
-			local info=npcBot:ActionImmediate_PurchaseItem("item_flying_courier");
-			if info ==PURCHASE_ITEM_SUCCESS then
-				print(npcBot:GetUnitName()..' has upgraded the courier.',info);
-			end
-		end
-	end]]
 
 end
 
@@ -655,8 +633,7 @@ M.Consumables = {
     "tpscroll",
 }
 M.IsConsumableItem = function(self, item)
-    return false
-    -- return AbilityExtensions:Contains(self.Consumables, string.sub(item, 6))
+    return AbilityExtensions:Contains(self.Consumables, string.sub(item, 6))
 end
 
 local p
@@ -726,6 +703,7 @@ p = function(self, npcBot, itemTable, noRemove)
                 end
             end
         end
+
         local infoTable = npcBot.itemInformationTable
         while TryRemoveItem(infoTable[1], infoTable) do end
         while infoTable[1] and infoTable[1].recipe do
@@ -796,17 +774,13 @@ p = function(self, npcBot, itemTable, noRemove)
         RemoveTeamItems(g)
         npcBot.itemInformationTable_Pre = AbilityExtensions:Map(npcBot.itemInformationTable, function(it) return it.name end)
         npcBot.itemInformationTable = nil
-        local res, t = TeamItemThink.Think(npcBot)
+        local res, t = TeamItemThink.TeamItemThink(npcBot)
         if res == "reset" then
             AbilityExtensions:ForEach(t, function(it)
                 p(self, it, it.itemInformationTable_Pre, true)
             end)
         end
     end
-    --print(npcBot:GetUnitName()..": item table:")
-    --AbilityExtensions:DebugArray(g)
-    --print("bought items: ")
-    --AbilityExtensions:DebugArray(AbilityExtensions:Map(AbilityExtensions:GetAllBoughtItems(npcBot), function(t) return t:GetName() end))
 end
 M.CreateItemInformationTable = p
 
@@ -869,12 +843,10 @@ local UseCourier = function()
     if IsItemPurchasedFromSecretShop(sNextItem) and npcBot:GetGold() >= GetItemCost(sNextItem)*0.9 then
         courier.returnWhenCarryingTooMany = nil
         if courierState == COURIER_STATE_AT_BASE then
-            -- print("courier usage a2")
             npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_SECRET_SHOP)
             return
         end
         if nearSecretShop and npcBot:GetGold() >= GetItemCost(sNextItem) then
-            -- print("courier usage a1")
             npcBot:ActionImmediate_PurchaseItem(sNextItem)
             return
         end

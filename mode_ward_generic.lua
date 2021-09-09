@@ -7,6 +7,7 @@ if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot(
 	return;
 end
 
+local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
 local utility = require( GetScriptDirectory() .. "/utility" ) 
 local wardUtils = require(GetScriptDirectory() ..  "/util/WardUtility")
 local role = require(GetScriptDirectory() .. "/util/RoleUtility");
@@ -204,7 +205,7 @@ function Think()
 	if bot.ward then
 		if targetDist <= nWardCastRange then
 			if  DotaTime() > swapTime + 7.0 then
-				bot:Action_UseAbilityOnLocation(itemWard, targetLoc);
+				ItemUsage.UseItemOnLocation(bot, itemWard, targetLoc);
 				wardCastTime = DotaTime();	
 				return
 			else

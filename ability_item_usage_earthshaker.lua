@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -420,7 +421,7 @@ Consider[4]=function()
 			local locationAoE2 = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 			if ( locationAoE.count+locationAoE2.count >= 6 ) 
 			then
-				npcBot:Action_UseAbilityOnLocation( blink,locationAoE.targetloc );
+				ItemUsage.UseItemOnLocation(npcBot,  blink, locationAoE.targetloc );
 				return 0
 			end
 			
@@ -430,7 +431,7 @@ Consider[4]=function()
 				then
 					if (#enemys > 1 or not WeakestEnemy:WasRecentlyDamagedByAnyHero(1.5)) and (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetUltDamage(WeakestEnemy),DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 					then
-						npcBot:Action_UseAbilityOnLocation( blink,WeakestEnemy:GetLocation() );
+						ItemUsage.UseItemOnLocation(npcBot,  blink, WeakestEnemy:GetLocation() );
 						return 0
 					end
 				end

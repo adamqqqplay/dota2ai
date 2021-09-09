@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -108,7 +109,7 @@ Consider[1]=function()
 			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 			if ( locationAoE.count >= 2 ) 
 			then
-				npcBot:Action_UseAbilityOnLocation( blink, locationAoE.targetloc );
+				ItemUsage.UseItemOnLocation(npcBot,  blink, locationAoE.targetloc );
 				return 0
 			end
 		end

@@ -10,6 +10,7 @@ local Courier = dofile(GetScriptDirectory() .. "/util/CourierSystem")
 local ItemUsageSystem = dofile(GetScriptDirectory() .. "/util/ItemUsageSystem")
 local ChatSystem = dofile(GetScriptDirectory() .. "/util/ChatSystem")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local TeamItemThink = require(GetScriptDirectory().."/util/TeamItemThink")
 
 local towerId = {
     TOWER_TOP_1,
@@ -84,6 +85,7 @@ end
 local function SecondaryOperation()
 	ConsiderGlyph()
 	ItemUsageSystem.UnImplementedItemUsage()
+	TeamItemThink.Think()
 	RecordStuckState()
 
 	if(DotaTime()>=-60 and DotaTime()<=-59)
@@ -405,6 +407,7 @@ function UseAbility(AbilitiesReal, cast)
 	if (HighestDesire > 0) then
 		local j = HighestDesireAbilityNumber
 		local ability = AbilitiesReal[j]
+		-- print(npcBot:GetUnitName()..": use "..ability:GetName())
 		if not ability:IsCooldownReady() then
 			print("Ability still in cooldown: "..ability:GetName())
 			AbilityExtensions:DebugPause()
