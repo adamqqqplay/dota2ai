@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -111,7 +112,7 @@ Consider[1]=function()
 			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange+850, Radius, 0, 0 );
 			if ( locationAoE.count >= 2 ) 
 			then
-				npcBot:Action_UseAbilityOnLocation( blink, locationAoE.targetloc );
+				ItemUsage.UseItemOnLocation(npcBot,  blink, locationAoE.targetloc );
 				return 0
 			end
 		end
@@ -363,13 +364,15 @@ Consider[4]=function()
 	local enemys2 = npcBot:GetNearbyHeroes(Radius,false,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps2 = npcBot:GetNearbyCreeps(Radius,false)
+
+	local useDistance = AbilityExtensions:GetAvailableBlink(npcBot) and 900 or 1800
 	
 	--try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_PHYSICAL)) and GetUnitToUnitDistance(npcBot, WeakestEnemy) <= 1800
+			if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_PHYSICAL)) and GetUnitToUnitDistance(npcBot, WeakestEnemy) <= useDistance
 			then
 				return BOT_ACTION_DESIRE_HIGH
 			end
@@ -379,13 +382,11 @@ Consider[4]=function()
 	-- Mode based usage
 	--------------------------------------
 	-- If we're in a teamfight, use it 
-	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
-	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 
-	then
+	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK )
+	if #tableNearbyAttackingAlliedHeroes >= 2 then
 		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
-		if ( npcEnemy ~= nil ) and GetUnitToUnitDistance(npcBot, npcEnemy) <= 1800
-		then
+		if GetUnitToUnitDistance(npcBot, npcEnemy) <= useDistance then
 			return BOT_ACTION_DESIRE_HIGH
 		end
 	end

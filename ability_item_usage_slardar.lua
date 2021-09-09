@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -178,7 +179,7 @@ Consider[2]=function()
 			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 			if ( locationAoE.count >= 2 ) 
 			then
-				npcBot:Action_UseAbilityOnLocation( blink, locationAoE.targetloc );
+				ItemUsage.UseItemOnLocation(npcBot,  blink, locationAoE.targetloc );
 				return 0
 			end
 		end
@@ -385,7 +386,7 @@ function AbilityUsageThink()
 		if npcBot:IsCastingAbility() then
 			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[2] then
 				if not AbilityExtensions:IsFarmingOrPushing(npcBot) then
-					local nearbyEnemies = AbilityExtensions:GetNearbyEnemyUnits(npcBot, AbilitiesReal[2]:GetAOERadius() + 190)
+					local nearbyEnemies = AbilityExtensions:GetNearbyEnemyUnits(npcBot, AbilitiesReal[2]:GetAOERadius() + 90)
 					if AbilityExtensions:Count(nearbyEnemies, CanCast[1]) == 0 then
 						if crushLosingTarget == nil then
 							crushLosingTarget = DotaTime()

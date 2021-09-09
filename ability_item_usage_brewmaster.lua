@@ -10,6 +10,7 @@ require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 local role = require(GetScriptDirectory() .. "/util/RoleUtility")
 local AbilityHelper = dofile(GetScriptDirectory() .. "/util/AbilityHelper")
+local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -112,7 +113,7 @@ Consider[1]=function()
 			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 			if ( locationAoE.count >= 2 ) 
 			then
-				npcBot:Action_UseAbilityOnLocation( blink, locationAoE.targetloc );
+				ItemUsage.UseItemOnLocation(npcBot,  blink, locationAoE.targetloc );
 				return 0
 			end
 		end
@@ -380,7 +381,7 @@ Consider[3]=function()
 			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 			if ( locationAoE.count >= 2 ) 
 			then
-				npcBot:Action_UseAbilityOnLocation( blink, locationAoE.targetloc );
+				ItemUsage.UseItemOnLocation(npcBot,  blink, locationAoE.targetloc );
 				return 0
 			end
 		end
@@ -520,7 +521,7 @@ function AbilityUsageThink()
 		if npcBot:IsCastingAbility() then
 			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[1] then
 				if not AbilityExtensions:IsFarmingOrPushing(npcBot) then
-					local nearbyEnemies = AbilityExtensions:GetNearbyEnemyUnits(npcBot, AbilitiesReal[1]:GetAOERadius() + 190)
+					local nearbyEnemies = AbilityExtensions:GetNearbyEnemyUnits(npcBot, AbilitiesReal[1]:GetAOERadius() + 90)
 					if AbilityExtensions:Count(nearbyEnemies, CanCast[1]) == 0 then
 						if slamLosingTarget == nil then
 							slamLosingTarget = DotaTime()

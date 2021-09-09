@@ -138,7 +138,7 @@ Consider[1]=function() --Location AOE Example
 	-- Mode based usage
 	--------------------------------------
 	-- If we're farming and can kill 3+ creeps with LSA
-	if npcBot:GetActiveMode() == BOT_MODE_FARM and mana > maxMana * 0.35 + manaCost then
+	if npcBot:GetActiveMode() == BOT_MODE_FARM and mana > maxMana * 0.3 + manaCost then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 
 		if ( locationAoE.count >= 3 ) then

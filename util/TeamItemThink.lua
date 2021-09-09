@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.3.0
+-- Generated from Mirana Compiler version 1.5.1
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -86,7 +86,7 @@ local roles = {
     slardar = { 2 },
     slark = { 1 },
     sniper = { 0 },
-    specter = { 4 },
+    spectre = { 4 },
     spirit_breaker = { 3 },
     sven = { 1 },
     templar_assassin = { 1 },
@@ -123,6 +123,7 @@ local zeroTable = {}
 setmetatable(zeroTable, { __index = function()
     return 0
 end })
+<<<<<<< HEAD
 setmetatable(roles, zeroTable)
 local humanPlayers = {}
 local teamMembers = {}
@@ -137,7 +138,82 @@ local function AddMekansm()
             return true
         end
         return GetItemCost(itemName) < 2000 or string.match(itemName, "boots") or itemName == "item_hand_of_midas" or itemName == "item_bfury"
+=======
+setmetatable(roles, { __index = function(heroName)    
+    print(heroName.." doesn't exist in table roles")
+    return zeroTable
+end })
+local humanPlayers
+local finishInit
+local runned
+local function Init()
+    if finishInit then
+        return
+    else
+        finishInit = true
     end
+    humanPlayers = fun1:Range(1, 5):Filter(function(it)
+        return not GetTeamMember(it):IsBot()
+    end)
+end
+local teamMembers = {}
+local function AddBefore(tb, item, before)
+    if type(before) ~= "function" then
+        before = function(t) return t == before end
+>>>>>>> p
+    end
+    for index, v in ipairs(tb) do
+        if not before(item) then
+            table.insert(tb, index, item)
+            return
+        end
+    end
+    table.insert(tb, 1, item)
+end
+local function GenerateFilter(maxCost, putBefore, putAfter)
+    return function(itemName)        
+        local shortName = string.sub(itemName, 6)
+        return (function()
+            if fun1:Contains(putAfter, shortName) then
+                return false
+            else
+                return fun1:Contains(putBefore, shortName) or GetItemCost(itemName) < maxCost
+            end
+        end)()
+    end
+end
+local teamItemEvents = fun1:NewTable()
+local function NotifyTeam(npcBot, itemName)
+    fun1:StartCoroutine(function()        
+        fun1:WaitForSeconds(math.random(0, 4))
+        table.insert(teamItemEvents, {
+            npcBot,
+            "I'll buy "..itemName,
+            false,
+        })
+    end)
+end
+local function TeamItemEventThink()
+    local index = 1
+    while index <= #teamItemEvents do
+        local b = teamItemEvents[index]
+        if b[1] == GetBot() then
+            b[1]:ActionImmediate_Chat(b[2], b[3])
+            table.remove(teamItemEvents, index)
+        else
+            index = index + 1
+        end
+    end
+end
+local function AddMekansm()
+    local AddMekansmAfter = GenerateFilter(2000, {
+        "glimmer_cape",
+        "ghost",
+    }, {
+        "travel_boots",
+        "hand_of_midas",
+        "bfury",
+    })
     local function Rate(hero)
         local heroName = fun1:GetHeroShortName(hero:GetUnitName())
         local rate = roles[heroName].mekansm + math.random(0, 1.5)
@@ -155,8 +231,13 @@ local function AddMekansm()
         return it[2]
     end)
     local function BuyMekansm(hero)
+<<<<<<< HEAD
         print(hero:GetUnitName().." will buy mekansm")
         hero.itemInformationTable_Pre:InsertAfter_Modify("item_mekansm", AddMekansmAfter)
+=======
+        NotifyTeam(hero, "mekansm")
+        AddBefore(hero.itemInformationTable_Pre, "item_mekansm", AddMekansmAfter)
+>>>>>>> p
         hero.itemInformationTable_Pre:Remove_Modify("item_urn_of_shadows")
     end
     if #heroRates >= 3 then
@@ -173,6 +254,7 @@ local function AddMekansm()
         end
     end
 end
+<<<<<<< HEAD
 local addOnce
 local function AddAllItems()
     if addOnce then
@@ -183,19 +265,42 @@ local function AddAllItems()
     AddMekansm()
 end
 function M.Think(npcBot)
+=======
+function M.Think()
+    TeamItemEventThink()
+end
+function M.TeamItemThink(npcBot)
+>>>>>>> p
     if npcBot:IsIllusion() then
         return
     end
     if not fun1:Contains(teamMembers, npcBot) then
+        if npcBot.teamItemEvents == nil then
+            npcBot.teamItemEvents = fun1:NewTable()
+        end
         table.insert(teamMembers, npcBot)
     end
     fun1:StartCoroutine(function()
+<<<<<<< HEAD
         while DotaTime() <= -70 do
             coroutine.yield()
         end
         InitHumanPlayers()
         if #teamMembers + #humanPlayers == 5 then
             AddAllItems()
+=======
+        while DotaTime() <= -80 do
+            coroutine.yield()
+        end
+        Init()
+        if #teamMembers + #humanPlayers == 5 then
+            if runned then
+                return
+            else
+                runned = true
+            end
+            AddMekansm()
+>>>>>>> p
         end
     end)
     return "reset", teamMembers

@@ -412,7 +412,7 @@ Consider[3]=function()
 	then
 		if(#towers>=1)
 		then
-			return BOT_ACTION_DESIRE_LOW, towers[1];
+			return BOT_ACTION_DESIRE_VERYHIGH, towers[1];
 		end
 		if (WeakestEnemy~=nil)
 		then
@@ -540,7 +540,7 @@ Consider[4] = function()
 	then
 		if(#towers>=1)
 		then
-			return BOT_ACTION_DESIRE_LOW, towers[1];
+			return BOT_ACTION_DESIRE_VERYLOW, towers[1];
 		end
 		if (WeakestEnemy~=nil)
 		then

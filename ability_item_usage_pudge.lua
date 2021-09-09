@@ -137,7 +137,7 @@ Consider[2] = function()
     do
         local target = npcBot:GetTarget()
         if target and GetUnitToUnitDistance(target, npcBot) <= radius and AbilityExtensions:NormalCanCast(target, false) then
-            if not AbilityExtensions:IsHero(target) or AbilityExtensions:MustBeIllusion(target) then
+            if not AbilityExtensions:IsHero(target) or AbilityExtensions:MustBeIllusion(npcBot, target) then
                 if npcBot:GetHealth() <= 400 or AbilityExtensions:GetHealthPercent(npcBot) <= 0.3 then
                     return false
                 end

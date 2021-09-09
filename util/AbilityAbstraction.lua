@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.3.0
+-- Generated from Mirana Compiler version 1.5.1
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -15,6 +15,9 @@ local function NewTable()
     return a
 end
 magicTable.__index = magicTable
+function M:NewTable()
+    return NewTable()
+end
 M.Range = function(self, min, max, step)
     if step == nil then
         step = 1
@@ -604,6 +607,9 @@ M.IsAttackingEnemies = function(self, npcBot)
     local mode = npcBot:GetActiveMode()
     return mode == BOT_MODE_ROAM or mode == BOT_MODE_TEAM_ROAM or mode == BOT_MODE_ATTACK or mode == BOT_MODE_DEFEND_ALLY
 end
+function M:CanBeEngaged(npcBot)
+    return self:IsAttackingEnemies(npcBot) or self:IsFarmingOrPushing(npcBot) or self:IsLaning(npcBot) or not npcBot:IsBot()
+end
 M.IsRetreating = function(self, npcBot)
     return npcBot:GetActiveMode() == BOT_MODE_RETREAT
 end
@@ -630,13 +636,13 @@ M.ToggleFunctionToAction = function(self, npcBot, oldConsider, ability)
         end
     end
 end
-M.ToggleFunctionToAutoCast = function(self, npcBot, oldConsider, ability)
+M.ToggleFunctionToAutoCast = function(self, npcBot, ability, oldToggle)
     return function()
-        local value,target,castType = oldConsider()
+        local value,target,castType = oldToggle()
         if type(value) == "number" then
             return value, target, castType
         end
-        if ability:IsFullyCastable() and value ~= ability:GetAutoCastState() then
+        if ability:IsFullyCastable() and value ~= ability:GetAutoCastState() or not ability:IsHidden() then
             ability:ToggleAutoCast()
         end
         return 0
@@ -1136,6 +1142,7 @@ M.magicImmuneModifiers = {
     "modifier_legion_commander_press_the_attack_immunity",
     "modifier_lion_mana_drain_immunity",
 }
+M.stunModifiers = { "" }
 M.muteModifiers = {
     "modifier_tusk_snowball",
     "modifier_doom_bringer_doom",
@@ -1382,7 +1389,7 @@ M.GetNearbyHeroes = function(self, npcBot, range, getEnemy, botModeMask)
         getEnemy = true
     end
     botModeMask = botModeMask or BOT_MODE_NONE
-    local heroes = npcBot:GetNearbyHeroes(range, getEnemy, botModeMask)
+    local heroes = npcBot:GetNearbyHeroes(range, getEnemy, botModeMask) or {}
     GiveLinqFunctions(heroes, magicTable)
     return heroes
 end
@@ -1404,7 +1411,15 @@ function M:GetNearbyCreeps(npcBot, range, getEnemy)
     if getEnemy == nil then
         getEnemy = true
     end
-    local t = npcBot:GetNearbyCreeps(range, getEnemy)
+    local t = npcBot:GetNearbyCreeps(range, getEnemy) or {}
+    GiveLinqFunctions(t, magicTable)
+    return t
+end
+function M:GetNearbyLaneCreeps(npcBot, range, getEnemy)
+    if getEnemy == nil then
+        getEnemy = true
+    end
+    local t = npcBot:GetNearbyLaneCreeps(range, getEnemy) or {}
     GiveLinqFunctions(t, magicTable)
     return t
 end
@@ -1835,7 +1850,7 @@ function M:IsDuelCaster(npc)
         local tauntingPlayer = self:First(players, function(t)
             return IsTaunting(t) and t:GetAttackTarget() == npc
         end)
-        return not IsTaunting(tauntingPlayer)
+        return IsTaunting and not IsTaunting(tauntingPlayer)
     end
 end
 function M:IsMuted(npc)
@@ -1874,6 +1889,11 @@ M.IsEthereal = function(self, npc)
 end
 function M:NotBlasted(self, npc)
     return not npc:HasModifier "modifier_ice_blast"
+end
+function M:NearbyBatteryAssault(npc)
+    return self:GetNearbyNonIllusionHeroes(npc, 275 + npc:GetBoundingRadius()):Any(function(t)        
+        t:HasModifier "modifier_rattletrap_battery_assault"
+    end)
 end
 M.CannotBeTargetted = function(self, npc)
     return self:HasAnyModifier(npc, self.CannotBeTargettedModifiers)
@@ -2329,14 +2349,31 @@ end
 function M:Arrange(down, up)
     return self:MultiplyBetween(down - up + 1, down)
 end
-M.FindAOELocationAtSingleTarget = function(self, npcBot, target, radius, castRange, castPoint)
-    radius = radius - 80
-    local distance = GetUnitToUnitDistance(npcBot, target)
-    if distance < radius + castRange then
-        return self:GetPointFromLineByDistance(npcBot:GetLocation(), target:GetLocation(), castRange)
-    else
-        return self:GetPointFromLineByDistance(target:GetLocation(), npcBot:GetLocation(), radius)
+function M:FindAoELocation(npcBot, target, ability, hero, maxHealth)
+    if hero == nil then
+        hero = true
     end
+    if maxHealth == nil then
+        maxHealth = 10000
+    end
+    return npcBot:FindAoELocation(true, hero, npcBot:GetLocation(), ability:GetCastRange(), ability:GetAOERadius(), ability:GetCastPoint(), maxHealth)
+end
+function M:FindAOELocationAtSingleTarget(npcBot, target, radius, castRange, castPoint)
+    local targetLoc = target:GetLocation()
+    local npcLoc = npcBot:GetLocation()
+    local targetMove = target:GetCurrentMovementSpeed() * castPoint
+    local ntDis = self:GetLocationToLocationDistance(targetLoc, npcLoc) - target:GetBoundingRadius()
+    if ntDis >= targetMove + radius then
+        local centre = (function()
+            if target:IsFacingLocation(npcLoc, 180) then
+                return ntDis - targetMove
+            else
+                return ntDis + targetMove
+            end
+        end)()
+        return self:GetPointFromLineByDistance(npcLoc, targetLoc, centre)
+    end
+    return self:GetPointFromLineByDistance(npcLoc, targetLoc, ntDis + targetMove + target:GetBoundingRadius())
 end
 M.MinValue = function(self, coefficients, min, max)
     max = max or 10000
@@ -2713,7 +2750,8 @@ function M:TickFromDota()
         local coroutineResult = { coroutine.resume(thread, time - dotaTimer) }
         if not coroutineResult[1] then
             table.remove(coroutineResult, 1)
-            error(coroutineResult)
+            print("error in coroutine:")
+            self:DebugTable(coroutineResult)
         end
     end
     if dotaTimer == nil then
@@ -2773,7 +2811,9 @@ function M:ResumeUntilReturn(func)
             table.remove(values, 1)
             table.insert(g, values)
         else
-            error(values[2])
+            table.remove(values, 1)
+            print("error in coroutine:")
+            self:DebugTable(values)
             break
 
         end
@@ -2848,8 +2888,7 @@ function M:pcall(func, ...)
         table.remove(result, 1)
         return self:Unpack(result)
     else
-        error(result[2])
-        DebugPause()
+        self:DebugPause()
     end
 end
 function M:DebugPause()

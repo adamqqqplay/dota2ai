@@ -80,7 +80,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={CanCast1,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast,utility.UCanCast}
+local CanCast={function(t) return not t:IsHero() and not AbilityExtensions:IsRoshan(t) end,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast,utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -106,10 +106,12 @@ Consider[1]=function()
 	local Damage = ability:GetAbilityDamage();
 	
 	local CreepHealth=10000
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
 
-	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
-	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+	local creeps = npcBot:GetNearbyCreeps(CastRange + 200, true)
+	if npcBot:GetAbilityByName "special_bonus_unique_doom_bringer_3" then
+		creeps = AbilityExtensions:Filter(creeps, function(t) return not t:IsAncientCreep() end)
+	end
 	local StrongstCreep,CreepHealth=utility.GetStrongestUnit(creeps)
 	
 	if(CanCast[abilityNumber]( StrongstCreep ))

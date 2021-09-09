@@ -480,11 +480,14 @@ Consider[4]=function()
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
+
+local sonicWaveTargetLoc
+local sonicWaveTime
+
 function AbilityUsageThink()
 
 	-- Check if we're already using an ability
-	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
-	then 
+	if npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() then
 		return
 	end
 	
@@ -499,7 +502,20 @@ function AbilityUsageThink()
 	then
 		ability_item_usage_generic.PrintDebugInfo(AbilitiesReal,cast)
 	end
-	ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	
+	-- cancel sonic_wave when chasing the target for 0.8 seconds
+	local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
+	if index == 4 then
+		if sonicWaveTime and sonicWaveTargetLoc == target then
+			if DotaTime() - sonicWaveTime > 0.8 then
+				npcBot:Action_ClearActions(false)
+				sonicWaveTime = nil
+			end
+		else
+			sonicWaveTargetLoc = target
+			sonicWaveTime = DotaTime()
+		end
+	end
 end
 
 function CourierUsageThink() 

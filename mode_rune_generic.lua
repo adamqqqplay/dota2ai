@@ -9,7 +9,7 @@ if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot(
 end
 
 
-
+local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
 local X = {}
 local Role = require(GetScriptDirectory() .. "/util/RoleUtility");
 local bot = GetBot()
@@ -592,11 +592,11 @@ function X.CouldBlink(bot,nLocation)
 				return false
 			elseif bDist < 1200
 				then
-					bot:Action_UseAbilityOnLocation(blink, nLocation)
+					ItemUsage.UseItemOnLocation(bot, blink, nLocation)
 					return true
 			elseif IsLocationPassable(maxBlinkLoc)
 				then
-					bot:Action_UseAbilityOnLocation(blink, maxBlinkLoc)
+					ItemUsage.UseItemOnLocation(bot, blink, maxBlinkLoc)
 					return true
 			end
 		end

@@ -244,6 +244,17 @@ Consider[1]=function()	--Target Ability Example
 	
 end
 
+Consider[2] = fun1:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[2]) fun {
+	if local target = npcBot:GetAttackTarget() then
+		if not target:IsHero() and fun1:GetNearbyLaneCreeps(npcBot, 700, false) then 
+			if target:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) >= target:GetHealth() then
+				return false 
+			end
+		end
+	end
+	return true 
+}
+
 Consider[3]=function()
 	local abilityNumber=3
 	--------------------------------------

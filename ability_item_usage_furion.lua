@@ -132,7 +132,7 @@ Consider[1]=function()
 		local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes( CastRange, true, BOT_MODE_NONE );
 		for _,npcEnemy in pairs( tableNearbyEnemyHeroes )
 		do
-			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and not AbilityExtensions:GetAvailableItem("item_quelling_blade") and not AbilityExtensions:GetAvailableItem("bfury"))
+			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and not AbilityExtensions:GetAvailableItem(npcEnemy, "item_quelling_blade") and not AbilityExtensions:GetAvailableItem(npcEnemy, "item_bfury"))
 			then
 				local Damage2 = npcEnemy:GetEstimatedDamageToTarget( false, npcBot, 3.0, DAMAGE_TYPE_ALL );
 				if ( Damage2 > nMostDangerousDamage )

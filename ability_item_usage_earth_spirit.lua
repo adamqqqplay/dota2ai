@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -205,7 +206,7 @@ Consider[1]=function()
 					elseif nStone >= 1 then
 						return BOT_ACTION_DESIRE_HIGH, loc, true, false; 
 					elseif nStone < 1 and GetUnitToUnitDistance(npcBot,target)<=nUnitCR+200 then
-						return BOT_ACTION_DESIRE_HIGH, target, false, false; 
+						return BOT_ACTION_DESIRE_HIGH, target:GetLocation(), false, false; 
 					end
 				end
 			end
@@ -231,7 +232,7 @@ Consider[1]=function()
 					elseif nStone >= 1 then
 						return BOT_ACTION_DESIRE_HIGH, loc, true, false; 
 					elseif nStone < 1 and GetUnitToUnitDistance(npcBot,target)<=nUnitCR+200 then
-						return BOT_ACTION_DESIRE_HIGH, target, false, false; 
+						return BOT_ACTION_DESIRE_HIGH, target:GetLocation(), false, false; 
 					end
 				end
 			end
@@ -733,7 +734,7 @@ function AbilityUsageThink()
 				npcBot:Action_UseAbilityOnLocation( AbilitiesReal[1], castQLoc );
 				return;
 			else
-				npcBot:Action_UseAbilityOnEntity( AbilitiesReal[1], castQLoc );
+				npcBot:Action_UseAbilityOnLocation( AbilitiesReal[1], castQLoc );
 				return;
 			end
 		end

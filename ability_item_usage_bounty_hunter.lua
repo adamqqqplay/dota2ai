@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.3.0
+-- Generated from Mirana Compiler version 1.5.1
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -158,6 +158,19 @@ Consider[1] = function()
     end
     return BOT_ACTION_DESIRE_NONE, 0
 end
+Consider[2] = fun1:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[2], function()
+    do
+        local target = npcBot:GetAttackTarget()
+        if target then
+            if not target:IsHero() and fun1:GetNearbyLaneCreeps(npcBot, 700, false) then
+                if target:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) >= target:GetHealth() then
+                    return false
+                end
+            end
+        end
+    end
+    return true
+end)
 Consider[3] = function()
     local abilityNumber = 3
     local ability = AbilitiesReal[abilityNumber]

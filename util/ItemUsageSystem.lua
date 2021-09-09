@@ -1,7 +1,7 @@
 local BotsInit = require("game/botsinit")
 local role = require(GetScriptDirectory() .. "/util/RoleUtility")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
-
+local M2 = require(GetScriptDirectory().."/util/ItemUsage-New")
 
 local M = BotsInit.CreateGeneric()
 
@@ -780,7 +780,7 @@ function M.UnImplementedItemUsage()
         end
     end
 
-    local itemDagon = AbilityExtensions:Aggregate(IsItemAvailable("item_dagon_"), AbilityExtensions:Range(2, 5), function(seed, dagonLevelIndex)
+    local itemDagon = AbilityExtensions:Aggregate(IsItemAvailable("item_dagon"), AbilityExtensions:Range(2, 5), function(seed, dagonLevelIndex)
         return seed or IsItemAvailable("item_dagon_"..dagonLevelIndex)
     end)
     if itemDagon and itemDagon:IsFullyCastable() then
@@ -1125,5 +1125,7 @@ function M.UnImplementedItemUsage()
         end
     end
 end
+
+M.UnImplementedItemUsage = M2.ItemUsageThink
 
 return M
