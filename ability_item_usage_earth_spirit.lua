@@ -206,7 +206,7 @@ Consider[1]=function()
 					elseif nStone >= 1 then
 						return BOT_ACTION_DESIRE_HIGH, loc, true, false; 
 					elseif nStone < 1 and GetUnitToUnitDistance(npcBot,target)<=nUnitCR+200 then
-						return BOT_ACTION_DESIRE_HIGH, target, false, false; 
+						return BOT_ACTION_DESIRE_HIGH, target:GetLocation(), false, false; 
 					end
 				end
 			end
@@ -232,7 +232,7 @@ Consider[1]=function()
 					elseif nStone >= 1 then
 						return BOT_ACTION_DESIRE_HIGH, loc, true, false; 
 					elseif nStone < 1 and GetUnitToUnitDistance(npcBot,target)<=nUnitCR+200 then
-						return BOT_ACTION_DESIRE_HIGH, target, false, false; 
+						return BOT_ACTION_DESIRE_HIGH, target:GetLocation(), false, false; 
 					end
 				end
 			end

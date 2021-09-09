@@ -401,7 +401,7 @@ function AbilityUsageThink()
 		if npcBot:IsCastingAbility() then
 			if npcBot:GetCurrentActiveAbility() == AbilitiesReal[1] then
 				if not fun1:IsFarmingOrPushing(npcBot) then
-					local nearbyEnemies = fun1:GetNearbyHeroes(npcBot, AbilitiesReal[1]:GetAOERadius() + 190):Filter(CanCast[1])
+					local nearbyEnemies = fun1:GetNearbyHeroes(npcBot, AbilitiesReal[1]:GetAOERadius() + 90):Filter(CanCast[1])
 					if #nearbyEnemies == 0 then
 						if roarLosingTarget == nil then
 							roarLosingTarget = DotaTime()
