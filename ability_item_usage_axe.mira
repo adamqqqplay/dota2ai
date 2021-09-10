@@ -358,9 +358,9 @@ Consider[4]=function()
 		end
 	end
 
-	if local target = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange+300):Filter(IsWeak):SortByMinFirst {
+	if local target = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange+300):Filter(IsWeak):Min { it ->
         GetUnitToUnitDistance(npcBot, it)
-    }:First() then
+    } then
         local dis = GetUnitToUnitDistance(npcBot, target)
         if fun1:NotRetreating(npcBot) then
             if local blink = fun1:GetAvailableBlink(npcBot) then

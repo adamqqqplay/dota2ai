@@ -3118,13 +3118,13 @@ function M:StartCoroutine(func)
 end
 
 function M:WaitForSeconds(seconds)
-    local function WaitFor(firstFrameTime)
-        local t = seconds - firstFrameTime
+    -- local function WaitFor(firstFrameTime)
+        local t = seconds
         while t > 0 do
             t = t - coroutine.yield()
         end
-    end
-    return self:StartCoroutine(WaitFor)
+    -- end
+    -- return self:StartCoroutine(WaitFor)
 end
 
 function M:StopCoroutine(thread)

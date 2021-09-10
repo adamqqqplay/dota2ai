@@ -142,14 +142,12 @@ Consider[1] = function()
 
     if friends:Count { t -> fun1:CanBeEngaged(t) } >= 2 then
         if local target = enemies:Filter(CanCast[1])
-            :SortByMaxFirst { t -> t:GetEstimatedDamageToTarget(false, npcBot, 3, DAMAGE_TYPE_ALL) }
-            :First() then
+            :Max { t -> t:GetEstimatedDamageToTarget(false, npcBot, 3, DAMAGE_TYPE_ALL) } then
             return BOT_ACTION_DESIRE_HIGH, target 
         end
     end
     if fun1:NotRetreating(npcBot) and not fun1:IsLaning(npcBot) then
-        if local target = enemies:SortByMaxFirst { t -> t:GetHealth() * if fun1:IsSeverelyDisabledOrSlowed(t) { 1.5 } else { 1 } }
-            :First() then 
+        if local target = enemies:Max { t -> t:GetHealth() * if fun1:IsSeverelyDisabledOrSlowed(t) { 1.5 } else { 1 } } then 
             return BOT_ACTION_DESIRE_HIGH, target 
         end
     end

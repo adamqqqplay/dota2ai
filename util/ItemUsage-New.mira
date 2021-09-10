@@ -4,6 +4,7 @@ local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
 local BotsInit = require("game/botsinit")
 local role = require(GetScriptDirectory() .. "/util/RoleUtility")
 
+
 local function IsItemAvailable(item_name)
     local npcBot = GetBot()
     for i = 0, 5 do
@@ -538,7 +539,7 @@ function M.ItemUsageThink()
                 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY)
          then
             if
-                (npcTarget ~= nil and npcTarget:IsHero() and CanCastOnTarget(npcTarget) and
+                (npcTarget ~= nil and npcTarget:IsHero() and fun1:NormalCanCast(npcTarget) and
                     GetUnitToUnitDistance(npcTarget, npcBot) < 900)
              then
                 M.UseItemOnEntity(npcBot, bt, npcTarget)
@@ -714,7 +715,7 @@ function M.ItemUsageThink()
     if hurricanpike ~= nil and hurricanpike:IsFullyCastable() then
         if npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH then
             for _, npcEnemy in pairs(tableNearbyEnemyHeroes) do
-                if GetUnitToUnitDistance(npcEnemy, npcBot) < 400 and CanCastOnTarget(npcEnemy) then
+                if GetUnitToUnitDistance(npcEnemy, npcBot) < 400 and fun1:NormalCanCast(npcEnemy) then
                     M.UseItemOnEntity(npcBot, hurricanpike, npcEnemy)
                     return
                 end
@@ -796,8 +797,8 @@ function M.ItemUsageThink()
             if
                 (Ally:GetHealth() / Ally:GetMaxHealth() < 0.35 and tableNearbyEnemyHeroes ~= nil and
                     #tableNearbyEnemyHeroes > 0 and
-                    CanCastOnTarget(Ally)) or
-                    (fun1:IsOrGoingToBeSeverelyDisabled(Ally) and CanCastOnTarget(Ally))
+                    fun1:NormalCanCast(Ally)) or
+                    (fun1:IsOrGoingToBeSeverelyDisabled(Ally) and fun1:NormalCanCast(Ally))
              then
                 M.UseItemOnEntity(npcBot, glimer, Ally)
                 return
@@ -936,7 +937,7 @@ function M.ItemUsageThink()
     if cyclone ~= nil and cyclone:IsFullyCastable() then
         if
             npcTarget ~= nil and (npcTarget:IsChanneling() and not fun1:IsOrGoingToBeSeverelyDisabled(npcTarget) or fun1:CannotBeKilledNormally(npcTarget)) and
-                CanCastOnTarget(npcTarget) and
+                fun1:NormalCanCast(npcTarget) and
                 GetUnitToUnitDistance(npcBot, npcTarget) < 775
          then
             M.UseItemOnEntity(npcBot, cyclone, npcTarget)
@@ -968,7 +969,7 @@ function M.ItemUsageThink()
                 npcBot:GetActiveMode() == BOT_MODE_ATTACK)
          then
             if
-                npcTarget ~= nil and npcTarget:IsHero() and CanCastOnTarget(npcTarget) and
+                npcTarget ~= nil and npcTarget:IsHero() and fun1:NormalCanCast(npcTarget) and
                     GetUnitToUnitDistance(npcBot, npcTarget) < 800 and
                     fun1:IsOrGoingToBeSeverelyDisabled(true, npcTarget) == true
              then
@@ -986,7 +987,7 @@ function M.ItemUsageThink()
                 npcBot:GetActiveMode() == BOT_MODE_ATTACK)
          then
             if
-                npcTarget ~= nil and npcTarget:IsHero() and fun1:MayNotBeIllusion(npcBot, npcTarget) and CanCastOnTarget(npcTarget) and
+                npcTarget ~= nil and npcTarget:IsHero() and fun1:MayNotBeIllusion(npcBot, npcTarget) and fun1:NormalCanCast(npcTarget) and
                     GetUnitToUnitDistance(npcBot, npcTarget) < 900 and
                     npcTarget:HasModifier("modifier_item_spirit_vessel_damage") == false and
                     npcTarget:GetHealth() / npcTarget:GetMaxHealth() < 0.65 and
@@ -999,7 +1000,7 @@ function M.ItemUsageThink()
             local Allies = npcBot:GetNearbyHeroes(1150, false, BOT_MODE_NONE)
             for _, Ally in pairs(Allies) do
                 if
-                    not Ally:IsIllusion() and Ally:HasModifier("modifier_item_spirit_vessel_heal") == false and CanCastOnTarget(Ally) and
+                    not Ally:IsIllusion() and Ally:HasModifier("modifier_item_spirit_vessel_heal") == false and fun1:NormalCanCast(Ally) and
                         Ally:GetHealth() / Ally:GetMaxHealth() < 0.35 and
                         #tableNearbyEnemyHeroes == 0 and
                         Ally:WasRecentlyDamagedByAnyHero(2.5) == false and
@@ -1020,7 +1021,7 @@ function M.ItemUsageThink()
                 npcBot:GetActiveMode() == BOT_MODE_ATTACK)
          then
             if
-                npcTarget ~= nil and npcTarget:IsHero() and CanCastOnTarget(npcTarget) and
+                npcTarget ~= nil and npcTarget:IsHero() and fun1:NormalCanCast(npcTarget) and
                     GetUnitToUnitDistance(npcBot, npcTarget) < 800 and
                     npcTarget:HasModifier("modifier_item_nullifier_mute") == false
              then

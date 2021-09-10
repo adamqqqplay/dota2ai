@@ -169,9 +169,9 @@ Consider[2] = function()
         do
             local target = enemies:Filter(CanCast[2]):Filter(function(it)
                 return it:GetHealth() <= it:GetActualIncomingDamage(damage, DAMAGE_TYPE_PURE) or it:GetHealth() <= it:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_PURE) and mana > ComboMana
-            end):SortByMaxFirst(function(it)
+            end):Max(function(it)
                 it:GetHealth()
-            end):First()
+            end)
             if target then
                 return BOT_ACTION_DESIRE_HIGH, target
             end
@@ -273,9 +273,9 @@ Consider[3] = function()
     do
         local target = enemies:Filter(function(it)
             return CanCast[abilityNumber](it) and not fun1:IsOrGoingToBeSeverelyDisabled(it) and #allies <= 1
-        end):SortByMaxFirst(function(it)
-            it:GetEstimatedDamageToTarget(false, npcBot, 3.0, DAMAGE_TYPE_ALL)
-        end):First()
+        end):Max(function(it)
+            return it:GetEstimatedDamageToTarget(false, npcBot, duration, DAMAGE_TYPE_ALL) or 0
+        end)
         if target then
             return BOT_ACTION_DESIRE_HIGH, target
         end

@@ -244,7 +244,9 @@ Consider[4] = function()
         end
     end
     do
-        local target = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange + 300):Filter(IsWeak):SortByMinFirst { GetUnitToUnitDistance(npcBot, it) }:First()
+        local target = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange + 300):Filter(IsWeak):Min(function(it)
+            GetUnitToUnitDistance(npcBot, it)
+        end)
         if target then
             local dis = GetUnitToUnitDistance(npcBot, target)
             if fun1:NotRetreating(npcBot) then

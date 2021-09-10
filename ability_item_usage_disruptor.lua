@@ -473,7 +473,7 @@ Consider[4]=function()
 		return CanCast[4](t) and AbilityExtensions:IsChannelingAbility(t) and AbilityExtensions:IsChannelingBreakWorthAbility(t)
 	end)
 	channelingEnemies = AbilityExtensions:Max(channelingEnemies, function(t) return t:GetCurrentActiveAbility():GetCooldown() end)
-	if channelingEnemies ~= nil and channelingEnemies[1]:GetCurrentActiveAbility():GetCooldown() >= ability:GetCooldown() * 0.7 then
+	if channelingEnemies and channelingEnemies:GetCurrentActiveAbility():GetCooldown() >= ability:GetCooldown() * 0.7 then
 		return BOT_ACTION_DESIRE_MODERATE, AbilityExtensions:FindAOELocationAtSingleTarget(npcBot, channelingEnemies, Radius, CastRange, CastPoint)
 	end
 

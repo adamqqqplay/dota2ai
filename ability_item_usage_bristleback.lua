@@ -119,13 +119,13 @@ Consider[1] = function()
         end
         return 0
     end
-    if friends:Count(function(t)        
+    if friends:Count(function(t)
         fun1:CanBeEngaged(t)
     end) >= 2 then
         do
-            local target = enemies:Filter(CanCast[1]):SortByMaxFirst(function(t)                
+            local target = enemies:Filter(CanCast[1]):Max(function(t)
                 t:GetEstimatedDamageToTarget(false, npcBot, 3, DAMAGE_TYPE_ALL)
-            end):First()
+            end)
             if target then
                 return BOT_ACTION_DESIRE_HIGH, target
             end
@@ -133,7 +133,7 @@ Consider[1] = function()
     end
     if fun1:NotRetreating(npcBot) and not fun1:IsLaning(npcBot) then
         do
-            local target = enemies:SortByMaxFirst(function(t)                
+            local target = enemies:Max(function(t)
                 return t:GetHealth() * (function()
                     if fun1:IsSeverelyDisabledOrSlowed(t) then
                         return 1.5
@@ -141,7 +141,7 @@ Consider[1] = function()
                         return 1
                     end
                 end)()
-            end):First()
+            end)
             if target then
                 return BOT_ACTION_DESIRE_HIGH, target
             end
@@ -272,7 +272,7 @@ function AbilityUsageThink()
     maxMana = npcBot:GetMaxMana()
     manaPercent = fun1:GetManaPercent(npcBot)
     allEnemies = fun1:GetNearbyHeroes(npcBot, 1200)
-    enemies = allEnemies:Filter(function(t)        
+    enemies = allEnemies:Filter(function(t)
         fun1:MayNotBeIllusion(npcBot, t)
     end)
     enemyCount = fun1:GetEnemyHeroNumber(npcBot, enemies)

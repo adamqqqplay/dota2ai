@@ -114,8 +114,7 @@ Consider[1]=function()
 	end
 	local StrongstCreep,CreepHealth=utility.GetStrongestUnit(creeps)
 	
-	if(CanCast[abilityNumber]( StrongstCreep ))
-	then
+	if StrongstCreep and CanCast[abilityNumber](StrongstCreep) then
 		return BOT_ACTION_DESIRE_HIGH, StrongstCreep
 	end
 	
@@ -127,7 +126,7 @@ Consider[1]=function()
 		end
 	end
 	
-	return BOT_ACTION_DESIRE_NONE, 0;
+	return BOT_ACTION_DESIRE_NONE
 	
 end
 

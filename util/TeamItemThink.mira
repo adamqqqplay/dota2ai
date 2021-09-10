@@ -71,6 +71,7 @@ local roles = {
     omniknight={8,},
     oracle={8,},
     phantom_assassin={1,},
+    phantom_lancer={1,},
     puck={4,},
     pudge={1,},
     queenofpain={3,},
@@ -128,15 +129,12 @@ setmetatable(zeroTable, {
     __index = fun { 0 }
 })
 setmetatable(roles, {
-    __index = { heroName ->
-        print(heroName.." doesn't exist in table roles")
+    __index = { _, heroName ->
+        print(heroName.." doesn't have a table")
         zeroTable
     }
 })
 
-<<<<<<< HEAD
-local humanPlayers = {}
-=======
 local humanPlayers
 local finishInit
 local runned
@@ -150,7 +148,6 @@ local function Init()
         not GetTeamMember(it):IsBot()
     }
 end
->>>>>>> p
 local teamMembers = {}
 local function InitHumanPlayers()
     humanPlayers = fun1:Range(1, 5):Filter fun {
@@ -183,6 +180,10 @@ local teamItemEvents = fun1:NewTable()
 local function NotifyTeam(npcBot, itemName)
     fun1:StartCoroutine { -> 
         fun1:WaitForSeconds(math.random(0, 4))
+            -- local time = math.random(0, 4)
+            -- while time > 0 do
+            --     time = time - coroutine.yield()
+            -- end
         table.insert(teamItemEvents, { npcBot, "I'll buy "..itemName, false })
     }
 end
@@ -234,25 +235,11 @@ local function AddMekansm()
     end
 end
 
-<<<<<<< HEAD
-local addOnce
-local function AddAllItems()
-    if addOnce then 
-        return
-    else
-        addOnce = true 
-    end
-    AddMekansm()
-end
-
-function M.Think(npcBot)
-=======
 function M.Think()
     TeamItemEventThink()
 end
 
 function M.TeamItemThink(npcBot)
->>>>>>> p
     if npcBot:IsIllusion() then
         return 
     end
@@ -263,14 +250,6 @@ function M.TeamItemThink(npcBot)
         table.insert(teamMembers, npcBot)
     end
     fun1:StartCoroutine fun {
-<<<<<<< HEAD
-        while DotaTime() <= -70 do
-            coroutine.yield()
-        end
-        InitHumanPlayers()
-        if #teamMembers + #humanPlayers == 5 then
-            AddAllItems()
-=======
         while DotaTime() <= -80 do
             coroutine.yield()
         end
@@ -282,7 +261,6 @@ function M.TeamItemThink(npcBot)
                 runned = true 
             end
             AddMekansm()
->>>>>>> p
         end
     }
     return "reset", teamMembers

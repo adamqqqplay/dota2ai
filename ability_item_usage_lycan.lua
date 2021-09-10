@@ -189,14 +189,14 @@ Consider[4] = function()
             return desire
         end
         do
-            local target = allys:Map(function(t)                
+            local target = allys:Map(function(t)
                 return {
                     t,
                     BiteAllyDesire(t),
                 }
-            end):SortByMaxFirst(function(t)                
+            end):SortByMaxFirst(function(t)
                 return t[2]
-            end):First(function(t)                
+            end):First(function(t)
                 return t[2] >= 0.9
             end)
             if target then
@@ -206,16 +206,16 @@ Consider[4] = function()
     else
         if mana >= 350 then
             do
-                local target = allys:Filter(function(t)                    
+                local target = allys:Filter(function(t)
                     return CanCast[4](t) and not t:HasModifier "modifier_ice_blast" and fun1:NotRetreating(t)
-                end):Map(function(t)                    
+                end):Map(function(t)
                     return {
                         t,
                         (1 - fun1:GetHealthPercent(ally)) * fun1:GetTargetHealAmplifyPercent(ally),
                     }
-                end):SortByMaxFirst(function(t)                    
+                end):SortByMaxFirst(function(t)
                     return t[2]
-                end):First(function(t)                    
+                end):First(function(t)
                     return t[2] >= 0.6
                 end)
                 if target then

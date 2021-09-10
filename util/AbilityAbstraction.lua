@@ -1891,7 +1891,7 @@ function M:NotBlasted(self, npc)
     return not npc:HasModifier "modifier_ice_blast"
 end
 function M:NearbyBatteryAssault(npc)
-    return self:GetNearbyNonIllusionHeroes(npc, 275 + npc:GetBoundingRadius()):Any(function(t)        
+    return self:GetNearbyNonIllusionHeroes(npc, 275 + npc:GetBoundingRadius()):Any(function(t)
         t:HasModifier "modifier_rattletrap_battery_assault"
     end)
 end
@@ -2830,13 +2830,10 @@ function M:StartCoroutine(func)
     return newCoroutine
 end
 function M:WaitForSeconds(seconds)
-    local function WaitFor(firstFrameTime)
-        local t = seconds - firstFrameTime
-        while t > 0 do
-            t = t - coroutine.yield()
-        end
+    local t = seconds
+    while t > 0 do
+        t = t - coroutine.yield()
     end
-    return self:StartCoroutine(WaitFor)
 end
 function M:StopCoroutine(thread)
     self:Remove_Modify(coroutineExempt, function(t)
