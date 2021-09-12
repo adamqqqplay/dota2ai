@@ -619,11 +619,11 @@ function M.ItemUsageThink()
         end
 
         if local ally = nearbyAllies:Filter(fun1.PhysicalCanCastFunction)
-        :Filter fun {
+        :Filter { t ->
             not t:HasModifier("modifier_item_medallion_of_courage_armor_addition") and not t:HasModifier("modifier_item_solar_crest_armor_addition")
         }
-        :First fun {
-            fun1:IsSeverelyDisabledOrSlowed(it)
+        :First { t ->
+            fun1:IsSeverelyDisabledOrSlowed(t)
         } then
             M.UseItemOnEntity(npcBot, sc, ally)
             return

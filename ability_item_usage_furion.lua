@@ -81,44 +81,42 @@ function GetComboMana()
 end
 
 Consider[1]=function()
+	local abilityNumber=1
+	local ability=AbilitiesReal[abilityNumber]
+	
+	if not ability:IsFullyCastable() then
+		return BOT_ACTION_DESIRE_NONE
+	end
+	
+	local castRange = ability:GetCastRange()
     local function UseAtTarget(desire, target)
         if target:IsMagicImmune() then
-            return desire, target:GetLocation(), "Location"
+            return desire, target:GetExtrapolatedLocation(castRange), "Location"
         else
             return desire, target, "Target"
         end
     end
 
+	local function HasDagger(t)
+		return t:GetUnitName() == "npc_dota_hero_spectre" and t:GetAbilityByName("spectre_spectres_dagger"):IsFullyCastable()
+	end
+
+	local blockNearbyMeleeHeroes = AbilityExtensions:Any(npcBot:GetNearbyHeroes(350, false, BOT_MODE_NONE), function(p)
+		return AbilityExtensions:MayNotBeIllusion(npcBot, p) and 
+			(AbilityExtensions:IsMeleeHero(p) and enemy:WasRecentlyDamagedByHero(p, 1.5) 
+			or HasDagger(p))
+	end)
     local function BlockFriendMeleeHeroes(enemy)
-        local friends = enemy:GetNearbyHeroes(330, true, BOT_MODE_NONE)
+        local friends = AbilityExtensions:GetNearbyNonIllusionHeroes(enemy, 200, true)
         return AbilityExtensions:Any(friends, function(p)
-            return AbilityExtensions:MayNotBeIllusion(npcBot, p)
-                    -- and enemy:WasRecentlyDamagedByHero(p, 1.5)
-        end) or AbilityExtensions:Any(npcBot:GetNearbyHeroes(350, false, BOT_MODE_NONE), function(p)
-            return AbilityExtensions:MayNotBeIllusion(npcBot, p) 
-			and AbilityExtensions:IsMeleeHero(p) 
-			-- and enemy:WasRecentlyDamagedByHero(p, 2)
-        end)
+            return enemy:WasRecentlyDamagedByHero(p, 1) or HasDagger(p)
+        end) or blockNearbyMeleeHeroes
     end
 
-	local abilityNumber=1
-	--------------------------------------
-	-- Generic Variable Setting
-	--------------------------------------
-	local ability=AbilitiesReal[abilityNumber];
-	
-	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
-	end
-	
-	local CastRange = ability:GetCastRange();
-	local nCastRange=ability:GetCastPoint();
-
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local CastRange = ability:GetCastRange()
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
-	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
-	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 	
 	
 	-- If we're in a teamfight, use it on the scariest enemy

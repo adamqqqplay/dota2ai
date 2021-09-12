@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.1
+-- Generated from Mirana Compiler version 1.5.4
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -227,7 +227,7 @@ Consider[4] = function()
     end
     local CastPoint = ability:GetCastPoint()
     local enemies,enemyIllusions = fun1:GetNearbyHeroes(npcBot, CastRange + 300):Filter(IsWeak):Partition(function(it)
-        fun1:MayNotBeIllusion(npcBot, it)
+        return fun1:MayNotBeIllusion(npcBot, it)
     end)
     if fun1:NotRetreating(npcBot) and #enemies == 0 then
         do
@@ -245,7 +245,7 @@ Consider[4] = function()
     end
     do
         local target = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange + 300):Filter(IsWeak):Min(function(it)
-            GetUnitToUnitDistance(npcBot, it)
+            return GetUnitToUnitDistance(npcBot, it)
         end)
         if target then
             local dis = GetUnitToUnitDistance(npcBot, target)

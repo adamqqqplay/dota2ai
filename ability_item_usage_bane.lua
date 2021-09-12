@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.1
+-- Generated from Mirana Compiler version 1.5.4
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -161,7 +161,7 @@ Consider[2] = function()
     local castRange = ability:GetCastRange()
     local enemyHeroes = fun1:GetNearbyHeroes(npcBot, castRange + 200, true)
     local enemies,enemyIllusions = enemyHeroes:Partition(function(it)
-        fun1:MayNotBeIllusion(npcBot, it)
+        return fun1:MayNotBeIllusion(npcBot, it)
     end)
     local allies = fun1:GetNearbyNonIllusionHeroes(npcBot, 900, false)
     local nearbyCreeps = fun1:GetNearbyAttackableCreeps(npcBot, castRange + 150, true)
@@ -170,7 +170,7 @@ Consider[2] = function()
             local target = enemies:Filter(CanCast[2]):Filter(function(it)
                 return it:GetHealth() <= it:GetActualIncomingDamage(damage, DAMAGE_TYPE_PURE) or it:GetHealth() <= it:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_PURE) and mana > ComboMana
             end):Max(function(it)
-                it:GetHealth()
+                return it:GetHealth()
             end)
             if target then
                 return BOT_ACTION_DESIRE_HIGH, target
@@ -215,7 +215,7 @@ Consider[2] = function()
         if (manaPercentage > healthPercentage or mana > ComboMana) and abilityLevel >= 2 then
             do
                 local target = enemies:SortByMinFirst(function(it)
-                    it:GetHealth()
+                    return it:GetHealth()
                 end):First()
                 if target then
                     return BOT_ACTION_DESIRE_MODERATE, target
@@ -227,7 +227,7 @@ Consider[2] = function()
         if mana > maxMana * 0.7 + manaCost or manaPercentage > healthPercentage + 0.2 then
             do
                 local target = nearbyCreeps:SortByMinFirst(function(it)
-                    it:GetHealth()
+                    return it:GetHealth()
                 end):First()
                 if target then
                     return BOT_ACTION_DESIRE_MODERATE - 0.1, target
@@ -310,7 +310,7 @@ Consider[3] = function()
     end
     do
         local target = allies:First(function(it)
-            fun1:Any(fun1:GetIncomingDodgeWorthProjectiles(it), function(t) return GetUnitToLocationDistance(it, t.location) <= 400 and not t.is_attack end)
+            return fun1:Any(fun1:GetIncomingDodgeWorthProjectiles(it), function(t) return GetUnitToLocationDistance(it, t.location) <= 400 and not t.is_attack end)
         end)
         if target then
             return BOT_ACTION_DESIRE_MODERATE, target

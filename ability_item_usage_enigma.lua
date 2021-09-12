@@ -9,6 +9,8 @@ local utility = require( GetScriptDirectory().."/utility" )
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
+local TeamItemThink = require(GetScriptDirectory().."/util/TeamItemThink")
+local RoleUtil = require(GetScriptDirectory().."/util/RoleUtility")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -79,7 +81,9 @@ local CanCast={function(t)
 	return AbilityExtensions:StunCanCast(t, AbilitiesReal[1], false, false, true, false) 
 end,function(npcTarget)
 	return utility.NCanCast(npcTarget) and npcTarget:GetLevel()<=5 and not npcTarget:IsAncientCreep()
-end,utility.NCanCast,utility.UCanCast}
+end,AbilityExtensions.NormalCanCastFunction, function(t)
+	return AbilityExtensions:NormalCanCast(t, true) 
+end}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -321,7 +325,17 @@ Consider[3]=function()
 	local Radius = ability:GetAOERadius()
 	local CastPoint = ability:GetCastPoint();
 	
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, false)
+	local npcNetWorth = npcBot:GetNetWorth()
+	local killCreepsAlly = allys:Any(function(t)
+		local name = t:GetUnitName()
+		local carry = RoleUtil.hero_roles[name].carry
+		local nw = t:GetNetWorth()
+		if carry >= 2 and (nw >= npcNetWorth * 1.5 or nw >= 12000) or carry >= 3 and nw >= 9000 then 
+			return true
+		end
+		return false
+	end)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
@@ -347,12 +361,10 @@ Consider[3]=function()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-	-- If we're farming and can kill 3+ creeps with LSA
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
-		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
-
-		if ( locationAoE.count >= 4 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 )
+		if locationAoE.count >= 4 and not killCreepsAlly then
+			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
 		end
 	end
 
@@ -364,28 +376,16 @@ Consider[3]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
 	then
-		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+		if TeamItemThink.EnemyReadyToFight() < #allys then
 
-		if ( locationAoE.count >= 4 ) 
-		then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
-		end
-	end
+			local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 
-	--[[ If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
-	then
-		for _,npcEnemy in pairs( enemys )
-		do
-			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) 
+			if ( locationAoE.count >= 4 ) and not killCreepsAlly
 			then
-				if ( CanCast[abilityNumber]( npcEnemy ) ) 
-				then
-					return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetExtrapolatedLocation(CastPoint);
-				end
+				return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 			end
 		end
-	end]]
+	end
 
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
@@ -429,7 +429,7 @@ Consider[4]=function()
     local CastPoint = ability:GetCastPoint()
 
     local allys = AbilityExtensions:Filter(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot), function(t) return AbilityExtensions:NotRetreating(t)  end)
-    local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+    local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange + 300)
     local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 
 	local blink = AbilityExtensions:GetAvailableBlink(npcBot)
@@ -438,7 +438,7 @@ Consider[4]=function()
         CastRange=CastRange+1200
         if(npcBot:GetActiveMode() == BOT_MODE_ATTACK )
         then
-            local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+            local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 )
             if ( locationAoE.count >= 2 )
             then
                 ItemUsage.UseItemOnLocation(npcBot,  blink, locationAoE.targetloc );

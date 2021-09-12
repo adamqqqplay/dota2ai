@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.1
+-- Generated from Mirana Compiler version 1.5.4
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -118,7 +118,7 @@ local function heroItemMetaFunc(tb, key)
 end
 local heroItemMetatable = { __index = heroItemMetaFunc }
 fun1:ForEachDic(roles, function(it)
-    setmetatable(it, heroItemMetatable)
+    return setmetatable(it, heroItemMetatable)
 end)
 local zeroTable = {}
 setmetatable(zeroTable, { __index = function()
@@ -131,12 +131,8 @@ end })
 local humanPlayers
 local finishInit
 local runned
-local function Init()
-    if finishInit then
-        return
-    else
-        finishInit = true
-    end
+local function TeamItemInit()
+    finishInit = true
     humanPlayers = fun1:Range(1, 5):Filter(function(it)
         return not GetTeamMember(it):IsBot()
     end)
@@ -147,12 +143,50 @@ local function InitHumanPlayers()
         return not GetTeamMember(it):IsBot()
     end)
 end
-local function AddBefore(tb, item, before)
-    if type(before) ~= "function" then
-        before = function(t) return t == before end
+local function IsLeaf(item)
+    return next(GetItemComponents(item)) == nil
+end
+local function NextNodes(item)
+    return GetItemComponents(item)[1]
+end
+function M.ExpandFirstLevel(item)
+    if IsLeaf(item) then
+        return {
+            name = item,
+            isSingleItem = true,
+        }
+    else
+        return {
+            name = item,
+            recipe = NextNodes(item),
+        }
     end
+end
+function M.ExpandOnce(item)
+    local g = {}
+    local expandSomething = false
+    for _, v in ipairs(item.recipe) do
+        if IsLeaf(v) then
+            table.insert(g, v)
+        else
+            expandSomething = true
+            for _, i in ipairs(NextNodes(v)) do
+                table.insert(g, i)
+            end
+        end
+    end
+    item.recipe = g
+    return expandSomething
+end
+function M.FullyExpandItem(itemName)
+    local p = M.ExpandFirstLevel(itemName)
+    while M.ExpandOnce(p) do
+    end
+    return p
+end
+local function AddBefore(tb, item, before)
     for index, v in ipairs(tb) do
-        if not before(item) then
+        if not before(v) then
             table.insert(tb, index, item)
             return
         end
@@ -160,7 +194,8 @@ local function AddBefore(tb, item, before)
     table.insert(tb, 1, item)
 end
 local function GenerateFilter(maxCost, putBefore, putAfter)
-    return function(itemName)
+    return function(itemInfo)
+        local itemName = itemInfo.name
         local shortName = string.sub(itemName, 6)
         return (function()
             if fun1:Contains(putAfter, shortName) then
@@ -175,7 +210,7 @@ local teamItemEvents = fun1:NewTable()
 local function NotifyTeam(npcBot, itemName)
     fun1:StartCoroutine(function()
         fun1:WaitForSeconds(math.random(0, 4))
-        table.insert(teamItemEvents, {
+        return table.insert(teamItemEvents, {
             npcBot,
             "I'll buy "..itemName,
             false,
@@ -195,7 +230,7 @@ local function TeamItemEventThink()
     end
 end
 local function AddMekansm()
-    local AddMekansmAfter = GenerateFilter(2000, {
+    local AddMekansmBefore = GenerateFilter(2000, {
         "glimmer_cape",
         "ghost",
     }, {
@@ -221,8 +256,8 @@ local function AddMekansm()
     end)
     local function BuyMekansm(hero)
         NotifyTeam(hero, "mekansm")
-        AddBefore(hero.itemInformationTable_Pre, "item_mekansm", AddMekansmAfter)
-        hero.itemInformationTable_Pre:Remove_Modify("item_urn_of_shadows")
+        AddBefore(hero.itemInformationTable, M.FullyExpandItem "item_mekansm", AddMekansmBefore)
+        fun1:Remove_Modify(hero.itemInformationTable, "item_urn_of_shadows")
     end
     if #heroRates >= 3 then
         local hero = heroRates[1][1]
@@ -238,8 +273,68 @@ local function AddMekansm()
         end
     end
 end
+local enemyStates = fun1:NewTable()
+local function IdToEnemyStateTableIndex(id)
+    return (function()
+        if id <= 4 then
+            return id + 1
+        else
+            return id - 4
+        end
+    end)()
+end
+local function TeamStateInit()
+    fun1:Range(1, 5):ForEach(function(t)
+        enemyStates[t] = {}
+    end)
+end
+local RefreshEnemyRespawnTime = fun1:EveryManySeconds(1, function()
+    return fun1:GroupBy(GetUnitList(UNIT_LIST_ENEMY_HEROES), function(t) return t:GetPlayerID() end, function(t) return t end, function(k, v) return {
+        k,
+        v,
+    } end):Map(function(t)
+        return {
+            t[1],
+            t[2]:Max(function(g)
+                return g:GetRespawnTime()
+            end):GetRespawnTime(),
+        }
+    end):ForEach(function(t)
+        local index = IdToEnemyStateTableIndex(t[1])
+        enemyStates[index].respawnTime = t[2]
+    end)
+end)
+function M.GetEnemyRespawnTime(id)
+    return (function()
+        if id then
+            return enemyStates[IdToEnemyStateTableIndex(id)].respawnTime
+        else
+            return enemyStates:Map(function(t)
+                return t.respawnTime
+            end)
+        end
+    end)()
+end
+function M.EnemyReadyToFight(id)
+    return (function()
+        if id then
+            return enemyStates[IdToEnemyStateTableIndex(id)].respawnTime <= 8
+        else
+            return enemyStates:Count(function(_, id)
+                return M.ReadyToFight(id)
+            end)
+        end
+    end)()
+end
+local function TeamStateThink()
+    if not finishInit then
+        return
+    end
+    RefreshEnemyRespawnTime()
+end
 function M.Think()
     TeamItemEventThink()
+    TeamStateThink()
 end
 function M.TeamItemThink(npcBot)
     if npcBot:IsIllusion() then
@@ -255,7 +350,10 @@ function M.TeamItemThink(npcBot)
         while DotaTime() <= -80 do
             coroutine.yield()
         end
-        Init()
+        if not finishInit then
+            TeamItemInit()
+            TeamStateInit()
+        end
         if #teamMembers + #humanPlayers == 5 then
             if runned then
                 return
@@ -265,6 +363,5 @@ function M.TeamItemThink(npcBot)
             AddMekansm()
         end
     end)
-    return "reset", teamMembers
 end
 return M

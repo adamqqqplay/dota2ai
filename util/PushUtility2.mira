@@ -1,0 +1,87 @@
+
+local role = require(GetScriptDirectory() ..  "/util/RoleUtility")
+local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
+
+local function GetCarryRate(hero)
+    return role.hero_roles[hero:GetUnitName()].carry
+end
+
+local function GetLane( nTeam ,hHero )
+    local vBot = GetLaneFrontLocation(nTeam, LANE_BOT, 0)
+    local vTop = GetLaneFrontLocation(nTeam, LANE_TOP, 0)
+    local vMid = GetLaneFrontLocation(nTeam, LANE_MID, 0)
+    return if GetUnitToLocationDistance(hHero, vBot) < 2500 { LANE_BOT }
+        elif GetUnitToLocationDistance(hHero, vTop) < 2500 { LANE_TOP }
+        elif GetUnitToLocationDistance(hHero, vMid) < 2500 { LANE_MID }
+        else { LANE_NONE }
+end
+
+local function CreepRate(creep)
+    local rate = 1
+    rate *= if string.match(t, "upgraded_mega") {3.5}
+        elif string.match(t, "upgraded") {2}
+        else {1}
+    rate *= if string.match(t, "melee") {1}
+        elif string.match(t, "ranged") {1.2}
+        else {1.8}
+    return rate 
+end
+
+local function CreepReward(creep)
+    local rate = 1
+    rate *= if string.match(t, "upgraded_mega") {0.25}
+        elif string.match(t, "upgraded") {0.5}
+        else {1}
+    rate *= if string.match(t, "melee") {1}
+        elif string.match(t, "ranged") {1.7}
+        else {2}
+    return rate 
+end
+
+local function GetAllyTower(towerIndex)
+    return GetTower(GetTeam(), towerIndex)
+end
+local allyTower1 = fun1:Map({TOWER_TOP_1, TOWER_MID_1, TOWER_BOT_1}, GetAllyTower)
+local allyTower2 = fun1:Map({TOWER_TOP_2, TOWER_MID_2, TOWER_BOT_2}, GetAllyTower)
+local allyTower3 = fun1:Map({TOWER_TOP_3, TOWER_MID_3, TOWER_BOT_3}, GetAllyTower)
+local allyTower4 = fun1:Map({TOWER_BASE_1, TOWER_BASE_2}, GetAllyTower)
+
+local function TowerRate(tower)
+    return if allyTower1:Contains(tower) { 1 }
+    elif allyTower2:Contains(tower) { 1.5 }
+    elif allyTower3:Contains(tower) {
+        if allyTower3:All { t -> t:IsAlive() } { 2 } else { 1.5 }
+    }
+    else { 1.7 }
+end
+
+local function CleanLaneDesire(npc, lane)
+    local front = GetLaneFrontLocation(GetTeam(), lane, 0)
+    local allyTower = GetNearestBuilding(GetTeam(), front)
+    local distanceToFront = GetUnitToUnitDistance(npc, allyTower:GetLocation())
+    local creeps = fun1:Filter(GetUnitList(UNIT_LIST_ENEMY_CREEPS)) { t ->
+        GetUnitToLocationDistance(t, front) <= 1500
+    }
+    local allyCreeps = fun1:Filter(GetUnitList(UNIT_LIST_FRIEND_CREEPS)) { t ->
+        GetUnitToLocationDistance(t, front) <= 1500
+    }
+    local creepRateDiff = creeps:Map(CreepRate):Aggregate(0, { + }) - allyCreeps:Map(CreepRate):Aggregate(0, { + })
+    local desire = 0
+    local necessity = 0
+    if distanceToFront <= 3000 then
+        if creepRateDiff >= DotaTime()/300 and creepRateDiff >= 3 then 
+            necessity += creepRateDiff
+        end
+        if creepRateDiff >= 2 and creepRateDiff then
+            desire += creeps:Map(CreepReward):Aggregate(0, { + })
+        end
+    end
+    necessity *= TowerRate(allyTower)
+    desire *= TowerRate(allyTower)
+    return desire 
+end
+
+local function DefendLaneDesire()
+    return 0
+end
+

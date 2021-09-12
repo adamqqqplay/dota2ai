@@ -192,7 +192,9 @@ function OnEnd()
 end
 
 function Think()
-
+	if bot:IsChanneling() or bot:IsUsingAbility() or bot:GetQueuedActionType(0) == BOT_ACTION_TYPE_USE_ABILITY then
+		return
+	end
 	if  GetGameState()~=GAME_STATE_PRE_GAME and GetGameState()~= GAME_STATE_GAME_IN_PROGRESS then
 		return;
 	end

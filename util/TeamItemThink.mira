@@ -138,12 +138,8 @@ setmetatable(roles, {
 local humanPlayers
 local finishInit
 local runned
-local function Init()
-    if finishInit then
-        return
-    else
-        finishInit = true
-    end
+local function TeamItemInit()
+    finishInit = true
     humanPlayers = fun1:Range(1, 5):Filter fun {
         not GetTeamMember(it):IsBot()
     }
@@ -155,12 +151,45 @@ local function InitHumanPlayers()
     }
 end
 
-local function AddBefore(tb, item, before)
-    if type(before) ~= "function" then 
-        before = t -> t == before
+local function IsLeaf(item)
+    return next(GetItemComponents(item)) == nil
+end
+local function NextNodes(item)
+    return GetItemComponents(item)[1]
+end
+function M.ExpandFirstLevel(item)
+    if IsLeaf(item) then
+        return { name = item, isSingleItem = true }
+    else
+        return { name = item, recipe = NextNodes(item) }
     end
+end
+function M.ExpandOnce(item)
+    local g = {}
+    local expandSomething = false
+    for _,v in ipairs(item.recipe) do
+        if IsLeaf(v) then
+            table.insert(g, v)
+        else
+            expandSomething = true
+            for _, i in ipairs(NextNodes(v)) do
+                table.insert(g, i)
+            end
+        end
+    end
+    item.recipe = g
+    return expandSomething
+end
+function M.FullyExpandItem(itemName)
+    local p = M.ExpandFirstLevel(itemName)
+    while M.ExpandOnce(p) do end
+    return p
+end
+
+
+local function AddBefore(tb, item, before)
     for index, v in ipairs(tb) do
-        if not before(item) then
+        if not before(v) then
             table.insert(tb, index, item) 
             return
         end
@@ -169,7 +198,8 @@ local function AddBefore(tb, item, before)
 end
 
 local function GenerateFilter(maxCost, putBefore, putAfter)
-    return { itemName ->
+    return { itemInfo ->
+        local itemName = itemInfo.name
         local shortName = string.sub(itemName, 6)
         if fun1:Contains(putAfter, shortName) { false }
         else { fun1:Contains(putBefore, shortName) or GetItemCost(itemName) < maxCost }
@@ -180,10 +210,6 @@ local teamItemEvents = fun1:NewTable()
 local function NotifyTeam(npcBot, itemName)
     fun1:StartCoroutine { -> 
         fun1:WaitForSeconds(math.random(0, 4))
-            -- local time = math.random(0, 4)
-            -- while time > 0 do
-            --     time = time - coroutine.yield()
-            -- end
         table.insert(teamItemEvents, { npcBot, "I'll buy "..itemName, false })
     }
 end
@@ -202,7 +228,7 @@ local function TeamItemEventThink()
 end
 
 local function AddMekansm()
-    local AddMekansmAfter = GenerateFilter(2000, { "glimmer_cape", "ghost" }, { "travel_boots", "hand_of_midas", "bfury" })
+    local AddMekansmBefore = GenerateFilter(2000, { "glimmer_cape", "ghost" }, { "travel_boots", "hand_of_midas", "bfury" })
     local function Rate(hero)
         local heroName = fun1:GetHeroShortName(hero:GetUnitName())
         local rate = roles[heroName].mekansm + math.random(0, 1.5)
@@ -216,8 +242,8 @@ local function AddMekansm()
     }:SortByMaxFirst fun { it[2] }
     local function BuyMekansm(hero)
         NotifyTeam(hero, "mekansm")
-        AddBefore(hero.itemInformationTable_Pre, "item_mekansm", AddMekansmAfter)
-        hero.itemInformationTable_Pre:Remove_Modify("item_urn_of_shadows")
+        AddBefore(hero.itemInformationTable, M.FullyExpandItem "item_mekansm", AddMekansmBefore)
+        fun1:Remove_Modify(hero.itemInformationTable, "item_urn_of_shadows")
     end
 
     if #heroRates >= 3 then 
@@ -235,8 +261,58 @@ local function AddMekansm()
     end
 end
 
+local enemyStates = fun1:NewTable()
+local function IdToEnemyStateTableIndex(id)
+    return if id <= 4 { id + 1 } else { id - 4 }
+end
+local function TeamStateInit()
+    fun1:Range(1, 5):ForEach { t ->
+        enemyStates[t] = {}
+    }
+end 
+
+local RefreshEnemyRespawnTime = fun1:EveryManySeconds(1) { ->
+    fun1:GroupBy(GetUnitList(UNIT_LIST_ENEMY_HEROES), t -> t:GetPlayerID(), t -> t, (k, v) -> { k, v })
+        :Map { t -> 
+            { 
+                t[1], 
+                t[2]:Max { g -> 
+                    g:GetRespawnTime() 
+                }:GetRespawnTime()
+            }
+        }
+        :ForEach { t -> 
+            local index = IdToEnemyStateTableIndex(t[1])
+            enemyStates[index].respawnTime = t[2]
+        }
+}
+
+function M.GetEnemyRespawnTime(id)
+    return if id {
+        enemyStates[IdToEnemyStateTableIndex(id)].respawnTime 
+    } else {
+        enemyStates:Map { t -> t.respawnTime }
+    }
+end
+
+function M.EnemyReadyToFight(id) 
+    return if id {
+        enemyStates[IdToEnemyStateTableIndex(id)].respawnTime <= 8 
+    } else {
+        enemyStates:Count { _, id -> M.ReadyToFight(id) }
+    }
+end
+
+local function TeamStateThink()
+    if not finishInit then
+        return 
+    end
+    RefreshEnemyRespawnTime()
+end
+
 function M.Think()
     TeamItemEventThink()
+    TeamStateThink()
 end
 
 function M.TeamItemThink(npcBot)
@@ -253,7 +329,10 @@ function M.TeamItemThink(npcBot)
         while DotaTime() <= -80 do
             coroutine.yield()
         end
-        Init()
+        if not finishInit then
+            TeamItemInit()
+            TeamStateInit()
+        end
         if #teamMembers + #humanPlayers == 5 then
             if runned then 
                 return 
@@ -263,8 +342,6 @@ function M.TeamItemThink(npcBot)
             AddMekansm()
         end
     }
-    return "reset", teamMembers
-    
 end
 
 return M

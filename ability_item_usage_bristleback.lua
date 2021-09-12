@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.1
+-- Generated from Mirana Compiler version 1.5.4
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -120,11 +120,11 @@ Consider[1] = function()
         return 0
     end
     if friends:Count(function(t)
-        fun1:CanBeEngaged(t)
+        return fun1:CanBeEngaged(t)
     end) >= 2 then
         do
             local target = enemies:Filter(CanCast[1]):Max(function(t)
-                t:GetEstimatedDamageToTarget(false, npcBot, 3, DAMAGE_TYPE_ALL)
+                return t:GetEstimatedDamageToTarget(false, npcBot, 3, DAMAGE_TYPE_ALL)
             end)
             if target then
                 return BOT_ACTION_DESIRE_HIGH, target
@@ -273,7 +273,7 @@ function AbilityUsageThink()
     manaPercent = fun1:GetManaPercent(npcBot)
     allEnemies = fun1:GetNearbyHeroes(npcBot, 1200)
     enemies = allEnemies:Filter(function(t)
-        fun1:MayNotBeIllusion(npcBot, t)
+        return fun1:MayNotBeIllusion(npcBot, t)
     end)
     enemyCount = fun1:GetEnemyHeroNumber(npcBot, enemies)
     friends = fun1:GetNearbyNonIllusionHeroes(npcBot, 1500, true)

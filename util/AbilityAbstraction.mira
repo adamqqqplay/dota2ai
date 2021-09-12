@@ -247,7 +247,7 @@ M.Prepend = function(self, a, b)
 end
 
 M.GroupBy = function(self, collection, keySelector, elementSelector, resultSelector, comparer)
-    comparer = comparer or function(a,b) return a==b end
+    comparer = comparer or { == }
     resultSelector = resultSelector or function(key, value) return value end
     elementSelector = elementSelector or self.IdentityFunction
     local keys = NewTable()
@@ -263,7 +263,9 @@ M.GroupBy = function(self, collection, keySelector, elementSelector, resultSelec
         end
         if not keyFound then
             table.insert(keys, keySelector(k))
-            table.insert(values, { elementSelector(k) })
+            local v = NewTable()
+            table.insert(v, elementSelector(k))
+            table.insert(values, v)
         end
     end
     return self:Map2(keys, values, resultSelector)
@@ -1419,7 +1421,7 @@ function M:IsChannelingBreakWorthAbility(npc)
     return true
 end
 
-M.RadiantPlayerId = M:Map(GetTeamPlayers(TEAM_RADIANT)) fun { }
+M.RadiantPlayerId = GetTeamPlayers(TEAM_RADIANT)
 M.DirePlayerId = GetTeamPlayers(TEAM_DIRE)
 
 M.GetTeamPlayers = function(self, team)
@@ -1432,7 +1434,7 @@ end
 
 M.GetEnemyTeamMemberNames = function(self, npcBot)
     local enemies = self:GetEnemyHeroUnique(npcBot, GetUnitList(UNIT_LIST_ENEMY_HEROES))
-    return self:Map(enemies, function(t) return t:GetUnitName()  end)
+    return self:Map(enemies, function(t) return t:GetUnitName() end)
 end
 
 M.enemyVisibleIllusionModifiers = {
@@ -2165,16 +2167,6 @@ function M:GetTargetIfBad(npc)
         return target
     end
 end
-
-
--- function M:GetAcrossAbilityStatusPerFrame(npc)
---     local g = {}
---     g.health = npc:GetHealth()
---     g.mana = npc:GetMana()
---     g.healthPercent = self:GetHealthPercent(npc)
---     g.manaPercent = self:GetManaPercent(npc)
---     g.attackRange = npc:GetAttackRange()
--- end
 
 function M:IndexOfBasicDispellablePositiveModifier(npc)
     return self:Aggregate(nil, self.basicDispellWorthPositiveModifiers, function(seed, modifier, index)

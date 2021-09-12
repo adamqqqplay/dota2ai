@@ -661,6 +661,7 @@ p = function(self, npcBot, itemTable, noRemove)
         item.recipe = g
         return expandSomething
     end
+
     local function TranslateToEquivalentItem(tb)
         local k = "item_power_treads"
         tb = AbilityExtensions:Replace(tb, function(t)
@@ -772,14 +773,7 @@ p = function(self, npcBot, itemTable, noRemove)
         end
     else
         RemoveTeamItems(g)
-        npcBot.itemInformationTable_Pre = AbilityExtensions:Map(npcBot.itemInformationTable, function(it) return it.name end)
-        npcBot.itemInformationTable = nil
-        local res, t = TeamItemThink.TeamItemThink(npcBot)
-        if res == "reset" then
-            AbilityExtensions:ForEach(t, function(it)
-                p(self, it, it.itemInformationTable_Pre, true)
-            end)
-        end
+        TeamItemThink.TeamItemThink(npcBot)
     end
 end
 M.CreateItemInformationTable = p

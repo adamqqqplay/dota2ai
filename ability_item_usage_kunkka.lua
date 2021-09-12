@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.1
+-- Generated from Mirana Compiler version 1.5.4
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -324,7 +324,6 @@ Consider[7] = function()
     local abilityNumber = 7
     local ability = AbilitiesReal[abilityNumber]
     if useTorrentAtXMarkTime then
-        print("use torrent time "..useTorrentAtXMarkTime..", should recall at "..(useTorrentAtXMarkTime + AbilitiesReal[1]:GetSpecialValueFloat("delay") - ability:GetCastPoint()))
     end
     if not ability:IsFullyCastable() or ability:IsHidden() or xMarkTarget == nil or not xMarkTarget:HasModifier("modifier_kunkka_x_marks_the_spot") then
         return 0
@@ -347,7 +346,6 @@ Consider[7] = function()
         return BOT_ACTION_DESIRE_HIGH
     end
     if XMarksEnemy() and useTorrentAtXMark then
-        print("use torrent time "..useTorrentAtXMarkTime..", should recall at "..(useTorrentAtXMarkTime + AbilitiesReal[1]:GetSpecialValueFloat("delay") - ability:GetCastPoint()))
         local timing = useTorrentAtXMarkTime + AbilitiesReal[1]:GetSpecialValueFloat("delay") - ability:GetCastPoint()
         if DotaTime() >= timing - 0.1 then
             return BOT_ACTION_DESIRE_VERYHIGH
@@ -387,7 +385,6 @@ function AbilityUsageThink()
     elseif index == 1 and xMarkTarget then
         useTorrentAtXMark = true
         useTorrentAtXMarkTime = DotaTime() + AbilitiesReal[1]:GetCastPoint()
-        print("torrent time after a x mark: "..useTorrentAtXMarkTime)
     end
 end
 function CourierUsageThink()

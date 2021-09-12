@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.1
+-- Generated from Mirana Compiler version 1.5.4
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -229,9 +229,7 @@ M.Prepend = function(self, a, b)
     return self:Concat(b, a)
 end
 M.GroupBy = function(self, collection, keySelector, elementSelector, resultSelector, comparer)
-    comparer = comparer or function(a, b)
-        return a == b
-    end
+    comparer = comparer or function(__mira_olpar_1, __mira_olpar_2) return __mira_olpar_1 == __mira_olpar_2 end
     resultSelector = resultSelector or function(key, value)
         return value
     end
@@ -250,7 +248,9 @@ M.GroupBy = function(self, collection, keySelector, elementSelector, resultSelec
         end
         if not keyFound then
             table.insert(keys, keySelector(k))
-            table.insert(values, { elementSelector(k) })
+            local v = NewTable()
+            table.insert(v, elementSelector(k))
+            table.insert(values, v)
         end
     end
     return self:Map2(keys, values, resultSelector)
@@ -1297,8 +1297,7 @@ function M:IsChannelingBreakWorthAbility(npc)
     end
     return true
 end
-M.RadiantPlayerId = M:Map(GetTeamPlayers(TEAM_RADIANT), function()
-end)
+M.RadiantPlayerId = GetTeamPlayers(TEAM_RADIANT)
 M.DirePlayerId = GetTeamPlayers(TEAM_DIRE)
 M.GetTeamPlayers = function(self, team)
     if team == TEAM_RADIANT then
@@ -1399,11 +1398,11 @@ function M:GetAllHeores(npcBot, getEnemy)
     end
     if getEnemy then
         return self:GetEnemyHeroUnique(npcBot, GetUnitList(UNIT_LIST_ENEMY_HEROES)):Filter(function(it)
-            self:MayNotBeIllusion(npcBot, it)
+            return self:MayNotBeIllusion(npcBot, it)
         end)
     else
         return self:Filter(GetUnitList(UNIT_LIST_ALLIED_HEROES), function(it)
-            self:MayNotBeIllusion(npcBot, it)
+            return self:MayNotBeIllusion(npcBot, it)
         end)
     end
 end
@@ -1892,7 +1891,7 @@ function M:NotBlasted(self, npc)
 end
 function M:NearbyBatteryAssault(npc)
     return self:GetNearbyNonIllusionHeroes(npc, 275 + npc:GetBoundingRadius()):Any(function(t)
-        t:HasModifier "modifier_rattletrap_battery_assault"
+        return t:HasModifier "modifier_rattletrap_battery_assault"
     end)
 end
 M.CannotBeTargetted = function(self, npc)

@@ -401,7 +401,6 @@ function AbilityUsageThink()
 	end
 	local index, target, castType = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
 	if index == 6 then
-		print("ta set trap at: "..AbilityExtensions:ToStringVector(target))
 		npcBot.trapTable[AbilityExtensions:ToStringVector(target)] = DotaTime() + AbilitiesReal[6]:GetCastPoint()
 	end
 	AbilityExtensions:RecordAbility(npcBot, index, target, castType, AbilitiesReal)

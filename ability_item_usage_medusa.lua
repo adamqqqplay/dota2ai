@@ -211,11 +211,11 @@ Consider[2]=function()
 		then
 			if (ManaPercentage>0.5 or npcBot:GetMana()>ComboMana)
 			then
-				if (creeps[1]~=nil)
+				if (creeps[1]~=nil) 
 				then
-					if ( CanCast[abilityNumber]( WeakestCreep )and GetUnitToUnitDistance(npcBot,WeakestCreep)< CastRange + 75*#allys )
+					if ( CanCast[abilityNumber]( creeps[1] )and GetUnitToUnitDistance(npcBot,WeakestCreep)< CastRange + 75*#allys )
 					then
-						return BOT_ACTION_DESIRE_LOW, creeps[1];
+						return BOT_ACTION_DESIRE_LOW, creeps[1]
 					end
 				end
 				if (WeakestEnemy~=nil)

@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.1
+-- Generated from Mirana Compiler version 1.5.4
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -366,7 +366,7 @@ function M.ItemUsageThink()
                 local weakestAlly = nearbyAllies:Filter(function(it)
                     return fun1:GetHealthPercent(it) < 0.25 and not it:WasRecentlyDamagedByAnyHero(1.5) and it:GetActiveMode() ~= BOT_MODE_RETREAT and (tableNearbyEnemyHeroes2 or it:HasModifier "modifier_templar_assassin_reflection_absorb" or fun1:HasAnyModifier(it, fun1.IgnoreDamageModifiers))
                 end):SortByMinFirst(function(it)
-                    it:GetHealth()
+                    return it:GetHealth()
                 end):First()
                 if weakestAlly then
                     M.UseItemOnEntity(npcBot, weakestAlly, npcBot)
@@ -387,7 +387,7 @@ function M.ItemUsageThink()
                 local weakestAlly = nearbyAllies:Filter(function(it)
                     return fun1:GetManaPercent(it) < 0.4 and not it:WasRecentlyDamagedByAnyHero(3) and it:GetActiveMode() ~= BOT_MODE_RETREAT and (tableNearbyEnemyHeroes2 or it:HasModifier "modifier_templar_assassin_reflection_absorb" or fun1:HasAnyModifier(it, fun1.IgnoreDamageModifiers))
                 end):SortByMinFirst(function(it)
-                    it:GetMana()
+                    return it:GetMana()
                 end):First()
                 if weakestAlly then
                     M.UseItemOnEntity(npcBot, weakestAlly, npcBot)
@@ -475,10 +475,10 @@ function M.ItemUsageThink()
             end
         end
         do
-            local ally = nearbyAllies:Filter(fun1.PhysicalCanCastFunction):Filter(function()
+            local ally = nearbyAllies:Filter(fun1.PhysicalCanCastFunction):Filter(function(t)
                 return not t:HasModifier("modifier_item_medallion_of_courage_armor_addition") and not t:HasModifier("modifier_item_solar_crest_armor_addition")
-            end):First(function(it)
-                fun1:IsSeverelyDisabledOrSlowed(it)
+            end):First(function(t)
+                return fun1:IsSeverelyDisabledOrSlowed(t)
             end)
             if ally then
                 M.UseItemOnEntity(npcBot, sc, ally)
