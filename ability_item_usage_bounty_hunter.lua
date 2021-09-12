@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.4
+-- Generated from Mirana Compiler version 1.6.0
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -158,7 +158,7 @@ Consider[1] = function()
     end
     return BOT_ACTION_DESIRE_NONE, 0
 end
-Consider[2] = fun1:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[2], function()
+Consider[2] = fun1:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[2], function(it)
     do
         local target = npcBot:GetAttackTarget()
         if target then

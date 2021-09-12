@@ -54,10 +54,10 @@ end
 --------------------------------------
 local cast= {} cast.Desire= {} cast.Target= {} cast.Type= {}
 local CanCast = {}
-CanCast[1] = t -> AbilityExtensions:NormalCanCast(t, false)
+CanCast[1] = {t -> AbilityExtensions:NormalCanCast(t, false)}
 CanCast[2] = CanCast[1]
-CanCast[3] = t -> not AbilityExtensions:IsInvulnerable(t) or not AbilityExtensions:ShouldNotBeAttacked(t)
-CanCast[4] = t -> true
+CanCast[3] = {t -> not AbilityExtensions:IsInvulnerable(t) or not AbilityExtensions:ShouldNotBeAttacked(t)}
+CanCast[4] = { -> true }
 CanCast[5] = CanCast[1]
 
 local attackRange
@@ -79,7 +79,7 @@ local illusoryOrbMaxTravelDistance
 local Consider = {}
 
 local function GetIllusoryOrb()
-    return AbilityExtensions:First(GetLinearProjectiles(), t-> t.ability and t.ability:GetName() == "puck_illusory_orb" and t.caster == npcBot)
+    return AbilityExtensions:First(GetLinearProjectiles()) { t-> t.ability and t.ability:GetName() == "puck_illusory_orb" and t.caster == npcBot }
 end
 local illusoryOrb = GetIllusoryOrb()
 

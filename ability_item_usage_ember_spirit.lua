@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.4
+-- Generated from Mirana Compiler version 1.6.0
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -63,13 +63,15 @@ local cast = {
 }
 local Consider = {}
 local CanCast = {
-    function(t) return fun1:StunCanCast(t, Abilities[1], false, false, true, false) end,
+    function(t)
+        return fun1:StunCanCast(t, Abilities[1], false, false, true, false)
+    end,
     fun1.PhysicalCanCastFunction,
     fun1.NormalCanCastFunction,
-    function()
+    function(_)
         return true
     end,
-    function()
+    function(_)
         return true
     end,
 }
@@ -120,7 +122,7 @@ Consider[1] = function()
         return t:GetHealth() > t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) and t:GetHealth() <= t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) + fun1:AttackOnceDamage(npcBot, t) * (0.9 + #enemyCreeps * 0.1)
     end)
     if #friendCreeps == 0 then
-        forbiddenCreeps = forbiddenCreeps:Filter(function()
+        forbiddenCreeps = forbiddenCreeps:Filter(function(it)
             return false
         end)
     end
@@ -134,8 +136,8 @@ Consider[1] = function()
         if targetNumber > unitCount then
             t = unitCount
         end
-        return fun1:Aggregate(0, fun1:Range(1, t), function(__mira_lpar_1, __mira_lpar_2)
-            return __mira_lpar_1 + fun1:Combination(t, __mira_lpar_2) * fun1:Combination(allUnits - t, t - __mira_lpar_2) * __mira_lpar_2
+        return fun1:Aggregate(0, fun1:Range(1, t), function(seed, target)
+            return seed + fun1:Combination(t, target) * fun1:Combination(allUnits - t, t - target) * target
         end) / fun1:Combination(unitCount, allUnits)
     end
     if fun1:IsFarmingOrPushing(npcBot) then

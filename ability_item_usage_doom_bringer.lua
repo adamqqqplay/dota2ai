@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.4
+-- Generated from Mirana Compiler version 1.6.0
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -430,9 +430,12 @@ Consider[6] = function()
             return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy
         end
     end
-    for _, npcEnemy in pairs(enemys) do
-        if npcEnemy:IsChanneling() and CanCast[abilityNumber](npcEnemy) and not AbilitiesReal[3]:IsFullyCastable() then
-            return BOT_ACTION_DESIRE_LOW, npcEnemy
+    do
+        local channeling = enemys:First(function(t)
+            return AbilityExtensions:IsChannelingBreakWorthAbility(t, "moderate") and CanCast[6](t)
+        end)
+        if channeling then
+            return BOT_ACTION_DESIRE_MODERATE - 0.1, channeling
         end
     end
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then

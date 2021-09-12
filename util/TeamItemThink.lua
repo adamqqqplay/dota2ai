@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.4
+-- Generated from Mirana Compiler version 1.6.0
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -121,7 +121,7 @@ fun1:ForEachDic(roles, function(it)
     return setmetatable(it, heroItemMetatable)
 end)
 local zeroTable = {}
-setmetatable(zeroTable, { __index = function()
+setmetatable(zeroTable, { __index = function(_)
     return 0
 end })
 setmetatable(roles, { __index = function(_, heroName)
@@ -289,10 +289,13 @@ local function TeamStateInit()
     end)
 end
 local RefreshEnemyRespawnTime = fun1:EveryManySeconds(1, function()
-    return fun1:GroupBy(GetUnitList(UNIT_LIST_ENEMY_HEROES), function(t) return t:GetPlayerID() end, function(t) return t end, function(k, v) return {
-        k,
-        v,
-    } end):Map(function(t)
+    return fun1:GroupBy(GetUnitList(UNIT_LIST_ENEMY_HEROES), function(t)
+        return t:GetPlayerID()
+    end, function(t)
+        return t
+    end, function(k, v)
+        return k, v
+    end):Map(function(t)
         return {
             t[1],
             t[2]:Max(function(g)
@@ -346,7 +349,7 @@ function M.TeamItemThink(npcBot)
         end
         table.insert(teamMembers, npcBot)
     end
-    fun1:StartCoroutine(function()
+    fun1:StartCoroutine(function(it)
         while DotaTime() <= -80 do
             coroutine.yield()
         end

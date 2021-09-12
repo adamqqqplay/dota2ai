@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.4
+-- Generated from Mirana Compiler version 1.6.0
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -71,8 +71,12 @@ end
 CanCast[2] = function(t)
     return AbilityExtensions:NormalCanCast(t, true, DAMAGE_TYPE_PURE, false, true) and not AbilityExtensions:HasAbilityRetargetModifier(t) and not (t:HasModifier("modifier_item_blade_mail") and AbilityExtensions:IsRetreating(npcBot))
 end
-CanCast[3] = function(t) return fun1:StunCanCast(t, AbilitiesReal[3], false, true, true, false) and not fun1:DontControlAgain(t) end
-CanCast[4] = function(t) return fun1:StunCanCast(t, AbilitiesReal[4], true, true, true, false) and not fun1:DontControlAgain(t) end
+CanCast[3] = function(t)
+    return fun1:StunCanCast(t, AbilitiesReal[3], false, true, true, false) and not fun1:DontControlAgain(t)
+end
+CanCast[4] = function(t)
+    return fun1:StunCanCast(t, AbilitiesReal[4], true, true, true, false) and not fun1:DontControlAgain(t)
+end
 local enemyDisabled = utility.enemyDisabled
 function GetComboDamage()
     return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
@@ -301,16 +305,18 @@ Consider[3] = function()
         end
     end
     do
-        local target = allies:First(function(it)
-            return AbilityExtensions:IsOrGoingToBeSeverelyDisabled(it) and not it:IsChanneling() and not fun1:DontInterruptAlly(it)
+        local target = allies:First(function(t1)
+            return AbilityExtensions:IsOrGoingToBeSeverelyDisabled(t1) and not t1:IsChanneling() and not fun1:DontInterruptAlly(t1)
         end)
         if target then
             return BOT_ACTION_DESIRE_MODERATE, target
         end
     end
     do
-        local target = allies:First(function(it)
-            return fun1:Any(fun1:GetIncomingDodgeWorthProjectiles(it), function(t) return GetUnitToLocationDistance(it, t.location) <= 400 and not t.is_attack end)
+        local target = allies:First(function(t1)
+            return fun1:Any(fun1:GetIncomingDodgeWorthProjectiles(t1), function(t)
+                return GetUnitToLocationDistance(it, t.location) <= 400 and not t.is_attack
+            end)
         end)
         if target then
             return BOT_ACTION_DESIRE_MODERATE, target
@@ -414,7 +420,9 @@ Consider[5] = function()
     if #nightmaredFriends ~= 0 then
         if AbilityExtensions:All(nightmaredFriends, function(t)
             return AbilityExtensions:GetHealthPercent(t) >= 0.3
-        end) or AbilityExtensions:All(nightmaredFriends, function(t) return #fun1:GetIncomingDodgeWorthProjectiles(t) == 0 end) and #enemies == 0 then
+        end) or AbilityExtensions:All(nightmaredFriends, function(t)
+            return #fun1:GetIncomingDodgeWorthProjectiles(t) == 0
+        end) and #enemies == 0 then
             return BOT_ACTION_DESIRE_HIGH
         end
     end

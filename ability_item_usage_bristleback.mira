@@ -79,9 +79,9 @@ local Consider = {}
 local CanCast = {
     fun1.NormalCanCastFunction,
     fun1.PhysicalCanCastFunction,
-    fun { true },
+    { _ -> true },
     fun1.NormalCanCastFunction,
-    fun { true },
+    { _ -> true },
 }
 
 local attackRange

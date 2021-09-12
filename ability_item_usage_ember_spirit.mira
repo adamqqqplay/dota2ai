@@ -66,11 +66,11 @@ local cast = {
 local Consider = {}
 
 local CanCast = {
-    t -> fun1:StunCanCast(t, Abilities[1], false, false, true, false),
+    { t -> fun1:StunCanCast(t, Abilities[1], false, false, true, false) },
     fun1.PhysicalCanCastFunction,
     fun1.NormalCanCastFunction,
-    fun { true },
-    fun { true }
+    { _ -> true },
+    { _ -> true }
 }
 
 local attackRange
@@ -110,7 +110,7 @@ Consider[1] = function()
     local unitCount = ability:GetSpecialValueInt "unit_count"
     
     local allEnemies = fun1:GetNearbyHeroes(npcBot, castRange)
-    local enemies = allEnemies:Filter fun {
+    local enemies = allEnemies:Filter { it ->
         fun1:MayNotBeIllusion(npcBot, it) and CanCast[1](it)
     }
     local enemyCreeps = fun1:GetNearbyAttackableCreeps(npcBot, castRange)
@@ -121,7 +121,7 @@ Consider[1] = function()
         return t:GetHealth() > t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) and t:GetHealth() <= t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) + fun1:AttackOnceDamage(npcBot, t) * (0.9+#enemyCreeps*0.1)
     end)
     if #friendCreeps == 0 then
-        forbiddenCreeps = forbiddenCreeps:Filter fun { false }
+        forbiddenCreeps = forbiddenCreeps:Filter { it -> false }
     end
 
     local allTargets = allEnemies:Concat(fun1:GetNearbyCreeps(npcBot, castRange, true)):Filter(CanCast[1])
@@ -135,8 +135,8 @@ Consider[1] = function()
         if targetNumber > unitCount then
             t = unitCount
         end
-        return fun1:Aggregate(0, fun1:Range(1, t)) fun {
-            $1 + fun1:Combination(t, $2) * fun1:Combination(allUnits - t, t - $2) * $2
+        return fun1:Aggregate(0, fun1:Range(1, t)) { seed, target ->
+            seed + fun1:Combination(t, target) * fun1:Combination(allUnits - t, t - target) * target
         } / fun1:Combination(unitCount, allUnits)
     end
 

@@ -244,7 +244,7 @@ Consider[1]=function()	--Target Ability Example
 	
 end
 
-Consider[2] = fun1:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[2]) fun {
+Consider[2] = fun1:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[2]) { it ->
 	if local target = npcBot:GetAttackTarget() then
 		if not target:IsHero() and fun1:GetNearbyLaneCreeps(npcBot, 700, false) then 
 			if target:GetActualIncomingDamage(npcBot:GetAttackDamage(), DAMAGE_TYPE_PHYSICAL) >= target:GetHealth() then
@@ -327,11 +327,11 @@ Consider[4]=function()
 	end
 	
 	local CastRange = Clamp(ability:GetCastRange(), 0, 1599)
-	local realEnemies = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange):Filter fun {
+	local realEnemies = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange):Filter { it ->
 		fun1:SpellCanCast(it) and it:IsHero() and fun1:MayNotBeIllusion(npcBot, it)
-	}:Map fun {
+	}:Map { it ->
 		{ it, it:GetHealth() * HasTrackModifierPenalty(it) }
-	}:SortByMinFirst fun { it[2] }
+	}:SortByMinFirst { it -> it[2] }
 	if local t = realEnemies:First() then
 		local target = t[1]
 		if fun1:IsFarmingOrPushing(npcBot) or npcBot:GetActiveMode() == BOT_MODE_LANING then 

@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.4
+-- Generated from Mirana Compiler version 1.6.0
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -121,7 +121,7 @@ local function CleanLaneDesire(npc, lane)
     local allyCreeps = fun1:Filter(GetUnitList(UNIT_LIST_FRIEND_CREEPS), function(t)
         return GetUnitToLocationDistance(t, front) <= 1500
     end)
-    local creepRateDiff = creeps:Map(CreepRate):Aggregate(0, function(__mira_olpar_1, __mira_olpar_2) return __mira_olpar_1 + __mira_olpar_2 end) - allyCreeps:Map(CreepRate):Aggregate(0, function(__mira_olpar_1, __mira_olpar_2) return __mira_olpar_1 + __mira_olpar_2 end)
+    local creepRateDiff = creeps:Map(CreepRate):Aggregate(0, function(opv_1, opv_2) return opv_1 + opv_2 end) - allyCreeps:Map(CreepRate):Aggregate(0, function(opv_1, opv_2) return opv_1 + opv_2 end)
     local desire = 0
     local necessity = 0
     if distanceToFront <= 3000 then
@@ -129,7 +129,7 @@ local function CleanLaneDesire(npc, lane)
             necessity = necessity + creepRateDiff
         end
         if creepRateDiff >= 2 and creepRateDiff then
-            desire = desire + creeps:Map(CreepReward):Aggregate(0, function(__mira_olpar_1, __mira_olpar_2) return __mira_olpar_1 + __mira_olpar_2 end)
+            desire = desire + creeps:Map(CreepReward):Aggregate(0, function(opv_1, opv_2) return opv_1 + opv_2 end)
         end
     end
     necessity = necessity * TowerRate(allyTower)

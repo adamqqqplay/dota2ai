@@ -74,10 +74,10 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast = { t -> fun1:StunCanCast(t, AbilitiesReal[1], true, false, false, false)
+local CanCast = { {t -> fun1:StunCanCast(t, AbilitiesReal[1], true, false, false, false)}
 	, fun1.NormalCanCastFunction
 	, utility.NCanCast
-	, t -> fun1:NormalCanCast(t, true, DAMAGE_TYPE_PURE, true, true, true)
+	, {t -> fun1:NormalCanCast(t, true, DAMAGE_TYPE_PURE, true, true, true)}
 }
 
 local enemyDisabled=utility.enemyDisabled
@@ -344,7 +344,7 @@ Consider[4]=function()
 		return c
 	end
 	local CastPoint = ability:GetCastPoint()
-	local enemies, enemyIllusions = fun1:GetNearbyHeroes(npcBot, CastRange + 300):Filter(IsWeak):Partition fun {
+	local enemies, enemyIllusions = fun1:GetNearbyHeroes(npcBot, CastRange + 300):Filter(IsWeak):Partition { it ->
 		fun1:MayNotBeIllusion(npcBot, it)
 	}
 	

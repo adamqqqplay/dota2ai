@@ -419,11 +419,11 @@ function M.ItemUsageThink()
                 M.UseItemOnEntity(npcBot, ifl, npcBot)
                 return
             end
-            if local weakestAlly = nearbyAllies:Filter fun {
+            if local weakestAlly = nearbyAllies:Filter { it ->
                 fun1:GetHealthPercent(it) < 0.25 and not it:WasRecentlyDamagedByAnyHero(1.5) and it:GetActiveMode() ~= BOT_MODE_RETREAT
                 and (tableNearbyEnemyHeroes2 or it:HasModifier "modifier_templar_assassin_reflection_absorb"
                 or fun1:HasAnyModifier(it, fun1.IgnoreDamageModifiers))
-            }:SortByMinFirst fun { it:GetHealth() }
+            }:SortByMinFirst { it -> it:GetHealth() }
             :First() then
                 M.UseItemOnEntity(npcBot, weakestAlly, npcBot)
                 return
@@ -439,11 +439,11 @@ function M.ItemUsageThink()
                 M.UseItemOnEntity(npcBot, icl, npcBot)
                 return
             end
-            if local weakestAlly = nearbyAllies:Filter fun {
+            if local weakestAlly = nearbyAllies:Filter { it ->
                 fun1:GetManaPercent(it) < 0.4 and not it:WasRecentlyDamagedByAnyHero(3) and it:GetActiveMode() ~= BOT_MODE_RETREAT
                 and (tableNearbyEnemyHeroes2 or it:HasModifier "modifier_templar_assassin_reflection_absorb"
                 or fun1:HasAnyModifier(it, fun1.IgnoreDamageModifiers))
-            }:SortByMinFirst fun { it:GetMana() }
+            }:SortByMinFirst { it -> it:GetMana() }
             :First() then
                 M.UseItemOnEntity(npcBot, weakestAlly, npcBot)
                 return
@@ -643,7 +643,7 @@ function M.ItemUsageThink()
     end
 
     if sc ~= nil and sc:IsFullyCastable() then
-        if local ally = nearbyAllies:Filter fun {
+        if local ally = nearbyAllies:Filter { it ->
             (fun1:GetHealthPercent(it) < 0.35 and #tableNearbyEnemyHeroes > 0 or fun1:IsSeverelyDisabled(it)) and fun1:AllyCanCast(it) 
         } then
             M.UseItemOnEntity(npcBot, sc, Ally)

@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.4
+-- Generated from Mirana Compiler version 1.6.0
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -64,10 +64,14 @@ cast.Target = {}
 cast.Type = {}
 local Consider = {}
 local CanCast = {
-    function(t) return fun1:StunCanCast(t, AbilitiesReal[1], true, false, false, false) end,
+    function(t)
+        return fun1:StunCanCast(t, AbilitiesReal[1], true, false, false, false)
+    end,
     fun1.NormalCanCastFunction,
     utility.NCanCast,
-    function(t) return fun1:NormalCanCast(t, true, DAMAGE_TYPE_PURE, true, true, true) end,
+    function(t)
+        return fun1:NormalCanCast(t, true, DAMAGE_TYPE_PURE, true, true, true)
+    end,
 }
 local enemyDisabled = utility.enemyDisabled
 function GetComboDamage()

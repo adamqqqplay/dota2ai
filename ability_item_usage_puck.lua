@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.4
+-- Generated from Mirana Compiler version 1.6.0
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -61,10 +61,16 @@ cast.Desire = {}
 cast.Target = {}
 cast.Type = {}
 local CanCast = {}
-CanCast[1] = function(t) return AbilityExtensions:NormalCanCast(t, false) end
+CanCast[1] = function(t)
+    return AbilityExtensions:NormalCanCast(t, false)
+end
 CanCast[2] = CanCast[1]
-CanCast[3] = function(t) return not AbilityExtensions:IsInvulnerable(t) or not AbilityExtensions:ShouldNotBeAttacked(t) end
-CanCast[4] = function(t) return true end
+CanCast[3] = function(t)
+    return not AbilityExtensions:IsInvulnerable(t) or not AbilityExtensions:ShouldNotBeAttacked(t)
+end
+CanCast[4] = function()
+    return true
+end
 CanCast[5] = CanCast[1]
 local attackRange
 local healthPercent
@@ -82,7 +88,9 @@ local illusoryOrbCastLocation
 local illusoryOrbMaxTravelDistance
 local Consider = {}
 local function GetIllusoryOrb()
-    return AbilityExtensions:First(GetLinearProjectiles(), function(t) return t.ability and t.ability:GetName() == "puck_illusory_orb" and t.caster == npcBot end)
+    return AbilityExtensions:First(GetLinearProjectiles(), function(t)
+        return t.ability and t.ability:GetName() == "puck_illusory_orb" and t.caster == npcBot
+    end)
 end
 local illusoryOrb = GetIllusoryOrb()
 Consider[1] = function()

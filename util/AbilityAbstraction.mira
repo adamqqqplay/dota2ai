@@ -154,7 +154,7 @@ end
 
 M.First = function(self, tb, filter)
     if filter == nil then
-        filter = fun { true }
+        filter = { _ -> true }
     end
     for k, v in ipairs(tb) do
         if filter == nil or filter(v, k) then
@@ -1152,10 +1152,24 @@ M.basicDispellableNegativeModifiers = {
 
 M.unbreakableChannelAbilities = {
     "puck_phase_shift",
-    "pangolier_gyroshell",
     "lone_druid_true_form",
     "phoenix_supernova",
     "lycan_shapeshift",
+}
+
+M.lowPriorityChannelAbilities = {
+    "item_trusty_shovel",
+    "windrunner_powershot",
+}
+
+M.moderatePriorityChannelAbilities = {
+    "item_fallen_sky",
+    "keeper_of_the_light_illuminate",
+    "tinker_rearm",
+    "pugna_life_drain",
+    "hoodwink_hunters_boomerang",
+    "drow_ranger_multishot",
+    "clinkz_piercing_arrow",
 }
 
 M.nonIllusionModifiers = {}
@@ -1402,7 +1416,7 @@ M.IsChannelingAbility = function(self, npc)
     return npc:IsChanneling() and not self:IsChannelingItem(npc)
 end
 
-function M:IsChannelingBreakWorthAbility(npc)
+function M:IsChannelingBreakWorthAbility(npc, level)
     if not npc:IsChanneling() then 
         return false
     end
@@ -1411,12 +1425,19 @@ function M:IsChannelingBreakWorthAbility(npc)
         if npc:HasModifier "modifier_teleporting" then
             return true
         end
-        local item = self:GetAvailableItem(npc, "item_fallen_sky")
-        return item ~= nil
     end
     local name = ability:GetName()
     if self:Contains(self.unbreakableChannelAbilities, name) then
         return false
+    end
+    if level == nil or level == "low" then
+        if self:Contains(self.lowPriorityChannelAbilities, name) then 
+            return false
+        end
+    elseif level == "moderate" then
+        if self:Contains(self.moderatePriorityChannelAbilities, name) or self:Contains(self.lowPriorityChannelAbilities, name) then 
+            return false
+        end
     end
     return true
 end
@@ -1524,11 +1545,11 @@ function M:GetAllHeores(npcBot, getEnemy)
         getEnemy = true 
     end
     if getEnemy then 
-        return self:GetEnemyHeroUnique(npcBot, GetUnitList(UNIT_LIST_ENEMY_HEROES)):Filter fun {
+        return self:GetEnemyHeroUnique(npcBot, GetUnitList(UNIT_LIST_ENEMY_HEROES)):Filter { it ->
             self:MayNotBeIllusion(npcBot, it)
         }
     else
-        return self:Filter(GetUnitList(UNIT_LIST_ALLIED_HEROES)) fun {
+        return self:Filter(GetUnitList(UNIT_LIST_ALLIED_HEROES)) { it ->
             self:MayNotBeIllusion(npcBot, it)
         }
     end

@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.4
+-- Generated from Mirana Compiler version 1.6.0
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -29,7 +29,7 @@ M.Range = function(self, min, max, step)
     return g
 end
 M.Contains = function(self, tb, value, equals)
-    equals = equals or function(__mira_olpar_1, __mira_olpar_2) return __mira_olpar_1 == __mira_olpar_2 end
+    equals = equals or function(opv_1, opv_2) return opv_1 == opv_2 end
     for _, v in ipairs(tb) do
         if equals(v, value) then
             return true
@@ -38,7 +38,7 @@ M.Contains = function(self, tb, value, equals)
     return false
 end
 M.ContainsKey = function(self, tb, key, equals)
-    equals = equals or function(__mira_olpar_1, __mira_olpar_2) return __mira_olpar_1 == __mira_olpar_2 end
+    equals = equals or function(opv_1, opv_2) return opv_1 == opv_2 end
     for k, _ in pairs(tb) do
         if equals(key, k) then
             return true
@@ -140,7 +140,7 @@ M.ShallowCopy = function(self, tb)
 end
 M.First = function(self, tb, filter)
     if filter == nil then
-        filter = function()
+        filter = function(_)
             return true
         end
     end
@@ -229,7 +229,7 @@ M.Prepend = function(self, a, b)
     return self:Concat(b, a)
 end
 M.GroupBy = function(self, collection, keySelector, elementSelector, resultSelector, comparer)
-    comparer = comparer or function(__mira_olpar_1, __mira_olpar_2) return __mira_olpar_1 == __mira_olpar_2 end
+    comparer = comparer or function(opv_1, opv_2) return opv_1 == opv_2 end
     resultSelector = resultSelector or function(key, value)
         return value
     end
@@ -268,7 +268,7 @@ M.Partition = function(self, tb, filter)
     return a, b
 end
 M.Distinct = function(self, tb, equals)
-    equals = equals or function(__mira_olpar_1, __mira_olpar_2) return __mira_olpar_1 == __mira_olpar_2 end
+    equals = equals or function(opv_1, opv_2) return opv_1 == opv_2 end
     local g = NewTable()
     for _, v in pairs(tb) do
         if not self:Contains(g, v, equals) then
@@ -1061,10 +1061,22 @@ M.basicDispellableNegativeModifiers = {
 }
 M.unbreakableChannelAbilities = {
     "puck_phase_shift",
-    "pangolier_gyroshell",
     "lone_druid_true_form",
     "phoenix_supernova",
     "lycan_shapeshift",
+}
+M.lowPriorityChannelAbilities = {
+    "item_trusty_shovel",
+    "windrunner_powershot",
+}
+M.moderatePriorityChannelAbilities = {
+    "item_fallen_sky",
+    "keeper_of_the_light_illuminate",
+    "tinker_rearm",
+    "pugna_life_drain",
+    "hoodwink_hunters_boomerang",
+    "drow_ranger_multishot",
+    "clinkz_piercing_arrow",
 }
 M.nonIllusionModifiers = {}
 M.valubleNeutrals = {
@@ -1279,7 +1291,7 @@ end
 M.IsChannelingAbility = function(self, npc)
     return npc:IsChanneling() and not self:IsChannelingItem(npc)
 end
-function M:IsChannelingBreakWorthAbility(npc)
+function M:IsChannelingBreakWorthAbility(npc, level)
     if not npc:IsChanneling() then
         return false
     end
@@ -1288,12 +1300,19 @@ function M:IsChannelingBreakWorthAbility(npc)
         if npc:HasModifier "modifier_teleporting" then
             return true
         end
-        local item = self:GetAvailableItem(npc, "item_fallen_sky")
-        return item ~= nil
     end
     local name = ability:GetName()
     if self:Contains(self.unbreakableChannelAbilities, name) then
         return false
+    end
+    if level == nil or level == "low" then
+        if self:Contains(self.lowPriorityChannelAbilities, name) then
+            return false
+        end
+    elseif level == "moderate" then
+        if self:Contains(self.moderatePriorityChannelAbilities, name) or self:Contains(self.lowPriorityChannelAbilities, name) then
+            return false
+        end
     end
     return true
 end

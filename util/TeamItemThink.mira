@@ -121,12 +121,12 @@ end
 local heroItemMetatable = {
     __index = heroItemMetaFunc
 }
-fun1:ForEachDic(roles) fun {
+fun1:ForEachDic(roles) { it ->
     setmetatable(it, heroItemMetatable)
 }
 local zeroTable = {}
 setmetatable(zeroTable, {
-    __index = fun { 0 }
+    __index = { _ -> 0 }
 })
 setmetatable(roles, {
     __index = { _, heroName ->
@@ -140,13 +140,13 @@ local finishInit
 local runned
 local function TeamItemInit()
     finishInit = true
-    humanPlayers = fun1:Range(1, 5):Filter fun {
+    humanPlayers = fun1:Range(1, 5):Filter { it ->
         not GetTeamMember(it):IsBot()
     }
 end
 local teamMembers = {}
 local function InitHumanPlayers()
-    humanPlayers = fun1:Range(1, 5):Filter fun {
+    humanPlayers = fun1:Range(1, 5):Filter { it ->
         not GetTeamMember(it):IsBot()
     }
 end
@@ -237,9 +237,9 @@ local function AddMekansm()
         end
         return rate
     end
-    local heroRates = fun1:Map(teamMembers) fun {
+    local heroRates = fun1:Map(teamMembers) { it ->
         { it, Rate(it) }
-    }:SortByMaxFirst fun { it[2] }
+    }:SortByMaxFirst { it -> it[2] }
     local function BuyMekansm(hero)
         NotifyTeam(hero, "mekansm")
         AddBefore(hero.itemInformationTable, M.FullyExpandItem "item_mekansm", AddMekansmBefore)
@@ -272,7 +272,7 @@ local function TeamStateInit()
 end 
 
 local RefreshEnemyRespawnTime = fun1:EveryManySeconds(1) { ->
-    fun1:GroupBy(GetUnitList(UNIT_LIST_ENEMY_HEROES), t -> t:GetPlayerID(), t -> t, (k, v) -> { k, v })
+    fun1:GroupBy(GetUnitList(UNIT_LIST_ENEMY_HEROES), { t -> t:GetPlayerID() }, { t -> t }, { k, v -> k, v })
         :Map { t -> 
             { 
                 t[1], 
@@ -325,7 +325,7 @@ function M.TeamItemThink(npcBot)
         end
         table.insert(teamMembers, npcBot)
     end
-    fun1:StartCoroutine fun {
+    fun1:StartCoroutine { it ->
         while DotaTime() <= -80 do
             coroutine.yield()
         end

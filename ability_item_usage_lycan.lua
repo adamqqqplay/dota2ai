@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.4
+-- Generated from Mirana Compiler version 1.6.0
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -66,7 +66,9 @@ local CanCast = {
     utility.NCanCast,
     utility.NCanCast,
     utility.NCanCast,
-    function(t) return fun1:AllyCanCast(t) and not t:HasModifier "modifier_lycan_wolf_bite_lifesteal" end,
+    function(t)
+        return fun1:AllyCanCast(t) and not t:HasModifier "modifier_lycan_wolf_bite_lifesteal"
+    end,
     utility.UCanCast,
 }
 local enemyDisabled = utility.enemyDisabled

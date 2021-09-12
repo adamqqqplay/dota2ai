@@ -73,7 +73,10 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,t->fun1:AllyCanCast(t) and not t:HasModifier "modifier_lycan_wolf_bite_lifesteal",utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,
+	{ t -> fun1:AllyCanCast(t) and not t:HasModifier "modifier_lycan_wolf_bite_lifesteal"},
+	utility.UCanCast 
+}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()

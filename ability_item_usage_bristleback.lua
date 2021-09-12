@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.5.4
+-- Generated from Mirana Compiler version 1.6.0
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -65,11 +65,11 @@ local Consider = {}
 local CanCast = {
     fun1.NormalCanCastFunction,
     fun1.PhysicalCanCastFunction,
-    function()
+    function(_)
         return true
     end,
     fun1.NormalCanCastFunction,
-    function()
+    function(_)
         return true
     end,
 }
