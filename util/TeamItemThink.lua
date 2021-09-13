@@ -294,7 +294,10 @@ local RefreshEnemyRespawnTime = fun1:EveryManySeconds(1, function()
     end, function(t)
         return t
     end, function(k, v)
-        return k, v
+        return {
+            k,
+            v,
+        }
     end):Map(function(t)
         return {
             t[1],

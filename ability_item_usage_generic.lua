@@ -409,7 +409,7 @@ function UseAbility(AbilitiesReal, cast)
 	if (HighestDesire > 0) then
 		local j = HighestDesireAbilityNumber
 		local ability = AbilitiesReal[j]
-		print(npcBot:GetUnitName()..": use "..ability:GetName())
+		-- print(npcBot:GetUnitName()..": use "..ability:GetName())
 		if not ability:IsCooldownReady() then
 			print("Ability still in cooldown: "..ability:GetName())
 			AbilityExtensions:DebugPause()

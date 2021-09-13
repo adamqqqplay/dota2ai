@@ -272,7 +272,7 @@ local function TeamStateInit()
 end 
 
 local RefreshEnemyRespawnTime = fun1:EveryManySeconds(1) { ->
-    fun1:GroupBy(GetUnitList(UNIT_LIST_ENEMY_HEROES), { t -> t:GetPlayerID() }, { t -> t }, { k, v -> k, v })
+    fun1:GroupBy(GetUnitList(UNIT_LIST_ENEMY_HEROES), { t -> t:GetPlayerID() }, { t -> t }, { k, v -> { k, v } })
         :Map { t -> 
             { 
                 t[1], 
