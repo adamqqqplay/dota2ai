@@ -347,6 +347,9 @@ Consider[2]=function()
 	if not ability:IsFullyCastable() or AbilityExtensions:CannotMove(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
+	if AbilityExtensions:GameNotReallyStarting() then
+		return 0
+	end
 	
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();

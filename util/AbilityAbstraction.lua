@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.0
+-- Generated from Mirana Compiler version 1.6.1
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -1064,13 +1064,14 @@ M.unbreakableChannelAbilities = {
     "lone_druid_true_form",
     "phoenix_supernova",
     "lycan_shapeshift",
+    "item_trusty_shovel",
+    "item_fallen_sky",
 }
 M.lowPriorityChannelAbilities = {
-    "item_trusty_shovel",
     "windrunner_powershot",
+    "ability_capture",
 }
 M.moderatePriorityChannelAbilities = {
-    "item_fallen_sky",
     "keeper_of_the_light_illuminate",
     "tinker_rearm",
     "pugna_life_drain",
@@ -1109,6 +1110,7 @@ M.hexModifiers = {
     "modifier_sheepstick_debuff",
     "modifier_item_princes_knife_hex",
     "modifier_hexxed",
+    "modifier_item_unstable_wand_critter",
 }
 M.silenceModifiers = {
     "modifier_abaddon_frostmourne_debuff_bonus",
@@ -1128,6 +1130,7 @@ M.silenceModifiers = {
     "modifier_silencer_global_silence",
     "modifier_silencer_last_word",
     "modifier_skywrath_mage_ancient_seal",
+    "modifier_item_book_of_shadows",
 }
 M.timedSilenceModifiers = {
     "modifier_abaddon_frostmourne_debuff_bonus",
@@ -1143,6 +1146,7 @@ M.timedSilenceModifiers = {
     "modifier_silencer_global_silence",
     "modifier_silencer_last_word",
     "modifier_skywrath_mage_ancient_seal",
+    "modifier_item_book_of_shadows",
 }
 M.magicImmuneModifiers = {
     "modifier_item_black_king_bar",
@@ -1154,11 +1158,18 @@ M.magicImmuneModifiers = {
     "modifier_legion_commander_press_the_attack_immunity",
     "modifier_lion_mana_drain_immunity",
 }
+M.disarmModifiers = {
+    "modifier_haskar_inner_fire_disarm",
+    "modifier_item_book_of_shadows",
+    "modifier_heavens_halberd_debuff",
+}
 M.stunModifiers = { "" }
 M.muteModifiers = {
     "modifier_tusk_snowball",
     "modifier_doom_bringer_doom",
     "modifier_disruptor_static_storm_mute",
+    "modifier_item_book_of_shadows",
+    "modifier_item_nullifier_mute",
 }
 M.breakModifiers = {
     "modifier_hoodwink_sharpshooter",
@@ -1166,6 +1177,20 @@ M.breakModifiers = {
     "modifier_silver_edge_debuff",
     "modifier_viper_nethertoxin",
 }
+M.knockbackModifiers = {
+    "modifier_huskar_inner_fire_knockback",
+    "modifier_pudge_meat_hook",
+    "modifier_snapfire_firesnap_cookie_pre_hop",
+    "modifier_snapfire_firesnap_cookie_short_hop",
+    "modifier_knockback",
+    "modifier_drowranger_wave_of_silence_knockback",
+    "modifier_item_forcestaff_active",
+    "modifier_item_hurricane_pike_active",
+    "modifier_item_pogostick_active",
+    "modifier_item_psychic_headband_active",
+    "modifier_force_boots_active",
+}
+M.blindModifiers = { "modifier_item_black_powder_bag_blind" }
 M.noTrueSightRootAbilityAssociation = {
     dark_willow_branble_maze = "modifier_dark_willow_bramble_maze",
     item_diffusal_blade = "modifier_rooted",
@@ -1175,6 +1200,7 @@ M.conditionalTrueSightRootAbilityAssociation = {
     ember_spirit_searing_chains = "modifier_ember_spirit_searing_chains",
     oracle_fortunes_end = "modifier_oracle_fortunes_end_purge",
     item_rod_of_atos = "modifier_rod_of_atos_debuff",
+    item_gleipnir = "modifier_gungir_debuff",
 }
 M.permanentTrueSightRootAbilityAssociation = {
     broodmother_silken_bola = "modifier_broodmother_silken_bola",
@@ -1408,8 +1434,13 @@ M.GetNearbyHeroes = function(self, npcBot, range, getEnemy, botModeMask)
     end
     botModeMask = botModeMask or BOT_MODE_NONE
     local heroes = npcBot:GetNearbyHeroes(range, getEnemy, botModeMask) or {}
-    GiveLinqFunctions(heroes, magicTable)
+    GiveLinqFunctions(heroes)
     return heroes
+end
+function M:GetUnitList(unitListKind)
+    local units = GetUnitList(unitListKind) or {}
+    GiveLinqFunctions(units)
+    return units
 end
 function M:GetAllHeores(npcBot, getEnemy)
     if getEnemy == nil then
@@ -1430,7 +1461,7 @@ function M:GetNearbyCreeps(npcBot, range, getEnemy)
         getEnemy = true
     end
     local t = npcBot:GetNearbyCreeps(range, getEnemy) or {}
-    GiveLinqFunctions(t, magicTable)
+    GiveLinqFunctions(t)
     return t
 end
 function M:GetNearbyLaneCreeps(npcBot, range, getEnemy)
@@ -1438,7 +1469,7 @@ function M:GetNearbyLaneCreeps(npcBot, range, getEnemy)
         getEnemy = true
     end
     local t = npcBot:GetNearbyLaneCreeps(range, getEnemy) or {}
-    GiveLinqFunctions(t, magicTable)
+    GiveLinqFunctions(t)
     return t
 end
 M.GetNearbyNonIllusionHeroes = function(self, npcBot, range, getEnemy, botModeMask)
@@ -1465,7 +1496,7 @@ function M:GetNearbyAttackableCreeps(npcBot, range, getEnemy)
             return t:HasModifier "modifier_fountain_glyph"
         end)
     end
-    GiveLinqFunctions(creeps, magicTable)
+    GiveLinqFunctions(creeps)
     return creeps
 end
 M.GetNearbyAllUnits = function(self, npcBot, range)
@@ -1748,13 +1779,13 @@ function M:FindCourier(npcBot)
 end
 M.GetAllBoughtItems = function(self, npcBot)
     local g = NewTable()
-    for i = 0, 15 do
+    for i = 0, 16 do
         local item = npcBot:GetItemInSlot(i)
         if item then
             table.insert(g, item)
         end
     end
-    if DotaTime() >= -70 then
+    if not self:GameNotReallyStarting() then
         g = self:Concat(g, self:GetCourierItems(self:GetMyCourier(npcBot)))
     end
     return g
@@ -1763,11 +1794,12 @@ M.IsBoots = function(self, item)
     if type(item) ~= "string" then
         item = item:GetName()
     end
-    return string.match(item, "boots") or item == "item_guardian_greaves" or #item >= 17 and string.sub(item, 17) == "item_power_treads"
+    return string.match(item, "boots") or item == "item_guardian_greaves" or item == "item_power_treads"
 end
 M.SwapCheapestItemToBackpack = function(self, npc)
     local cheapestItem = self:First(self:Sort(self:Filter(self:GetInventoryItems(npc), function(t)
-        return not self:IsBoots(t) and not string.match(t:GetName(), "ward")
+        local itemName = t:GetName()
+        return not self:IsBoots(t) and not string.match(itemName, "ward") and not itemName == "item_gem" and not itemName == "item_dust"
     end), function(a, b)
         return GetItemCost(a:GetName()) - GetItemCost(b:GetName())
     end))
@@ -1929,6 +1961,43 @@ M.IsInvulnerable = function(self, npc)
     return npc:IsInvulnerable() or self:Any(self.IgnoreDamageModifiers, function(t)
         return npc:HasModifier(t)
     end)
+end
+M.invisibilityItems = {
+    "item_invis_sword",
+    "item_silver_edge",
+    "item_glimmer_cape",
+    "item_trickster_cloak",
+}
+M.invisibilityHeroes = {
+    riki = 6,
+    clinkz = 1,
+    bounty_hunter = 1,
+    phantom_assassin = 2,
+    weaver = 1,
+    windrunner = 20,
+    nyx_assassin = 6,
+    mirana = 6,
+}
+function M:HasInvisibility(npc)
+    if npc:HasInvisibility(true) then
+        return true
+    end
+    if self:GetCarriedItems(npc):Any(function(t)
+        return self:Contains(self.invisibilityItems, t:GetName())
+    end) then
+        return true
+    end
+    local heroName = self:GetHeroShortName(npc:GetUnitName())
+    do
+        local requiredLevel = self.invisibilityHeroes[heroName]
+        if requiredLevel then
+            return npc:GetLevel() >= requiredLevel
+        end
+    end
+    if heroName == "brewmaster" and self:HasScepter(npc) then
+        return true
+    end
+    return false
 end
 M.MayNotBeSeen = function(self, npc)
     if not npc:IsInvisible() or npc:HasModifier "modifier_item_dust" or npc:HasModifier "modifier_bounty_hunter_track" or npc:HasModifier "modifier_slardar_amplify_damage" or npc:HasModifier "modifier_truesight" then
@@ -2333,6 +2402,7 @@ M.GetPointToLineDistance = function(self, point, line)
     local down = math.sqrt(line.a * line.a + line.b * line.b)
     return up / down
 end
+M.commonBoudingRadius = 100
 M.GetPointToPointDistance = function(self, a, b)
     return ((a.x - b.x) ^ 2 + (a.y - b.y) ^ 2) ^ 0.5
 end
@@ -2694,11 +2764,15 @@ function M:RecordAbility(npc, index, target, castType, abilities)
 end
 local frameNumber = 0
 local dotaTimer
+local deltaTime = 0
 local function FloatEqual(a, b)
     return math.abs(a - b) < 0.000001
 end
 function M:GetFrameNumber()
     return frameNumber
+end
+function M:GetDeltaTime()
+    return deltaTime
 end
 function M:EveryManyFrames(count, times)
     times = times or 1
@@ -2708,10 +2782,14 @@ local defaultReturn = NewTable()
 local everySecondsCallRegistry = NewTable()
 function M:EveryManySeconds(second, oldFunction)
     local functionName = tostring(oldFunction)
-    everySecondsCallRegistry[functionName.."lastCallTime"] = DotaTime() + RandomFloat(0, second)
+    local callTable = {}
+    everySecondsCallRegistry[functionName] = callTable
+    callTable.lastCallTime = DotaTime() + RandomFloat(0, second)
+    callTable.interval = second
     return function(...)
-        if everySecondsCallRegistry[functionName.."lastCallTime"] <= DotaTime() - second then
-            everySecondsCallRegistry[functionName.."lastCallTime"] = DotaTime()
+        local callTable = everySecondsCallRegistry[tostring(oldFunction)]
+        if callTable.lastCallTime <= DotaTime() - callTable.interval then
+            callTable.lastCallTime = DotaTime()
             return oldFunction(...)
         else
             return defaultReturn
@@ -2765,7 +2843,7 @@ local coroutineExempt = NewTable()
 function M:TickFromDota()
     local time = DotaTime()
     local function ResumeCoroutine(thread)
-        local coroutineResult = { coroutine.resume(thread, time - dotaTimer) }
+        local coroutineResult = { coroutine.resume(thread, deltaTime) }
         if not coroutineResult[1] then
             table.remove(coroutineResult, 1)
             print("error in coroutine:")
@@ -2776,10 +2854,11 @@ function M:TickFromDota()
         dotaTimer = time
         return
     end
+    deltaTime = time - dotaTimer
     if not FloatEqual(time, dotaTimer) then
         frameNumber = frameNumber + 1
         self:ForEach(slowFunctionRegistries, function(t)
-            t(time - dotaTimer)
+            t(deltaTime)
         end)
         local threadIndex = 1
         while threadIndex <= #coroutineRegistry do
@@ -2819,6 +2898,17 @@ function M:RegisterSlowFunction(oldFunction, calledWhenHowManyFrames, frameOffse
             return self:UnpackIfTable(defaultReturn)
         end
     end
+end
+function M:GameNotReallyStarting()
+    local gameMode = GetGameMode()
+    if gameMode == GAMEMODE_AP then
+        return DotaTime() <= -75
+    elseif gameMode == GAMEMODE_ALL_DRAFT or gameMode == GAMEMODE_RD then
+        return DotaTime() <= -52
+    elseif gameMode == GAMEMODE_SD then
+        return DotaTime() <= -35
+    end
+    return false
 end
 function M:ResumeUntilReturn(func)
     local g = NewTable()

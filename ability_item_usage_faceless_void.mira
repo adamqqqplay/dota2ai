@@ -94,6 +94,9 @@ Consider[1]=function()
 	if not ability:IsFullyCastable() or fun1:CannotMove(npcBot) then
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
+	if fun1:GameNotReallyStarting() then
+		return 0
+	end
 	
 	local CastRange = ability:GetSpecialValueInt( "range" );
 	

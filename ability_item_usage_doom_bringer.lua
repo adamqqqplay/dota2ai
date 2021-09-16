@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.0
+-- Generated from Mirana Compiler version 1.6.1
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -68,17 +68,6 @@ cast.Desire = {}
 cast.Target = {}
 cast.Type = {}
 local Consider = {}
-local CanCast = {
-    function(t)
-        return not t:IsHero() and not fun1:IsRoshan(t)
-    end,
-    utility.NCanCast,
-    utility.NCanCast,
-    utility.UCanCast,
-    utility.UCanCast,
-    utility.UCanCast,
-}
-local enemyDisabled = utility.enemyDisabled
 function GetComboDamage()
     return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
 end
@@ -100,6 +89,17 @@ local enemyCreeps
 local friendCreeps
 local neutralCreeps
 local tower
+local CanCast = {
+    function(t)
+        return not t:IsHero() and not fun1:IsRoshan(t) and t:GetLevel() <= AbilitiesReal[1]:GetLevel() + 3
+    end,
+    utility.NCanCast,
+    utility.NCanCast,
+    utility.UCanCast,
+    utility.UCanCast,
+    utility.UCanCast,
+}
+local enemyDisabled = utility.enemyDisabled
 local function GetComboMana()
     local mana = 0
     local dotaTime = DotaTime() / 60
@@ -147,7 +147,7 @@ Consider[1] = function()
     local CreepHealth = 10000
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local creeps = npcBot:GetNearbyCreeps(CastRange + 200, true)
-    if npcBot:GetAbilityByName "special_bonus_unique_doom_bringer_3" then
+    if npcBot:GetAbilityByName "special_bonus_unique_doom_bringer_3":GetLevel() < 1 then
         creeps = fun1:Filter(creeps, function(t)
             return not t:IsAncientCreep()
         end)
@@ -171,7 +171,8 @@ Consider[2] = function()
     end
     local Damage = ability:GetDuration() * ability:GetSpecialValueInt("damage_per_second")
     local Radius = ability:GetAOERadius()
-    local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
+    local allys = fun1:GetNearbyNonIllusionHeroes(npcBot, 1200, false)
+    local allyCount = fun1:GetEnemyHeroNumber(npcBot, allys)
     local enemys = npcBot:GetNearbyHeroes(Radius + 300, true, BOT_MODE_NONE)
     local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(Radius + 300, true)
@@ -183,14 +184,14 @@ Consider[2] = function()
         local npcEnemy = npcBot:GetTarget()
         if ManaPercentage > 0.4 or npcBot:GetMana() > ComboMana then
             if npcEnemy ~= nil then
-                if GetUnitToUnitDistance(npcBot, npcEnemy) > 450 or npcEnemy:GetHealth() / npcEnemy:GetMaxHealth() < 0.4 then
+                if (GetUnitToUnitDistance(npcBot, npcEnemy) > 450 or npcEnemy:GetHealth() / npcEnemy:GetMaxHealth() < 0.4) and GetUnitToLocationDistance(npcBot, npcEnemy) < 1100 then
                     return BOT_ACTION_DESIRE_HIGH
                 end
             end
         end
     end
     if npcBot:GetActiveMode() == BOT_MODE_FARM then
-        if #creeps >= 2 and (ManaPercentage > 0.4 or npcBot:GetMana() > ComboMana) then
+        if (#creeps >= 3 and (ManaPercentage > 0.4 or npcBot:GetMana() > ComboMana)) and allyCount < 3 then
             return BOT_ACTION_DESIRE_LOW
         end
     end
@@ -380,6 +381,9 @@ local function satyr_soulstealer_mana_burn(ability)
     end
     return 0
 end
+local function enraged_wildkin_tornado(ability)
+    return 0
+end
 local function DoomAcquiredAbilityThink(ability)
     local abilityName = ability:GetName()
     if abilityName == "doom_bringer_empty1" or abilityName == "doom_bringer_empty2" then
@@ -390,6 +394,8 @@ local function DoomAcquiredAbilityThink(ability)
         return centaur_khan_war_stomp(ability)
     elseif abilityName == "mud_golem_hurl_boulder" then
         return mud_golem_hurl_boulder(ability)
+    elseif abilityName == "enraged_wildkin_tornado" then
+        return enraged_wildkin_tornado(ability)
     else
         return 0
     end
@@ -408,8 +414,8 @@ Consider[6] = function()
     end
     local Damage = ability:GetDuration() * ability:GetSpecialValueInt("damage_per_second")
     local CastRange = ability:GetCastRange()
-    local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-    local enemys = npcBot:GetNearbyHeroes(CastRange + 300, true, BOT_MODE_NONE)
+    local allys = fun1:GetNearbyNonIllusionHeroes(npcBot, 1200, false)
+    local enemys = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange + 300, true)
     local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(CastRange + 300, true)
     local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
@@ -432,7 +438,7 @@ Consider[6] = function()
     end
     do
         local channeling = enemys:First(function(t)
-            return AbilityExtensions:IsChannelingBreakWorthAbility(t, "moderate") and CanCast[6](t)
+            return fun1:IsChannelingBreakWorthAbility(t, "moderate") and CanCast[6](t)
         end)
         if channeling then
             return BOT_ACTION_DESIRE_MODERATE - 0.1, channeling
@@ -448,17 +454,27 @@ Consider[6] = function()
         end
     end
     if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
-        local npcEnemy = fun1:GetTargetIfGood(npcBot)
-        if npcEnemy ~= nil then
-            if CanCast[abilityNumber](npcEnemy) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys then
-                return BOT_ACTION_DESIRE_MODERATE, npcEnemy
+        do
+            local npcEnemy = fun1:GetTargetIfGood(npcBot)
+            if npcEnemy then
+                if CanCast[abilityNumber](npcEnemy) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys then
+                    return BOT_ACTION_DESIRE_MODERATE, npcEnemy
+                end
             end
         end
     end
     return BOT_ACTION_DESIRE_NONE, 0
 end
+local RefreshAbilities = fun1:EveryManySeconds(2, function()
+    AbilitiesReal = fun1:Range(1, 10):Map(function(t)
+        return npcBot:GetAbilityInSlot(t)
+    end):Filter(function(t)
+        return t and t:GetName() ~= "ability_hidden" and not t:IsTalent()
+    end)
+end)
 fun1:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
+    RefreshAbilities()
     if npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() then
         return
     end

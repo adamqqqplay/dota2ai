@@ -522,7 +522,6 @@ end
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
 function AbilityUsageThink()
-
 	if npcBot == nil then npcBot = GetBot(); end
 	
 	-- Check if we're already using an ability

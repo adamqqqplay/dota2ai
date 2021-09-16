@@ -82,7 +82,7 @@ local CanCast={function(t)
 end,function(npcTarget)
 	return utility.NCanCast(npcTarget) and npcTarget:GetLevel()<=5 and not npcTarget:IsAncientCreep()
 end,AbilityExtensions.NormalCanCastFunction, function(t)
-	return AbilityExtensions:NormalCanCast(t, true) 
+	return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_PRUE, true) 
 end}
 local enemyDisabled=utility.enemyDisabled
 

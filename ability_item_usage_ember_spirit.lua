@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.0
+-- Generated from Mirana Compiler version 1.6.1
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -68,10 +68,10 @@ local CanCast = {
     end,
     fun1.PhysicalCanCastFunction,
     fun1.NormalCanCastFunction,
-    function(_)
+    function()
         return true
     end,
-    function(_)
+    function()
         return true
     end,
 }
@@ -290,8 +290,6 @@ Consider[3] = function()
     local targettableEnemies = fun1:Filter(realEnemies, function(t)
         return fun1:NormalCanCast(t)
     end)
-    local friends = fun1:GetNearbyHeroes(npcBot, 1200, true)
-    local friendCount = fun1:GetEnemyHeroNumber(npcBot, friends)
     local enemyCreeps = fun1:GetNearbyAttackableCreeps(npcBot, 900)
     local friendCreeps = fun1:GetNearbyAttackableCreeps(npcBot, npcBot:GetAttackRange() + 150, false)
     local neutralCreeps = npcBot:GetNearbyNeutralCreeps(castRange)
@@ -302,7 +300,9 @@ Consider[3] = function()
     local manaMaintain = npcBot:GetMaxMana() * 0.6 + manaCost
     if fun1:IsFarmingOrPushing(npcBot) then
         if #enemyCreeps >= 4 and mana >= manaMaintain and abilityLevel >= 3 then
-            return BOT_ACTION_DESIRE_MODERATE - 0.08
+            if not (friendCount >= 3 or npcBot:GetNetWorth() >= 10000 and fun1:GetAvailableItem("item_bfury")) then
+                return BOT_ACTION_DESIRE_MODERATE - 0.08
+            end
         end
     elseif fun1:IsLaning(npcBot) then
         if #enemyCreeps >= 3 and mana >= npcBot:GetMaxMana() * 0.3 + manaCost then
@@ -315,7 +315,7 @@ Consider[3] = function()
             end
         end
     elseif fun1:IsAttackingEnemies(npcBot) then
-        if abilityLevel <= 2 then
+        if abilityLevel <= 1 then
             return 0
         end
         if IsUsingSleightOfFist() then
@@ -417,16 +417,17 @@ Consider[4] = function()
             if remnantUnderTower[1] then
                 return BOT_ACTION_DESIRE_MODERATE, remnantUnderTower[1]:GetLocation()
             end
-        elseif fun1:IsAttackingEnemies(npcBot) then
-            for _, activeRemnant in ipairs(activeRemnants) do
-                local enemies = fun1:GetNearbyHeroes(activeRemnant, 1599)
-                local enemyCount = fun1:GetEnemyHeroNumber(npcBot, enemies)
-                local friends = fun1:GetNearbyHeroes(activeRemnant, 1200, true)
-                local friendCount = fun1:GetEnemyHeroNumber(npcBot, friends)
-                local veryNearEnemies = fun1:GetEnemyHeroNumber(npcBot, fun1:GetNearbyHeroes(activeRemnant, 400))
-                if friendCount >= enemyCount and #veryNearEnemies == 0 then
-                    return BOT_ACTION_DESIRE_MODERATE, activeRemnant:GetLocation()
-                end
+        end
+    end
+    if fun1:IsAttackingEnemies(npcBot) then
+        for _, activeRemnant in ipairs(activeRemnants) do
+            local enemies = fun1:GetNearbyHeroes(activeRemnant, 1599)
+            local enemyCount = fun1:GetEnemyHeroNumber(npcBot, enemies)
+            local friends = fun1:GetNearbyHeroes(activeRemnant, 1200, true)
+            local friendCount = fun1:GetEnemyHeroNumber(npcBot, friends)
+            local veryNearEnemies = fun1:GetEnemyHeroNumber(npcBot, fun1:GetNearbyHeroes(activeRemnant, 400))
+            if friendCount >= enemyCount and #veryNearEnemies == 0 then
+                return BOT_ACTION_DESIRE_MODERATE, activeRemnant:GetLocation()
             end
         end
     end
@@ -447,7 +448,8 @@ Consider[4] = function()
         if fun1:Any(distanceToFountain) then
             return BOT_ACTION_DESIRE_HIGH, distanceToFountain[1][1]:GetLocation()
         end
-    else
+    end
+    if fun1:NotRetreating(npcBot) then
         for _, activeRemnant in ipairs(activeRemnants) do
             local target = fun1:GetTargetIfGood(npcBot)
             if target ~= nil and target:CanBeSeen() and fun1:NormalCanCast(target, false) and GetUnitToUnitDistance(activeRemnant, target) <= radius then

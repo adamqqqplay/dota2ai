@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.0
+-- Generated from Mirana Compiler version 1.6.1
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -89,7 +89,7 @@ local useTorrentAtXMark
 local useTorrentAtXMarkTime
 local xMarkTargetWasTeleporting
 local function XMarksEnemy()
-    return xMarkTarget ~= nil and xMarkTarget:GetTeam() ~= npcBot:GetTeam()
+    return xMarkTarget ~= nil and xMarkTarget:IsAlive() and xMarkTarget:GetTeam() ~= npcBot:GetTeam()
 end
 Consider[1] = function()
     local abilityNumber = 1
@@ -365,13 +365,15 @@ function AbilityUsageThink()
     if debugmode == true then
         ability_item_usage_generic.PrintDebugInfo(AbilitiesReal, cast)
     end
-    if xMarkTarget and (not npcBot:IsAlive() or not xMarkTarget:IsAlive() or not xMarkTarget:HasModifier("modifier_kunkka_x_marks_the_spot")) then
-        xMarkTarget = nil
-        xMarkTime = nil
-        xMarkLocation = nil
-        useTorrentAtXMark = false
-        useTorrentAtXMarkTime = nil
-    end
+    pcall(function()
+        if xMarkTarget and (not npcBot:IsAlive() or not xMarkTarget:IsAlive() or not xMarkTarget:HasModifier("modifier_kunkka_x_marks_the_spot")) then
+            xMarkTarget = nil
+            xMarkTime = nil
+            xMarkLocation = nil
+            useTorrentAtXMark = false
+            useTorrentAtXMarkTime = nil
+        end
+    end)
     local index,target = ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
     if index == 3 and target ~= nil then
         xMarkTarget = target

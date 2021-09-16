@@ -467,8 +467,10 @@ Consider[6]=function()
 	local Radius = ability:GetAOERadius()
 	
 
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, false)
+	local allyCount = AbilityExtensions:GetEnemyHeroNumber(npcBot, allys)
 	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
+	local enemyCount = AbilityExtensions:GetEnemyHeroNumber(npcBot, enemys)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	--------------------------------------
 	-- Global high-priorty usage
@@ -484,7 +486,7 @@ Consider[6]=function()
 	
 	if ( npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		if ( #enemys+#allys >= 4 and #enemys >=2) 
+		if ( enemyCount+allyCount >= 4 and enemyCount >=2) 
 		then
 			return BOT_ACTION_DESIRE_HIGH
 		end
@@ -496,7 +498,7 @@ Consider[6]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
 	then
-		local npcEnemy = npcBot:GetTarget();
+		local npcEnemy = AbilityExtensions:GetTargetIfGood()
 
 		if ( npcEnemy ~= nil ) 
 		then

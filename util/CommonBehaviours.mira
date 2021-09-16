@@ -1,26 +1,69 @@
 
 local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
 local M = {}
+local avoidCurseList = fun1:NewTable()
 
-local bot = GetBot()
-local function AvoidWintersCurse()
+local bot
+local AvoidWintersCurse = fun1:EveryManySeconds(0.3) { ->
+    local l = bot._commonBehaviours_alt
     if local cursedOne = fun1:GetNearbyHeroes(bot, 800, false):First { t -> t:HasModifier "modifier_winter_wyvern_winters_curse_aura" } then
-        local location = cursedOne:GetLocation()
-        location.z = 525 + bot:GetBoundingRadius()
-        local zone = AddAvoidanceZone(location)
-        print("add zone "..tostring(zone))
-        fun1:StartCoroutine { deltaTime ->
-            fun1:WaitForSeconds(cursedOne:GetModifierRemainingDuration "modifier_winter_wyvern_winters_curse_aura")
-            RemoveAvoidanceZone(zone)
+        if not l.avoidCurseList:Contains(cursedOne) then
+            table.insert(l.avoidCurseList, cursedOne)
+            local location = cursedOne:GetLocation()
+            location.z = 525 + bot:GetBoundingRadius()
+            local zone = AddAvoidanceZone(location)
+            print("add zone "..tostring(zone))
+            fun1:StartCoroutine { deltaTime ->
+                -- fun1:WaitForSeconds(cursedOne:GetModifierRemainingDuration "modifier_winter_wyvern_winters_curse_aura")
+                while cursedOne:HasModifier "modifier_winter_wyvern_winters_curse_aura" do
+                    -- DebugDrawCircle(cursedOne:GetLocation(), 525+fun1.commonBoudingRadius, 255, 0, 0)
+                    coroutine.yield()
+                end
+                RemoveAvoidanceZone(zone)
+                l.avoidCurseList:Remove_Modify(cursedOne)
+            }
+        end
+    end
+}
+
+local AvoidFirestorm = fun1:EveryManySeconds(1) {->
+    local l = bot._commonBehaviours_alt
+    fun1:GetNearbyHeroes(bot, 800, false):Concat(fun1:GetNearbyCreeps(bot, 800, false)):All {
+        t -> t:HasModifier "modifier_abyssal_underlord_firestorm_burn"
+    }:ForEach { t ->
+        if not l.avoidFirestorm:Contains(t) then
+            local location t:GetLocation()
+            location.z = 500 + bot:GetBoundingRadius()
+            local zone = AddAvoidanceZone(location)
+            fun1:StartCoroutine {->
+                while t:HasModifier "modifier_winter_wyvern_winters_curse_aura" do
+                    -- DebugDrawCircle(t:GetLocation(), 500+fun1.commonBoudingRadius, 60, 183, 0)
+                    coroutine.yield()
+                end
+                RemoveAvoidanceZone(zone)
+                l.avoidFirestorm:Remove_Modify(t)
+            }
+        end
+    }
+}
+
+local Init = function()
+    if bot._commonBehaviours_alt == nil then
+        bot._commonBehaviours_alt = {
+            avoidCurseList = fun1:NewTable(),
+            avoidFirestorm = fun1:NewTable(),
+
         }
     end
 end
 
-local Think = fun1:EveryManySeconds(0.5) { deltaTime -> 
+local Think = function()
     AvoidWintersCurse()
-}
+end
 
 function M.Think()
+    bot = GetBot()
+    Init()
     Think()
 end
 

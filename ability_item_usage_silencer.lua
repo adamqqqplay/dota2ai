@@ -445,7 +445,7 @@ Consider[4]=function()
 	for _,npcEnemy in pairs( enemys )
 	do
 		if AbilityExtensions:IsChannelingAbility(npcEnemy) and CanCast[abilityNumber]( npcEnemy ) then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy
+			return BOT_ACTION_DESIRE_HIGH
 		end
 	end
 	
@@ -472,7 +472,7 @@ Consider[4]=function()
 
 			if ( npcMostDangerousEnemy ~= nil )
 			then
-				return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy;
+				return BOT_ACTION_DESIRE_HIGH
 			end
 		end
 	end

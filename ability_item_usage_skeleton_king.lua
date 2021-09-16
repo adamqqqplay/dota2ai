@@ -210,13 +210,11 @@ Consider[2]=function()
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE
     end
-    if ability:GetManaCost() + AbilitiesReal[4]:GetManaCost() <= npcBot:GetMana() then
-        return BOT_ACTION_DESIRE_NONE
-    end
 
 	local CastRange = ability:GetCastRange()
 	local CastPoint = ability:GetCastPoint()
-
+	local skeletonCount = npcBot:GetModifierStackCount(npcBot:GetModifierByName "modifier_skeleton_king_vampiric_aura")
+	local abilityLevel = ability:GetLevel()
 
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(1200,true,BOT_MODE_NONE)
@@ -232,8 +230,8 @@ Consider[2]=function()
 	then
 		if (WeakestEnemy~=nil)
 		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) and npcBot:HasModifier("modifier_skeleton_king_mortal_strike")
-				and npcBot:GetModifierStackCount(npcBot:GetModifierByName("modifier_skeleton_king_mortal_strike"))> ability:GetLevel())
+			if ( CanCast[abilityNumber]( WeakestEnemy ) and npcBot:HasModifier("modifier_skeleton_king_vampiric_aura")
+				and skeletonCount > abilityLevel)
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or npcBot:GetMana()>ComboMana)
 				then
@@ -249,9 +247,7 @@ Consider[2]=function()
 	-- If we're farming and can hit 2+ creeps
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
-		if ( #creeps >= 3 and npcBot:HasModifier("modifier_skeleton_king_vampiric_spirit")
-				and npcBot:GetModifierStackCount(npcBot:GetModifierByName("modifier_skeleton_king_vampiric_spirit"))> ability:GetLevel())
-		then
+		if #creeps >= 3 and skeletonCount > abilityLevel then
 			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or npcBot:GetMana()>ComboMana)
 			then
 				return BOT_ACTION_DESIRE_LOW
@@ -268,8 +264,7 @@ Consider[2]=function()
 	then
 		local npcEnemy = npcBot:GetTarget();
 
-		if ( npcEnemy ~= nil and npcBot:HasModifier("modifier_skeleton_king_mortal_strike")
-				and npcBot:GetModifierStackCount(npcBot:GetModifierByName("modifier_skeleton_king_mortal_strike"))> ability:GetLevel() + 2)
+		if npcEnemy and skeletonCount > abilityLevel + 2
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot,npcEnemy) <= 1200-CastPoint* npcEnemy:GetCurrentMovementSpeed())
 			then

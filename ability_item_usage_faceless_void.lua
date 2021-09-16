@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.0
+-- Generated from Mirana Compiler version 1.6.1
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -81,6 +81,9 @@ Consider[1] = function()
     local ability = AbilitiesReal[abilityNumber]
     if not ability:IsFullyCastable() or fun1:CannotMove(npcBot) then
         return BOT_ACTION_DESIRE_NONE, 0
+    end
+    if fun1:GameNotReallyStarting() then
+        return 0
     end
     local CastRange = ability:GetSpecialValueInt("range")
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)

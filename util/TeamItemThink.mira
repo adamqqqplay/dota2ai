@@ -72,6 +72,7 @@ local roles = {
     oracle={8,},
     phantom_assassin={1,},
     phantom_lancer={1,},
+    pugna={5,},
     puck={4,},
     pudge={1,},
     queenofpain={3,},
@@ -289,7 +290,7 @@ local RefreshEnemyRespawnTime = fun1:EveryManySeconds(1) { ->
 
 function M.GetEnemyRespawnTime(id)
     return if id {
-        enemyStates[IdToEnemyStateTableIndex(id)].respawnTime 
+        enemyStates[IdToEnemyStateTableIndex(id)].respawnTime or 0
     } else {
         enemyStates:Map { t -> t.respawnTime }
     }
@@ -297,9 +298,9 @@ end
 
 function M.EnemyReadyToFight(id) 
     return if id {
-        enemyStates[IdToEnemyStateTableIndex(id)].respawnTime <= 8 
+        (enemyStates[IdToEnemyStateTableIndex(id)].respawnTime or 0) <= 8 
     } else {
-        enemyStates:Count { _, id -> M.ReadyToFight(id) }
+        enemyStates:Count { _, id -> M.EnemyReadyToFight(id) }
     }
 end
 
@@ -310,9 +311,54 @@ local function TeamStateThink()
     RefreshEnemyRespawnTime()
 end
 
+local function GetOtherTeam()
+    if GetTeam() == TEAM_RADIANT then
+        return TEAM_DIRE
+    else
+        return TEAM_RADIANT
+    end
+end
+
+local npcBot
+local hasInvisibleEnemy
+local CheckInvisibleEnemy = function()
+    return fun1:Any(GetTeamPlayers(GetOtherTeam()) or {}) { t ->
+        local heroName = fun1:GetHeroShortName(GetSelectedHeroName(t))
+        return fun1.invisibilityHeroes[heroName] and fun1.invisibilityHeroes[heroName] == 1
+    } or 
+    fun1:GetUnitList(UNIT_LIST_ENEMY_HEROES):Filter { t ->
+        fun1:MayNotBeIllusion(npcBot, t)
+    }:Any { t -> --print("check invisibility on "..t:GetUnitName());
+    fun1:HasInvisibility(t) }
+end
+
+local RefreshInvisibleEnemies = 
+-- fun1:SingleForTeam { ->
+    fun1:EveryManySeconds(2) { ->
+        hasInvisibleEnemy = CheckInvisibleEnemy()
+    }
+-- }
+local BuyDustIfInvisibleEnemies = fun1:EveryManySeconds(2) { ->
+    RefreshInvisibleEnemies()
+    if hasInvisibleEnemy then
+        local items = fun1:GetAllBoughtItems(npcBot):Map { t -> t:GetName() }
+        if not items:Contains("item_gem") and not items:Contains("item_dust") then
+            if npcBot:GetGold() >= 2*GetItemCost("item_dust") then
+                npcBot:ActionImmediate_PurchaseItem("item_dust")
+                npcBot:ActionImmediate_PurchaseItem("item_dust")
+                npcBot:ActionImmediate_Chat("Buying dusts", false)
+            end
+        end
+    end
+}
+
+M.CheckInvisibleEnemy = CheckInvisibleEnemy
+
 function M.Think()
+    npcBot = GetBot()
     TeamItemEventThink()
     TeamStateThink()
+    BuyDustIfInvisibleEnemies()
 end
 
 function M.TeamItemThink(npcBot)
@@ -326,7 +372,7 @@ function M.TeamItemThink(npcBot)
         table.insert(teamMembers, npcBot)
     end
     fun1:StartCoroutine { it ->
-        while DotaTime() <= -80 do
+        while fun1:GameNotReallyStarting() do
             coroutine.yield()
         end
         if not finishInit then

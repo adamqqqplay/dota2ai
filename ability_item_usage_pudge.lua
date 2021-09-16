@@ -157,7 +157,7 @@ Consider[4] = function()
     if not ability:IsFullyCastable() or npcBot:IsChanneling() then
         return 0
     end
-    swallowingSomething =  npcBot:HasModifier("modifier_pudge_swallow") or npcBot:HasModifier("modifier_pudge_swallow_effect") or npcBot:HasModifier("modifier_pudge_swallow_hide")
+    swallowingSomething = npcBot:HasModifier("modifier_pudge_swallow") or npcBot:HasModifier("modifier_pudge_swallow_effect") or npcBot:HasModifier("modifier_pudge_swallow_hide")
     if swallowingSomething then
         if swallowTimer ~= nil then
             if DotaTime() >= swallowTimer + 3 then

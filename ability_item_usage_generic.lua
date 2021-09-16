@@ -362,9 +362,7 @@ function ConsiderAbility(AbilitiesReal, Consider)
 	cast.Target = {}
 	cast.Type = {}
 	for i, ability in pairs(AbilitiesReal) do
-		if ability:GetName() == "doom_bringer_empty1" or ability:GetName() == "doom_bringer_empty2" then 
-
-		elseif ability:IsPassive() == false and Consider[i] ~= nil then
+		if ability:IsPassive() == false and Consider[i] ~= nil then
 			cast.Desire[i], cast.Target[i], cast.Type[i] = Consider[i]()
 		end
 	end

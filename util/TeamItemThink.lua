@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.0
+-- Generated from Mirana Compiler version 1.6.1
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -71,6 +71,7 @@ local roles = {
     oracle = { 8 },
     phantom_assassin = { 1 },
     phantom_lancer = { 1 },
+    pugna = { 5 },
     puck = { 4 },
     pudge = { 1 },
     queenofpain = { 3 },
@@ -313,7 +314,7 @@ end)
 function M.GetEnemyRespawnTime(id)
     return (function()
         if id then
-            return enemyStates[IdToEnemyStateTableIndex(id)].respawnTime
+            return enemyStates[IdToEnemyStateTableIndex(id)].respawnTime or 0
         else
             return enemyStates:Map(function(t)
                 return t.respawnTime
@@ -324,10 +325,10 @@ end
 function M.EnemyReadyToFight(id)
     return (function()
         if id then
-            return enemyStates[IdToEnemyStateTableIndex(id)].respawnTime <= 8
+            return (enemyStates[IdToEnemyStateTableIndex(id)].respawnTime or 0) <= 8
         else
             return enemyStates:Count(function(_, id)
-                return M.ReadyToFight(id)
+                return M.EnemyReadyToFight(id)
             end)
         end
     end)()
@@ -338,9 +339,49 @@ local function TeamStateThink()
     end
     RefreshEnemyRespawnTime()
 end
+local function GetOtherTeam()
+    if GetTeam() == TEAM_RADIANT then
+        return TEAM_DIRE
+    else
+        return TEAM_RADIANT
+    end
+end
+local npcBot
+local hasInvisibleEnemy
+local CheckInvisibleEnemy = function()
+    return fun1:Any(GetTeamPlayers(GetOtherTeam()) or {}, function(t)
+        local heroName = fun1:GetHeroShortName(GetSelectedHeroName(t))
+        return fun1.invisibilityHeroes[heroName] and fun1.invisibilityHeroes[heroName] == 1
+    end) or fun1:GetUnitList(UNIT_LIST_ENEMY_HEROES):Filter(function(t)
+        return fun1:MayNotBeIllusion(npcBot, t)
+    end):Any(function(t)
+        return fun1:HasInvisibility(t)
+    end)
+end
+local RefreshInvisibleEnemies = fun1:EveryManySeconds(2, function()
+    hasInvisibleEnemy = CheckInvisibleEnemy()
+end)
+local BuyDustIfInvisibleEnemies = fun1:EveryManySeconds(2, function()
+    RefreshInvisibleEnemies()
+    if hasInvisibleEnemy then
+        local items = fun1:GetAllBoughtItems(npcBot):Map(function(t)
+            return t:GetName()
+        end)
+        if not items:Contains("item_gem") and not items:Contains("item_dust") then
+            if npcBot:GetGold() >= 2 * GetItemCost("item_dust") then
+                npcBot:ActionImmediate_PurchaseItem("item_dust")
+                npcBot:ActionImmediate_PurchaseItem("item_dust")
+                npcBot:ActionImmediate_Chat("Buying dusts", false)
+            end
+        end
+    end
+end)
+M.CheckInvisibleEnemy = CheckInvisibleEnemy
 function M.Think()
+    npcBot = GetBot()
     TeamItemEventThink()
     TeamStateThink()
+    BuyDustIfInvisibleEnemies()
 end
 function M.TeamItemThink(npcBot)
     if npcBot:IsIllusion() then
@@ -353,7 +394,7 @@ function M.TeamItemThink(npcBot)
         table.insert(teamMembers, npcBot)
     end
     fun1:StartCoroutine(function(it)
-        while DotaTime() <= -80 do
+        while fun1:GameNotReallyStarting() do
             coroutine.yield()
         end
         if not finishInit then

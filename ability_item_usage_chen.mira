@@ -85,7 +85,9 @@ local tower
 
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider = {}
-local CanCast = {utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast = { {
+	t -> t:GetLevel() <= AbilitiesReal[2]:GetLevel() + 2
+},utility.NCanCast,utility.NCanCast,utility.UCanCast}
 
 function GetComboDamage()
 	return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
@@ -309,10 +311,9 @@ Consider[2]=function()
 	-- Mode based usage
 	--------------------------------------
 	-- Find neural creeps
-	if(ManaPercentage>=0.3)
-	then
+	if ManaPercentage>=0.3 then
 		for k,creep in pairs(creepsNeutral) do
-			if(IsGoodNeutralCreeps(creep) or (creep:IsAncientCreep() and fun1:HasScepter(npcBot)))
+			if IsGoodNeutralCreeps(creep) or (creep:IsAncientCreep() and fun1:HasScepter(npcBot)) and CanCast[1](creep) 
 			then
 				return BOT_ACTION_DESIRE_HIGH, creep;
 			end

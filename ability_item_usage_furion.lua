@@ -102,8 +102,8 @@ Consider[1]=function()
 	end
 
 	local blockNearbyMeleeHeroes = AbilityExtensions:Any(npcBot:GetNearbyHeroes(350, false, BOT_MODE_NONE), function(p)
-		return AbilityExtensions:MayNotBeIllusion(npcBot, p) and 
-			(AbilityExtensions:IsMeleeHero(p) and enemy:WasRecentlyDamagedByHero(p, 1.5) 
+		return AbilityExtensions:MayNotBeIllusion(npcBot, p) and
+			(AbilityExtensions:IsMeleeHero(p) and npcBot:WasRecentlyDamagedByHero(p, 1.5)
 			or HasDagger(p))
 	end)
     local function BlockFriendMeleeHeroes(enemy)

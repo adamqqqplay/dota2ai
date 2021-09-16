@@ -76,7 +76,7 @@ local Consider ={}
 local CanCast={utility.NCanCast,function(t)
 	return t:GetTeam() == npcBot:GetTeam() and AbilityExtensions:AllyCanCast(t) and not t:HasModifier("modifier_ice_blast") or AbilityExtensions:NormalCanCast(t) 
 end,utility.NCanCast,function(t)
-	return AbilityExtensions:NormalCanCast(t, true)
+	return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_MAGICAL, true)
 end}
 local enemyDisabled=utility.enemyDisabled
 
@@ -550,7 +550,6 @@ function AbilityUsageThink()
                 local enemies = npcBot:GetNearbyHeroes(1500, true, BOT_MODE_NONE)
                 enemies = AbilityExtensions:Count(enemies, function(t)
                     return t:HasModifier("modifier_warlock_upheavel")
-                            or GetUnitToLocationDistance(t, upheavelLocation) <= upheavelRadius and AbilityExtensions:GetMagicImmuneRemainingDuration(t) <= 1
                 end)
                 if enemies == 0 then
                     if DotaTime() > upheavelTimer + 1.5 then

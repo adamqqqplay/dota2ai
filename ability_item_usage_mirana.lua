@@ -362,7 +362,15 @@ Consider[4]=function()
 	then
 		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) )
 		then
-			return BOT_ACTION_DESIRE_MODERATE;
+			if npcBot:HasModifier "modifier_bounty_hunter_track" or npcBot:HasModifier "modifier_slardar_amplify_damage" then
+			else
+				local hasDust = enemys:Any(function(t) 
+					return AbilityExtensions:GetCarriedItems(t):Map(function(t) return t:GetName() end):Any(function(t) return t == "item_gem" or t == "item_dust" end)
+				end)
+				if not hasDust then
+					return BOT_ACTION_DESIRE_MODERATE
+				end
+			end
 		end
 	end
 	

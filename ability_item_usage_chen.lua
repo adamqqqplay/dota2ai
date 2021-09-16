@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.0
+-- Generated from Mirana Compiler version 1.6.1
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -75,7 +75,9 @@ cast.Target = {}
 cast.Type = {}
 local Consider = {}
 local CanCast = {
-    utility.NCanCast,
+    function(t)
+        return t:GetLevel() <= AbilitiesReal[2]:GetLevel() + 2
+    end,
     utility.NCanCast,
     utility.NCanCast,
     utility.UCanCast,
@@ -153,7 +155,7 @@ Consider[2] = function()
     local StrongestCreep,CreepHealth2 = utility.GetStrongestUnit(creepsNeutral)
     if ManaPercentage >= 0.3 then
         for k, creep in pairs(creepsNeutral) do
-            if IsGoodNeutralCreeps(creep) or (creep:IsAncientCreep() and fun1:HasScepter(npcBot)) then
+            if IsGoodNeutralCreeps(creep) or (creep:IsAncientCreep() and fun1:HasScepter(npcBot)) and CanCast[1](creep) then
                 return BOT_ACTION_DESIRE_HIGH, creep
             end
         end

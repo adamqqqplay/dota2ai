@@ -17,10 +17,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName =  { "slark_dark_pact", "slark_pounce", "slark_essence_shift", "slark_fish_bait", "slark_shadow_dance" }
-local abilityIndex = utility.ReverseTable(abilityName)
-
 
 local AbilityToLevelUp=
 {

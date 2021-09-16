@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.0
+-- Generated from Mirana Compiler version 1.6.1
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -38,24 +38,6 @@ local function GetItemCharges(unit, item_name)
         end
     end
     return count
-end
-local function GiveToMidLaner()
-    local teamPlayers = GetTeamPlayers(GetTeam())
-    if DotaTime() <= 0 then
-        return nil
-    end
-    for k, _ in pairs(teamPlayers) do
-        local member = GetTeamMember(k)
-        if member ~= nil and not member:IsIllusion() and member:IsAlive() and member:GetMaxHealth() - member:GetHealth() >= 200 then
-            local num_sts = GetItemCount(member, "item_tango_single")
-            local num_ff = GetItemCount(member, "item_faerie_fire")
-            local num_stg = GetItemCharges(member, "item_tango")
-            if num_sts + num_ff + num_stg == 0 then
-                return member
-            end
-        end
-    end
-    return nil
 end
 local function CanSwitchPTStat(pt)
     local npcBot = GetBot()
@@ -294,27 +276,6 @@ function M.ItemUsageThink()
     if pt ~= nil and pt:IsFullyCastable() and notBlasted then
         if UsePowerTreads(pt) then
             return
-        end
-    end
-    local itg = IsItemAvailable("item_tango")
-    if itg ~= nil and itg:IsFullyCastable() then
-        local tCharge = itg:GetCurrentCharges()
-        if DotaTime() > -90 and DotaTime() < 0 and npcBot:DistanceFromFountain() <= 100 and role.CanBeSupport(npcBot:GetUnitName()) and npcBot:GetAssignedLane() ~= LANE_MID and tCharge > 2 and DotaTime() > giveTime + 2.0 then
-            local target = GiveToMidLaner()
-            if target ~= nil then
-                M.UseItemOnEntity(npcBot, itg, target)
-                giveTime = DotaTime()
-                return
-            end
-        elseif DotaTime() > 0 and npcBot:GetActiveMode() == BOT_MODE_LANING and role.CanBeSupport(npcBot:GetUnitName()) and tCharge > 1 and DotaTime() > giveTime + 2.0 then
-            for _, ally in pairs(nearbyAllies) do
-                local tangoSlot = ally:FindItemSlot("item_tango")
-                if ally:GetUnitName() ~= npcBot:GetUnitName() and not ally:IsIllusion() and tangoSlot == -1 and GetItemCount(ally, "item_tango_single") == 0 then
-                    M.UseItemOnEntity(npcBot, itg, ally)
-                    giveTime = DotaTime()
-                    return
-                end
-            end
         end
     end
     local its = IsItemAvailable("item_tango_single")
