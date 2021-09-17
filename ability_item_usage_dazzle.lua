@@ -136,6 +136,15 @@ Consider[1]=function()
 		end
 	end
 
+	if DotaTime() >= 24*60 then
+		local target = AbilityExtensions:First(enemys, function(t) 
+			return AbilityExtensions:IsChannelingBreakWorthAbility(t) and CanCast[1](t) 
+		end)
+		if target then
+			return BOT_ACTION_DESIRE_HIGH, target
+		end
+	end
+
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------

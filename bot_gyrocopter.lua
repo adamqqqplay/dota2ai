@@ -1,13 +1,16 @@
-local minionutils = dofile( GetScriptDirectory().."/util/NewMinionUtil" )
+local minionutils = dofile(GetScriptDirectory().."/util/NewMinionUtil")
 
-function MinionThink(  hMinionUnit ) 
-	if minionutils.IsValidUnit(hMinionUnit) then
-		if hMinionUnit:IsIllusion() then
-			minionutils.IllusionThink(hMinionUnit);
-		elseif minionutils.CantBeControlled(hMinionUnit:GetUnitName()) then
-			minionutils.CantBeControlledThink(hMinionUnit);
+local t = "npc_dota_gyrocopter_homing_missile"
+
+function MinionThink(u)
+	if minionutils.IsValidUnit(u) then
+		if u:IsIllusion() then
+			minionutils.IllusionThink(u)
+		elseif string.sub(u:GetUnitName(), 1, #t) == t then
+            minionutils.CantBeControlledThink(u)
 		else
-			return;
+            minionutils.MinionThink(u)
+			return
 		end
 	end
-end	
+end

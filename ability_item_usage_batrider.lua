@@ -86,6 +86,8 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
+local manaEnough
+
 Consider[1]=function()
 	
 	local abilityNumber=1
@@ -108,7 +110,7 @@ Consider[1]=function()
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
-
+		
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
@@ -131,10 +133,9 @@ Consider[1]=function()
 	--------------------------------------
 	-- If we're farming and can kill 3+ creeps with LSA
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
-		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
-
-		if ( locationAoE.count >= 3 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+		local locationAoE = npcBot:FindAoELocation(true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage)
+		if locationAoE.count >= 3 and manaEnough then
+			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
 		end
 	end
 
@@ -148,9 +149,8 @@ Consider[1]=function()
 	then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 
-		if ( locationAoE.count >= 4 ) 
-		then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+		if locationAoE.count >= 4 and manaEnough then
+			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
 		end
 	end
 
@@ -172,8 +172,7 @@ Consider[1]=function()
 	-- If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if(ManaPercentage>0.5)
-		then
+		if manaEnough then
 			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 			if ( locationAoE.count >= 2 ) then
 				return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
@@ -272,7 +271,7 @@ Consider[2]=function()
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 
-		if ( locationAoE.count >= 3 ) then
+		if ( locationAoE.count >= 3 ) and manaEnough then
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 		end
 	end
@@ -287,8 +286,7 @@ Consider[2]=function()
 	then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 
-		if ( locationAoE.count >= 4 ) 
-		then
+		if locationAoE.count >= 4 and manaEnough then
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 		end
 	end
@@ -425,7 +423,7 @@ Consider[3]=function()
 	-- If we're farming and can hit 2+ creeps and kill 1+ 
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
-		if ( #creeps >= 3 ) 
+		if ( #creeps >= 3 )  and manaEnough
 		then
 			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 			then
@@ -529,32 +527,6 @@ Consider[4]=function()
 		end
 	end
 	
-	-- If we're in a teamfight, use it on the scariest enemy
-	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
-	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 
-	then
-
-		local npcMostDangerousEnemy = nil;
-		local nMostDangerousDamage = 0;
-
-		for _,npcEnemy in pairs( enemys )
-		do
-			if ( CanCast[abilityNumber]( npcEnemy ) and not enemyDisabled(npcEnemy))
-			then
-				local Damage2 = npcEnemy:GetEstimatedDamageToTarget( false, npcBot, 3.0, DAMAGE_TYPE_ALL );
-				if ( Damage2 > nMostDangerousDamage )
-				then
-					nMostDangerousDamage = Damage2;
-					npcMostDangerousEnemy = npcEnemy;
-				end
-			end
-		end
-
-		if ( npcMostDangerousEnemy ~= nil )
-		then
-			return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy;
-		end
-	end
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
@@ -595,6 +567,7 @@ end
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
 
+	manaEnough = npcBot:GetMana() >= npcBot:GetMaxMana() + 300
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )
 	then 

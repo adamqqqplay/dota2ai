@@ -226,7 +226,10 @@ Consider[2]=function()
 	do
 		if ( npcEnemy:IsChanneling() and CanCast[abilityNumber]( npcEnemy ))
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy
+			local name = npcEnemy:GetCurrentActiveAbility():GetName()
+			if AbilityExtensions:Contains({"bane_fiends_grip", "crystal_maiden_freezing_field"}) then
+				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
+			end
 		end
 	end
 	

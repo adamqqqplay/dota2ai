@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.0.0
+-- Generated from Mirana Compiler version 1.6.1
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -71,8 +71,12 @@ end
 CanCast[2] = function(t)
     return AbilityExtensions:NormalCanCast(t, true, DAMAGE_TYPE_PURE, false, true) and not AbilityExtensions:HasAbilityRetargetModifier(t) and not (t:HasModifier("modifier_item_blade_mail") and AbilityExtensions:IsRetreating(npcBot))
 end
-CanCast[3] = function(t) return fun1:StunCanCast(t, AbilitiesReal[3], false, true, true, false) end
-CanCast[4] = function(t) return fun1:StunCanCast(t, AbilitiesReal[4], true, true, true, false) end
+CanCast[3] = function(t)
+    return fun1:StunCanCast(t, AbilitiesReal[3], false, true, true, false) and not fun1:DontControlAgain(t)
+end
+CanCast[4] = function(t)
+    return fun1:StunCanCast(t, AbilitiesReal[4], true, true, true, false) and not fun1:DontControlAgain(t)
+end
 local enemyDisabled = utility.enemyDisabled
 function GetComboDamage()
     return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
@@ -161,7 +165,7 @@ Consider[2] = function()
     local castRange = ability:GetCastRange()
     local enemyHeroes = fun1:GetNearbyHeroes(npcBot, castRange + 200, true)
     local enemies,enemyIllusions = enemyHeroes:Partition(function(it)
-        fun1:MayNotBeIllusion(npcBot, it)
+        return fun1:MayNotBeIllusion(npcBot, it)
     end)
     local allies = fun1:GetNearbyNonIllusionHeroes(npcBot, 900, false)
     local nearbyCreeps = fun1:GetNearbyAttackableCreeps(npcBot, castRange + 150, true)
@@ -169,9 +173,9 @@ Consider[2] = function()
         do
             local target = enemies:Filter(CanCast[2]):Filter(function(it)
                 return it:GetHealth() <= it:GetActualIncomingDamage(damage, DAMAGE_TYPE_PURE) or it:GetHealth() <= it:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_PURE) and mana > ComboMana
-            end):SortByMaxFirst(function(it)
-                it:GetHealth()
-            end):First()
+            end):Max(function(it)
+                return it:GetHealth()
+            end)
             if target then
                 return BOT_ACTION_DESIRE_HIGH, target
             end
@@ -215,7 +219,7 @@ Consider[2] = function()
         if (manaPercentage > healthPercentage or mana > ComboMana) and abilityLevel >= 2 then
             do
                 local target = enemies:SortByMinFirst(function(it)
-                    it:GetHealth()
+                    return it:GetHealth()
                 end):First()
                 if target then
                     return BOT_ACTION_DESIRE_MODERATE, target
@@ -227,7 +231,7 @@ Consider[2] = function()
         if mana > maxMana * 0.7 + manaCost or manaPercentage > healthPercentage + 0.2 then
             do
                 local target = nearbyCreeps:SortByMinFirst(function(it)
-                    it:GetHealth()
+                    return it:GetHealth()
                 end):First()
                 if target then
                     return BOT_ACTION_DESIRE_MODERATE - 0.1, target
@@ -273,9 +277,9 @@ Consider[3] = function()
     do
         local target = enemies:Filter(function(it)
             return CanCast[abilityNumber](it) and not fun1:IsOrGoingToBeSeverelyDisabled(it) and #allies <= 1
-        end):SortByMaxFirst(function(it)
-            it:GetEstimatedDamageToTarget(false, npcBot, 3.0, DAMAGE_TYPE_ALL)
-        end):First()
+        end):Max(function(it)
+            return it:GetEstimatedDamageToTarget(false, npcBot, duration, DAMAGE_TYPE_ALL) or 0
+        end)
         if target then
             return BOT_ACTION_DESIRE_HIGH, target
         end
@@ -301,16 +305,18 @@ Consider[3] = function()
         end
     end
     do
-        local target = allies:First(function(it)
-            return AbilityExtensions:IsOrGoingToBeSeverelyDisabled(it) and not it:IsChanneling() and not fun1:DontInterruptAlly(it)
+        local target = allies:First(function(t1)
+            return AbilityExtensions:IsOrGoingToBeSeverelyDisabled(t1) and not t1:IsChanneling() and not fun1:DontInterruptAlly(t1)
         end)
         if target then
             return BOT_ACTION_DESIRE_MODERATE, target
         end
     end
     do
-        local target = allies:First(function(it)
-            fun1:Any(fun1:GetIncomingDodgeWorthProjectiles(it), function(t) return GetUnitToLocationDistance(it, t.location) <= 400 and not t.is_attack end)
+        local target = allies:First(function(t1)
+            return fun1:Any(fun1:GetIncomingDodgeWorthProjectiles(t1), function(t)
+                return GetUnitToLocationDistance(it, t.location) <= 400 and not t.is_attack
+            end)
         end)
         if target then
             return BOT_ACTION_DESIRE_MODERATE, target
@@ -377,11 +383,13 @@ Consider[4] = function()
     if AbilityExtensions:IsRetreating(npcBot) and #enemys == 1 and not AbilityExtensions:HasAbilityRetargetModifier(enemys[1]) then
         return BOT_ACTION_DESIRE_HIGH, enemys[1]
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
-        local npcEnemy = npcBot:GetTarget()
-        if npcEnemy ~= nil then
-            if CanCast[abilityNumber](npcEnemy) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys then
-                return BOT_ACTION_DESIRE_MODERATE, npcEnemy
+    if fun1:IsAttackingEnemies(npcBot) then
+        do
+            local target = AbilityExtensions:GetTargetIfGood(npcBot)
+            if target then
+                if CanCast[abilityNumber](target) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys then
+                    return BOT_ACTION_DESIRE_MODERATE, target
+                end
             end
         end
     end
@@ -412,7 +420,9 @@ Consider[5] = function()
     if #nightmaredFriends ~= 0 then
         if AbilityExtensions:All(nightmaredFriends, function(t)
             return AbilityExtensions:GetHealthPercent(t) >= 0.3
-        end) or AbilityExtensions:All(nightmaredFriends, function(t) return #fun1:GetIncomingDodgeWorthProjectiles(t) == 0 end) and #enemies == 0 then
+        end) or AbilityExtensions:All(nightmaredFriends, function(t)
+            return #fun1:GetIncomingDodgeWorthProjectiles(t) == 0
+        end) and #enemies == 0 then
             return BOT_ACTION_DESIRE_HIGH
         end
     end

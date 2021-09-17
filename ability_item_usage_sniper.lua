@@ -140,6 +140,7 @@ function Consider1()
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(1600,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+	local charges = ability:GetCurrentCharges()
 
 	--------------------------------------
 	-- Global high-priorty usage
@@ -165,7 +166,7 @@ function Consider1()
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 
-		if ( locationAoE.count >= 3 ) then
+		if ( locationAoE.count >= 3 )and charges >= 2 then
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 		end
 	end
@@ -180,7 +181,7 @@ function Consider1()
 	then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 
-		if ( locationAoE.count >= 4 ) 
+		if ( locationAoE.count >= 4 ) and charges >= 2 
 		then
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 		end

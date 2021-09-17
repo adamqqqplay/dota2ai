@@ -8,7 +8,7 @@ function MinionThink(  hMinionUnit )
 	if minionutils.IsValidUnit(hMinionUnit) then
 		if hMinionUnit:IsIllusion() then
 			minionutils.IllusionThink(hMinionUnit);
-		elseif minionutils.CantBeControlled(hMinionUnit:GetUnitName()) then
+		elseif hMinionUnit:GetUnitName() == "npc_dota_weaver_swarm" then
 			minionutils.CantBeControlledThink(hMinionUnit);
 		else
 			return;

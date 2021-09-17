@@ -138,7 +138,7 @@ Consider[1]=function() --Location AOE Example
 	-- Mode based usage
 	--------------------------------------
 	-- If we're farming and can kill 3+ creeps with LSA
-	if npcBot:GetActiveMode() == BOT_MODE_FARM and mana > maxMana * 0.35 + manaCost then
+	if npcBot:GetActiveMode() == BOT_MODE_FARM and mana > maxMana * 0.3 + manaCost then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 
 		if ( locationAoE.count >= 3 ) then
@@ -183,11 +183,13 @@ Consider[1]=function() --Location AOE Example
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
 	then
-		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
+		if mana > maxMana * 0.5 + manaCost then
+			local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 )
 
-		if ( locationAoE.count >= 4 ) 
-		then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+			if ( locationAoE.count >= 4 ) 
+			then
+				return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
+			end
 		end
 	end
 
@@ -266,33 +268,6 @@ Consider[2]=function() --Location AOE Example
 			end
 		end
 	end
-	--------------------------------------
-	-- Mode based usage
-	--------------------------------------
-	-- If we're farming and can kill 3+ creeps with LSA
-	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
-		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
-
-		if ( locationAoE.count >= 3 ) then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
-		end
-	end
-
-	-- If we're pushing or defending a lane and can hit 4+ creeps, go for it
-	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
-	then
-		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
-
-		if ( locationAoE.count >= 4 ) 
-		then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
-		end
-	end
 
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
@@ -339,7 +314,7 @@ local function FindNearbyTeleportTarget(target)
 	local isEnemy = not AbilityExtensions:IsOnSameTeam(npcBot, target)
 	local castDelay = AbilitiesReal[4]:GetSpecialValueInt("cast_delay")
 	local creeps = target:GetNearbyCreeps(600, isEnemy)
-	creeps = AbilityExtensions:Filter(creeps, function(t) return not t:WasRecentlyDamagedByAnyHero(3) and #t:GetNearbyHeroes(500, true, BOT_MODE_NONE) == 0 end)
+	creeps = AbilityExtensions:Filter(creeps, function(t) return not t:WasRecentlyDamagedByAnyHero(3) and #AbilityExtensions:GetNearbyHeroes(t, 500, true, BOT_MODE_NONE) == 0 end)
 	creeps = AbilityExtensions:Max(creeps, function(t) return t:GetHealth() end)
 	local buildings = AbilityExtensions:Concat(target:GetNearbyTowers(700, isEnemy), target:GetNearbyBarracks(700, isEnemy))
 	buildings = AbilityExtensions:Filter(buildings, function(t) return t:HasModifier("modifier_backdoor_protection_active") and t:GetHealth() >= 100 or t:GetHealth() >= 300 and not t:WasRecentlyDamagedByAnyHero(castDelay-2) or t:GetHealth() >= 800 or t:HasModifier("modifier_fountain_glyph") end)

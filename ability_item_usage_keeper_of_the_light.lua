@@ -112,13 +112,11 @@ function GetComboMana()
 end
 
 
-Consider[1]=function()
-	
-	local abilityNumber=1
+local ConsiderIlluminate = function(abilityNumber)
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
-	local ability=AbilitiesReal[abilityNumber];
+	local ability=AbilitiesReal[abilityNumber]
 	
 	if not ability:IsFullyCastable() or ability:IsHidden() then 
 		return BOT_ACTION_DESIRE_NONE
@@ -157,7 +155,7 @@ Consider[1]=function()
 	-- Mode based usage
 	--------------------------------------
 	-- If we're farming and can kill 3+ creeps with LSA
-	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
+	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) and #allys < 3 then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, Damage );
 
 		if ( locationAoE.count >= 3 ) then
@@ -165,22 +163,8 @@ Consider[1]=function()
 		end
 	end
 
-	--[[Last hit
-	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
-	then
-		if(WeakestCreep~=nil)
-		then
-			if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and GetUnitToUnitDistance(npcBot,WeakestCreep)>=300)
-			then
-				local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, ChannelTime/2, Damage );
-				if ( locationAoE.count >= 1 ) then
-					return BOT_ACTION_DESIRE_LOW-0.02, npcBot:GetXUnitsTowardsLocation(locationAoE.targetloc,300);
-				end
-			end		
-		end
-	end]]
 	
-	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) and #allys == 1
 	then
 		if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )
 		then
@@ -231,6 +215,10 @@ Consider[1]=function()
 
 	return BOT_ACTION_DESIRE_NONE
 	
+end
+
+Consider[1] = function()
+	return ConsiderIlluminate(1)
 end
 
 -- Consider[2]=function()
@@ -733,7 +721,13 @@ Consider[6]=function()
 	return BOT_ACTION_DESIRE_NONE
 end
 
-Consider[8] = Consider[1]
+Consider[8] = function()
+	return ConsiderIlluminate(8)
+end
+
+-- local ConsiderEndIlluminate = function()
+
+-- end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()

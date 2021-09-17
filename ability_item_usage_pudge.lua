@@ -137,7 +137,7 @@ Consider[2] = function()
     do
         local target = npcBot:GetTarget()
         if target and GetUnitToUnitDistance(target, npcBot) <= radius and AbilityExtensions:NormalCanCast(target, false) then
-            if not AbilityExtensions:IsHero(target) or AbilityExtensions:MustBeIllusion(target) then
+            if not AbilityExtensions:IsHero(target) or AbilityExtensions:MustBeIllusion(npcBot, target) then
                 if npcBot:GetHealth() <= 400 or AbilityExtensions:GetHealthPercent(npcBot) <= 0.3 then
                     return false
                 end
@@ -157,7 +157,7 @@ Consider[4] = function()
     if not ability:IsFullyCastable() or npcBot:IsChanneling() then
         return 0
     end
-    swallowingSomething =  npcBot:HasModifier("modifier_pudge_swallow") or npcBot:HasModifier("modifier_pudge_swallow_effect") or npcBot:HasModifier("modifier_pudge_swallow_hide")
+    swallowingSomething = npcBot:HasModifier("modifier_pudge_swallow") or npcBot:HasModifier("modifier_pudge_swallow_effect") or npcBot:HasModifier("modifier_pudge_swallow_hide")
     if swallowingSomething then
         if swallowTimer ~= nil then
             if DotaTime() >= swallowTimer + 3 then

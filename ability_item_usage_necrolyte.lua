@@ -79,7 +79,9 @@ local CanCast={function(t)
 	else
 		return AbilityExtensions:NormalCanCast(t)
 	end
-end,utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+end,utility.NCanCast,utility.NCanCast,utility.NCanCast,function(t)
+	return AbilityExtensions:NormalCanCast(t) and not AbilityExtensions:HasAnyModifier(t, AbilityExtensions.CannotKillModifiers)
+end}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()

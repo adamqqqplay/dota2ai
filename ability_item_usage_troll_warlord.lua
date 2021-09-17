@@ -420,20 +420,6 @@ Consider[6]=function()
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
 
-	--Try to kill enemy hero
-	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT )
-	then
-		if (WeakestEnemy~=nil)
-		then
-			if ( CanCast[abilityNumber]( WeakestEnemy ) )
-			then
-				if(npcBot:GetMana()>ComboMana)
-				then
-					return BOT_ACTION_DESIRE_HIGH
-				end
-			end
-		end
-	end
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
@@ -454,15 +440,66 @@ Consider[6]=function()
 	then
 		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
 
-		if ( npcEnemy ~= nil and GetUnitToUnitDistance(npcBot,npcEnemy)<=800 and HealthPercentage<=0.2 )
-		then
+		if npcEnemy and GetUnitToUnitDistance(npcBot,npcEnemy)<=800 and HealthPercentage<=0.2 then
 			return BOT_ACTION_DESIRE_MODERATE
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
-
+	return BOT_ACTION_DESIRE_NONE
 end
+
+-- rampage
+Consider[4]=function()
+	local abilityNumber=4
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber]
+	
+	if not ability:IsFullyCastable() or ability:IsHidden() then
+		return BOT_ACTION_DESIRE_NONE
+	end
+
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, false)
+	local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, true, BOT_MODE_NONE)
+	local enemyCount = AbilityExtensions:GetEnemyHeroNumber(npcBot, enemys)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+
+	if allys:Filter(function(t) return AbilityExtensions:IsSeverelyDisabledOrSlowed(t) end) >= 2 then
+		return BOT_ACTION_DESIRE_MODERATE
+	end
+
+	-- If we're in a teamfight, use it on the scariest enemy
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+	then
+		if ( #allys + enemyCount >= 4 ) 
+		then
+			local npcMostDangerousEnemy = nil;
+			local nMostDangerousDamage = 0;
+
+			for _,npcEnemy in pairs( enemys )
+			do
+				local Damage = npcEnemy:GetEstimatedDamageToTarget( false, npcBot, 3.0, DAMAGE_TYPE_ALL )
+				if ( Damage > nMostDangerousDamage )
+				then
+					nMostDangerousDamage = Damage;
+					npcMostDangerousEnemy = npcEnemy;
+				end
+			end
+
+			if ( npcMostDangerousEnemy ~= nil )
+			then
+				return BOT_ACTION_DESIRE_HIGH
+			end
+		end
+	end
+	
+	return BOT_ACTION_DESIRE_NONE
+end
+
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
 function AbilityUsageThink()

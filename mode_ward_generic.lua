@@ -7,6 +7,7 @@ if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot(
 	return;
 end
 
+local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
 local utility = require( GetScriptDirectory() .. "/utility" ) 
 local wardUtils = require(GetScriptDirectory() ..  "/util/WardUtility")
 local role = require(GetScriptDirectory() .. "/util/RoleUtility");
@@ -191,7 +192,9 @@ function OnEnd()
 end
 
 function Think()
-
+	if bot:IsChanneling() or bot:IsUsingAbility() or bot:GetQueuedActionType(0) == BOT_ACTION_TYPE_USE_ABILITY then
+		return
+	end
 	if  GetGameState()~=GAME_STATE_PRE_GAME and GetGameState()~= GAME_STATE_GAME_IN_PROGRESS then
 		return;
 	end
@@ -204,7 +207,7 @@ function Think()
 	if bot.ward then
 		if targetDist <= nWardCastRange then
 			if  DotaTime() > swapTime + 7.0 then
-				bot:Action_UseAbilityOnLocation(itemWard, targetLoc);
+				ItemUsage.UseItemOnLocation(bot, itemWard, targetLoc);
 				wardCastTime = DotaTime();	
 				return
 			else

@@ -394,7 +394,7 @@ Consider[2]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 
-	local allys = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange + 200, false):Filter(CanCast[2]):Filter fun {
+	local allys = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange + 200, false):Filter(CanCast[2]):Filter { it ->
 		it:WasRecentlyDamagedByAnyHero(4) or it:WasRecentlyDamagedByTower(2)
 	}
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
@@ -430,11 +430,11 @@ Consider[2]=function()
 		end
 		return rate
 	end
-	if local target = allys:Map fun {
+	if local target = allys:Map { it ->
 		{ it, Rate(it) }
-	}:Filter fun {
+	}:Filter { it ->
 		it[2] >= 15
-	}:SortByMaxFirst fun {
+	}:SortByMaxFirst { it ->
 		it[2]
 	}:First() then
 		local t = target[1]

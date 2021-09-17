@@ -170,24 +170,6 @@ Consider[1]=function()
 			end
 		end
 	end
-	--------------------------------------
-	-- Mode based usage
-	--------------------------------------
-	--[[--����
-	--if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
-	--then
-		if((ManaPercentage>0.4 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=1 )
-		then
-			if (WeakestEnemy~=nil)
-			then
-				if ( CanCast[1]( WeakestEnemy ) )
-				then
-					return BOT_ACTION_DESIRE_LOW,WeakestEnemy
-				end
-			end
-		end
-	--end]]--
-
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
@@ -490,6 +472,36 @@ Consider[4]=function()
 
 	return BOT_ACTION_DESIRE_NONE, 0 
 end
+
+Consider[5] = function()
+	local ability = AbilitiesReal[5]
+	if ability:IsHidden() or not ability:IsFullyCastable() then
+		return 0
+	end
+
+	local castRange = ability:GetCastRange()
+
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, castRange + 200, false)
+	local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot) 
+	local enemyCount = AbilityExtensions:GetEnemyHeroNumber(npcBot, enemies) 
+
+	if AbilityExtensions:IsAttackingEnemies(npcBot) then
+		if enemyCount > 0 then
+			local a, b = allys:Partition(function(t) return AbilityExtensions:IsSeverelyDisabledOrSlowed(t) end)
+			local rate = #a * 2 + #b
+			if a >= 2 then
+				return RemapValClamped(rate, 2.4, 4, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_VERYHIGH), a:First() or b:First()
+			end
+		end
+	end
+	if AbilityExtensions:IsRetreating(npcBot) then
+		if enemyCount > 0 then
+			return BOT_ACTION_DESIRE_MODERATE, npcBot
+		end
+	end
+	return 0
+end
+
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 

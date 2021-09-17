@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.0.0
+-- Generated from Mirana Compiler version 1.6.1
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -89,7 +89,7 @@ local useTorrentAtXMark
 local useTorrentAtXMarkTime
 local xMarkTargetWasTeleporting
 local function XMarksEnemy()
-    return xMarkTarget ~= nil and xMarkTarget:GetTeam() ~= npcBot:GetTeam()
+    return xMarkTarget ~= nil and xMarkTarget:IsAlive() and xMarkTarget:GetTeam() ~= npcBot:GetTeam()
 end
 Consider[1] = function()
     local abilityNumber = 1
@@ -324,7 +324,6 @@ Consider[7] = function()
     local abilityNumber = 7
     local ability = AbilitiesReal[abilityNumber]
     if useTorrentAtXMarkTime then
-        print("use torrent time "..useTorrentAtXMarkTime..", should recall at "..(useTorrentAtXMarkTime + AbilitiesReal[1]:GetSpecialValueFloat("delay") - ability:GetCastPoint()))
     end
     if not ability:IsFullyCastable() or ability:IsHidden() or xMarkTarget == nil or not xMarkTarget:HasModifier("modifier_kunkka_x_marks_the_spot") then
         return 0
@@ -347,7 +346,6 @@ Consider[7] = function()
         return BOT_ACTION_DESIRE_HIGH
     end
     if XMarksEnemy() and useTorrentAtXMark then
-        print("use torrent time "..useTorrentAtXMarkTime..", should recall at "..(useTorrentAtXMarkTime + AbilitiesReal[1]:GetSpecialValueFloat("delay") - ability:GetCastPoint()))
         local timing = useTorrentAtXMarkTime + AbilitiesReal[1]:GetSpecialValueFloat("delay") - ability:GetCastPoint()
         if DotaTime() >= timing - 0.1 then
             return BOT_ACTION_DESIRE_VERYHIGH
@@ -367,13 +365,15 @@ function AbilityUsageThink()
     if debugmode == true then
         ability_item_usage_generic.PrintDebugInfo(AbilitiesReal, cast)
     end
-    if xMarkTarget and (not npcBot:IsAlive() or not xMarkTarget:IsAlive() or not xMarkTarget:HasModifier("modifier_kunkka_x_marks_the_spot")) then
-        xMarkTarget = nil
-        xMarkTime = nil
-        xMarkLocation = nil
-        useTorrentAtXMark = false
-        useTorrentAtXMarkTime = nil
-    end
+    pcall(function()
+        if xMarkTarget and (not npcBot:IsAlive() or not xMarkTarget:IsAlive() or not xMarkTarget:HasModifier("modifier_kunkka_x_marks_the_spot")) then
+            xMarkTarget = nil
+            xMarkTime = nil
+            xMarkLocation = nil
+            useTorrentAtXMark = false
+            useTorrentAtXMarkTime = nil
+        end
+    end)
     local index,target = ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
     if index == 3 and target ~= nil then
         xMarkTarget = target
@@ -387,7 +387,6 @@ function AbilityUsageThink()
     elseif index == 1 and xMarkTarget then
         useTorrentAtXMark = true
         useTorrentAtXMarkTime = DotaTime() + AbilitiesReal[1]:GetCastPoint()
-        print("torrent time after a x mark: "..useTorrentAtXMarkTime)
     end
 end
 function CourierUsageThink()

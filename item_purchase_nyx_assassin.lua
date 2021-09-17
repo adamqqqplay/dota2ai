@@ -15,17 +15,16 @@ local ItemsToBuy =
 	"item_hand_of_midas", --点金
 	"item_energy_booster",
 	"item_blink",
-    "item_dagon_1",
+    "item_dagon",
 	"item_ultimate_scepter", --蓝杖
 	"item_force_staff", --推推
 	"item_guardian_greaves",
-	"item_recipe_dagon",
+	"item_dagon_3",
 	"item_recipe_dagon",
 	"item_overwhelming_blink",
 	"item_ultimate_scepter_2",
 	"item_sheepstick",
-	"item_recipe_dagon",
-	"item_recipe_dagon",
+	"item_dagon_5",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

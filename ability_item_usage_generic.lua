@@ -10,6 +10,7 @@ local Courier = dofile(GetScriptDirectory() .. "/util/CourierSystem")
 local ItemUsageSystem = dofile(GetScriptDirectory() .. "/util/ItemUsageSystem")
 local ChatSystem = dofile(GetScriptDirectory() .. "/util/ChatSystem")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local TeamItemThink = require(GetScriptDirectory().."/util/TeamItemThink")
 
 local towerId = {
     TOWER_TOP_1,
@@ -84,6 +85,7 @@ end
 local function SecondaryOperation()
 	ConsiderGlyph()
 	ItemUsageSystem.UnImplementedItemUsage()
+	TeamItemThink.Think()
 	RecordStuckState()
 
 	if(DotaTime()>=-60 and DotaTime()<=-59)
@@ -103,7 +105,8 @@ function CourierUsageThink()
 		return
 	end
 	AbilityExtensions:TickFromDota()
-	--Courier.CourierUsageThink()
+	local fun2 = require(GetScriptDirectory().."/util/CommonBehaviours")
+	fun2.Think()
 	SecondaryOperation()
 end
 
@@ -304,10 +307,15 @@ function GetComboMana(AbilitiesReal)
 	local npcBot = GetBot()
 	local tempComboMana = 0
 	for i, ability in pairs(AbilitiesReal) do
-		if ability and ability:GetLevel() >= 1 and ability:IsPassive() == false and not ability:IsHidden() then
-			if ability:IsUltimate() == false or ability:GetCooldownTimeRemaining() <= 30 then
-				tempComboMana = tempComboMana + ability:GetManaCost()
+		local success, message = pcall(function()
+			if ability and ability:GetLevel() >= 1 and not ability:IsPassive() and not ability:IsHidden() then
+				if ability:IsUltimate() == false or ability:GetCooldownTimeRemaining() <= 30 then
+					tempComboMana = tempComboMana + ability:GetManaCost()
+				end
 			end
+		end)
+		if not success then
+			-- abilites acquired by doom_bringer_devour
 		end
 	end
 	return math.max(tempComboMana, 300)
@@ -399,12 +407,13 @@ function UseAbility(AbilitiesReal, cast)
 	if (HighestDesire > 0) then
 		local j = HighestDesireAbilityNumber
 		local ability = AbilitiesReal[j]
+		-- print(npcBot:GetUnitName()..": use "..ability:GetName())
 		if not ability:IsCooldownReady() then
 			print("Ability still in cooldown: "..ability:GetName())
 			AbilityExtensions:DebugPause()
 			return
 		end
-        if npcBot:GetMana() < ability:GetManaCost() then
+        if npcBot:GetMana() < ability:GetManaCost() * 0.65 then --GetManaCost() doesn't count mana cost reduction
             print("Ability mana not enough: "..ability:GetName())
 			AbilityExtensions:DebugPause()
 			return

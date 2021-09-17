@@ -18,6 +18,9 @@ function  MinionThink(hMinionUnit)
 			hMinionUnit:Action_MoveToLocation(Location)
 			return
 		end
+	elseif hMinionUnit:GetUnitName() == "npc_dota_plasma_field" then
+		
+	else
 		
 	end
 		

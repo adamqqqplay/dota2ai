@@ -106,7 +106,7 @@ Consider[1]=function()
 	local Radius = ability:GetAOERadius()
 	
 
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
@@ -121,7 +121,7 @@ Consider[1]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
+				if HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL)*1.3
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy,"Target"; 
 				end
@@ -150,7 +150,7 @@ Consider[1]=function()
 	-- If we're farming and can hit 2+ creeps
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
-		if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana )
+		if (ManaPercentage>0.4 or npcBot:GetMana()>ComboMana )and #allys < 3
 		then
 			local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 			if ( locationAoE.count >= 3 ) 
@@ -412,7 +412,7 @@ Consider[3]=function()
 	then
 		if(#towers>=1)
 		then
-			return BOT_ACTION_DESIRE_LOW, towers[1];
+			return BOT_ACTION_DESIRE_VERYHIGH, towers[1];
 		end
 		if (WeakestEnemy~=nil)
 		then
@@ -540,7 +540,7 @@ Consider[4] = function()
 	then
 		if(#towers>=1)
 		then
-			return BOT_ACTION_DESIRE_LOW, towers[1];
+			return BOT_ACTION_DESIRE_VERYLOW, towers[1];
 		end
 		if (WeakestEnemy~=nil)
 		then

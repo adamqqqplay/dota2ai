@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -88,7 +89,7 @@ function ConsiderSoulRing()
 	local soulring=IsItemAvailable("item_soul_ring");
 	if(soulring~=nil and soulring:IsFullyCastable() and HealthPercentage>0.6)
 	then
-		npcBot:Action_UseAbility(soulring);
+		ItemUsage.UseItemNoTarget(npcBot, soulring)
 	end
 end
 
@@ -376,6 +377,7 @@ Consider[5]=function()
  	return BOT_ACTION_DESIRE_NONE
 end
 
+-- berserk potion
 Consider[4]=function()
     local abilityNumber=4
     --------------------------------------
@@ -383,7 +385,7 @@ Consider[4]=function()
     --------------------------------------
     local ability=AbilitiesReal[abilityNumber];
 
-    if not ability:IsFullyCastable() then
+    if not ability:IsFullyCastable() or ability:IsHidden() then
         return BOT_ACTION_DESIRE_NONE, 0;
     end
 
@@ -403,10 +405,11 @@ Consider[4]=function()
     end
 
     local checkAlly = function(ally)
-        if HealthPercentage <= 0.2 then
+		local healthPercent = AbilityExtensions:GetHealthPercent(ally)
+        if healthPercent <= 0.2 then
             return BOT_ACTION_DESIRE_HIGH
         end
-        if ( HealthPercentage<=0.4)
+        if ( healthPercent<=0.4)
         then
             return BOT_ACTION_DESIRE_LOW
         end
@@ -423,7 +426,7 @@ Consider[4]=function()
         -- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
         if ( ally:GetActiveMode() == BOT_MODE_RETREAT and ally:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH )
         then
-            if ( ally:WasRecentlyDamagedByAnyHero( 2.0 ) and HealthPercentage<=0.70+#enemys*0.05)
+            if ( ally:WasRecentlyDamagedByAnyHero( 2.0 ) and healthPercent<=0.70+#enemys*0.05)
             then
                 return BOT_ACTION_DESIRE_HIGH
             end
@@ -435,7 +438,7 @@ Consider[4]=function()
                 ally:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
                 ally:GetActiveMode() == BOT_MODE_ATTACK )
         then
-            if ( HealthPercentage<=0.70+#enemys*0.05 )
+            if ( healthPercent<=0.70+#enemys*0.05 )
             then
                 return BOT_ACTION_DESIRE_HIGH
             end
@@ -443,8 +446,12 @@ Consider[4]=function()
 
         return BOT_ACTION_DESIRE_NONE
     end
+	local function CheckAlly2(ally) 
+		return checkAlly(ally) * AbilityExtensions:GetTargetHealAmplifyPercent(ally) 
+	end
+
     for _, ally in ipairs(allys) do
-        local useAtAllyDesire = checkAlly(ally) - 0.2
+        local useAtAllyDesire = CheckAlly2(ally) - 0.2
         if useAtAllyDesire > 0 then
             table.insert(useTable, {useAtAllyDesire, ally})
         end
@@ -556,7 +563,7 @@ Consider[6]=function()
 		end
 		if TimeSinceCast >= 2.5 then
 			local silencer = AbilityExtensions:Count(enemys, function(t)
-				return AbilityExtensions:MayNotBeIllusion(npcBot, t) and t:HasSilence()
+				return AbilityExtensions:MayNotBeIllusion(npcBot, t) and t:HasSilence(true)
 			end)
 			if silencer > 0 then
 				return BOT_ACTION_DESIRE_HIGH, enemys[1]
@@ -636,13 +643,13 @@ function AbilityUsageThink()
 			if AbilityExtensions:CalledOnThisFrame(desirePairs) then
 				local bestDesire = AbilityExtensions:Max(desirePairs, function(t) return t[1] end)
 				if bestDesire[1] ~= 0 then
-					npcBot:Action_UseAbilityOnEntity(scepter, bestDesire[2])
+					ItemUsage.UseItemOnEntity(npcBot, scepter, bestDesire[2])
 				end
 			end
 		end
 	end
 end
 
-function CourierUsageThink() 
+function CourierUsageThink()
 	ability_item_usage_generic.CourierUsageThink()
 end

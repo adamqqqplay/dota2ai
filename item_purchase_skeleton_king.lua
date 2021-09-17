@@ -6,6 +6,9 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
 local enemyTeamMemberNames = AbilityExtensions:GetEnemyTeamMemberNames(GetBot())
+AbilityExtensions:ForEach(enemyTeamMemberNames, function(t)
+    print("enemy team has "..t:GetUnitName())
+end)
 
 local ItemsToBuy =
 {
@@ -15,7 +18,7 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
     "item_gloves",
     "item_boots",
-    "item_hand_of_midas",
+    -- "item_hand_of_midas",
     "item_power_treads",
     "item_radiance",
     "item_aghanims_shard",

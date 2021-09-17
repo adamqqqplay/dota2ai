@@ -429,11 +429,9 @@ Consider[4]=function()
 	
 	local CastRange = math.min(ability:GetCastRange(),1600)
 	local Damage = ability:GetSpecialValueInt( "damage" );
-	local Radius = ability:GetSpecialValueInt( "light_strike_array_aoe" );
-	
 
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
+	local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange+180)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 
 	--try to kill enemy hero
@@ -485,7 +483,7 @@ Consider[4]=function()
 
 		if ( npcMostDangerousEnemy ~= nil )
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy;
+			return BOT_ACTION_DESIRE_LOW, npcMostDangerousEnemy
 		end
 	end
 

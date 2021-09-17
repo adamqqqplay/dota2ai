@@ -1,12 +1,12 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.0.0
+-- Generated from Mirana Compiler version 1.6.1
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
 local utility = require(GetScriptDirectory().."/utility")
 require(GetScriptDirectory().."/ability_item_usage_generic")
-local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
-local fun1 = AbilityExtensions
+local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
 local debugmode = false
 local npcBot = GetBot()
 local Talents = {}
@@ -64,10 +64,14 @@ cast.Target = {}
 cast.Type = {}
 local Consider = {}
 local CanCast = {
-    function(t) return fun1:StunCanCast(t, AbilitiesReal[1], true, false, false, false) end,
+    function(t)
+        return fun1:StunCanCast(t, AbilitiesReal[1], true, false, false, false)
+    end,
     fun1.NormalCanCastFunction,
     utility.NCanCast,
-    function(t) return fun1:NormalCanCast(t, true, DAMAGE_TYPE_PURE, true, true, true) end,
+    function(t)
+        return fun1:NormalCanCast(t, true, DAMAGE_TYPE_PURE, true, true, true)
+    end,
 }
 local enemyDisabled = utility.enemyDisabled
 function GetComboDamage()
@@ -86,13 +90,13 @@ Consider[1] = function()
     local Damage = ability:GetAbilityDamage()
     local Radius = ability:GetAOERadius() - 50
     local CastPoint = ability:GetCastPoint()
-    local blink = AbilityExtensions:GetAvailableBlink(npcBot)
+    local blink = fun1:GetAvailableBlink(npcBot)
     if blink ~= nil and blink:IsFullyCastable() then
         CastRange = CastRange + 1200
         if npcBot:GetActiveMode() == BOT_MODE_ATTACK then
             local locationAoE = npcBot:FindAoELocation(true, true, npcBot:GetLocation(), CastRange, Radius, 0, 10000)
             if locationAoE.count >= 2 then
-                npcBot:Action_UseAbilityOnLocation(blink, locationAoE.targetloc)
+                ItemUsage.UseItemOnLocation(npcBot, blink, locationAoE.targetloc)
                 return 0
             end
         end
@@ -129,11 +133,11 @@ Consider[1] = function()
         end
     end
     if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
-        local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
+        local npcEnemy = fun1:GetTargetIfGood(npcBot)
         if npcEnemy ~= nil then
             if GetUnitToUnitDistance(npcBot, npcEnemy) >= 300 then
                 if GetUnitToUnitDistance(npcBot, npcEnemy) <= 1200 + Radius and blink ~= nil then
-                    npcBot:Action_UseAbilityOnLocation(blink, npcEnemy:GetExtrapolatedLocation(CastPoint))
+                    ItemUsage.UseItemOnLocation(npcBot, blink, npcEnemy:GetExtrapolatedLocation(CastPoint))
                     return 0
                 end
             else
@@ -204,7 +208,7 @@ Consider[2] = function()
         end
     end
     if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
-        local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
+        local npcEnemy = fun1:GetTargetIfGood(npcBot)
         if npcEnemy ~= nil then
             if CanCast[abilityNumber](npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys then
                 return BOT_ACTION_DESIRE_MODERATE, npcEnemy
@@ -227,7 +231,7 @@ Consider[4] = function()
     end
     local CastPoint = ability:GetCastPoint()
     local enemies,enemyIllusions = fun1:GetNearbyHeroes(npcBot, CastRange + 300):Filter(IsWeak):Partition(function(it)
-        fun1:MayNotBeIllusion(npcBot, it)
+        return fun1:MayNotBeIllusion(npcBot, it)
     end)
     if fun1:NotRetreating(npcBot) and #enemies == 0 then
         do
@@ -236,7 +240,7 @@ Consider[4] = function()
                 do
                     local target = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange + 1200):First(IsWeak)
                     if target then
-                        npcBot:Action_UseAbilityOnLocation(blink, target:GetLocation())
+                        ItemUsage.UseItemOnLocation(npcBot, blink, target:GetLocation())
                         return 0
                     end
                 end
@@ -244,15 +248,17 @@ Consider[4] = function()
         end
     end
     do
-        local target = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange + 300):Filter(IsWeak):SortByMinFirst { GetUnitToUnitDistance(npcBot, it)         }:First()
+        local target = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange + 300):Filter(IsWeak):Min(function(it)
+            return GetUnitToUnitDistance(npcBot, it)
+        end)
         if target then
             local dis = GetUnitToUnitDistance(npcBot, target)
-            if AbilityExtensions:NotRetreating(npcBot) then
+            if fun1:NotRetreating(npcBot) then
                 do
                     local blink = fun1:GetAvailableBlink(npcBot)
                     if blink then
                         if dis > CastRange + 150 then
-                            npcBot:Action_UseAbilityOnLocation(blink, target:GetLocation())
+                            ItemUsage.UseItemOnLocation(npcBot, blink, target:GetLocation())
                             return 0
                         end
                     end
@@ -265,7 +271,7 @@ Consider[4] = function()
             end
         end
     end
-    if #enemies == 0 and AbilityExtensions:NotRetreating(npcBot) then
+    if #enemies == 0 and fun1:NotRetreating(npcBot) then
         do
             local target = enemyIllusions:First()
             if target then
@@ -277,15 +283,15 @@ Consider[4] = function()
     end
     return BOT_ACTION_DESIRE_NONE
 end
-AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
+fun1:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 local roarLosingTarget
 local cullingBladeTarget
 function AbilityUsageThink()
     if npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() then
         if npcBot:IsCastingAbility() then
             if npcBot:GetCurrentActiveAbility() == AbilitiesReal[1] then
-                if not AbilityExtensions:IsFarmingOrPushing(npcBot) then
-                    local nearbyEnemies = AbilityExtensions:GetNearbyHeroes(npcBot, AbilitiesReal[1]:GetAOERadius() + 190):Filter(CanCast[1])
+                if not fun1:IsFarmingOrPushing(npcBot) then
+                    local nearbyEnemies = fun1:GetNearbyHeroes(npcBot, AbilitiesReal[1]:GetAOERadius() + 90):Filter(CanCast[1])
                     if #nearbyEnemies == 0 then
                         if roarLosingTarget == nil then
                             roarLosingTarget = DotaTime()

@@ -75,7 +75,9 @@ local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
 local CanCast={utility.NCanCast,function(t)
 	return t:GetTeam() == npcBot:GetTeam() and AbilityExtensions:AllyCanCast(t) and not t:HasModifier("modifier_ice_blast") or AbilityExtensions:NormalCanCast(t) 
-end,utility.NCanCast,utility.UCanCast}
+end,utility.NCanCast,function(t)
+	return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_MAGICAL, true)
+end}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -484,13 +486,9 @@ Consider[4]=function()
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
-	-- Check for a channeling enemy
-	for _,npcEnemy in pairs( enemys )
-	do
-		if npcEnemy:IsChanneling() and not npcEnemy:IsInvulnerable()
-		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation()
-		end
+	local channelling = enemys:First(function(t) return AbilityExtensions:IsChannelingBreakWorthAbility(t, "moderate") and CanCast[4](t) end)
+	if channelling then
+		return BOT_ACTION_DESIRE_MODERATE-0.1, channelling:GetLocation()
 	end
 
 	--try to kill enemy hero
@@ -552,7 +550,6 @@ function AbilityUsageThink()
                 local enemies = npcBot:GetNearbyHeroes(1500, true, BOT_MODE_NONE)
                 enemies = AbilityExtensions:Count(enemies, function(t)
                     return t:HasModifier("modifier_warlock_upheavel")
-                            or GetUnitToLocationDistance(t, upheavelLocation) <= upheavelRadius and AbilityExtensions:GetMagicImmuneRemainingDuration(t) <= 1
                 end)
                 if enemies == 0 then
                     if DotaTime() > upheavelTimer + 1.5 then

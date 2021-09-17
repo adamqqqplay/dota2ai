@@ -75,7 +75,7 @@ local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
 local CanCast={function(t)
 	return AbilityExtensions:StunCanCast(t, AbilitiesReal[1], false, false, true, false) 
-end,utility.CanCastNoTarget,utility.CanCastNoTarget,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+end,utility.CanCastNoTarget,utility.CanCastNoTarget,utility.NCanCast,utility.NCanCast,AbilityExtensions.NormalCanCastFunction}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -340,7 +340,7 @@ Consider[3]=function()
 		then
 			if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 			then
-				return BOT_ACTION_DESIRE_HIGH
+				return BOT_ACTION_DESIRE_HIGH-0.03
 			end
 		end
 	end
@@ -371,7 +371,7 @@ Consider[3]=function()
 
 		if ( npcMostDangerousEnemy ~= nil )
 		then
-			return BOT_ACTION_DESIRE_HIGH
+			return BOT_ACTION_DESIRE_HIGH-0.03
 		end
 	end
 	
@@ -389,6 +389,66 @@ Consider[3]=function()
 		end
 	end
 	return BOT_ACTION_DESIRE_NONE, 0 
+end
+
+-- terror wave
+Consider[4] = function() 
+	local ability = AbilitiesReal[4]
+	if not ability:IsFullyCastable() or ability:IsHidden() then
+		return 0
+	end
+	
+	if AbilityExtensions:IsAttackingEnemies(npcBot) then
+		local target = AbilityExtensions:GetTargetIfGood(npcBot)
+		if target and GetUnitToUnitDistanceSqr(target, npcBot) <= 360000 then
+			if not npcBot:HasModifier "modifier_terrorblade_metamorphosis" then
+				return BOT_ACTION_DESIRE_HIGH
+			else
+				return BOT_ACTION_DESIRE_LOW
+			end
+		end
+	end
+	local nearbyTargets = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 300):Filter(function(t)
+		return npcBot:WasRecentlyDamagedByHero(t, 1.2)
+	end)
+	if AbilityExtensions:GetEnemyHeroNumber(npcBot, nearbyTargets) >= 2 or #nearbyTargets >= 4 then
+		if AbilityExtensions:IsAttackingEnemies(npcBot) or AbilityExtensions:IsRetreating(npcBot) then
+			if npcBot:HasModifier "modifier_terrorblade_metamorphosis" then
+				return BOT_ACTION_DESIRE_HIGH
+			else
+				return BOT_ACTION_DESIRE_LOW
+			end
+		end
+	end
+	return 0
+end
+
+-- demon zeal
+Consider[5] = function() 
+	local ability = AbilitiesReal[4]
+	if not ability:IsFullyCastable() or ability:IsHidden() then
+		return 0
+	end
+	
+	if AbilityExtensions:IsFarmingOrPushing(npcBot) then
+		if npcBot:GetMana() >= 300 then
+			if #AbilityExtensions:GetNearbyCreeps(npcBot, 1000, true) >= 7 or #npcBot:GetNearbyTowers(1000, true) >= 1 then
+				return BOT_ACTION_DESIRE_MODERATE
+			end
+		end
+	end
+	if AbilityExtensions:IsAttackingEnemies(npcBot) then
+		if #AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot) > 0 and npcBot:GetAttackTarget() then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+	if AbilityExtensions:NotRetreating(npcBot) then
+		local target = AbilityExtensions:GetTargetIfGood(npcBot)
+		if target and npcBot:GetMana() >= 180 and GetUnitToUnitDistanceSqr(npcBot, target) <= 640000 then
+			return BOT_ACTION_DESIRE_HIGH
+		end
+	end
+	return 0
 end
 
 Consider[6]=function()

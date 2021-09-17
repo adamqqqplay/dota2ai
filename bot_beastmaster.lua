@@ -22,15 +22,19 @@ function HawkThink(minion)
 	end
 end
 
+local hawkName = "npc_dota_beastmaster_hawk_"
+local boarName = "npc_dota_beastmaster_boar_"
 
-function MinionThink(  hMinionUnit ) 
-	if minionutils.IsValidUnit(hMinionUnit) then
-		if minionutils.IsHawk(hMinionUnit:GetUnitName()) then
-			HawkThink(hMinionUnit)
-		elseif minionutils.IsMinionWithSkill(hMinionUnit:GetUnitName()) then
-			minionutils.MinionWithSkillThink(hMinionUnit);	
+function MinionThink(u) 
+	if minionutils.IsValidUnit(u) then
+		if string.sub(u:GetUnitName(), 1, #hawkName) == hawkName then
+			HawkThink(u)
+		elseif u:GetUnitName() == "npc_dota_beastmaster_axe" then
+			minionutils.CantBeControlledThink(u)
+		elseif minionutils.IsMinionWithSkill(u:GetUnitName()) then
+			minionutils.MinionWithSkillThink(u)
 		else
-			minionutils.IllusionThink(hMinionUnit)
+			minionutils.IllusionThink(u)
 		end
 	end
 end	

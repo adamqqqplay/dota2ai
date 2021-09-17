@@ -1,12 +1,12 @@
 local utility = require(GetScriptDirectory().."/utility") 
 local ability_item_usage_generic = require(GetScriptDirectory() ..  "/ability_item_usage_generic")
-local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
 local npcBot = GetBot()
 if npcBot:IsIllusion() then
     return
 end
-local AbilityNames, Abilities, Talents = AbilityExtensions:InitAbility()
+local AbilityNames, Abilities, Talents = fun1:InitAbility()
 
 local AbilityToLevelUp = {
     AbilityNames[1],
@@ -54,18 +54,24 @@ end
 --------------------------------------
 local cast= {} cast.Desire= {} cast.Target= {} cast.Type= {}
 local CanCast = {}
-CanCast[1] = t -> AbilityExtensions:NormalCanCast(t, false)
+CanCast[1] = { t -> fun1:NormalCanCast(t, false) }
 CanCast[2] = CanCast[1]
-CanCast[3] = t -> not AbilityExtensions:IsInvulnerable(t) or not AbilityExtensions:ShouldNotBeAttacked(t)
-CanCast[4] = t -> true
+CanCast[3] = { t -> not fun1:IsInvulnerable(t) or not fun1:ShouldNotBeAttacked(t) }
+CanCast[4] = { -> true }
 CanCast[5] = CanCast[1]
 
+local level
 local attackRange
+local health
+local maxHealth
 local healthPercent
 local mana
+local maxMana
 local manaPercent
-local enemies 
-local realEnemies
+local netWorth
+local allEnemies
+local enemies
+local enemyCount
 local friends
 local friendCount
 local enemyCreeps
@@ -75,11 +81,13 @@ local tower
 
 local illusoryOrbCastLocation
 local illusoryOrbMaxTravelDistance
+local illusoryOrbRemainingTime
+local isPhaseShifting
 
 local Consider = {}
 
 local function GetIllusoryOrb()
-    return AbilityExtensions:First(GetLinearProjectiles(), t-> t.ability and t.ability:GetName() == "puck_illusory_orb" and t.caster == npcBot)
+    return fun1:First(GetLinearProjectiles()) { t -> t.ability and t.ability:GetName() == "puck_illusory_orb" and t.caster == npcBot }
 end
 local illusoryOrb = GetIllusoryOrb()
 
@@ -94,47 +102,91 @@ Consider[1] = function()
     local manaCost = ability:GetManaCost()
     local duration = ability:GetDuration()
 	local damage = ability:GetDamage()
-    local forbiddenCreeps = AbilityExtensions:Filter(enemyCreeps, function(t)
-        return t:GetHealth() > t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) and (t:GetHealth() <= t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) + AbilityExtensions:AttackOnceDamage(npcBot, t) * (0.9+#enemyCreeps*0.1) or GetUnitToUnitDistance(tower, t) <= 700)
+    local forbiddenCreeps = fun1:Filter(enemyCreeps, function(t)
+        return t:GetHealth() > t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) and (t:GetHealth() <= t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) + fun1:AttackOnceDamage(npcBot, t) * (0.9+#enemyCreeps*0.1) or GetUnitToUnitDistance(tower, t) <= 700)
     end)
     if #friendCreeps == 0 then
         forbiddenCreeps = {}
     end
 
-	if AbilityExtensions:NotRetreating(npcBot) then
-		if local target = AbilityExtensions:GetTargetIfGood(npcBot) then 
-			coroutine.yield(BOT_ACTION_DESIRE_HIGH, target)
+	if fun1:NotRetreating(npcBot) then
+		if local target = fun1:GetTargetIfGood(npcBot) then 
+			coroutine.yield(BOT_ACTION_DESIRE_HIGH, target:GetLocation())
+		end
+		if local target = fun1:GetTargetIfBad(npcBot) then 
+            if mana >= 650 then
+			    coroutine.yield(BOT_ACTION_DESIRE_MODERATE, target:GetLocation())
+            end
 		end
 	end
-    if AbilityExtensions:IsFarmingOrPushing(npcBot) then
+    if fun1:IsFarmingOrPushing(npcBot) then
         if #enemyCreeps > 3 and #forbiddenCreeps == 0 and manaPercent > 0.6 + manaCost then
             coroutine.yield(BOT_ACTION_DESIRE_MODERATE, enemyCreeps[2]:GetLocation())
         end
-    elif AbilityExtensions:IsRetreating(npcBot) then
-		
+    elif fun1:IsRetreating(npcBot) then
+		coroutine.yield(BOT_ACTION_DESIRE_HIGH, fun1:GetAncientLocation(npcBot))
     end
+    return 0
 end
 
-AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, Abilities)
+local phaseShiftStartTime
+local phaseShiftRemainingTime
+local phaseShiftReasons = {}
+
+Consider[3] = function()
+    local ability = Abilities[3]
+    if not ability:IsFullyCastable() then
+        return 0
+    end
+
+    if fun1:HasSeverelyDisableProjectiles(npcBot) then
+        return BOT_ACTION_DESIRE_HIGH
+    end
+
+    return 0
+end
+
+fun1:AutoModifyConsiderFunction(npcBot, Consider, Abilities)
 
 function AbilityUsageThink()
-	if npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() then 
+    isPhaseShifting = npcBot:HasModifier "modifier_puck_phase_shift"
+    if phaseShiftRemainingTime then
+        phaseShiftRemainingTime -= fun1:GetDeltaTime()
+    end
+	if npcBot:IsUsingAbility() or npcBot:IsSilenced() then 
 		return
-	end
+	end 
+    if npcBot:IsChanneling() then
+        if isPhaseShifting then
+            local reason = phaseShiftReasons.reason
+            if reason == "projectiles" then
+                if #npcBot:GetIncomingTrackingProjectiles() == 0 then
+                    npcBot:Action_ClearActions(false)
+                    return
+                end
+            end
+        end
+    end
     
-    attackRange = npcBot:GetAttackRange()
-    healthPercent = AbilityExtensions:GetHealthPercent(npcBot)
+	level = npcBot:GetLevel()
+	attackRange = npcBot:GetAttackRange()
+    health = npcBot:GetHealth()
+    maxHealth = npcBot:GetMaxHealth()
+    healthPercent = fun1:GetHealthPercent(npcBot)
     mana = npcBot:GetMana()
-    manaPercent = AbilityExtensions:GetManaPercent(npcBot)
+    maxMana = npcBot:GetMaxMana()
+    manaPercent = fun1:GetManaPercent(npcBot)
+	netWorth = npcBot:GetNetWorth()
 
-	enemies = AbilityExtensions:GetNearbyHeroes(npcBot, 1599)
-    realEnemies = AbilityExtensions:Filter(enemies, function(t) return AbilityExtensions:MayNotBeIllusion(npcBot, t) end)
-    friends = AbilityExtensions:GetNearbyHeroes(npcBot, 1599, true)
-    friendCount = AbilityExtensions:GetEnemyHeroNumber(npcBot, friends)
-    enemyCreeps = AbilityExtensions:GetNearbyAttackableCreeps(npcBot, 1599)
-    friendCreeps = AbilityExtensions:GetNearbyAttackableCreeps(npcBot, npcBot:GetAttackRange()+150, false)
-    neutralCreeps = npcBot:GetNearbyNeutralCreeps(1599)
-    tower = AbilityExtensions:GetLaningTower(npcBot)
+	allEnemies = fun1:GetNearbyHeroes(npcBot, 1200)
+    enemies = allEnemies:Filter { t -> fun1:MayNotBeIllusion(npcBot, t) }
+    enemyCount = fun1:GetEnemyHeroNumber(npcBot, enemies)
+    friends = fun1:GetNearbyNonIllusionHeroes(npcBot, 1500, true)
+    friendCount = fun1:GetEnemyHeroNumber(npcBot, friends)
+    enemyCreeps = fun1:GetNearbyAttackableCreeps(npcBot, 900)
+    friendCreeps = fun1:GetNearbyAttackableCreeps(npcBot, npcBot:GetAttackRange()+150, false)
+    neutralCreeps = npcBot:GetNearbyNeutralCreeps(900)
+    tower = fun1:GetLaningTower(npcBot)
 
 
 	cast=ability_item_usage_generic.ConsiderAbility(Abilities,Consider)
@@ -142,6 +194,10 @@ function AbilityUsageThink()
     if abilityIndex == 1 then
         illusoryOrbCastLocation = npcBot:GetLocation()
         illusoryOrbMaxTravelDistance = Abilities[1]:GetSpecialValueInt("max_distance") - 50
+        illusoryOrbRemainingTime = illusoryOrbMaxTravelDistance / Abilities[1]:GetSpecialValueInt "orb_speed"
+    elseif abilityIndex == 3 then
+        phaseShiftStartTime = DotaTime()
+        phaseShiftRemainingTime = Abilities[3]:GetSpecialValueFloat "duration" - 0.08
     end
 end
 

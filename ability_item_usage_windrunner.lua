@@ -16,11 +16,7 @@ local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
 
-ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
-
--- utility.PrintAbilityName(Abilities)
-local abilityName =  { "windrunner_shackleshot", "windrunner_powershot", "windrunner_windrun", "windrunner_focusfire" }
-local abilityIndex = utility.ReverseTable(abilityName)
+ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 
 local AbilityToLevelUp=
@@ -30,19 +26,19 @@ local AbilityToLevelUp=
 	Abilities[2],
 	Abilities[1],
 	Abilities[2],
-	Abilities[4],
+	Abilities[5],
 	Abilities[2],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
-	Abilities[4],
+	Abilities[5],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[1],
 	"nil",
-	Abilities[4],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -167,10 +163,19 @@ Consider[3]=function()
 	end
 
 	return BOT_ACTION_DESIRE_NONE, 0;
-	
 end
 
-Consider[4]=function()
+Consider[4] = function()
+	local ability = AbilitiesReal[4]
+	if not ability:IsFullyCastable() or ability:IsHidden() then
+		return 0
+	end
+	
+	return 0
+end
+
+
+Consider[5]=function()
 
 	local abilityNumber=4
 	--------------------------------------
