@@ -114,7 +114,7 @@ local function TooDangerousToBlinkNear(npc)
 	if isVeryDangerous then
 		return true
 	end
-	local isDangerous = npc:HasModifier("modifier_batrider_firefly") or npc:HasModifier("modifier_winter_wyvern_arctic_burn_flight") or npc:IsMagicImmune()
+	local isDangerous = npc:HasModifier("modifier_batrider_firefly") or npc:IsMagicImmune()
 	if isDangerous and not enoughHealth then
 		return true
 	end

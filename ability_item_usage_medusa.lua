@@ -256,9 +256,8 @@ Consider[3]=function()
 	-- Generic Variable Setting
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber]
-	
 	if not ability:IsFullyCastable() then
-		return false
+		return 0
 	end
     local healthPercent = AbilityExtensions:GetHealthPercent(npcBot)
     local manaPercent = AbilityExtensions:GetManaPercent(npcBot)

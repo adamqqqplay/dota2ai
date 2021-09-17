@@ -130,19 +130,35 @@ setmetatable(roles, { __index = function(_, heroName)
     return zeroTable
 end })
 local humanPlayers
+local dustBuyers
+local defaultDustBuyerNumber = 2
+local teamMembers = {}
+local gemPlayers
+local nonDefaultGemPlayers
+local enemyStates = fun1:NewTable()
 local finishInit
 local runned
 local function TeamItemInit()
+    if finishInit then
+        return
+    end
     finishInit = true
+    fun1:Range(1, 5):ForEach(function(t)
+        enemyStates[t] = {}
+    end)
     humanPlayers = fun1:Range(1, 5):Filter(function(it)
         return not GetTeamMember(it):IsBot()
     end)
-end
-local teamMembers = {}
-local function InitHumanPlayers()
-    humanPlayers = fun1:Range(1, 5):Filter(function(it)
-        return not GetTeamMember(it):IsBot()
+    dustBuyers = fun1:SortByMaxFirst(teamMembers, function()
+        return math.random()
     end)
+    dustBuyers = (function()
+        if #dustBuyers >= defaultDustBuyerNumber then
+            return dustBuyers:Take(defaultDustBuyerNumber)
+        else
+            return dustBuyers
+        end
+    end)()
 end
 local function IsLeaf(item)
     return next(GetItemComponents(item)) == nil
@@ -242,7 +258,7 @@ local function AddMekansm()
     local function Rate(hero)
         local heroName = fun1:GetHeroShortName(hero:GetUnitName())
         local rate = roles[heroName].mekansm + math.random(0, 1.5)
-        if hero:GetPrimaryAttribute() == ATTRIBUTE_INTELLECT then
+        if hero:GetPrimaryAttribute() == ATTRIBUTE_INTELLECT and rate <= 7 then
             rate = rate + 1
         end
         return rate
@@ -274,7 +290,6 @@ local function AddMekansm()
         end
     end
 end
-local enemyStates = fun1:NewTable()
 local function IdToEnemyStateTableIndex(id)
     return (function()
         if id <= 4 then
@@ -283,11 +298,6 @@ local function IdToEnemyStateTableIndex(id)
             return id - 4
         end
     end)()
-end
-local function TeamStateInit()
-    fun1:Range(1, 5):ForEach(function(t)
-        enemyStates[t] = {}
-    end)
 end
 local RefreshEnemyRespawnTime = fun1:EveryManySeconds(1, function()
     return fun1:GroupBy(GetUnitList(UNIT_LIST_ENEMY_HEROES), function(t)
@@ -358,12 +368,23 @@ local CheckInvisibleEnemy = function()
         return fun1:HasInvisibility(t)
     end)
 end
-local RefreshInvisibleEnemies = fun1:EveryManySeconds(2, function()
+local RefreshInvisibleEnemies_One = fun1:EveryManySeconds(2, function()
+    gemPlayers = fun1:Range(1, 5):Map(function(t)
+        return GetTeamMember(t)
+    end):Filter(function(t)
+        return fun1:GetAvailableItem(t, "item_gem")
+    end)
+    nonDefaultGemPlayers = gemPlayers:Filter(function(t)
+        return not dustBuyers:Contains(t)
+    end)
     hasInvisibleEnemy = CheckInvisibleEnemy()
+end)
+local RefreshInvisibleEnemies = fun1:SingleForTeam(function()
+    return RefreshInvisibleEnemies_One()
 end)
 local BuyDustIfInvisibleEnemies = fun1:EveryManySeconds(2, function()
     RefreshInvisibleEnemies()
-    if hasInvisibleEnemy then
+    if dustBuyers:Take(defaultDustBuyerNumber - #nonDefaultGemPlayers):Contains(npcBot) and hasInvisibleEnemy then
         local items = fun1:GetAllBoughtItems(npcBot):Map(function(t)
             return t:GetName()
         end)
@@ -378,7 +399,11 @@ local BuyDustIfInvisibleEnemies = fun1:EveryManySeconds(2, function()
 end)
 M.CheckInvisibleEnemy = CheckInvisibleEnemy
 function M.Think()
+    if fun1:GameNotReallyStarting() then
+        return
+    end
     npcBot = GetBot()
+    TeamItemInit()
     TeamItemEventThink()
     TeamStateThink()
     BuyDustIfInvisibleEnemies()
@@ -399,7 +424,6 @@ function M.TeamItemThink(npcBot)
         end
         if not finishInit then
             TeamItemInit()
-            TeamStateInit()
         end
         if #teamMembers + #humanPlayers == 5 then
             if runned then

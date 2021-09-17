@@ -630,7 +630,8 @@ M.ToggleFunctionToAction = function(self, npcBot, oldConsider, ability)
             return value, target, castType
         end
         if value ~= ability:GetToggleState() and ability:IsFullyCastable() then
-            return BOT_ACTION_DESIRE_HIGH
+            ability:ToggleAutoCast()
+            return 0
         else
             return 0
         end
@@ -642,7 +643,7 @@ M.ToggleFunctionToAutoCast = function(self, npcBot, ability, oldToggle)
         if type(value) == "number" then
             return value, target, castType
         end
-        if ability:IsFullyCastable() and value ~= ability:GetAutoCastState() or not ability:IsHidden() then
+        if ability:IsFullyCastable() and value ~= ability:GetAutoCastState() and not ability:IsHidden() then
             ability:ToggleAutoCast()
         end
         return 0
@@ -1235,6 +1236,59 @@ abilityInformationKeys:ForEach(function(t)
     M[k.."Abilities"] = a
     M[k.."Modifiers"] = b
 end)
+function M:ToIntItemPurchaseResult(i)
+    return (function()
+        if i == PURCHASE_ITEM_SUCCESS then
+            return "PURCHASE_ITEM_SUCCESS"
+        elseif i == PURCHASE_ITEM_OUT_OF_STOCK then
+            return "PURCHASE_ITEM_OUT_OF_STOCK"
+        elseif i == PURCHASE_ITEM_DISALLOWED_ITEM then
+            return "PURCHASE_ITEM_DISALLOWED_ITEM"
+        elseif i == PURCHASE_ITEM_INSUFFICIENT_GOLD then
+            return "PURCHASE_ITEM_INSUFFICIENT_GOLD"
+        elseif i == PURCHASE_ITEM_NOT_AT_HOME_SHOP then
+            return "PURCHASE_ITEM_NOT_AT_HOME_SHOP"
+        elseif i == PURCHASE_ITEM_NOT_AT_SECRET_SHOP then
+            return "PURCHASE_ITEM_NOT_AT_SECRET_SHOP"
+        elseif i == PURCHASE_ITEM_INVALID_ITEM_NAME then
+            return "PURCHASE_ITEM_INVALID_ITEM_NAME"
+        else
+            return "UNKNOWN_ITEM_PURCHASE_RESULT_ENUM"
+        end
+    end)()
+end
+M.botModeEnum = {
+    BOT_MODE_NONE = BOT_MODE_NONE,
+    BOT_MODE_LANING = BOT_MODE_LANING,
+    BOT_MODE_ATTACK = BOT_MODE_ATTACK,
+    BOT_MODE_ROAM = BOT_MODE_ROAM,
+    BOT_MODE_RETREAT = BOT_MODE_RETREAT,
+    BOT_MODE_SECRET_SHOP = BOT_MODE_SECRET_SHOP,
+    BOT_MODE_SIDE_SHOP = BOT_MODE_SIDE_SHOP,
+    BOT_MODE_PUSH_TOWER_TOP = BOT_MODE_PUSH_TOWER_TOP,
+    BOT_MODE_PUSH_TOWER_MID = BOT_MODE_PUSH_TOWER_MID,
+    BOT_MODE_PUSH_TOWER_BOT = BOT_MODE_PUSH_TOWER_BOT,
+    BOT_MODE_DEFEND_TOWER_TOP = BOT_MODE_DEFEND_TOWER_TOP,
+    BOT_MODE_DEFEND_TOWER_MID = BOT_MODE_DEFEND_TOWER_MID,
+    BOT_MODE_DEFEND_TOWER_BOT = BOT_MODE_DEFEND_TOWER_BOT,
+    BOT_MODE_ASSEMBLE = BOT_MODE_ASSEMBLE,
+    BOT_MODE_TEAM_ROAM = BOT_MODE_TEAM_ROAM,
+    BOT_MODE_FARM = BOT_MODE_FARM,
+    BOT_MODE_DEFEND_ALLY = BOT_MODE_DEFEND_ALLY,
+    BOT_MODE_EVASIVE_MANEUVERS = BOT_MODE_EVASIVE_MANEUVERS,
+    BOT_MODE_ROSHAN = BOT_MODE_ROSHAN,
+    BOT_MODE_ITEM = BOT_MODE_ITEM,
+    BOT_MODE_WARD = BOT_MODE_WARD,
+}
+GiveLinqFunctions(M.botModeEnum)
+function M:ToIntBotMode(i)
+    for k, v in pairs(botModeEnum) do
+        if v == i then
+            return k
+        end
+    end
+    return "UNKNOWN_BOT_MODE_ENUM"
+end
 function M:IsRoshan(npcTarget)
     return npcTarget ~= nil and npcTarget:IsAlive() and string.find(npcTarget:GetUnitName(), "roshan")
 end
@@ -1253,6 +1307,16 @@ end
 function M:IsBrewmasterPrimalSplit(npc)
     local unitName = npc:GetUnitName()
     return string.match(unitName, "npc_dota_brewmaster_")
+end
+function M:IsHeroLevelUnit(npc)
+    if self:IsBrewmasterPrimalSplit(npc) then
+        return true
+    end
+    local name = npc:GetUnitName()
+    if name == "npc_dota_phoenix_sun" then
+        return true
+    end
+    return false
 end
 M.GetIncomingDodgeWorthProjectiles = function(self, npc)
     local health = npc:GetHealth()
@@ -1618,7 +1682,7 @@ function M:HasUnobstructedMovement(npc)
     return #activeFlyingModifiers ~= 0
 end
 M.GetAvailableItem = function(self, npc, itemName)
-    for i = 0, 5 do
+    for _, i in ipairs(self:Range(0, 5):Concat({ 16 })) do
         local item = npc:GetItemInSlot(i)
         if item and item:GetName() == itemName and item:IsFullyCastable() then
             return item
@@ -1963,6 +2027,7 @@ M.IsInvulnerable = function(self, npc)
     end)
 end
 M.invisibilityItems = {
+    "item_shadow_amulet",
     "item_invis_sword",
     "item_silver_edge",
     "item_glimmer_cape",
@@ -2000,7 +2065,7 @@ function M:HasInvisibility(npc)
     return false
 end
 M.MayNotBeSeen = function(self, npc)
-    if not npc:IsInvisible() or npc:HasModifier "modifier_item_dust" or npc:HasModifier "modifier_bounty_hunter_track" or npc:HasModifier "modifier_slardar_amplify_damage" or npc:HasModifier "modifier_truesight" then
+    if not npc:IsInvisible() or npc:HasModifier "modifier_item_dustofappearance" or npc:HasModifier "modifier_bounty_hunter_track" or npc:HasModifier "modifier_slardar_amplify_damage" or npc:HasModifier "modifier_truesight" then
         return false
     end
     if self:HasAnyModifier(npc, self.permanentTrueSightRootModifiers) then
@@ -2786,9 +2851,13 @@ function M:EveryManySeconds(second, oldFunction)
     everySecondsCallRegistry[functionName] = callTable
     callTable.lastCallTime = DotaTime() + RandomFloat(0, second)
     callTable.interval = second
+    callTable.startup = true
     return function(...)
         local callTable = everySecondsCallRegistry[tostring(oldFunction)]
-        if callTable.lastCallTime <= DotaTime() - callTable.interval then
+        if callTable.startup then
+            callTable.startup = nil
+            return oldFunction(...)
+        elseif callTable.lastCallTime <= DotaTime() - callTable.interval then
             callTable.lastCallTime = DotaTime()
             return oldFunction(...)
         else
@@ -2798,22 +2867,10 @@ function M:EveryManySeconds(second, oldFunction)
 end
 local singleForTeamRegistry = NewTable()
 function M:SingleForTeam(oldFunction)
-    local functionName = tostring(oldFunction)..GetTeam()
+    local functionName = tostring(oldFunction)
     return function(...)
         if singleForTeamRegistry[functionName] ~= frameNumber then
             singleForTeamRegistry[functionName] = frameNumber
-            return oldFunction(...)
-        else
-            return defaultReturn
-        end
-    end
-end
-local singleForAllBots = NewTable()
-function M:SingleForAllBots(oldFunction)
-    local functionName = tostring(oldFunction)
-    return function(...)
-        if singleForAllBots[functionName] ~= frameNumber then
-            singleForAllBots[functionName] = frameNumber
             return oldFunction(...)
         else
             return defaultReturn

@@ -109,19 +109,19 @@ Consider[1] = function()
         if target:IsHero() then
             local modifier = target:GetModifierByName("modifier_drow_ranger_frost_arrows_slow")
             if modifier ~= -1 and target:GetModifierRemainingDuration(modifier) > npcBot:GetAttackSpeed()/100*0.7/1.7 + 0.2 then
-                return AbilityExtensions:GetManaPercent(npcBot) >= 0.8
+                return AbilityExtensions:GetManaPercent(npcBot) >= 0.65
             end
             if AbilityExtensions:MustBeIllusion(npcBot, target) then
                 return (AbilityExtensions:GetManaPercent(npcBot) >= 0.8 or AbilityExtensions:GetHealthPercent(target) <= 0.4) and (GetUnitToUnitDistance(npcBot, target) >= 300 or npcBot:GetLevel() < 6)
             else
-                return AbilityExtensions:GetManaPercent(npcBot) >= 0.4 or AbilityExtensions:GetManaPercent(npcBot) >= 0.2 and (GetUnitToUnitDistance(npcBot, target) >= 300 or npcBot:GetLevel() < 6)
+                return AbilityExtensions:GetManaPercent(npcBot) >= 0.3 or AbilityExtensions:GetManaPercent(npcBot) >= 0.2 and (GetUnitToUnitDistance(npcBot, target) >= 300 or npcBot:GetLevel() < 6)
             end
         elseif target:IsBuilding() then
             return false
         else
             return AbilityExtensions:GetManaPercent(npcBot) >= 0.8
         end
-
+		return 0
     end
 
     if AbilityExtensions:NotRetreating(npcBot) then

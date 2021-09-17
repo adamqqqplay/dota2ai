@@ -189,7 +189,7 @@ Consider[1]=function()
 	local CastPoint = ability:GetCastPoint();
 	local Radius = ability:GetAOERadius();
 	
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, false, BOT_MODE_NONE );
 	allys = AbilityExtensions:Filter(npcBot, function(t) return not t:HasModifier("modifier_ice_blast") end)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -439,13 +439,11 @@ Consider[5]=function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
-	local CastRange = ability:GetCastRange();
+	local CastRange = ability:GetCastRange()
 	local Damage = 0
-	local Radius = ability:GetAOERadius()
-	
 
-	local allys = npcBot:GetNearbyHeroes( math.max(Radius,1600), false, BOT_MODE_NONE );
-	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1600, false, BOT_MODE_NONE)
+	local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1600)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	
 	-- If we're in a teamfight, use it on the scariest enemy

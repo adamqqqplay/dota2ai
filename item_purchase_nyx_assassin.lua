@@ -13,7 +13,7 @@ local ItemsToBuy =
 	"item_magic_stick", --大魔棒7.14
 	"item_boots",
 	"item_hand_of_midas", --点金
-	"item_energy_booster",
+	"item_arcane_boots",
 	"item_blink",
     "item_dagon",
 	"item_ultimate_scepter", --蓝杖

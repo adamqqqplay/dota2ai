@@ -79,118 +79,6 @@ M.ExpandItemRecipe = function(self, itemTable)
     end
     return output
 end
-function M.Transfer(itemtable)
-    local output = {}
-    for k1, v1 in pairs(itemtable) do
-        if isLeaf(v1) then
-            table.insert(output, v1)
-        else
-            for k2, v2 in pairs(nextNodes(v1)) do
-                if isLeaf(v2) then
-                    table.insert(output, v2)
-                else
-                    for k3, v3 in pairs(nextNodes(v2)) do
-                        if isLeaf(v3) then
-                            table.insert(output, v3)
-                        else
-                            for k4, v4 in pairs(nextNodes(v3)) do
-                                if isLeaf(v4) then
-                                    table.insert(output, v4)
-                                else
-                                    for k5, v5 in pairs(nextNodes(v4)) do
-                                        if isLeaf(v5) then
-                                            table.insert(output, v5)
-                                        else
-                                            for k6, v6 in pairs(nextNodes(v5)) do
-                                                if isLeaf(v6) then
-                                                    table.insert(output, v6)
-                                                end
-                                            end
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
-    return output
-end
-function M.ItemPurchase(ItemsToBuy)
-    if GetGameState() == DOTA_GAMERULES_STATE_POSTGAME then
-        return
-    end
-    local npcBot = GetBot()
-    if npcBot.secretShopMode ~= true or npcBot:GetGold() >= 100 then
-        M.WeNeedTpscroll()
-    end
-    if #ItemsToBuy == 0 then
-        npcBot:SetNextItemPurchaseValue(0)
-        return
-    end
-    local sNextItem = ItemsToBuy[1]
-    npcBot:SetNextItemPurchaseValue(GetItemCost(sNextItem))
-    M.SellExtraItem(ItemsToBuy)
-    if npcBot:DistanceFromFountain() <= 2500 or npcBot:GetHealth() / npcBot:GetMaxHealth() <= 0.35 then
-        npcBot.secretShopMode = false
-    end
-    if IsItemPurchasedFromSecretShop(sNextItem) == false then
-        npcBot.secretShopMode = false
-    end
-    if npcBot:GetGold() >= GetItemCost(sNextItem) then
-        if npcBot.secretShopMode ~= true then
-            if IsItemPurchasedFromSecretShop(sNextItem) and sNextItem ~= "item_bottle" then
-                npcBot.secretShopMode = true
-            end
-        end
-        local PurchaseResult = -2
-        if npcBot.secretShopMode then
-            if npcBot:DistanceFromSecretShop() <= 250 then
-                PurchaseResult = npcBot:ActionImmediate_PurchaseItem(sNextItem)
-            end
-            local courier = GetCourier(0)
-            local ItemCount = M.GetItemSlotsCount2(courier)
-            if courier:DistanceFromSecretShop() <= 250 and ItemCount < 9 then
-                PurchaseResult = GetCourier(0):ActionImmediate_PurchaseItem(sNextItem)
-            end
-        else
-            PurchaseResult = npcBot:ActionImmediate_PurchaseItem(sNextItem)
-        end
-        if PurchaseResult == PURCHASE_ITEM_SUCCESS then
-            npcBot.secretShopMode = false
-            table.remove(ItemsToBuy, 1)
-        elseif PurchaseResult ~= -2 then
-            print("purchase item failed: "..ItemsToBuy[1]..", fail code: "..PurchaseResult)
-        end
-        if PurchaseResult == PURCHASE_ITEM_OUT_OF_STOCK then
-            M.SellSpecifiedItem("item_faerie_fire")
-            M.SellSpecifiedItem("item_tango")
-            M.SellSpecifiedItem("item_clarity")
-            M.SellSpecifiedItem("item_flask")
-        end
-        if PurchaseResult == PURCHASE_ITEM_INVALID_ITEM_NAME or PurchaseResult == PURCHASE_ITEM_DISALLOWED_ITEM then
-            print("invalid item purchase or disallowed purchase: "..ItemsToBuy[1])
-            table.remove(ItemsToBuy, 1)
-        end
-        if PurchaseResult == PURCHASE_ITEM_INSUFFICIENT_GOLD then
-            npcBot.secretShopMode = false
-        end
-        if PurchaseResult == PURCHASE_ITEM_NOT_AT_SECRET_SHOP then
-            npcBot.secretShopMode = true
-        end
-        if PurchaseResult == PURCHASE_ITEM_NOT_AT_HOME_SHOP then
-            npcBot.secretShopMode = false
-        end
-        if PurchaseResult >= -1 then
-        end
-    else
-        npcBot.secretShopMode = false
-    end
-end
-function M.BuyCourier()
-end
 function M.NoNeedTpscrollForTravelBoots()
     local npcBot = GetBot()
     local item_travel_boots = {}
@@ -569,10 +457,9 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
         table.insert(g, itemInformation)
     end
     npcBot.itemInformationTable = g
-    RemoveBoughtItems()
-    AbilityExtensions:ForEach(g, function(item)
-        return AbilityExtensions:DebugTable(item)
-    end)
+    if not AbilityExtensions:GameNotReallyStarting() then
+        RemoveBoughtItems()
+    end
     local function RemoveTeamItems(t)
         local implmentedItems = TeamItemThink.ImplmentedTeamItems or {}
         AbilityExtensions:ForEach(implmentedItems, function(itemName)
@@ -733,7 +620,7 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
             npcBot.secretShopMode = false
             RemoveTopItemToBuy()
         elseif PurchaseResult ~= -2 then
-            print("purchase item failed: "..sNextItem..", fail code: "..PurchaseResult)
+            print("purchase item failed: "..sNextItem..", fail code: "..AbilityExtensions:ToIntItemPurchaseResult(PurchaseResult))
         end
         if PurchaseResult == PURCHASE_ITEM_OUT_OF_STOCK then
             M.SellSpecifiedItem("item_faerie_fire")

@@ -13,7 +13,7 @@ local ItemsToBuy =
 	"item_boots",
 	"item_flask",
     "item_magic_wand",
-	"item_energy_booster",
+	"item_arcane_boots",
 	"item_glimmer_cape", --微光
     "item_ghost",
 	"item_ultimate_scepter", --蓝杖

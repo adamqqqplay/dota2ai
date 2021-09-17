@@ -106,7 +106,7 @@ Consider[1]=function()
 	local Radius = ability:GetAOERadius()
 	
 
-	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes( 1200, false, BOT_MODE_NONE );
+	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, false)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)

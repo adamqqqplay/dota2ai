@@ -237,7 +237,7 @@ Consider[2] = function()
             if AbilityExtensions:MustBeIllusion(npcBot, target) then
                 return AbilityExtensions:GetManaPercent(npcBot) >= 0.8 or AbilityExtensions:GetHealthPercent(target) <= 0.4
             else
-                return AbilityExtensions:GetManaPercent(npcBot) >= 0.4 or AbilityExtensions:GetManaPercent(npcBot) >= 0.2
+                return true
             end
         elseif target:IsBuilding() then
             return false

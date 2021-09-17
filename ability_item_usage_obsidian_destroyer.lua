@@ -77,9 +77,9 @@ local CanCast={AbilityExtensions.PhysicalCanCastFunction,function(t)
 	if npcBot:GetTeam() == t:GetTeam() then
 		return AbilityExtensions:SpellCanCast(t, true, true, true) and not AbilityExtensions:DontInterruptAlly(t) and not t:IsMagicImmune()
 	else
-		return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_MAGICAL) and not t:HasModifier("modifier_antimage_counterspell")
+		return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_MAGICAL) and not t:HasModifier("modifier_antimage_counterspell") and not AbilityExtensions:IsOrGoingToBeSeverelyDisabled(t)
 	end
-end,utility.NCanCast,
+end,nil,
 function(t)
     return t:HasModifier("modifier_obsidian_destroyer_astral_imprisonment_prison") or AbilityExtensions:NormalCanCast(t)
 end}

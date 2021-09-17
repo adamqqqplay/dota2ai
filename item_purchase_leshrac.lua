@@ -12,7 +12,7 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
 	"item_boots",
 	"item_null_talisman",
-	"item_energy_booster",
+	"item_arcane_boots",
 	"item_veil_of_discord", --纷争7.20
 	"item_cyclone", --风杖
 	"item_aghanims_shard",

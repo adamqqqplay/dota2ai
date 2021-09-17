@@ -137,19 +137,29 @@ setmetatable(roles, {
 })
 
 local humanPlayers
+local dustBuyers
+local defaultDustBuyerNumber = 2
+local teamMembers = {}
+local gemPlayers
+local nonDefaultGemPlayers
+local enemyStates = fun1:NewTable()
+
 local finishInit
+
 local runned
 local function TeamItemInit()
+    if finishInit then
+        return
+    end
     finishInit = true
+    fun1:Range(1, 5):ForEach { t ->
+        enemyStates[t] = {}
+    }
     humanPlayers = fun1:Range(1, 5):Filter { it ->
         not GetTeamMember(it):IsBot()
     }
-end
-local teamMembers = {}
-local function InitHumanPlayers()
-    humanPlayers = fun1:Range(1, 5):Filter { it ->
-        not GetTeamMember(it):IsBot()
-    }
+    dustBuyers = fun1:SortByMaxFirst(teamMembers) { -> math.random() }
+    dustBuyers = if #dustBuyers >= defaultDustBuyerNumber { dustBuyers:Take(defaultDustBuyerNumber) } else { dustBuyers }
 end
 
 local function IsLeaf(item)
@@ -233,7 +243,7 @@ local function AddMekansm()
     local function Rate(hero)
         local heroName = fun1:GetHeroShortName(hero:GetUnitName())
         local rate = roles[heroName].mekansm + math.random(0, 1.5)
-        if hero:GetPrimaryAttribute() == ATTRIBUTE_INTELLECT then
+        if hero:GetPrimaryAttribute() == ATTRIBUTE_INTELLECT and rate <= 7 then
             rate += 1
         end
         return rate
@@ -262,15 +272,9 @@ local function AddMekansm()
     end
 end
 
-local enemyStates = fun1:NewTable()
 local function IdToEnemyStateTableIndex(id)
     return if id <= 4 { id + 1 } else { id - 4 }
 end
-local function TeamStateInit()
-    fun1:Range(1, 5):ForEach { t ->
-        enemyStates[t] = {}
-    }
-end 
 
 local RefreshEnemyRespawnTime = fun1:EveryManySeconds(1) { ->
     fun1:GroupBy(GetUnitList(UNIT_LIST_ENEMY_HEROES), { t -> t:GetPlayerID() }, { t -> t }, { k, v -> { k, v } })
@@ -328,19 +332,24 @@ local CheckInvisibleEnemy = function()
     } or 
     fun1:GetUnitList(UNIT_LIST_ENEMY_HEROES):Filter { t ->
         fun1:MayNotBeIllusion(npcBot, t)
-    }:Any { t -> --print("check invisibility on "..t:GetUnitName());
-    fun1:HasInvisibility(t) }
+    }:Any { t -> fun1:HasInvisibility(t) }
 end
 
-local RefreshInvisibleEnemies = 
--- fun1:SingleForTeam { ->
-    fun1:EveryManySeconds(2) { ->
-        hasInvisibleEnemy = CheckInvisibleEnemy()
+local RefreshInvisibleEnemies_One = fun1:EveryManySeconds(2) { ->
+    gemPlayers = fun1:Range(1, 5):Map { t -> GetTeamMember(t) }:Filter { t ->
+        fun1:GetAvailableItem(t, "item_gem")
     }
--- }
+    nonDefaultGemPlayers = gemPlayers:Filter { t -> not dustBuyers:Contains(t) }
+    hasInvisibleEnemy = CheckInvisibleEnemy()
+}
+local RefreshInvisibleEnemies = fun1:SingleForTeam { -> 
+    RefreshInvisibleEnemies_One()
+}
+
+
 local BuyDustIfInvisibleEnemies = fun1:EveryManySeconds(2) { ->
     RefreshInvisibleEnemies()
-    if hasInvisibleEnemy then
+    if dustBuyers:Take(defaultDustBuyerNumber - #nonDefaultGemPlayers):Contains(npcBot) and hasInvisibleEnemy then
         local items = fun1:GetAllBoughtItems(npcBot):Map { t -> t:GetName() }
         if not items:Contains("item_gem") and not items:Contains("item_dust") then
             if npcBot:GetGold() >= 2*GetItemCost("item_dust") then
@@ -355,7 +364,11 @@ local BuyDustIfInvisibleEnemies = fun1:EveryManySeconds(2) { ->
 M.CheckInvisibleEnemy = CheckInvisibleEnemy
 
 function M.Think()
+    if fun1:GameNotReallyStarting() then
+        return
+    end
     npcBot = GetBot()
+    TeamItemInit()
     TeamItemEventThink()
     TeamStateThink()
     BuyDustIfInvisibleEnemies()
@@ -377,7 +390,6 @@ function M.TeamItemThink(npcBot)
         end
         if not finishInit then
             TeamItemInit()
-            TeamStateInit()
         end
         if #teamMembers + #humanPlayers == 5 then
             if runned then 

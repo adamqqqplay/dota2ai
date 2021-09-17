@@ -73,7 +73,11 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,
+	AbilityExtensions.NormalCanCastFunction,
+	function(t)
+	return AbilityExtensions:NormalCanCast(t) and AbilityExtensions:MayNotBeIllusion(npcBot, t) and not AbilityExtensions:IsHeroLevelUnit(t)
+end}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -334,6 +338,13 @@ Consider[2]=function()
 	return BOT_ACTION_DESIRE_NONE, 0 ,"nil";
 end
 
+local function DontSteal(enemy)
+	return AbilityExtensions:Range(1, 5):Map(function(t) return GetTeamMember(t) end):Remove(npcBot):Filter(function(t) return t:WasRecentlyDamagedByHero(enemy, 1.5) end) and GetUnitToUnitDistance(npcBot, enemy) > 1600
+end
+local function ShouldUseUltimate(enemy)
+	return CanCast[6](enemy) and DontSteal(enemy)
+end
+
 Consider[6]=function()
 	
 	local ability=AbilitiesReal[6]
@@ -352,7 +363,7 @@ Consider[6]=function()
 		then
 			if(GetUnitToUnitDistance(npcBot,Enemy)>AbilitiesReal[2]:GetCastRange() or not AbilitiesReal[2]:IsFullyCastable())
 			then
-				if Enemy:IsAlive() and Enemy:CanBeSeen() and CanCast[4](Enemy)
+				if Enemy:IsAlive() and Enemy:CanBeSeen() and ShouldUseUltimate(Enemy)
 				then
 					if (LowestHP>Enemy:GetHealth())
 					then
@@ -364,8 +375,7 @@ Consider[6]=function()
 		end
 	end
 	
-	if (WeakestEnemy==nil or LowestHP<1)
-	then
+	if WeakestEnemy==nil or LowestHP<1 then
 		return BOT_ACTION_DESIRE_NONE
 	end
 
@@ -373,9 +383,8 @@ Consider[6]=function()
 	then
 		--return BOT_ACTION_DESIRE_VERYHIGH
 		local time_byname=WeakestEnemy:GetUnitName()
-		local allys=WeakestEnemy:GetNearbyHeroes( 600, false, BOT_MODE_ATTACK );
-		if(#allys==0 or allys[1]==npcBot)
-		then
+		local allys=WeakestEnemy:GetNearbyHeroes( 600, true, BOT_MODE_NONE )
+		if #allys==0 or #allys == 1 and allys[1]==npcBot then
 			-- Don't rush to get the kill
 			return BOT_ACTION_DESIRE_MODERATE
 		else
@@ -394,9 +403,9 @@ Consider[6]=function()
 	then
 		for _,i in pairs(npcBot.ult)
 		do
-			if(DotaTime()-i[1]>=3)
+			if(DotaTime()-i[1]>=1.6)
 			then
-				if(i[2]==nil or i[2]:IsNull() or i[2]:GetHealth()<=i[2]:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and IsHeroAlive(i[3]))
+				if(i[2]==nil or i[2]:IsNull() or i[2]:GetHealth()<=i[2]:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and IsHeroAlive(i[3])) and CanCast[6](i[2])
 				then
 					npcBot.ult=nil
 					return BOT_ACTION_DESIRE_VERYHIGH

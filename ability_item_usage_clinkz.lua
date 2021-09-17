@@ -68,7 +68,9 @@ cast.Type = {}
 local Consider = {}
 local CanCast = {
     utility.NCanCast,
-    utility.NCanCast,
+    function(t)
+        return AbilityExtensions:PhysicalCanCast(t) or t:IsTower() and not t:HasModifier "modifier_fountain_glyph"
+    end,
     utility.NCanCast,
     utility.UCanCast,
     function(t)
@@ -144,65 +146,48 @@ Consider[1] = function()
     end
     return BOT_ACTION_DESIRE_NONE
 end
-Consider[2] = function()
+Consider[2] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[2], function()
     local abilityNumber = 2
     local ability = AbilitiesReal[abilityNumber]
-    if not ability:IsFullyCastable() then
-        return BOT_ACTION_DESIRE_NONE, 0
+    if not ability:IsFullyCastable() or AbilityExtensions:IsPhysicalOutputDisabled(npcBot) then
+        return 0
     end
     local CastRange = ability:GetCastRange()
-    local Damage = ability:GetSpecialValueInt("damage_bonus") + npcBot:GetAttackDamage()
-    local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(CastRange + 100, true, BOT_MODE_NONE)
     local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
-    local creeps = npcBot:GetNearbyCreeps(CastRange + 100, true)
-    local creeps2 = npcBot:GetNearbyCreeps(300, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
-    if ability:GetToggleState() == false then
-        local t = npcBot:GetAttackTarget()
-        if t ~= nil then
-            if t:IsHero() or t:IsTower() then
-                ability:ToggleAutoCast()
-                return BOT_ACTION_DESIRE_NONE, 0
+    local function UseAt(target)
+        if not CanCast[abilityNumber](target) then
+            return false
+        end
+        if target:IsHero() then
+            if AbilityExtensions:MustBeIllusion(npcBot, target) then
+                return AbilityExtensions:GetManaPercent(npcBot) >= 0.8 or AbilityExtensions:GetHealthPercent(target) <= 0.4
+            else
+                return true
             end
+        elseif target:IsBuilding() then
+            return false
+        else
+            return AbilityExtensions:GetManaPercent(npcBot) >= 0.8
         end
     end
-    if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
-        if WeakestEnemy ~= nil then
-            if CanCast[abilityNumber](WeakestEnemy) then
-                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_ALL) then
-                    return BOT_ACTION_DESIRE_HIGH, WeakestEnemy
-                end
-            end
-        end
-    end
-    if npcBot:GetActiveMode() == BOT_MODE_LANING then
-        if CreepHealth >= 250 and ManaPercentage >= 0.5 and HealthPercentage >= 0.6 and #creeps2 <= 1 then
+    if AbilityExtensions:NotRetreating(npcBot) then
+        local target = npcBot:GetAttackTarget() or npcBot:GetTarget()
+        if target == nil then
             if WeakestEnemy ~= nil then
-                if CanCast[abilityNumber](WeakestEnemy) then
-                    return BOT_ACTION_DESIRE_LOW - 0.01, WeakestEnemy
+                local b = UseAt(WeakestEnemy)
+                if b then
+                    return BOT_ACTION_DESIRE_HIGH, WeakestEnemy
+                else
+                    return false
                 end
             end
-        end
-        if WeakestCreep ~= nil then
-            if CreepHealth <= WeakestCreep:GetActualIncomingDamage(Damage, DAMAGE_TYPE_PHYSICAL) + 20 then
-                return BOT_ACTION_DESIRE_LOW - 0.02, WeakestCreep
-            end
+        else
+            return UseAt(target)
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_FARM then
-        return BOT_ACTION_DESIRE_LOW, WeakestCreep
-    end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
-        local npcEnemy = npcBot:GetTarget()
-        if npcEnemy ~= nil then
-            if CanCast[abilityNumber](npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 100 then
-                return BOT_ACTION_DESIRE_MODERATE, npcEnemy
-            end
-        end
-    end
-    return BOT_ACTION_DESIRE_NONE, 0
-end
+    return false
+end)
 Consider[3] = function()
     local abilityNumber = 3
     local ability = AbilitiesReal[abilityNumber]
