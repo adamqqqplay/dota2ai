@@ -1071,10 +1071,11 @@ M.unbreakableChannelAbilities = {
 M.lowPriorityChannelAbilities = {
     "windrunner_powershot",
     "ability_capture",
+    "tinker_keen_conveyance",
+    "tinker_rearm",
 }
 M.moderatePriorityChannelAbilities = {
     "keeper_of_the_light_illuminate",
-    "tinker_rearm",
     "pugna_life_drain",
     "hoodwink_hunters_boomerang",
     "drow_ranger_multishot",
@@ -1316,6 +1317,9 @@ function M:IsHeroLevelUnit(npc)
     if name == "npc_dota_phoenix_sun" then
         return true
     end
+    if string.sub(name, 1, #"npc_dota_lone_druid_bear") == "npc_dota_lone_druid_bear" then
+        return true
+    end
     return false
 end
 M.GetIncomingDodgeWorthProjectiles = function(self, npc)
@@ -1349,31 +1353,180 @@ M.GetIncomingDodgeWorthProjectiles = function(self, npc)
     end)
     return projectiles
 end
+function M:StackManipulators(amplifications, reductions)
+    return self:Aggregate(reductions, 1, function(agg, factor)
+        return agg * (1 - factor)
+    end) - self:Aggregate(amplifications, 1, function(agg, factor)
+        return agg * (1 - factor)
+    end)
+end
 M.GetTargetHealAmplifyPercent = function(self, npc)
-    local modifiers = npc:FindAllModifiers()
-    local amplify = 1
+    local amps = {}
+    local reds = {}
     for i = 1, npc:NumModifiers() do
         local modifierName = npc:GetModifierName(i)
-        if modifierName == "modifier_ice_blast" then
-            return 0
-        end
         if modifierName == "modifier_item_spirit_vessel_damage" then
-            amplify = amplify - 0.45
+            table.insert(reds, 0.45)
         end
         if modifierName == "modifier_holy_blessing" then
-            amplify = amplify + 0.3
+            table.insert(amps, 0.35)
         end
         if modifierName == "modifier_necrolyte_sadist_active" then
-            amplify = amplify + 0.75
+            table.insert(amps, 0.75)
         end
-        if modifierName == "modifier_wisp_tether_haste" then
-            amplify = amplify + 0.6
+        if npc:HasModifier "modifier_bane_enfeeble_effect" then
+            table.insert(reds, 0.6)
         end
-        if modifierName == "modifier_oracle_false_promise" then
-            amplify = amplify + 1
+        if npc:HasModifier "modifier_drow_ranger_frost_arrows_slow" then
+            local t = npc:GetModifierByName "modifier_drow_ranger_frost_arrows_hypothermia"
+            if t ~= -1 then
+                table.insert(reds, npc:GetModifierStackCount(t) * 0.1)
+            end
+        end
+        if npc:HasModifier "modifier_item_skadi_slow" then
+            table.insert(reds, 0.4)
+        end
+        if npc:HasModifier "modifier_item_shivas_guard_aura" then
+            table.insert(reds, 0.25)
+        end
+        if npc:HasModifier "modifier_treant_natures_guise" then
+            table.insert(amps, 0.4)
         end
     end
-    return amplify
+    if self:GetAvailableItem(npc, "item_paladin_sword") then
+        table.insert(amps, 0.14)
+    end
+    local amp = 1 + self:StackManipulators(amps, reds)
+    if self:HasModifier(npc, "modifier_oracle_false_promise") then
+        amp = amp * 2
+    end
+    if self:HasModifier(npc, "modifier_ice_blast") then
+        amp = amp * 0
+    end
+    return amp
+end
+function M:GetLifeSteal(npc)
+    local amp = 0
+    local amps = {}
+    local reds = {}
+    if npc:HasModifier "modifier_item_vladmir_aura" then
+        amp = amp + 0.15
+    end
+    table.insert(amps, (function()
+        if self:GetAvailableItem(npc, "item_satanic") then
+            return 0.25
+        elseif self:GetAvailableItem(npc, "item_mask_of_madness") then
+            return 0.2
+        elseif self:GetAvailableItem(npc, "item_paladin_sword") then
+            return 0.16
+        elseif self:GetAvailableItem(npc, "item_morbid_mask") then
+            return 0.15
+        elseif self:GetAvailableItem(npc, "item_possessed_mask") then
+            return 0.05
+        else
+            return 0
+        end
+    end)())
+    if npc:HasModifier "modifier_item_satanic_unholy" then
+        amp = amp + 1.75
+    end
+    if npc:HasModifier "modifier_troll_warlord_battle_trance" then
+        amp = amp + Clamp(npc:GetLevel() // 6, 1, 3) * 0.2 + 0.2
+    end
+    local talentLifestealValue = {
+        10,
+        15,
+        18,
+        20,
+        25,
+        30,
+        35,
+        40,
+        100,
+    }
+    self:ForEach(talentLifestealValue, function(value)
+        do
+            local abi = npc:GetAbilityByName("special_bonus_unique_lifesteal_"..value)
+            if abi then
+                if abi:IsActivated() then
+                    amp = amp + 0.15
+                end
+            end
+        end
+    end)
+    if self:GetAvailableItem(npc, "item_paladin_sword") then
+        amp = amp + 0.14
+    end
+    for i = 1, npc:NumModifiers() do
+        local modifierName = npc:GetModifierName(i)
+        if modifierName == "modifier_item_spirit_vessel_damage" then
+            table.insert(reds, 0.45)
+        end
+        if modifierName == "modifier_bane_enfeeble_effect" then
+            table.insert(reds, 0.6)
+        end
+        if modifierName == "modifier_drow_ranger_frost_arrows_slow" then
+            table.insert(reds, npc:GetModifierStackCount(i) * 0.1)
+        end
+        if modifierName == "modifier_skeleton_king_vampiric_aura" then
+            amp = amp + 0.34
+        end
+        if modifierName == "modifier_item_skadi_slow" then
+            table.insert(reds, 0.4)
+        end
+        if modifierName == "modifier_item_shivas_guard_aura" then
+            table.insert(reds, 0.25)
+        end
+        if modifierName == "modifier_treant_natures_guise" then
+            table.insert(amps, 0.4)
+        end
+        if modifierName == "modifier_broodmother_insatiable_hunger" then
+            local abi = npc:GetAbilityByName "broodmother_insatiable_hunger"
+            if abi then
+                amp = amp + abi:GetSpecialValueFloat "lifesteal_pct"
+            end
+        end
+        if modifierName == "modifier_lycan_wolf_bite_lifesteal" then
+            amp = amp + 0.3
+        end
+    end
+    do
+        local abi = npc:GetAbilityByName "chaos_knight_chaos_strike"
+        if abi then
+            if abi:GetLevel() >= 1 then
+                amp = amp + abi:GetSpecialValueFloat("lifesteal") * abi:GetSpecialValueFloat("chance") * (abi:GetSpecialValueFloat("crit_min") + abi:GetSpecialValueFloat("crit_max")) / 2
+            end
+        end
+    end
+    do
+        local abi = npc:GetAbilityByName "legion_commander_moment_of_courage"
+        if abi then
+            if abi:GetLevel() >= 1 then
+                amp = amp + abi:GetSpecialValueFloat("hp_leech_percent")
+            end
+        end
+    end
+    do
+        local abi = npc:GetAbilityByName "lone_druid_spirit_link"
+        if abi then
+            if abi:GetLevel() >= 1 then
+                amp = amp + abi:GetSpecialValueFloat("lifesteal_percent")
+            end
+        end
+    end
+    if self:GetAvailableItem(npc, "item_kaya_and_sange") or self:GetAvailableItem(npc, "item_sange_and_yasha") then
+        table.insert(amps, 0.22)
+    elseif self:GetAvailableItem(npc, "item_sange") or self:GetAvailableItem(npc, "item_heavens_halberd") then
+        table.insert(amps, 0.2)
+    end
+    amp = amp * self:StackManipulators(amps, reds)
+    if self:HasModifier(npc, "modifier_oracle_false_promise") then
+        amp = amp * 2
+    end
+    if self:HasModifier(npc, "modifier_ice_blast") then
+        amp = amp * 0
+    end
+    return amp
 end
 M.IsChannelingItem = function(self, npc)
     return npc:HasModifier "modifier_item_meteor_hammer" or npc:HasModifier "modifier_teleporting" or npc:HasModifier "modifier_boots_of_travel_incoming"
@@ -1545,6 +1698,15 @@ M.GetNearbyNonIllusionHeroes = function(self, npcBot, range, getEnemy, botModeMa
     local heroes = npcBot:GetNearbyHeroes(range, getEnemy, botModeMask)
     return self:Filter(heroes, function(t)
         return self:MayNotBeIllusion(npcBot, t)
+    end)
+end
+function M:GetPureHeroes(npcBot, range, getEnemy)
+    range = range or 1600
+    if getEnemy == nil then
+        getEnemy = true
+    end
+    return self:GetNearbyNonIllusionHeroes(npcBot, range, getEnemy):Filter(function(t)
+        return self:MayNotBeIllusion(npcBot, t) and not self:IsHeroLevelUnit(t)
     end)
 end
 function M:AttackOnceDamage(npcBot, target)
@@ -2125,15 +2287,18 @@ end
 function M:GetManaDeficit(npc)
     return npc:GetMaxMana() - npc:GetMana()
 end
+function M:IsGoodTarget(npc, target)
+    return target:IsHero() and self:MayNotBeIllusion(npc, target) and not self:IsHeroLevelUnit(target)
+end
 function M:GetTargetIfGood(npc)
     local target = npc:GetTarget()
-    if target and target:IsHero() and self:MayNotBeIllusion(npc, target) then
+    if target and self:IsGoodTarget(npc, target) then
         return target
     end
 end
 function M:GetTargetIfBad(npc)
     local target = npc:GetTarget()
-    if target and (not target:IsHero() or self:MustBeIllusion(npc, target)) then
+    if target and not self:IsGoodTarget(npc, target) then
         return target
     end
 end

@@ -81,10 +81,6 @@ local function GetLaningTPLocation(nLane)
     local teamT1Top = GetTower(myTeam, TOWER_TOP_1)
     local teamT1Mid = GetTower(myTeam, TOWER_MID_1)
     local teamT1Bot = GetTower(myTeam, TOWER_BOT_1)
-    -- local enemyT1Top = GetTower(opTeam, TOWER_TOP_1)
-    -- local enemyT1Mid = GetTower(opTeam, TOWER_MID_1)
-    -- local enemyT1Bot = GetTower(opTeam, TOWER_BOT_1)
-
     if nLane == LANE_TOP and teamT1Top~=nil then
         return teamT1Top:GetLocation()
     elseif nLane == LANE_MID and teamT1Mid~=nil  then
@@ -289,7 +285,7 @@ function M.ItemUsageThink()
         elseif fun1:IsAttackingEnemies(npcBot) then
             local name = npcBot:GetUnitName()
             name = fun1:GetHeroShortName(name)
-            if fun1:Contains({"obsidian_destroyer","silencer","huskar"}, name) then
+            if fun1:Contains({"obsidian_destroyer","silencer","huskar","drow_ranger"}, name) then
                 return npcBot:GetPrimaryAttribute()
             else
                 return ATTRIBUTE_AGILITY
@@ -323,42 +319,6 @@ function M.ItemUsageThink()
             return
         end
     end
-
-    -- give tango to ally
-    -- local itg = GetItemIfNotImplemented("item_tango")
-    -- if itg ~= nil and itg:IsFullyCastable() then
-    --     local tCharge = itg:GetCurrentCharges()
-    --     if
-    --         DotaTime() > -90 and DotaTime() < 0 and npcBot:DistanceFromFountain() <= 100 and
-    --             role.CanBeSupport(npcBot:GetUnitName()) and
-    --             npcBot:GetAssignedLane() ~= LANE_MID and
-    --             tCharge > 2 and
-    --             DotaTime() > giveTime + 2.0
-    --      then
-    --         local target = GiveToMidLaner()
-    --         if target ~= nil then
-    --             M.UseItemOnEntity(npcBot, itg, target)
-    --             giveTime = DotaTime()
-    --             return
-    --         end
-    --     elseif
-    --         DotaTime() > 0 and npcBot:GetActiveMode() == BOT_MODE_LANING and role.CanBeSupport(npcBot:GetUnitName()) and
-    --             tCharge > 1 and
-    --             DotaTime() > giveTime + 2.0
-    --      then
-    --         for _, ally in pairs(nearbyAllies) do
-    --             local tangoSlot = ally:FindItemSlot("item_tango")
-    --             if
-    --                 ally:GetUnitName() ~= npcBot:GetUnitName() and not ally:IsIllusion() and tangoSlot == -1 and
-    --                     GetItemCount(ally, "item_tango_single") == 0
-    --              then
-    --                 M.UseItemOnEntity(npcBot, itg, ally)
-    --                 giveTime = DotaTime()
-    --                 return
-    --             end
-    --         end
-    --     end
-    -- end
 
     local its = GetItemIfNotImplemented("item_tango_single")
     local tango
@@ -800,6 +760,42 @@ function M.ItemUsageThink()
     local function NotSuitableForGuardianGreaves(t)
         return fun1:AllyCanCast(t) and not t:HasModifier("modifier_ice_blast") and not t:HasModifier("modifier_item_mekansm_noheal") and not t:HasModifier("modifier_item_guardian_greaves_noheal")
     end
+
+    local mekansm = GetItemIfNotImplemented("item_mekansm")
+    if mekansm and mekansm:IsFullyCastable() then
+        local enemies = fun1:GetEnemyHeroNumber(fun1:GetNearbyNonIllusionHeroes(npcBot))
+        local function MekansmRate(t)
+            local rate = 1
+            if fun1:GetHealthPercent(t) < 0.35 or t:GetHealth() <= 360 then
+                rate += 0.6
+            end
+            if t:HasModifier "modifier_abaddon_borrowed_time" then
+                rate -= 0.5
+            end
+            if (t:GetHealthRegen() > 50 or GetLifeSteal(t) >= 0.15) and #enemies == 0 then
+                rate *= if enemies > 1 { 0.5 } else {0.9}
+            end
+            rate *= fun1:GetTargetHealAmplifyPercent(t)
+            return rate
+        end
+            
+        local radius = mekansm:GetAOERadius()
+        local allAllys = fun1:GetPureHeroes(npcBot, 1450, false)
+        local allys = fun1:GetPureHeroes(npcBot, radius, false):Filter(NotSuitableForGuardianGreaves):Filter { t ->
+            t:GetHealth() < t:GetMaxHealth() - 450
+        }
+        local rate = allys:Map(MekansmRate):Aggregate(0, { a,b -> a+b })
+        if rate >= 2.6 and rate >= #allys * 1.1 then
+            M.UseItemNoTarget(npcBot, mekansm)
+            return
+        end
+
+        if fun1:IsRetreating(npcBot) and MekansmRate(npcBot) >= 1.6 then
+            M.UseItemNoTarget(npcBot, mekansm)
+            return
+        end
+    end
+
     local ggr = GetItemIfNotImplemented("item_guardian_greaves")
     if ggr ~= nil and ggr:IsFullyCastable() then
         local allys = npcBot:GetNearbyHeroes(900, false, BOT_MODE_NONE)
@@ -932,6 +928,12 @@ function M.ItemUsageThink()
 
     local sv = GetItemIfNotImplemented("item_spirit_vessel")
     if sv ~= nil and sv:IsFullyCastable() and sv:GetCurrentCharges() > 0 then
+        if local enemy = fun1:GetPureHeroes(npcBot, sv:GetCastRange() + 200):Filter { t->fun1:NormalCanCast(t) }:First {
+            t -> t:GetHealthRegen() >= 55
+        } then
+            M.UseItemOnEntity(npcBot, sv, enemy)
+        end
+            
         if
             (npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
                 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or

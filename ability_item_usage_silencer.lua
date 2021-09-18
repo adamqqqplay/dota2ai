@@ -11,6 +11,7 @@ local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstractio
 
 local debugmode=false
 local npcBot = GetBot()
+if npcBot:IsIllusion() then return end
 local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
@@ -444,7 +445,7 @@ Consider[4]=function()
 	-- Check for a channeling enemy
 	for _,npcEnemy in pairs( enemys )
 	do
-		if AbilityExtensions:IsChannelingAbility(npcEnemy) and CanCast[abilityNumber]( npcEnemy ) then
+		if AbilityExtensions:IsChannelingBreakWorthAbility(npcEnemy, "moderate") and CanCast[abilityNumber]( npcEnemy ) then
 			return BOT_ACTION_DESIRE_HIGH
 		end
 	end

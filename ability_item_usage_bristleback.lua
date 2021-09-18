@@ -7,6 +7,9 @@ local utility = require(GetScriptDirectory().."/utility")
 require(GetScriptDirectory().."/ability_item_usage_generic")
 local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
 local npcBot = GetBot()
+if npcBot:IsIllusion() then
+    return
+end
 local Talents = {}
 local Abilities = {}
 local AbilitiesReal = {}

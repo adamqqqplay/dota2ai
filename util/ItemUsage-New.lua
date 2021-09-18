@@ -264,6 +264,7 @@ function M.ItemUsageThink()
                 "obsidian_destroyer",
                 "silencer",
                 "huskar",
+                "drow_ranger",
             }, name) then
                 return npcBot:GetPrimaryAttribute()
             else
@@ -597,6 +598,46 @@ function M.ItemUsageThink()
     local function NotSuitableForGuardianGreaves(t)
         return fun1:AllyCanCast(t) and not t:HasModifier("modifier_ice_blast") and not t:HasModifier("modifier_item_mekansm_noheal") and not t:HasModifier("modifier_item_guardian_greaves_noheal")
     end
+    local mekansm = GetItemIfNotImplemented("item_mekansm")
+    if mekansm and mekansm:IsFullyCastable() then
+        local enemies = fun1:GetEnemyHeroNumber(fun1:GetNearbyNonIllusionHeroes(npcBot))
+        local function MekansmRate(t)
+            local rate = 1
+            if fun1:GetHealthPercent(t) < 0.35 or t:GetHealth() <= 360 then
+                rate = rate + 0.6
+            end
+            if t:HasModifier "modifier_abaddon_borrowed_time" then
+                rate = rate - 0.5
+            end
+            if (t:GetHealthRegen() > 50 or GetLifeSteal(t) >= 0.15) and #enemies == 0 then
+                rate = rate * (function()
+                    if enemies > 1 then
+                        return 0.5
+                    else
+                        return 0.9
+                    end
+                end)()
+            end
+            rate = rate * fun1:GetTargetHealAmplifyPercent(t)
+            return rate
+        end
+        local radius = mekansm:GetAOERadius()
+        local allAllys = fun1:GetPureHeroes(npcBot, 1450, false)
+        local allys = fun1:GetPureHeroes(npcBot, radius, false):Filter(NotSuitableForGuardianGreaves):Filter(function(t)
+            return t:GetHealth() < t:GetMaxHealth() - 450
+        end)
+        local rate = allys:Map(MekansmRate):Aggregate(0, function(a, b)
+            return a + b
+        end)
+        if rate >= 2.6 and rate >= #allys * 1.1 then
+            M.UseItemNoTarget(npcBot, mekansm)
+            return
+        end
+        if fun1:IsRetreating(npcBot) and MekansmRate(npcBot) >= 1.6 then
+            M.UseItemNoTarget(npcBot, mekansm)
+            return
+        end
+    end
     local ggr = GetItemIfNotImplemented("item_guardian_greaves")
     if ggr ~= nil and ggr:IsFullyCastable() then
         local allys = npcBot:GetNearbyHeroes(900, false, BOT_MODE_NONE)
@@ -682,6 +723,16 @@ function M.ItemUsageThink()
     end
     local sv = GetItemIfNotImplemented("item_spirit_vessel")
     if sv ~= nil and sv:IsFullyCastable() and sv:GetCurrentCharges() > 0 then
+        do
+            local enemy = fun1:GetPureHeroes(npcBot, sv:GetCastRange() + 200):Filter(function(t)
+                return fun1:NormalCanCast(t)
+            end):First(function(t)
+                return t:GetHealthRegen() >= 55
+            end)
+            if enemy then
+                M.UseItemOnEntity(npcBot, sv, enemy)
+            end
+        end
         if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
             if npcTarget ~= nil and npcTarget:IsHero() and fun1:MayNotBeIllusion(npcBot, npcTarget) and fun1:NormalCanCast(npcTarget) and GetUnitToUnitDistance(npcBot, npcTarget) < 900 and npcTarget:HasModifier("modifier_item_spirit_vessel_damage") == false and npcTarget:GetHealth() / npcTarget:GetMaxHealth() < 0.65 and not npcTarget:HasModifier("modifier_ice_blast") then
                 M.UseItemOnEntity(npcBot, sv, npcTarget)

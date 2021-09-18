@@ -2,7 +2,8 @@ local castSCDesire = 0;
 local ReturnDesire = 0;
 local MoveDesire = 0;
 local ReturnTime = 0;
-local npcBot = GetBot();
+local npcBot = GetBot()
+if npcBot:IsIllusion() then return end;
 local abilityW = "";
 local abilitySC = "";
 local radius = 350;

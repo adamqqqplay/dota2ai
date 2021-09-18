@@ -11,6 +11,7 @@ local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstractio
 
 local debugmode=false
 local npcBot = GetBot()
+if npcBot:IsIllusion() then return end
 local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
@@ -189,7 +190,7 @@ Consider[1]=function()
 	local CastPoint = ability:GetCastPoint();
 	local Radius = ability:GetAOERadius();
 	
-	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1200, false, BOT_MODE_NONE );
+	local allys = AbilityExtensions:GetPureHeroes(npcBot, 1200, false)
 	allys = AbilityExtensions:Filter(npcBot, function(t) return not t:HasModifier("modifier_ice_blast") end)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
@@ -220,52 +221,12 @@ Consider[1]=function()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-	--heal
-	local enemys3 = npcBot:GetNearbyHeroes( Radius, true, BOT_MODE_NONE );
-	-- If we're seriously retreating
+	local enemys3 = npcBot:GetNearbyHeroes( Radius, true, BOT_MODE_NONE )
 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH ) 
 	then
 		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) and (#enemys3>=1 or #enemys==0) or HealthPercentage<=0.2) and not npcBot:HasModifier("modifier_ice_blast")
 		then
 			return BOT_ACTION_DESIRE_HIGH+0.08,npcBot; 	
-		end
-	end
-	
-	--heal hero
-	if(	true ) 
-	then
-		local HighestFactor,TempTarget=GetTargetFactor()
-		if(HighestFactor>0 and TempTarget~=nil and not TempTarget:HasModifier("modifier_ice_blast"))
-		then
-			return BOT_ACTION_DESIRE_MODERATE-0.01, TempTarget
-		end	
-	end
-	
-	-----------------------------
-	
-	--damage
-	--Last hit
-	if 	( 	(npcBot:GetActiveMode() == BOT_MODE_LANING and WeakestCreep~=nil and CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL)) or
-			(	
-				(
-				 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
-				 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
-				 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
-				 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
-				 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
-				 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT or
-				 npcBot:GetActiveMode() == BOT_MODE_FARM					
-				) and #creeps>=3
-			)
-		)
-	then
-		if(WeakestCreep~=nil and (ManaPercentage>0.5 or npcBot:GetMana()>ComboMana))
-		then
-			local HighestFactor,TempTarget=GetTargetFactor2()
-			if(HighestFactor>-0.5 and TempTarget~=nil)
-			then
-				return BOT_ACTION_DESIRE_MODERATE+0.01, TempTarget
-			end
 		end
 	end
 	

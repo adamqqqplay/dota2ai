@@ -10,6 +10,7 @@ require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
 local npcBot = GetBot()
+if npcBot:IsIllusion() then return end
 local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}

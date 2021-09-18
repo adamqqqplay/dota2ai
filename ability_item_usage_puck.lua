@@ -10,6 +10,9 @@ local npcBot = GetBot()
 if npcBot:IsIllusion() then
     return
 end
+if npcBot:IsIllusion() then
+    return
+end
 local AbilityNames,Abilities,Talents = fun1:InitAbility()
 local AbilityToLevelUp = {
     AbilityNames[1],

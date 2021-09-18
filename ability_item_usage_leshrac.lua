@@ -11,6 +11,7 @@ local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstractio
 
 local debugmode=false
 local npcBot = GetBot()
+if npcBot:IsIllusion() then return end
 local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
@@ -364,6 +365,7 @@ Consider[3]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL)*1.8 or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
+					print("0 "..WeakestEnemy:GetUnitName())
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
 				end
 			end
@@ -381,7 +383,8 @@ Consider[3]=function()
 			if((ManaPercentage>0.5 or npcBot:GetMana()>ComboMana) and GetUnitToUnitDistance(npcBot,WeakestCreep)>=AttackRange+100)
 			then
 				if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL))
-				then					
+				then
+					print("1 "..WeakestCreep:GetUnitName())		
 					return BOT_ACTION_DESIRE_MODERATE-0.1,WeakestCreep; 
 				end
 			end		
@@ -393,9 +396,10 @@ Consider[3]=function()
 	then
 		if ( #creeps >= 2 ) 
 		then
-			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage+10,DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
+			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage-10,DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 			then
-				return BOT_ACTION_DESIRE_LOW, WeakestCreep;
+				print("2 "..WeakestCreep:GetUnitName())	
+				return BOT_ACTION_DESIRE_LOW, WeakestCreep
 			end
 		end
 	end
@@ -408,10 +412,10 @@ Consider[3]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
 	then
-		if ( #enemys+#creeps<=2) 
-		then
+		if #enemys+#creeps >= 3 and WeakestEnemy then
 			if (ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)
 			then
+				print("3 "..WeakestEnemy:GetUnitName())	
 				return BOT_ACTION_DESIRE_LOW, WeakestEnemy;
 			end
 		end
@@ -428,6 +432,7 @@ Consider[3]=function()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy )  and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
 			then
+				print("4 "..npcEnemy:GetUnitName())	
 				return BOT_ACTION_DESIRE_MODERATE, npcEnemy;
 			end
 		end

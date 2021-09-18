@@ -13,6 +13,7 @@ local AbilityHelper = dofile(GetScriptDirectory() .. "/util/AbilityHelper")
 
 local debugmode=false
 local npcBot = GetBot()
+if npcBot:IsIllusion() then return end
 local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}

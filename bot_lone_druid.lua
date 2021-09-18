@@ -1,5 +1,6 @@
 --local minion = dofile( GetScriptDirectory().."//util/util/MinionUtility" )
-local npcBot = GetBot();
+local npcBot = GetBot()
+if npcBot:IsIllusion() then return end;
 local castRTDesire = 0;
 local castSRDesire = 0;
 local RetreatDesire = 0;
