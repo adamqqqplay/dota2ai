@@ -308,6 +308,21 @@ function M:Max(tb, map)
     end
     return maxv
 end
+function M:MaxV(tb, map)
+    if #tb == 0 then
+        return nil
+    end
+    map = map or self.IdentityFunction
+    local maxv,maxm = tb[1], map(tb[1])
+    for i = 2, #tb do
+        local m = map(tb[i])
+        if m > maxm then
+            maxm = m
+            maxv = tb[i]
+        end
+    end
+    return maxm
+end
 function M:Min(tb, map)
     if #tb == 0 then
         return nil
@@ -322,6 +337,21 @@ function M:Min(tb, map)
         end
     end
     return maxv
+end
+function M:MinV(tb, map)
+    if #tb == 0 then
+        return nil
+    end
+    map = map or self.IdentityFunction
+    local maxv,maxm = tb[1], map(tb[1])
+    for i = 2, #tb do
+        local m = map(tb[i])
+        if m < maxm then
+            maxm = m
+            maxv = tb[i]
+        end
+    end
+    return maxm
 end
 M.Repeat = function(self, element, count)
     local g = NewTable()
@@ -624,16 +654,14 @@ M.HasEnoughManaToUseAttackAttachedAbility = function(self, npcBot, ability)
     return percent >= 0.4 and npcBot:GetMana() >= 300 and npcBot:GetManaRegen() >= npcBot:GetAttackSpeed() / 100 * ability:GetManaCost() * 0.75
 end
 M.ToggleFunctionToAction = function(self, npcBot, oldConsider, ability)
+    local name = ability:GetName()
     return function()
         local value,target,castType = oldConsider()
         if type(value) == "number" then
             return value, target, castType
         end
-        if value ~= ability:GetToggleState() and ability:IsFullyCastable() then
-            ability:ToggleAutoCast()
-            return 0
-        else
-            return 0
+        if value ~= ability:GetToggleState() and ability:IsFullyCastable() and not ability:IsHidden() then
+            npcBot:Action_UseAbility(ability)
         end
     end
 end
@@ -937,6 +965,16 @@ M.invisibleModifiers = {
     "modifier_templar_assassin_meld",
     "modifier_visage_silent_as_the_grave",
     "modifier_weaver_shukuchi",
+    "modified_invisible",
+    "modifier_rune_invis",
+    "modifier_nyx_assassin_burrow",
+    "modifier_oracle_false_promise_invis",
+}
+M.truesightModifiers = {
+    "modifier_item_dustofappearance",
+    "modifier_bounty_hunter_track",
+    "modifier_slardar_amplify_damage",
+    "modifier_truesight",
 }
 M.phaseModifiers = {
     "modifier_bounty_hunter_wind_walk",
@@ -1354,9 +1392,9 @@ M.GetIncomingDodgeWorthProjectiles = function(self, npc)
     return projectiles
 end
 function M:StackManipulators(amplifications, reductions)
-    return self:Aggregate(reductions, 1, function(agg, factor)
+    return self:Aggregate(1, reductions, function(agg, factor)
         return agg * (1 - factor)
-    end) - self:Aggregate(amplifications, 1, function(agg, factor)
+    end) - self:Aggregate(1, amplifications, function(agg, factor)
         return agg * (1 - factor)
     end)
 end
@@ -1397,10 +1435,10 @@ M.GetTargetHealAmplifyPercent = function(self, npc)
         table.insert(amps, 0.14)
     end
     local amp = 1 + self:StackManipulators(amps, reds)
-    if self:HasModifier(npc, "modifier_oracle_false_promise") then
+    if npc:HasModifier("modifier_oracle_false_promise") then
         amp = amp * 2
     end
-    if self:HasModifier(npc, "modifier_ice_blast") then
+    if npc:HasModifier("modifier_ice_blast") then
         amp = amp * 0
     end
     return amp
@@ -1431,7 +1469,7 @@ function M:GetLifeSteal(npc)
         amp = amp + 1.75
     end
     if npc:HasModifier "modifier_troll_warlord_battle_trance" then
-        amp = amp + Clamp(npc:GetLevel() // 6, 1, 3) * 0.2 + 0.2
+        amp = amp + Clamp(math.floor(npc:GetLevel() / 6), 1, 3) * 0.2 + 0.2
     end
     local talentLifestealValue = {
         10,
@@ -1520,10 +1558,10 @@ function M:GetLifeSteal(npc)
         table.insert(amps, 0.2)
     end
     amp = amp * self:StackManipulators(amps, reds)
-    if self:HasModifier(npc, "modifier_oracle_false_promise") then
+    if npc:HasModifier "modifier_oracle_false_promise" then
         amp = amp * 2
     end
-    if self:HasModifier(npc, "modifier_ice_blast") then
+    if npc:HasModifier "modifier_ice_blast" then
         amp = amp * 0
     end
     return amp
@@ -1584,9 +1622,9 @@ M.enemyVisibleIllusionModifiers = {
 }
 M.MustBeIllusion = function(self, npcBot, target)
     if npcBot:GetTeam() == target:GetTeam() then
-        return target:IsIllusion() or self:HasAnyModifier(target, self.enemyVisibleIllusionModifiers)
+        return target:IsIllusion()
     end
-    if self:Contains(self:GetTeamPlayers(npcBot:GetTeam()), target:GetPlayerID()) or target.markedAsIllusion then
+    if target.markedAsIllusion then
         return true
     end
     if target.markedAsRealHero then
@@ -1695,7 +1733,7 @@ M.GetNearbyNonIllusionHeroes = function(self, npcBot, range, getEnemy, botModeMa
         getEnemy = true
     end
     botModeMask = botModeMask or BOT_MODE_NONE
-    local heroes = npcBot:GetNearbyHeroes(range, getEnemy, botModeMask)
+    local heroes = npcBot:GetNearbyHeroes(range, getEnemy, botModeMask) or {}
     return self:Filter(heroes, function(t)
         return self:MayNotBeIllusion(npcBot, t)
     end)
@@ -2153,7 +2191,7 @@ end
 M.IsOrGoingToBeSeverelyDisabled = function(self, npc)
     return self:IsSeverelyDisabled(npc) or self:HasSeverelyDisableProjectiles(npc)
 end
-M.EtherealModifiers = {
+M.etherealModifiers = {
     "modifier_ghost_state",
     "modifier_item_ethereal_blade_ethereal",
     "modifier_necrolyte_death_seeker",
@@ -2161,7 +2199,7 @@ M.EtherealModifiers = {
     "modifier_pugna_decrepify",
 }
 M.IsEthereal = function(self, npc)
-    return self:HasAnyModifier(npc, self.EtherealModifiers)
+    return self:HasAnyModifier(npc, self.etherealModifiers)
 end
 function M:NotBlasted(self, npc)
     return not npc:HasModifier "modifier_ice_blast"
@@ -2842,8 +2880,8 @@ M.GetIllusionBattlePower = function(self, npc)
         t = 0.25
     elseif self:Contains(self.ModerateIllusionHero, name) then
         t = 0.4
-    elseif t:IsRanged() then
-        t = t + t:GetAttackRange() / 600
+    elseif not self:IsMeleeHero(npc) then
+        t = t + t:GetAttackRange() / 2000
     end
     local inventory = self:Map(self:GetInventoryItems(npc), function(t)
         return t:GetName()
@@ -2891,13 +2929,13 @@ function M:GetBattlePower(npc)
     elseif string.match(name, "npc_dota_lone_druid_bear") then
         local heroLevel = GetHeroLevel(npc:GetPlayerID())
         power = name[#"npc_dota_lone_druid_bear" + 1] * 2000 - 1000
-        power = power + heroLevel * 250
+        power = power + heroLevel * 310
         power = power + npc:GetNetWorth()
     end
     if npc:HasModifier "modifier_item_assault_positive" and not npc:HasModifier "modifier_item_assault_positive_aura" then
         power = power + 1500
     end
-    local items = self:GetInventoryItemsNames(npc)
+    local items = self:GetInventoryItemNames(npc)
     if npc:HasModifier "modifier_item_pipe_aura" and not self:Contains(items, "item_pipe") then
         power = power + 400
     end
@@ -2908,6 +2946,9 @@ function M:GetBattlePower(npc)
         power = power + 1000
     elseif npc:HasModifier "modifier_item_mekansm_aura" and not self:Contains(items, "item_mekansm") then
         power = power + 500
+    end
+    if npc:IsIllusion() then
+        power = power * self:GetIllusionBattlePower(npc)
     end
     return power
 end

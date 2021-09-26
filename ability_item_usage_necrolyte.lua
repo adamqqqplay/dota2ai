@@ -206,9 +206,9 @@ Consider[4] = function()
     end)
     if AbilityExtensions:IsAttackingEnemies(npcBot) then
         local target = AbilityExtensions:GetTargetIfGood(npcBot)
-        if target and AbilityExtensions:GetHealthPercent(target) <= 0.55 and AbilityExtensions:GetHealthPercent(target) >= 0.4 and target:GetHealth() > 600 and target:GetHealth() < enemies:MaxValue(function(t)
+        if target and AbilityExtensions:GetHealthPercent(target) <= 0.55 and AbilityExtensions:GetHealthPercent(target) >= 0.4 and target:GetHealth() > 600 and target:GetHealth() < (enemies:MaxV(function(t)
             return t:GetHealth()
-        end) / 4 and AbilityExtensions:NormalCanCast(target) then
+        end) or npcBot:GetHealth()) / 4 and AbilityExtensions:NormalCanCast(target) then
             return BOT_ACTION_DESIRE_HIGH, target
         end
         local fEnemy = enemies:Filter(CanCast[4]):First(function(t)
@@ -259,12 +259,12 @@ Consider[5] = function()
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = AbilityExtensions:GetPureHeroes(npcBot, CastRange + 300)
     local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
-    local maxHealth = AbilityExtensions:GetNearbyHeroes(npcBot):MaxValue(function(t)
+    local maxHealth = (AbilityExtensions:GetNearbyHeroes(npcBot):MaxV(function(t)
         return t:GetHealth()
-    end) / 4
+    end) or npcBot:GetHealth()) / 4
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         for i, npcEnemy in pairs(enemys) do
-            if (CanCast[abilityNumber](npcEnemy)) and not AbilityExtensions:IsMagicImmune(npcEnemy) then
+            if (CanCast[abilityNumber](npcEnemy)) and not npcEnemy:IsMagicImmune() then
                 local Damage = (npcEnemy:GetMaxHealth() - npcEnemy:GetHealth()) * DamagePercent
                 local n1 = npcEnemy:GetHealth()
                 local n2 = npcEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL)

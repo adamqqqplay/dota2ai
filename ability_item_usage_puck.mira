@@ -55,11 +55,11 @@ end
 --------------------------------------
 local cast= {} cast.Desire= {} cast.Target= {} cast.Type= {}
 local CanCast = {}
-CanCast[1] = { t -> fun1:NormalCanCast(t, false) }
-CanCast[2] = CanCast[1]
+CanCast[1] = fun1.NormalCanCastFunction
+CanCast[2] = fun1.NormalCanCastFunction
 CanCast[3] = { t -> not fun1:IsInvulnerable(t) or not fun1:ShouldNotBeAttacked(t) }
 CanCast[4] = { -> true }
-CanCast[5] = CanCast[1]
+CanCast[5] = fun1.NormalCanCastFunction
 
 local level
 local attackRange
@@ -121,7 +121,7 @@ Consider[1] = function()
 		end
 	end
     if fun1:IsFarmingOrPushing(npcBot) then
-        if #enemyCreeps > 3 and #forbiddenCreeps == 0 and manaPercent > 0.6 + manaCost then
+        if #enemyCreeps > 3 and #forbiddenCreeps == 0 and mana > 0.6 * maxMana + manaCost then
             coroutine.yield(BOT_ACTION_DESIRE_MODERATE, enemyCreeps[2]:GetLocation())
         end
     elif fun1:IsRetreating(npcBot) then
@@ -141,6 +141,7 @@ Consider[3] = function()
     end
 
     if fun1:HasSeverelyDisableProjectiles(npcBot) then
+        table.insert(phaseShiftReasons, "projectiles")
         return BOT_ACTION_DESIRE_HIGH
     end
 
@@ -166,6 +167,8 @@ function AbilityUsageThink()
                     return
                 end
             end
+        else
+            phaseShiftReasons = {}
         end
     end
     

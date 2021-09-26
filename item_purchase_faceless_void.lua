@@ -8,7 +8,7 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_slippers",
-	"item_circlets",
+	"item_circlet",
 	"item_quelling_blade", --补刀斧
 	"item_wraith_band",
 	"item_power_treads", --假腿7.21

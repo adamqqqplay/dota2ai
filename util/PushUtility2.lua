@@ -121,7 +121,7 @@ local function CleanLaneDesire(npc, lane)
     local allyCreeps = fun1:Filter(GetUnitList(UNIT_LIST_FRIEND_CREEPS), function(t)
         return GetUnitToLocationDistance(t, front) <= 1500
     end)
-    local creepRateDiff = creeps:Map(CreepRate):Aggregate(0, function(opv_1, opv_2) return opv_1 + opv_2 end) - allyCreeps:Map(CreepRate):Aggregate(0, function(opv_1, opv_2) return opv_1 + opv_2 end)
+    local creepRateDiff = fun1:Aggregate(0, creeps:Map(CreepRate), function(opv_1, opv_2) return opv_1 + opv_2 end) - fun1:Aggregate(0, allyCreeps:Map(CreepRate), function(opv_1, opv_2) return opv_1 + opv_2 end)
     local desire = 0
     local necessity = 0
     if distanceToFront <= 3000 then
@@ -129,7 +129,7 @@ local function CleanLaneDesire(npc, lane)
             necessity = necessity + creepRateDiff
         end
         if creepRateDiff >= 2 and creepRateDiff then
-            desire = desire + creeps:Map(CreepReward):Aggregate(0, function(opv_1, opv_2) return opv_1 + opv_2 end)
+            desire = desire + fun1:Aggregate(0, creeps:Map(CreepReward), function(opv_1, opv_2) return opv_1 + opv_2 end)
         end
     end
     necessity = necessity * TowerRate(allyTower)

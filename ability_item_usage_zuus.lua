@@ -340,7 +340,7 @@ Consider[2]=function()
 end
 
 local function DontSteal(enemy)
-	return AbilityExtensions:Range(1, 5):Map(function(t) return GetTeamMember(t) end):Remove(npcBot):Filter(function(t) return t:WasRecentlyDamagedByHero(enemy, 1.5) end) and GetUnitToUnitDistance(npcBot, enemy) > 1600
+	return AbilityExtensions:GetUnitList(npcBot, UNIT_LIST_ALLIED_HERO):Remove(npcBot):Any(function(t) return enemy:WasRecentlyDamagedByHero(t, 1.5) end) and not enemy:WasRecentlyDamagedByHero(npcBot, 2.5)
 end
 local function ShouldUseUltimate(enemy)
 	return CanCast[6](enemy) and DontSteal(enemy)

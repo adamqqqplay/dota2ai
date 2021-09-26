@@ -8,8 +8,9 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_clarity",
-	"item_boots",
 	"item_flask",
+	"item_gauntlet",
+	"item_boots",
     "item_hand_of_midas",
 	"item_arcane_boots",
 	"item_aether_lens", --以太之镜7.06

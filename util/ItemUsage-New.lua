@@ -600,7 +600,7 @@ function M.ItemUsageThink()
     end
     local mekansm = GetItemIfNotImplemented("item_mekansm")
     if mekansm and mekansm:IsFullyCastable() then
-        local enemies = fun1:GetEnemyHeroNumber(fun1:GetNearbyNonIllusionHeroes(npcBot))
+        local enemies = fun1:GetEnemyHeroNumber(npcBot, fun1:GetNearbyNonIllusionHeroes(npcBot))
         local function MekansmRate(t)
             local rate = 1
             if fun1:GetHealthPercent(t) < 0.35 or t:GetHealth() <= 360 then
@@ -609,9 +609,9 @@ function M.ItemUsageThink()
             if t:HasModifier "modifier_abaddon_borrowed_time" then
                 rate = rate - 0.5
             end
-            if (t:GetHealthRegen() > 50 or GetLifeSteal(t) >= 0.15) and #enemies == 0 then
+            if t:GetHealthRegen() > 50 or fun1:GetLifeSteal(t) >= 0.15 then
                 rate = rate * (function()
-                    if enemies > 1 then
+                    if enemies >= 1 then
                         return 0.5
                     else
                         return 0.9
@@ -626,9 +626,7 @@ function M.ItemUsageThink()
         local allys = fun1:GetPureHeroes(npcBot, radius, false):Filter(NotSuitableForGuardianGreaves):Filter(function(t)
             return t:GetHealth() < t:GetMaxHealth() - 450
         end)
-        local rate = allys:Map(MekansmRate):Aggregate(0, function(a, b)
-            return a + b
-        end)
+        local rate = fun1:Aggregate(0, allys:Map(MekansmRate), function(opv_1, opv_2) return opv_1 + opv_2 end)
         if rate >= 2.6 and rate >= #allys * 1.1 then
             M.UseItemNoTarget(npcBot, mekansm)
             return

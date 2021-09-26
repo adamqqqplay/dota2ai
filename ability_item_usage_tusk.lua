@@ -661,14 +661,25 @@ Consider[4]=function() --A杖大
 			end
 		end
 	end
-
-	
-
-	return BOT_ACTION_DESIRE_NONE, 0 
+	return BOT_ACTION_DESIRE_NONE
 end
+
+local clearSnowballTarget
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
+	if snowballTarget and not AbilitiesReal[2]:IsCooldownReady() and not AbilitiesReal[7]:IsHidden() and not clearSnowballTarget then
+		clearSnowballTarget = 1
+		AbilityExtensions:StartCoroutine(function()
+			AbilityExtensions:WaitForSeconds(AbilitiesReal[2]:GetSpecialValueFloat "snowball_duration")
+			snowballTarget = nil 
+			clearSnowballTarget = nil 
+		end)
+	end
+	if not npcBot:IsAlive() then
+		snowballTarget = nil
+		clearSnowballTarget = nil
+	end
 
 	-- Check if we're already using an ability
 	if ( npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() )

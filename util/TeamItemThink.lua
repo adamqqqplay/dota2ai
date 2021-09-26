@@ -4,8 +4,12 @@
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
 local M = {}
+local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
 local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
-M.ImplmentedTeamItems = { "item_mekansm" }
+M.ImplmentedTeamItems = {
+    "item_mekansm",
+    "item_guardian_greaves",
+}
 local roles = {
     abaddon = { 9 },
     abyssal_underlord = { 4 },
@@ -37,7 +41,7 @@ local roles = {
     earth_spirit = { 6 },
     earthshaker = { 5 },
     ember_spirit = { 2 },
-    enchantress = { 7 },
+    enchantress = { 3 },
     enigma = { 8 },
     faceless_void = { 1 },
     furion = { 5 },
@@ -60,7 +64,7 @@ local roles = {
     medusa = { 0 },
     mirana = { 1 },
     monkey_king = { 0 },
-    naga_siren = { 4 },
+    naga_siren = { 3 },
     necrolyte = { 7 },
     nevermore = { 3 },
     night_stalker = { 2 },
@@ -274,7 +278,22 @@ local function AddMekansm()
     local function BuyMekansm(hero)
         NotifyTeam(hero, "mekansm")
         AddBefore(hero.itemInformationTable, M.FullyExpandItem "item_mekansm", AddMekansmBefore)
+        local guardianGreavesTable = M.ExpandFirstLevel "item_guardian_greaves"
+        fun1:Remove_Modify(guardianGreavesTable.recipe, "item_mekansm")
+        do
+            local arcaneBoots = fun1:First(hero.itemInformationTable, function(t)
+                return t.name == "item_arcane_boots"
+            end)
+            if arcaneBoots then
+                arcaneBoots.usedAsRecipeOf = guardianGreavesTable
+                fun1:Remove_Modify(guardianGreavesTable, "item_arcane_boots")
+            end
+        end
+        while M.ExpandOnce(guardianGreavesTable) do
+        end
+        AddBefore(hero.itemInformationTable, guardianGreavesTable, GenerateFilter(4800, {}, {}))
         fun1:Remove_Modify(hero.itemInformationTable, "item_urn_of_shadows")
+        fun1:Remove_Modify(hero.itemInformationTable, "item_spirit_vessel")
     end
     if #heroRates >= 3 then
         local hero = heroRates[1][1]
@@ -398,6 +417,38 @@ local BuyDustIfInvisibleEnemies = fun1:EveryManySeconds(2, function()
     end
 end)
 M.CheckInvisibleEnemy = CheckInvisibleEnemy
+M.dustAoeRadius = 1050
+M.dustDuration = 12
+local dustTargets = fun1:NewTable()
+local function UseDustThink()
+    local enemies = fun1:GetPureHeroes(npcBot, M.dustAoeRadius)
+    local invisibleEnemies = enemies:Filter(function(t)
+        return fun1:HasAnyModifier(fun1.invisibleModifiers, t)
+    end):Filter(function(t)
+        return not fun1:HasAnyModifier(fun1.truesightModifiers) and fun1:GetPureHeroes(t, 800, true):All(function(t1)
+            return not fun1:GetAvailableItem(t1, "item_gem")
+        end)
+    end)
+    invisibleEnemies:Filter(function(t)
+        return not dustTargets:Contains(t)
+    end):ForEach(function(t)
+        return dustTargets:InsertAfter_Modify(t)
+    end)
+    do
+        local dust = fun1:GetAvailableItem(npcBot, "item_dust")
+        if dust then
+            local targets = dustTargets:Filter(function(t)
+                return GetUnitToUnitDistance(npcBot, t) <= M.dustAoeRadius + t:GetBoundingRadius()
+            end)
+            if #targets > 0 and not npcBot:IsMuted() then
+                ItemUsage.UseItemNoTarget(npcBot, dust)
+                targets:ForEach(function(t)
+                    return dustTargets:Remove_Modify(t)
+                end)
+            end
+        end
+    end
+end
 function M.Think()
     if fun1:GameNotReallyStarting() then
         return
@@ -407,6 +458,7 @@ function M.Think()
     TeamItemEventThink()
     TeamStateThink()
     BuyDustIfInvisibleEnemies()
+    UseDustThink()
 end
 function M.TeamItemThink(npcBot)
     if npcBot:IsIllusion() then
