@@ -185,6 +185,7 @@ function PrintCourierState(state)
 end
 
 local npcBot = GetBot()
+if npcBot:IsIllusion() then return end
 
 local courierTime = -90;
 local cState = -1;

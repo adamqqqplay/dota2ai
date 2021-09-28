@@ -1,0 +1,22 @@
+local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
+
+local bot = GetBot()
+
+local function PrintCarriedItems(bot)
+    print(bot:GetUnitName().." has items:")
+    for i = 0, 8 do
+        if local item = bot:GetItemInSlot(i) then
+            print(i.." "..item:GetName())
+        end
+    end
+end
+
+function OnStart()
+    bot = GetBot()
+    PrintCarriedItems(bot)
+end
+
+function OnEnd()
+    PrintCarriedItems(bot)
+end
+

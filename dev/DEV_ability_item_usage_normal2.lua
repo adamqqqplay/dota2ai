@@ -12,6 +12,7 @@ local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstractio
 -- Hero Area Local Variable Setting
 --------------------------------------
 local npcBot = GetBot()
+if npcBot:IsIllusion() then return end
 local ComboMana = 0
 local debugmode=false
 

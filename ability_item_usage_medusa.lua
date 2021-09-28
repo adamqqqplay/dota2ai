@@ -12,6 +12,7 @@ local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstractio
 
 local debugmode=false
 local npcBot = GetBot()
+if npcBot:IsIllusion() then return end
 local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
@@ -256,9 +257,8 @@ Consider[3]=function()
 	-- Generic Variable Setting
 	--------------------------------------
 	local ability=AbilitiesReal[abilityNumber]
-	
 	if not ability:IsFullyCastable() then
-		return false
+		return 0
 	end
     local healthPercent = AbilityExtensions:GetHealthPercent(npcBot)
     local manaPercent = AbilityExtensions:GetManaPercent(npcBot)

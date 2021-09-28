@@ -320,7 +320,7 @@ function M.UnImplementedItemUsage()
             return 
         end
         if npcBot:IsInvisible() and npcBot:UsingItemBreakInvisibility() then
-            if npcBot:HasModifier("modifier_item_dust") then
+            if npcBot:HasModifier("modifier_item_dustofappearance") then
                 npcBot:Action_UseAbility(treads)
                 return true
             end

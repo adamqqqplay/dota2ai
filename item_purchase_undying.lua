@@ -11,7 +11,7 @@ local ItemsToBuy =
 	"item_enchanted_mango",
 	"item_magic_wand", --大魔棒7.14
 	"item_boots",
-	"item_energy_booster",
+	"item_arcane_boots",
 	"item_blade_mail", --刃甲
 	"item_mekansm", --梅肯
 	"item_guardian_greaves", --卫士胫甲

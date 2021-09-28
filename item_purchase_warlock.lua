@@ -22,9 +22,9 @@ local ItemsToBuy =
     "item_sheepstick",
 }
 
-ItemPurchaseSystem.checkItemBuild(ItemsToBuy)
+ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
 
 function ItemPurchaseThink()
 	ItemPurchaseSystem.BuySupportItem()
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
+	ItemPurchaseSystem.ItemPurchaseExtend()
 end

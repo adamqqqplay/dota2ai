@@ -5,6 +5,7 @@ local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstractio
 
 local debugmode=false
 local npcBot = GetBot()
+if npcBot:IsIllusion() then return end
 local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
@@ -98,9 +99,11 @@ Consider[1] = function()
             end
         end
     end
-    if AbilityExtensions:IsAttackingEnemy(npcBot) then
+    if AbilityExtensions:IsAttackingEnemies(npcBot) then
         local enemies = npcBot:GetNearbyHeroes(900, true, BOT_MODE_NONE)
     end
+
+    return 0
 end
 
 function AbilityLevelUpThink()

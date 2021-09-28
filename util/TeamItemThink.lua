@@ -4,8 +4,12 @@
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
 local M = {}
+local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
 local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
-M.ImplmentedTeamItems = { "item_mekansm" }
+M.ImplmentedTeamItems = {
+    "item_mekansm",
+    "item_guardian_greaves",
+}
 local roles = {
     abaddon = { 9 },
     abyssal_underlord = { 4 },
@@ -37,7 +41,7 @@ local roles = {
     earth_spirit = { 6 },
     earthshaker = { 5 },
     ember_spirit = { 2 },
-    enchantress = { 7 },
+    enchantress = { 3 },
     enigma = { 8 },
     faceless_void = { 1 },
     furion = { 5 },
@@ -60,7 +64,7 @@ local roles = {
     medusa = { 0 },
     mirana = { 1 },
     monkey_king = { 0 },
-    naga_siren = { 4 },
+    naga_siren = { 3 },
     necrolyte = { 7 },
     nevermore = { 3 },
     night_stalker = { 2 },
@@ -130,19 +134,35 @@ setmetatable(roles, { __index = function(_, heroName)
     return zeroTable
 end })
 local humanPlayers
+local dustBuyers
+local defaultDustBuyerNumber = 2
+local teamMembers = {}
+local gemPlayers
+local nonDefaultGemPlayers
+local enemyStates = fun1:NewTable()
 local finishInit
 local runned
 local function TeamItemInit()
+    if finishInit then
+        return
+    end
     finishInit = true
+    fun1:Range(1, 5):ForEach(function(t)
+        enemyStates[t] = {}
+    end)
     humanPlayers = fun1:Range(1, 5):Filter(function(it)
         return not GetTeamMember(it):IsBot()
     end)
-end
-local teamMembers = {}
-local function InitHumanPlayers()
-    humanPlayers = fun1:Range(1, 5):Filter(function(it)
-        return not GetTeamMember(it):IsBot()
+    dustBuyers = fun1:SortByMaxFirst(teamMembers, function()
+        return math.random()
     end)
+    dustBuyers = (function()
+        if #dustBuyers >= defaultDustBuyerNumber then
+            return dustBuyers:Take(defaultDustBuyerNumber)
+        else
+            return dustBuyers
+        end
+    end)()
 end
 local function IsLeaf(item)
     return next(GetItemComponents(item)) == nil
@@ -242,7 +262,7 @@ local function AddMekansm()
     local function Rate(hero)
         local heroName = fun1:GetHeroShortName(hero:GetUnitName())
         local rate = roles[heroName].mekansm + math.random(0, 1.5)
-        if hero:GetPrimaryAttribute() == ATTRIBUTE_INTELLECT then
+        if hero:GetPrimaryAttribute() == ATTRIBUTE_INTELLECT and rate <= 7 then
             rate = rate + 1
         end
         return rate
@@ -258,7 +278,22 @@ local function AddMekansm()
     local function BuyMekansm(hero)
         NotifyTeam(hero, "mekansm")
         AddBefore(hero.itemInformationTable, M.FullyExpandItem "item_mekansm", AddMekansmBefore)
+        local guardianGreavesTable = M.ExpandFirstLevel "item_guardian_greaves"
+        fun1:Remove_Modify(guardianGreavesTable.recipe, "item_mekansm")
+        do
+            local arcaneBoots = fun1:First(hero.itemInformationTable, function(t)
+                return t.name == "item_arcane_boots"
+            end)
+            if arcaneBoots then
+                arcaneBoots.usedAsRecipeOf = guardianGreavesTable
+                fun1:Remove_Modify(guardianGreavesTable, "item_arcane_boots")
+            end
+        end
+        while M.ExpandOnce(guardianGreavesTable) do
+        end
+        AddBefore(hero.itemInformationTable, guardianGreavesTable, GenerateFilter(4800, {}, {}))
         fun1:Remove_Modify(hero.itemInformationTable, "item_urn_of_shadows")
+        fun1:Remove_Modify(hero.itemInformationTable, "item_spirit_vessel")
     end
     if #heroRates >= 3 then
         local hero = heroRates[1][1]
@@ -274,7 +309,6 @@ local function AddMekansm()
         end
     end
 end
-local enemyStates = fun1:NewTable()
 local function IdToEnemyStateTableIndex(id)
     return (function()
         if id <= 4 then
@@ -283,11 +317,6 @@ local function IdToEnemyStateTableIndex(id)
             return id - 4
         end
     end)()
-end
-local function TeamStateInit()
-    fun1:Range(1, 5):ForEach(function(t)
-        enemyStates[t] = {}
-    end)
 end
 local RefreshEnemyRespawnTime = fun1:EveryManySeconds(1, function()
     return fun1:GroupBy(GetUnitList(UNIT_LIST_ENEMY_HEROES), function(t)
@@ -358,12 +387,23 @@ local CheckInvisibleEnemy = function()
         return fun1:HasInvisibility(t)
     end)
 end
-local RefreshInvisibleEnemies = fun1:EveryManySeconds(2, function()
+local RefreshInvisibleEnemies_One = fun1:EveryManySeconds(2, function()
+    gemPlayers = fun1:Range(1, 5):Map(function(t)
+        return GetTeamMember(t)
+    end):Filter(function(t)
+        return fun1:GetAvailableItem(t, "item_gem")
+    end)
+    nonDefaultGemPlayers = gemPlayers:Filter(function(t)
+        return not dustBuyers:Contains(t)
+    end)
     hasInvisibleEnemy = CheckInvisibleEnemy()
+end)
+local RefreshInvisibleEnemies = fun1:SingleForTeam(function()
+    return RefreshInvisibleEnemies_One()
 end)
 local BuyDustIfInvisibleEnemies = fun1:EveryManySeconds(2, function()
     RefreshInvisibleEnemies()
-    if hasInvisibleEnemy then
+    if dustBuyers:Take(defaultDustBuyerNumber - #nonDefaultGemPlayers):Contains(npcBot) and hasInvisibleEnemy then
         local items = fun1:GetAllBoughtItems(npcBot):Map(function(t)
             return t:GetName()
         end)
@@ -377,11 +417,48 @@ local BuyDustIfInvisibleEnemies = fun1:EveryManySeconds(2, function()
     end
 end)
 M.CheckInvisibleEnemy = CheckInvisibleEnemy
+M.dustAoeRadius = 1050
+M.dustDuration = 12
+local dustTargets = fun1:NewTable()
+local function UseDustThink()
+    local enemies = fun1:GetPureHeroes(npcBot, M.dustAoeRadius)
+    local invisibleEnemies = enemies:Filter(function(t)
+        return fun1:HasAnyModifier(fun1.invisibleModifiers, t)
+    end):Filter(function(t)
+        return not fun1:HasAnyModifier(fun1.truesightModifiers) and fun1:GetPureHeroes(t, 800, true):All(function(t1)
+            return not fun1:GetAvailableItem(t1, "item_gem")
+        end)
+    end)
+    invisibleEnemies:Filter(function(t)
+        return not dustTargets:Contains(t)
+    end):ForEach(function(t)
+        return dustTargets:InsertAfter_Modify(t)
+    end)
+    do
+        local dust = fun1:GetAvailableItem(npcBot, "item_dust")
+        if dust then
+            local targets = dustTargets:Filter(function(t)
+                return GetUnitToUnitDistance(npcBot, t) <= M.dustAoeRadius + t:GetBoundingRadius()
+            end)
+            if #targets > 0 and not npcBot:IsMuted() then
+                ItemUsage.UseItemNoTarget(npcBot, dust)
+                targets:ForEach(function(t)
+                    return dustTargets:Remove_Modify(t)
+                end)
+            end
+        end
+    end
+end
 function M.Think()
+    if fun1:GameNotReallyStarting() then
+        return
+    end
     npcBot = GetBot()
+    TeamItemInit()
     TeamItemEventThink()
     TeamStateThink()
     BuyDustIfInvisibleEnemies()
+    UseDustThink()
 end
 function M.TeamItemThink(npcBot)
     if npcBot:IsIllusion() then
@@ -399,7 +476,6 @@ function M.TeamItemThink(npcBot)
         end
         if not finishInit then
             TeamItemInit()
-            TeamStateInit()
         end
         if #teamMembers + #humanPlayers == 5 then
             if runned then

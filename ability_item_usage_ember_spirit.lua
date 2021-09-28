@@ -10,6 +10,9 @@ local npcBot = GetBot()
 if npcBot:IsIllusion() then
     return
 end
+if npcBot:IsIllusion() then
+    return
+end
 local AbilityNames,Abilities,Talents = fun1:InitAbility(npcBot)
 local AbilityToLevelUp = {
     AbilityNames[2],
@@ -426,7 +429,7 @@ Consider[4] = function()
             local friends = fun1:GetNearbyHeroes(activeRemnant, 1200, true)
             local friendCount = fun1:GetEnemyHeroNumber(npcBot, friends)
             local veryNearEnemies = fun1:GetEnemyHeroNumber(npcBot, fun1:GetNearbyHeroes(activeRemnant, 400))
-            if friendCount >= enemyCount and #veryNearEnemies == 0 then
+            if friendCount >= enemyCount and veryNearEnemies == 0 then
                 return BOT_ACTION_DESIRE_MODERATE, activeRemnant:GetLocation()
             end
         end

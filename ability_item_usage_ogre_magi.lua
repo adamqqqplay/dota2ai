@@ -11,6 +11,7 @@ local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstractio
 
 local debugmode=false
 local npcBot = GetBot()
+if npcBot:IsIllusion() then return end
 local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
@@ -308,22 +309,23 @@ Consider[2]=function()
 	end
 
 	return BOT_ACTION_DESIRE_NONE, 0;
-	
 end
 
-Consider[3]=function()
 
-	local ability=AbilitiesReal[3];
+Consider[3]=function()
+	local ability=AbilitiesReal[3]
 	
 	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
+		return BOT_ACTION_DESIRE_NONE
 	end
 	
 	local CastRange = ability:GetCastRange();
 	local Damage = 0
 	
-
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local allys = AbilityExtensions:GetNearbyHeroes(npcBot, 1200, false)
+	allys = allys:SortByMaxFirst(function(t)
+		return AbilityExtensions:GetBattlePower(t)
+	end)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)

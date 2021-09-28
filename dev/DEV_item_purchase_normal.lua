@@ -15,7 +15,7 @@ local ItemsToBuy =
 	"item_boots",	
 	"item_circlet",
 	"item_magic_stick",				--大魔棒
-	"item_energy_booster",			--秘法鞋
+	"item_arcane_boots",
 	
 	"item_mantle",
 	"item_circlet",

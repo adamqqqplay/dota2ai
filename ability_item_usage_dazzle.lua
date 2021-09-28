@@ -11,6 +11,7 @@ local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstractio
 
 local debugmode=false
 local npcBot = GetBot()
+if npcBot:IsIllusion() then return end
 local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
@@ -284,7 +285,7 @@ Consider[2]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-	local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange+300, false)
+	local allys = AbilityExtensions:GetPureHeroes(npcBot, CastRange+300, false)
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local enemyAxe = AbilityExtensions:First(enemys, function(t)
@@ -337,14 +338,13 @@ Consider[3]=function()
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
-	local ability=AbilitiesReal[abilityNumber];
+	local ability=AbilitiesReal[abilityNumber]
 	
 	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
+		return BOT_ACTION_DESIRE_NONE, 0
 	end
 	
-	local CastRange = ability:GetCastRange();
-	--local Damage = ability:GetAbilityDamage();
+	local CastRange = ability:GetCastRange()
 	local Damage = ability:GetSpecialValueInt("damage")
 	local Radius = ability:GetSpecialValueInt("damage_radius")
 	local RadiusAlly = ability:GetSpecialValueInt("bounce_radius")
@@ -352,7 +352,7 @@ Consider[3]=function()
 	local DamageType=DAMAGE_TYPE_PHYSICAL
 	
 
-	local allys = npcBot:GetNearbyHeroes( CastRange+300, false, BOT_MODE_NONE );
+	local allys = AbilityExtensions:GetPureHeroes(npcBot, CastRange+300, false)
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+200,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)

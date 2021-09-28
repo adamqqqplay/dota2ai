@@ -1,81 +1,80 @@
----------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
--- Do not modify
--- https://github.com/AaronSong321/Mirana
----------------------------------------------
-local utility = require(GetScriptDirectory().."/utility")
-require(GetScriptDirectory().."/ability_item_usage_generic")
+
+-- v1.7 template
+local utility = require( GetScriptDirectory().."/utility" ) 
+require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
-local debugmode = false
+
+local debugmode=false
 local npcBot = GetBot()
-if npcBot:IsIllusion() then
-    return
-end
-local Talents = {}
-local Abilities = {}
-local AbilitiesReal = {}
-ability_item_usage_generic.InitAbility(Abilities, AbilitiesReal, Talents)
-local AbilityToLevelUp = {
-    Abilities[2],
-    Abilities[1],
-    Abilities[1],
-    Abilities[2],
-    Abilities[1],
-    Abilities[5],
-    Abilities[1],
-    Abilities[3],
-    Abilities[2],
-    "talent",
-    Abilities[2],
-    Abilities[5],
-    Abilities[3],
-    Abilities[3],
-    "talent",
-    Abilities[3],
-    "nil",
-    Abilities[5],
-    "nil",
-    "talent",
-    "nil",
-    "nil",
-    "nil",
-    "nil",
-    "talent",
+if npcBot:IsIllusion() then return end
+local Talents ={}
+local Abilities ={}
+local AbilitiesReal ={}
+
+ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
+
+local AbilityToLevelUp=
+{
+	Abilities[2],
+	Abilities[1],
+	Abilities[1],
+	Abilities[2],
+	Abilities[1],
+	Abilities[5],
+	Abilities[1],
+	Abilities[3],
+	Abilities[2],
+	"talent",
+	Abilities[2],
+	Abilities[5],
+	Abilities[3],
+	Abilities[3],
+	"talent",
+	Abilities[3],
+	"nil",
+	Abilities[5],
+	"nil",
+	"talent",
+	"nil",
+	"nil",
+	"nil",
+	"nil",
+	"talent",
 }
-local TalentTree = {
-    function()
-        return Talents[2]
-    end,
-    function()
-        return Talents[3]
-    end,
-    function()
-        return Talents[5]
-    end,
-    function()
-        return Talents[8]
-    end,
+
+local TalentTree={
+	function()
+		return Talents[2]
+	end,
+	function()
+		return Talents[3]
+	end,
+	function()
+		return Talents[5]
+	end,
+	function()
+		return Talents[8]
+	end
 }
+
+-- check skill build vs current level
 utility.CheckAbilityBuild(AbilityToLevelUp)
+
 function AbilityLevelUpThink()
-    ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
+	ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp,TalentTree)
 end
-local cast = {}
-cast.Desire = {}
-cast.Target = {}
-cast.Type = {}
-local Consider = {}
-local CanCast = {
-    function(t)
-        return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_PURE, true, false)
-    end,
-    AbilityExtensions.NormalCanCastFunction,
-    utility.NCanCast,
-    utility.CanCastNoTarget,
-    function(t)
-        return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_MAGICAL, true, true) and not AbilityExtensions:HasAbilityRetargetModifier(t)
-    end,
-}
+
+--------------------------------------
+-- Ability Usage Thinking
+--------------------------------------
+local cast={} cast.Desire={} cast.Target={} cast.Type={}
+local Consider ={}
+local CanCast={function(t)
+    return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_PURE, true, false) 
+end,AbilityExtensions.NormalCanCastFunction,utility.NCanCast,utility.CanCastNoTarget,function(t)
+    return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_MAGICAL, true, true) and not AbilityExtensions:HasAbilityRetargetModifier(t)
+end}
+
 Consider[1] = function()
     local ability = AbilitiesReal[1]
     if not ability:IsFullyCastable() or npcBot:IsChanneling() then
@@ -86,6 +85,7 @@ Consider[1] = function()
     local searchRadius = ability:GetSpecialValueInt("hook_width")
     local hookSpeed = ability:GetSpecialValueFloat("hook_speed")
     local allNearbyUnits = AbilityExtensions:GetNearbyAllUnits(npcBot, range):Remove(npcBot)
+
     local function NotBlockedByAnyUnit(line, target, distance)
         return AbilityExtensions:All(AbilityExtensions:Remove(allNearbyUnits, target), function(t)
             local closeEnough = AbilityExtensions:GetPointToLineDistance(t:GetLocation(), line) <= searchRadius + target:GetBoundingRadius()
@@ -96,71 +96,60 @@ Consider[1] = function()
             return not mayHook or t:IsInvulnerable()
         end)
     end
+
     local function T(target)
-        if not CanCast[1](target) then
-            return false
-        end
+        if not CanCast[1](target) then return false end
         local point = target:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, target) / hookSpeed + castPoint)
         local distance = GetUnitToLocationDistance(npcBot, point)
         local line = AbilityExtensions:GetLine(npcBot:GetLocation(), point)
         local result = GetUnitToLocationDistance(npcBot, point) <= range and NotBlockedByAnyUnit(line, target, distance)
         return result
     end
+
     if AbilityExtensions:IsAttackingEnemies(npcBot) then
         local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, true, BOT_MODE_NONE)
-        enemies = AbilityExtensions:SortByMaxFirst(enemies, function(t)
-            return GetUnitToUnitDistance(npcBot, t)
-        end)
+        enemies = AbilityExtensions:SortByMaxFirst(enemies, function(t) return GetUnitToUnitDistance(npcBot, t)  end)
         enemies = AbilityExtensions:Filter(enemies, T)
         if #enemies ~= 0 then
             return BOT_MODE_DESIRE_HIGH, enemies[1]:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemies[1]) / hookSpeed)
         end
+
         local allies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, false, BOT_MODE_NONE)
-        allies = AbilityExtensions:Filter(allies, function(t)
-            return t:IsStunned() or t:IsRooted()
-        end)
+        allies = AbilityExtensions:Filter(allies, function(t) return t:IsStunned() or t:IsRooted()  end)
         allies = AbilityExtensions:Filter(allies, T)
         if #allies ~= 0 then
             return BOT_MODE_DESIRE_HIGH, allies[1]:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemies[1]) / hookSpeed)
         end
     end
+
     if AbilityExtensions:IsAttackingEnemies(npcBot) then
-        do
-            local atos = AbilityExtensions:GetAvailableItem(npcBot, "item_rod_of_atos") or AbilityExtensions:GetAvailableItem(npcBot, "item_gleipnir")
-            if atos then
-                do
-                    local t = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range):First(function(t)
-                        return not AbilityExtensions:CannotMove(t) and T(t) and AbilityExtensions:NormalCanCast(t)
-                    end)
-                    if t then
-                        if atos:GetName() == "item_rod_of_atos" then
-                            ItemUsage.UseItemOnEntity(npcBot, atos, t)
-                        else
-                            ItemUsage.UseItemOnLocation(npcBot, atos, t:GetLocation())
-                        end
-                    end
+        if local atos = AbilityExtensions:GetAvailableItem(npcBot, "item_rod_of_atos") or AbilityExtensions:GetAvailableItem(npcBot, "item_gleipnir") then
+            if local t = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range):First { t ->
+                not AbilityExtensions:CannotMove(t) and T(t) and AbilityExtensions:NormalCanCast(t)
+            } then
+                if atos:GetName() == "item_rod_of_atos" then
+                    ItemUsage.UseItemOnEntity(npcBot, atos, t)
+                else
+                    ItemUsage.UseItemOnLocation(npcBot, atos, t:GetLocation())
                 end
             end
         end
-        do
-            local target = AbilityExtensions:GetTargetIfGood(npcBot)
-            if target then
-                if T(target) then
-                    return BOT_ACTION_DESIRE_HIGH, target:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, target) / hookSpeed + castPoint)
-                end
+
+        if local target = AbilityExtensions:GetTargetIfGood(npcBot) then
+            if T(target) then
+                return BOT_ACTION_DESIRE_HIGH, target:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, target) / hookSpeed + castPoint)
             end
         end
-        do
-            local enemy = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range):First(function(t)
-                return (AbilityExtensions:CannotMove(t) or AbilityExtensions:GetMovementSpeedPercent(t) <= 0.3) and T(t)
-            end)
-            if enemy then
-                return BOT_ACTION_DESIRE_HIGH, enemy:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemy) / hookSpeed + castPoint)
-            end
+        if local enemy = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range):First { t ->
+            (AbilityExtensions:CannotMove(t) or AbilityExtensions:GetMovementSpeedPercent(t) <= 0.3) and T(t)
+        } then
+            return BOT_ACTION_DESIRE_HIGH, enemy:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemy) / hookSpeed + castPoint)
         end
     end
+
     return 0
 end
+
 Consider[2] = function()
     local ability = AbilitiesReal[2]
     local radius = ability:GetAOERadius()
@@ -184,9 +173,11 @@ Consider[2] = function()
             return true
         end
     end
+
     return false
 end
 Consider[2] = AbilityExtensions:ToggleFunctionToAction(npcBot, Consider[2], AbilitiesReal[2])
+
 local swallowingSomething
 local swallowTimer
 Consider[4] = function()
@@ -206,6 +197,7 @@ Consider[4] = function()
     end
     return 0
 end
+
 Consider[5] = function()
     local ability = AbilitiesReal[5]
     if not ability:IsFullyCastable() or npcBot:IsChanneling() then
@@ -218,7 +210,8 @@ Consider[5] = function()
     if hookedEnemy ~= nil then
         return BOT_MODE_DESIRE_VERYHIGH, hookedEnemy
     end
-    do
+
+    do 
         local target = AbilityExtensions:GetTargetIfGood(npcBot)
         if target ~= nil and CanCast[5](target) and GetUnitToUnitDistance(npcBot, target) <= range then
             return BOT_MODE_DESIRE_HIGH, target
@@ -237,15 +230,29 @@ Consider[5] = function()
             return BOT_MODE_DESIRE_MODERATE, loneEnemy
         end
     end
+
+    -- if has shard
+    -- local function CanCast5AtFriend(friend)
+    --     return not AbilityExtensions:IsInvulnerable(friend) and not AbilityExtensions:CannotBeTargetted()
+    -- end
+    -- local nearbyAllies = AbilityExtensions:Filter(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range+200, false, BOT_MODE_NONE), function(t) return AbilityExtensions:CanHardlyMove(t)  end)
+    -- nearbyAllies = AbilityExtensions:SortByMinFirst(nearbyAllies, function(t) return t:GetHealth() end)
+    -- if #nearbyAllies ~= 0 and CanCast5AtFriend(nearbyAllies[1]) then
+    --     return BOT_MODE_DESIRE_MODERATE, nearbyAllies[1]
+    -- end
     return 0
 end
-function CourierUsageThink()
-    ability_item_usage_generic.CourierUsageThink()
+
+
+function CourierUsageThink() 
+	ability_item_usage_generic.CourierUsageThink()
 end
+
 function AbilityUsageThink()
     if npcBot:IsUsingAbility() or npcBot:IsSilenced() then
         return
     end
-    cast = ability_item_usage_generic.ConsiderAbility(AbilitiesReal, Consider)
-    ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
+
+    cast=ability_item_usage_generic.ConsiderAbility(AbilitiesReal,Consider)
+    ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
 end
