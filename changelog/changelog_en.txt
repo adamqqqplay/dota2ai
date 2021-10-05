@@ -387,3 +387,8 @@ v1.7.8 (2021.09.05)
 4. Fix the issue of AI selecting lane in the early game.
 5. Fix many abilities that could not be used.
 6. Temporarily remove Hoodwink.
+v1.7.9 (2021.10.05)
+1. Add team purchase mechanism of Mekansm, Dust and Guardian Greaves.
+2. Try to fix the issue where the illusion can use abilities.
+3. Fix the issue of Medusa, Clinkz, Drow ranger, Silencer can not auto cast abilities.
+4. Fix many small issues.
