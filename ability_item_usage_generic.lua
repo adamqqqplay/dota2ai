@@ -100,12 +100,16 @@ local function SecondaryOperation()
 	end
 end
 
+local fun2 = require(GetScriptDirectory().."/util/CommonBehaviours")
+local A = require(GetScriptDirectory().."/util/MiraDota")
+
 function CourierUsageThink()
 	if not GetBot():IsAlive() then
 		return
 	end
 	AbilityExtensions:TickFromDota()
-	local fun2 = require(GetScriptDirectory().."/util/CommonBehaviours")
+	A.Game.TickFromDota()
+	A.ItemUse.ItemUsageThink()
 	fun2.Think()
 	SecondaryOperation()
 end
@@ -154,49 +158,6 @@ end
 function AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
     ExecuteAbilityLevelUp(AbilityToLevelUp, TalentTree)
     return
-    --
-    --local npcBot = GetBot()
-    --if (npcBot:GetAbilityPoints() < 1 or #AbilityToLevelUp == 0 or
-    --        (GetGameState() ~= GAME_STATE_PRE_GAME and GetGameState() ~= GAME_STATE_GAME_IN_PROGRESS))
-    --then
-    --    return
-    --end
-    --
-    --local abilityname = AbilityToLevelUp[1]
-    --print(npcBot:GetUnitName()..": ability to learn "..tostring(abilityname))
-    --if abilityname == "nil" then
-    --    table.remove(AbilityToLevelUp, 1)
-    --    return
-    --end
-    --if abilityname == "talent" then
-    --    for i, temp in pairs(AbilityToLevelUp) do
-    --        if temp == "talent" then
-    --            table.remove(AbilityToLevelUp, i)
-    --            if #TalentTree >= 1 then
-    --                table.insert(AbilityToLevelUp, i, TalentTree[1]())
-    --            else
-    --
-    --            end
-    --            table.remove(TalentTree, 1)
-    --            break
-    --        end
-    --    end
-    --end
-    --
-    --local ability = npcBot:GetAbilityByName(abilityname)
-    --if ability == nil then
-    --    print(npcBot:GetUnitName()..": learn ability nil")
-    --elseif not ability:CanAbilityBeUpgraded() then
-    --    print(npcBot:GetUnitName()..": cannot learn ability "..abilityname)
-    --else
-    --    npcBot:ActionImmediate_Chat("learn ability "..abilityname, true)
-    --    print(npcBot:GetUnitName()..": learn ability "..abilityname)
-    --end
-    --if ability ~= nil and ability:CanAbilityBeUpgraded() then
-    --    npcBot:ActionImmediate_LevelAbility(abilityname)
-    --    IncrementIncorrectAbility(AbilityToLevelUp)
-    --end
-    --table.remove(AbilityToLevelUp, 1)
 end
 
 local function CanBuybackUpperRespawnTime(respawnTime)
@@ -407,7 +368,10 @@ function UseAbility(AbilitiesReal, cast)
 	if (HighestDesire > 0) then
 		local j = HighestDesireAbilityNumber
 		local ability = AbilitiesReal[j]
-		-- print(npcBot:GetUnitName()..": use "..ability:GetName())
+		-- local sToPrint = npcBot:GetUnitName()..": use "..ability:GetName()
+		-- if ability:GetName() ~= "doom_bringer_infernal_blade" then
+		-- 	print(sToPrint)
+		-- end
 		if not ability:IsCooldownReady() then
 			print("Ability still in cooldown: "..ability:GetName())
 			AbilityExtensions:DebugPause()

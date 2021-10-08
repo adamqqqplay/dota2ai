@@ -367,7 +367,9 @@ local BuyDustIfInvisibleEnemies = fun1:EveryManySeconds(2) { ->
         if not items:Contains("item_gem") and not items:Contains("item_dust") then
             if npcBot:GetGold() >= 2*GetItemCost("item_dust") then
                 npcBot:ActionImmediate_PurchaseItem("item_dust")
-                npcBot:ActionImmediate_PurchaseItem("item_dust")
+                if DotaTime() >= 8 * 60 then
+                    npcBot:ActionImmediate_PurchaseItem("item_dust")
+                end
                 npcBot:ActionImmediate_Chat("Buying dusts", false)
             end
         end

@@ -150,12 +150,12 @@ Consider[1] = function()
     local CreepHealth = 10000
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local creeps = npcBot:GetNearbyCreeps(CastRange + 200, true)
-    if npcBot:GetAbilityByName "special_bonus_unique_doom_bringer_3":GetLevel() < 1 then
+    if npcBot:GetAbilityByName "special_bonus_unique_doom_2":GetLevel() < 1 then
         creeps = fun1:Filter(creeps, function(t)
             return not t:IsAncientCreep()
         end)
     end
-    local StrongstCreep,CreepHealth = utility.GetStrongestUnit(creeps)
+    local StrongstCreep, CreepHealth = utility.GetStrongestUnit(creeps)
     if StrongstCreep and CanCast[abilityNumber](StrongstCreep) then
         return BOT_ACTION_DESIRE_HIGH, StrongstCreep
     end
@@ -177,9 +177,9 @@ Consider[2] = function()
     local allys = fun1:GetNearbyNonIllusionHeroes(npcBot, 1200, false)
     local allyCount = fun1:GetEnemyHeroNumber(npcBot, allys)
     local enemys = npcBot:GetNearbyHeroes(Radius + 300, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(Radius + 300, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     if npcBot:WasRecentlyDamagedByAnyHero(2) or (npcBot:GetActiveMode() == BOT_MODE_RETREAT and HealthPercentage <= 0.4 + #enemys * 0.05) then
         return BOT_ACTION_DESIRE_HIGH
     end
@@ -187,7 +187,7 @@ Consider[2] = function()
         local npcEnemy = npcBot:GetTarget()
         if ManaPercentage > 0.4 or npcBot:GetMana() > ComboMana then
             if npcEnemy ~= nil then
-                if (GetUnitToUnitDistance(npcBot, npcEnemy) > 450 or npcEnemy:GetHealth() / npcEnemy:GetMaxHealth() < 0.4) and GetUnitToLocationDistance(npcBot, npcEnemy) < 1100 then
+                if (GetUnitToUnitDistance(npcBot, npcEnemy) > 350 or npcEnemy:GetHealth() / npcEnemy:GetMaxHealth() < 0.4) and GetUnitToUnitDistance(npcBot, npcEnemy) < 900 then
                     return BOT_ACTION_DESIRE_HIGH
                 end
             end
@@ -210,9 +210,9 @@ Consider[3] = function()
     local Damage = ability:GetAbilityDamage()
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(CastRange + 150, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(CastRange + 150, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     for _, npcEnemy in pairs(enemys) do
         if npcEnemy:IsChanneling() and CanCast[abilityNumber](npcEnemy) then
             return BOT_ACTION_DESIRE_HIGH, npcEnemy
@@ -419,9 +419,9 @@ Consider[6] = function()
     local CastRange = ability:GetCastRange()
     local allys = fun1:GetNearbyNonIllusionHeroes(npcBot, 1200, false)
     local enemys = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange + 300, true)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(CastRange + 300, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes(1000, false, BOT_MODE_ATTACK)
     if #tableNearbyAttackingAlliedHeroes >= 2 or #allys >= 3 then
         local npcMostDangerousEnemy = nil

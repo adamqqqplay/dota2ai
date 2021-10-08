@@ -160,7 +160,7 @@ Consider[1]=function()
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
 
 	local creeps = npcBot:GetNearbyCreeps(CastRange + 200, true)
-	if npcBot:GetAbilityByName "special_bonus_unique_doom_bringer_3":GetLevel() < 1 then
+	if npcBot:GetAbilityByName "special_bonus_unique_doom_2":GetLevel() < 1 then
 		creeps = fun1:Filter(creeps, function(t) return not t:IsAncientCreep() end)
 	end
 	local StrongstCreep,CreepHealth=utility.GetStrongestUnit(creeps)
@@ -226,7 +226,7 @@ Consider[2]=function()
 		then
 			if ( npcEnemy ~= nil ) 
 			then
-				if ( GetUnitToUnitDistance(npcBot,npcEnemy) > 450 or npcEnemy:GetHealth()/npcEnemy:GetMaxHealth() < 0.4) and GetUnitToLocationDistance(npcBot, npcEnemy) < 1100
+				if ( GetUnitToUnitDistance(npcBot,npcEnemy) > 350 or npcEnemy:GetHealth()/npcEnemy:GetMaxHealth() < 0.4) and GetUnitToUnitDistance(npcBot, npcEnemy) < 900
 				then
 					return BOT_ACTION_DESIRE_HIGH
 				end

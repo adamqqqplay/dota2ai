@@ -570,7 +570,6 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
     if not AbilityExtensions:GameNotReallyStarting() then
         RemoveBoughtItems()
     end
-    -- AbilityExtensions:ForEach(g) {item -> AbilityExtensions:DebugTable(item)}
 
     local function RemoveTeamItems(t) 
         local implmentedItems = TeamItemThink.ImplmentedTeamItems or {}
@@ -586,6 +585,7 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
         RemoveTeamItems(g)
         TeamItemThink.TeamItemThink(npcBot)
     end
+    -- AbilityExtensions:ForEach(g) {item -> AbilityExtensions:DebugTable(item)}
 end
 
 local sNextItem

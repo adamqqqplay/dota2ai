@@ -207,7 +207,7 @@ Consider[2]=function()
     if #projectiles ~= 0 and not AbilitiesReal[3]:IsFullyCastable() and not npcBot:HasModifier("modifier_antimage_counterspell") then
         for _, projectile in pairs(projectiles) do
             if GetUnitToLocationDistance(npcBot, projectile.location) > castPoint * defaultProjectileVelocity then
-                local escapeLocation = utility.GetUnitsTowardsLocation(npcBot, projectile.location, 400)
+                local escapeLocation = AbilityExtensions:GetPointFromLineByDistance(npcBot:GetLocation(), projectile.location, 400)
                 return BOT_ACTION_DESIRE_MODERATE, escapeLocation
             end
         end

@@ -319,7 +319,7 @@ function M.UnImplementedItemUsage()
         if math.floor(DotaTime()) / 4 ~= 0 then
             return 
         end
-        if npcBot:IsInvisible() and npcBot:UsingItemBreakInvisibility() then
+        if npcBot:IsInvisible() and npcBot:UsingItemBreaksInvisibility() then
             if npcBot:HasModifier("modifier_item_dustofappearance") then
                 npcBot:Action_UseAbility(treads)
                 return true

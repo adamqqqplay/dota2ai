@@ -7,6 +7,7 @@ local M = {}
 local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
 local BotsInit = require("game/botsinit")
 local role = require(GetScriptDirectory().."/util/RoleUtility")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 local function IsItemAvailable(item_name)
     return fun1:GetAvailableItem(GetBot(), item_name)
 end
@@ -228,7 +229,7 @@ local CannotFade = function(t)
     return false
 end
 local DontUseItemIfBreakInvisibility = function(t)
-    return t:IsInvisible() and (not CannotFade(t) or not t:UsingItemBreakInvisibility())
+    return t:IsInvisible() and (not CannotFade(t) or not t:UsingItemBreaksInvisibility())
 end
 local giveTime = -90
 function M.ItemUsageThink()
@@ -280,7 +281,7 @@ function M.ItemUsageThink()
         if math.floor(DotaTime()) / 4 ~= 0 then
             return
         end
-        if npcBot:IsInvisible() and npcBot:UsingItemBreakInvisibility() then
+        if npcBot:IsInvisible() and npcBot:UsingItemBreaksInvisibility() then
             if npcBot:HasModifier("modifier_item_dustofappearance") then
                 M.UseItemNoTarget(npcBot, treads)
                 return true

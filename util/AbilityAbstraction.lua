@@ -170,7 +170,6 @@ M.Take = function(self, tb, number)
             table.insert(g, v)
         else
             break
-
         end
     end
     return g
@@ -243,7 +242,6 @@ M.GroupBy = function(self, collection, keySelector, elementSelector, resultSelec
                 keyFound = true
                 table.insert(values[readKeyIndex], elementSelector(k))
                 break
-
             end
         end
         if not keyFound then
@@ -298,7 +296,7 @@ function M:Max(tb, map)
         return nil
     end
     map = map or self.IdentityFunction
-    local maxv,maxm = tb[1], map(tb[1])
+    local maxv, maxm = tb[1], map(tb[1])
     for i = 2, #tb do
         local m = map(tb[i])
         if m > maxm then
@@ -313,7 +311,7 @@ function M:MaxV(tb, map)
         return nil
     end
     map = map or self.IdentityFunction
-    local maxv,maxm = tb[1], map(tb[1])
+    local maxv, maxm = tb[1], map(tb[1])
     for i = 2, #tb do
         local m = map(tb[i])
         if m > maxm then
@@ -328,7 +326,7 @@ function M:Min(tb, map)
         return nil
     end
     map = map or self.IdentityFunction
-    local maxv,maxm = tb[1], map(tb[1])
+    local maxv, maxm = tb[1], map(tb[1])
     for i = 2, #tb do
         local m = map(tb[i])
         if m < maxm then
@@ -343,7 +341,7 @@ function M:MinV(tb, map)
         return nil
     end
     map = map or self.IdentityFunction
-    local maxv,maxm = tb[1], map(tb[1])
+    local maxv, maxm = tb[1], map(tb[1])
     for i = 2, #tb do
         local m = map(tb[i])
         if m < maxm then
@@ -517,17 +515,13 @@ M.MergeSort = function(self, tb, sort)
 end
 M.Sort = M.SlowSort
 M.SortByMaxFirst = function(self, tb, map)
-    map = map or function(a, b)
-        return b - a
-    end
+    map = map or M.IdentityFunction
     return self:Sort(tb, function(a, b)
         return map(b) - map(a)
     end)
 end
 M.SortByMinFirst = function(self, tb, map)
-    map = map or function(a, b)
-        return a - b
-    end
+    map = map or M.IdentityFunction
     return self:Sort(tb, function(a, b)
         return map(a) - map(b)
     end)
@@ -656,7 +650,7 @@ end
 M.ToggleFunctionToAction = function(self, npcBot, oldConsider, ability)
     local name = ability:GetName()
     return function()
-        local value,target,castType = oldConsider()
+        local value, target, castType = oldConsider()
         if type(value) == "number" then
             return value, target, castType
         end
@@ -667,7 +661,7 @@ M.ToggleFunctionToAction = function(self, npcBot, oldConsider, ability)
 end
 M.ToggleFunctionToAutoCast = function(self, npcBot, ability, oldToggle)
     return function()
-        local value,target,castType = oldToggle()
+        local value, target, castType = oldToggle()
         if type(value) == "number" then
             return value, target, castType
         end
@@ -679,7 +673,7 @@ M.ToggleFunctionToAutoCast = function(self, npcBot, ability, oldToggle)
 end
 M.PreventAbilityAtIllusion = function(self, npcBot, oldConsiderFunction, ability)
     return function()
-        local desire,target,targetTypeString = oldConsiderFunction()
+        local desire, target, targetTypeString = oldConsiderFunction()
         if desire == 0 or target == nil or target == 0 or self:IsVector(target) or targetTypeString == "Location" then
             return desire, target, targetTypeString
         end
@@ -691,7 +685,7 @@ M.PreventAbilityAtIllusion = function(self, npcBot, oldConsiderFunction, ability
 end
 M.PreventEnemyTargetAbilityUsageAtAbilityBlock = function(self, npcBot, oldConsiderFunction, ability)
     local newConsider = function()
-        local desire,target,targetTypeString = oldConsiderFunction()
+        local desire, target, targetTypeString = oldConsiderFunction()
         if desire == 0 or target == nil or target == 0 or self:IsVector(target) or targetTypeString == "Location" then
             return desire, target, targetTypeString
         end
@@ -1105,6 +1099,7 @@ M.unbreakableChannelAbilities = {
     "lycan_shapeshift",
     "item_trusty_shovel",
     "item_fallen_sky",
+    "pangolier_rollup",
 }
 M.lowPriorityChannelAbilities = {
     "windrunner_powershot",
@@ -1270,7 +1265,7 @@ local function ExtendAssociation(association)
     end):Distinct()
 end
 abilityInformationKeys:ForEach(function(t)
-    local a,b = ExtendAssociation(M[t])
+    local a, b = ExtendAssociation(M[t])
     local k = t:sub(1, #t - #"AbilityAssociation")
     M[k.."Abilities"] = a
     M[k.."Modifiers"] = b
@@ -2029,7 +2024,7 @@ function M:GetMyCourier(npcBot)
     if npcBot.courierIDNew == nil then
         self:FindCourier(npcBot)
     end
-    return GetCourier(npcBot.courierIDNew)
+    return GetCourier(npcBot.courierIDNew or 0)
 end
 function M:FindCourier(npcBot)
     for i = 0, 4 do
@@ -2168,7 +2163,7 @@ function M:IsDuelCaster(npc)
     end
 end
 function M:IsMuted(npc)
-    return npc:IsHexed() or self:HasAnyModifier(npc, self.muteModifiers)
+    return self:HasAnyModifier(npc, self.muteModifiers)
 end
 function M:IsHypnosed(npc)
     return self:HasAnyModifier(npc, self.hypnosisModifiers)
@@ -2793,7 +2788,7 @@ M.GetCollapseInfo = function(self, obj1, obj2, timeLimit)
 end
 M.PreventHealAtHealSuppressTarget = function(self, npcBot, oldConsiderFunction, ability)
     return function()
-        local desire,target,targetTypeString = oldConsiderFunction()
+        local desire, target, targetTypeString = oldConsiderFunction()
         if desire == 0 or target == nil or target == 0 or targetTypeString == "Location" then
             return desire, target, targetTypeString
         end
@@ -2877,11 +2872,11 @@ M.GetIllusionBattlePower = function(self, npc)
     end
     local t = 0.1
     if self:Contains(self.GoodIllusionHero, name) then
-        t = 0.25
-    elseif self:Contains(self.ModerateIllusionHero, name) then
         t = 0.4
+    elseif self:Contains(self.ModerateIllusionHero, name) then
+        t = 0.25
     elseif not self:IsMeleeHero(npc) then
-        t = t + t:GetAttackRange() / 2000
+        t = t + npc:GetAttackRange() / 2000
     end
     local inventory = self:Map(self:GetInventoryItems(npc), function(t)
         return t:GetName()
@@ -3186,7 +3181,6 @@ function M:ResumeUntilReturn(func)
             print("error in coroutine:")
             self:DebugTable(values)
             break
-
         end
     end
     return g

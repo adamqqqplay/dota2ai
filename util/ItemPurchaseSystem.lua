@@ -406,7 +406,6 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
                 table.remove(infoTable, 1)
             else
                 break
-
             end
         end
         if npcBot:HasModifier "modifier_item_ultimate_scepter" then
@@ -436,7 +435,6 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
                             table.insert(deletedKeys, componentName)
                             boughtItem.usedAsRecipeOf = itemInformation.name
                             break
-
                         end
                     end
                 end
@@ -446,7 +444,6 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
                     if t2 == v then
                         table.remove(recipe, t1)
                         break
-
                     end
                 end
             end

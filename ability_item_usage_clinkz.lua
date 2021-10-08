@@ -72,7 +72,7 @@ local Consider = {}
 local CanCast = {
     utility.NCanCast,
     function(t)
-        return AbilityExtensions:PhysicalCanCast(t) or t:IsTower() and not t:HasModifier "modifier_fountain_glyph"
+        return AbilityExtensions.PhysicalCanCastFunction(t) or t:IsTower() and not t:HasModifier "modifier_fountain_glyph"
     end,
     utility.NCanCast,
     utility.UCanCast,
@@ -98,9 +98,9 @@ Consider[1] = function()
     local Radius = ability:GetAOERadius()
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(CastRange + 300, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(CastRange + 300, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) then
@@ -157,7 +157,7 @@ Consider[2] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[2
     end
     local CastRange = ability:GetCastRange()
     local enemys = npcBot:GetNearbyHeroes(CastRange + 100, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local function UseAt(target)
         if not CanCast[abilityNumber](target) then
             return false
@@ -202,9 +202,9 @@ Consider[3] = function()
     local Radius = ability:GetAOERadius()
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(CastRange + 300, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(CastRange + 300, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     if npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH then
         return BOT_ACTION_DESIRE_MODERATE
     end
@@ -246,9 +246,9 @@ Consider[4] = function()
     local Radius = ability:GetAOERadius()
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(CastRange + 300, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(CastRange + 300, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_ATTACK)
     if #tableNearbyAttackingAlliedHeroes >= 2 then
         local locationAoE = npcBot:FindAoELocation(true, true, npcBot:GetLocation(), AttackRange, 400, 0, 0)
