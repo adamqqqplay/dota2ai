@@ -2354,7 +2354,7 @@ function M:HasBasicDispellablePositiveModifier(npc)
     end)
 end
 function M:DontInterruptAlly(npc)
-    return self:HasAnyModifier(npc, self.positiveForceMovementModifiers) or self:HasAnyModifier(npc, self.timeSensitivePositiveModifiers) or self:IsDuelCaster(npc) or t:IsChanneling()
+    return self:HasAnyModifier(npc, self.positiveForceMovementModifiers) or self:HasAnyModifier(npc, self.timeSensitivePositiveModifiers) or self:IsDuelCaster(npc) or npc:IsChanneling()
 end
 M.MidLaneTowers = {
     TOWER_MID_1,
