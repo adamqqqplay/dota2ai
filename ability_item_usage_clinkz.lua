@@ -287,7 +287,7 @@ local function RateCreep(creep)
 end
 local standardCreepRate = 0
 local GetStandardCreepRate = AbilityExtensions:EveryManySeconds(2, function()
-    standardCreepRate = RateCreep(AbilityExtensions:Max(GetUnitList(UNIT_LIST_ENEMY_CREEPS), RateCreep))
+    standardCreepRate = AbilityExtensions:MaxV(GetUnitList(UNIT_LIST_ENEMY_CREEPS) or {}, RateCreep) or 0
 end)
 Consider[5] = function()
     local abilityNumber = 5

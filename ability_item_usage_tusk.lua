@@ -19,10 +19,7 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName =  { "tusk_ice_shards", "tusk_snowball", "tusk_tag_team", "tusk_walrus_kick", "tusk_frozen_sigil", "tusk_walrus_punch", "tusk_launch_snowball" }
-local abilityIndex = utility.ReverseTable(abilityName)
-
+local abilityName =  { "tusk_ice_shards", "tusk_snowball", "tusk_tag_team", "tusk_walrus_kick", "tusk_frozen_sigil", "tusk_walrus_punch", "tusk_launch_snowball", "ability_capture", "abyssal_underlord_portal_warp" }
 
 local AbilityToLevelUp=
 {
@@ -79,7 +76,9 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast}
+local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,function()return true end,AbilityExtensions.PhysicalCanCastFunction,function(t) 
+	return AbilityExtensions:AllyCanCast(t) and not AbilityExtensions:DontInterruptAlly(t) 
+end}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -541,6 +540,7 @@ Consider[6]=function()
 	return BOT_ACTION_DESIRE_NONE, 0 
 end
 
+-- launch snowball
 local function IsSnowballTarget(t) return t:HasModifier("modifier_tusk_snowball_target") end
 local snowballTarget
 local function RefreshSnowballTarget()
@@ -553,6 +553,7 @@ Consider[7] = function()
 	if not ability:IsFullyCastable() or ability:IsHidden() then
 		return 0
 	end
+	local range = ability:GetSpecialValueInt "snowball_windup_radius"
 	if snowballTarget == nil then
 		RefreshSnowballTarget()
 	end
@@ -563,9 +564,19 @@ Consider[7] = function()
 	if AbilityExtensions:HasAbilityRetargetModifier(snowballTarget) and not snowballTarget:IsChanneling() then
 		return 0
 	end
-	if snowballTarget:IsChanneling() or GetUnitToUnitDistance(snowballTarget, npcBot) >= 600 then
+	if snowballTarget:IsChanneling() or GetUnitToUnitDistanceSqr(snowballTarget, npcBot) >= 360000 then
 		return BOT_ACTION_DESIRE_VERYHIGH
 	end
+	local availableFriends = AbilityExtensions:GetNearbyHeroes(npcBot, 600):Filter(function(t) 
+		return GetUnitToUnitDistance(npcBot, t) <= range + t:GetBoundingRadius() and CanCast[7](t)
+	end)
+	availableFriends:ForEach(function(t)
+		print("nearby friend "..t:GetUnitName())
+	end)
+	if availableFriends[1] then
+		return BOT_ACTION_DESIRE_HIGH, availableFriends[1]
+	end
+
 	local snowballFriends = npcBot:GetNearbyHeroes(100, false, BOT_MODE_NONE)
 	snowballFriends = AbilityExtensions:Filter(snowballFriends, function (t)
 		return t:HasModifier("modifier_tusk_snowball_movement_friendly")
@@ -579,7 +590,8 @@ Consider[7] = function()
 end
 
 
-Consider[4]=function() --A杖大
+-- walrus kick
+Consider[4]=function()
 
 	local abilityNumber=4
 	--------------------------------------
@@ -668,7 +680,7 @@ local clearSnowballTarget
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
-	if snowballTarget and not AbilitiesReal[2]:IsCooldownReady() and not AbilitiesReal[7]:IsHidden() and not clearSnowballTarget then
+	if snowballTarget and not snowballTarget:IsNull() and not AbilitiesReal[2]:IsCooldownReady() and not AbilitiesReal[7]:IsHidden() and not clearSnowballTarget then
 		clearSnowballTarget = 1
 		AbilityExtensions:StartCoroutine(function()
 			AbilityExtensions:WaitForSeconds(AbilitiesReal[2]:GetSpecialValueFloat "snowball_duration")

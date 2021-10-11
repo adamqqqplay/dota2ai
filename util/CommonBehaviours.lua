@@ -4,6 +4,7 @@
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
 local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 local M = {}
 local avoidCurseList = fun1:NewTable()
 local bot
@@ -14,19 +15,9 @@ local AvoidWintersCurse = fun1:EveryManySeconds(0.3, function()
             return t:HasModifier "modifier_winter_wyvern_winters_curse_aura"
         end)
         if cursedOne then
-            if not l.avoidCurseList:Contains(cursedOne) then
+            if not bot:IsMagicImmune() and not l.avoidCurseList:Contains(cursedOne) then
                 table.insert(l.avoidCurseList, cursedOne)
                 local location = cursedOne:GetLocation()
-                location.z = 525 + bot:GetBoundingRadius()
-                local zone = AddAvoidanceZone(location)
-                print("add zone "..tostring(zone))
-                fun1:StartCoroutine(function(deltaTime)
-                    while cursedOne:HasModifier "modifier_winter_wyvern_winters_curse_aura" do
-                        coroutine.yield()
-                    end
-                    RemoveAvoidanceZone(zone)
-                    return l.avoidCurseList:Remove_Modify(cursedOne)
-                end)
             end
         end
     end
@@ -59,8 +50,21 @@ local Init = function()
         }
     end
 end
+local NoNearbyEnemiesWhenLaning = function()
+    if bot:GetActiveMode() == BOT_MODE_LANING and A.Dota.GetNearbyHeroes(bot, 1600):Count() == 0 then
+        if bot.noNearbyEnemiesWhenLaningTime == nil then
+            bot.noNearbyEnemiesWhenLaningTime = DotaTime()
+        end
+        if bot.noNearbyEnemiesWhenLaningTime - DotaTime() > 3 then
+            bot.pushWhenNoEnemies = true
+        end
+    else
+        bot.pushWhenNoEnemies = nil
+    end
+end
 local Think = function()
     AvoidWintersCurse()
+    NoNearbyEnemiesWhenLaning()
 end
 function M.Think()
     bot = GetBot()

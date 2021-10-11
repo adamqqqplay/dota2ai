@@ -734,6 +734,23 @@ function DotaExt.BotModeToString(mode)
     end
     return "unknown bot mode "..mode
 end
+DotaExt.towerNames = Linq.NewTable(TOWER_TOP_1, TOWER_TOP_2, TOWER_TOP_3, TOWER_MID_1, TOWER_MID_2, TOWER_MID_3, TOWER_BOT_1, TOWER_BOT_2, TOWER_BOT_3, TOWER_BASE_1, TOWER_BASE_2)
+DotaExt.barracksNames = Linq.NewTable(BARRACKS_TOP_MELEE, BARRACKS_TOP_RANGED, BARRACKS_MID_MELEE, BARRACKS_MID_RANGED, BARRACKS_BOT_MELEE, BARRACKS_BOT_RANGED)
+DotaExt.shrineNames = Linq.NewTable(SHRINE_BASE_1, SHRINE_BASE_2, SHRINE_BASE_3, SHRINE_BASE_4, SHRINE_BASE_5)
+function DotaExt.IsValidUnit(v)
+    return v and not v:IsNull() and v:IsAlive()
+end
+function DotaExt.GetAllBuildings(team)
+    return DotaExt.towerNames:Map(function(t)
+        return GetTower(team, t)
+    end):Concat(DotaExt.barracksNames:Map(function(t)
+        return GetBarracks(team, t)
+    end)):Concat(DotaExt.shrineNames:Map(function(t)
+        return GetShrine(team, t)
+    end)):Concat { GetAncient(team) }:Filter(function(t)
+        return DotaExt.IsValidUnit(t) and not t:IsInvulnerable()
+    end)
+end
 AbilInfo.invisibleModifiers = Linq.NewTable("modifier_bounty_hunter_wind_walk", "modifier_clinkz_wind_walk", "modifier_dark_willow_shadow_realm_buff", "modifier_item_glimmer_cape_glimmer", "modifier_invoker_ghost_walk_self", "modifier_nyx_assassin_vendetta", "modifier_item_phase_boots_active", "modifier_item_shadow_amulet_fade", "modifier_item_invisibility_edge_windwalk", "modifier_shadow_fiend_requiem_thinker", "modifier_item_silver_edge_windwalk", "modifier_windrunner_wind_walk", "modifier_storm_wind_walk", "modifier_templar_assassin_meld", "modifier_visage_silent_as_the_grave", "modifier_weaver_shukuchi", "modified_invisible", "modifier_rune_invis", "modifier_nyx_assassin_burrow", "modifier_oracle_false_promise_invis")
 AbilInfo.truesightModifiers = Linq.NewTable("modifier_item_dustofappearance", "modifier_bounty_hunter_track", "modifier_slardar_amplify_damage", "modifier_truesight")
 function AbilInfo.HasAnyModifier(bot, modifiers)
@@ -1334,7 +1351,7 @@ function Hero.GetUniqueHeroNumber(heroes)
     if #heroes == 0 then
         return 0
     end
-    return heroes:Filter(Hero.MayNotBeIllusion):GroupBy(function(t)
+    return Linq.Filter(heroes, Hero.MayNotBeIllusion):GroupBy(function(t)
         return t:GetPlayerID()
     end):Count()
 end
@@ -1840,4 +1857,5 @@ M.Unit = UnitFun
 M.Game = GameLoop
 M.Item = ItemFun
 M.ItemUse = ItemUse
+M.Hero = Hero
 return M

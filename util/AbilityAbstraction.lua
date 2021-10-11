@@ -2230,7 +2230,7 @@ M.invisibilityItems = {
 }
 M.invisibilityHeroes = {
     riki = 6,
-    clinkz = 1,
+    clinkz = 4,
     bounty_hunter = 1,
     phantom_assassin = 2,
     weaver = 1,
@@ -2354,7 +2354,7 @@ function M:HasBasicDispellablePositiveModifier(npc)
     end)
 end
 function M:DontInterruptAlly(npc)
-    return self:HasAnyModifier(npc, self.positiveForceMovementModifiers) or self:HasAnyModifier(npc, self.timeSensitivePositiveModifiers) or self:IsDuelCaster(npc)
+    return self:HasAnyModifier(npc, self.positiveForceMovementModifiers) or self:HasAnyModifier(npc, self.timeSensitivePositiveModifiers) or self:IsDuelCaster(npc) or t:IsChanneling()
 end
 M.MidLaneTowers = {
     TOWER_MID_1,
