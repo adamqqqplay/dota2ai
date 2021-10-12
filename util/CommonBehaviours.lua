@@ -50,8 +50,12 @@ local Init = function()
         }
     end
 end
+local pushModes = A.Linq.NewTable(BOT_MODE_PUSH_TOWER_BOT, BOT_MODE_PUSH_TOWER_MID, BOT_MODE_PUSH_TOWER_TOP)
+local function IsPushingMode(mode)
+    return pushModes:Contains(mode)
+end
 local NoNearbyEnemiesWhenLaning = function()
-    if bot:GetActiveMode() == BOT_MODE_LANING and A.Dota.GetNearbyHeroes(bot, 1600):Count() == 0 then
+    if bot:GetActiveMode() == BOT_MODE_LANING or IsPushingMode(bot:GetActiveMode()) and A.Dota.GetNearbyHeroes(bot, 1600):Count() == 0 then
         if bot.noNearbyEnemiesWhenLaningTime == nil then
             bot.noNearbyEnemiesWhenLaningTime = DotaTime()
         end
