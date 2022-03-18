@@ -20,6 +20,7 @@ local Abilities ={}
 local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
+AbilityExtensions:PrintAbilities(npcBot)
 
 local AbilityToLevelUp=
 {
@@ -407,6 +408,9 @@ Consider[3]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
 
+-- TODO: 7.31 ability rework
+Consider[3] = function() return 0 end
+
 local function EnemyCloseEnoughToUsePrimalSplit(t)
 	return GetUnitToUnitDistance(npcBot, t) <= 600 or GetUnitToUnitDistance(npcBot, t) <= 1000 and npcBot:WasRecentlyDamagedByHero(t, 1.5)
 end
@@ -423,7 +427,7 @@ Consider[4]=function()
 	end
 	
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
-	local enemys = AbilityExtensions:GetPureHeroes(npcBot, 700)
+	local enemys = AbilityExtensions:GetPureHeroes(npcBot, 850)
 	local enemyCount = AbilityExtensions:GetEnemyHeroNumber(npcBot, enemys)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	--------------------------------------

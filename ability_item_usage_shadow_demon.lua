@@ -10,6 +10,7 @@ local utility = require( GetScriptDirectory().."/utility" )
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 local AbilityHelper = dofile(GetScriptDirectory() .. "/util/AbilityHelper")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -27,19 +28,19 @@ local AbilityToLevelUp=
 	Abilities[3],
 	Abilities[2],
 	Abilities[3],
-	Abilities[5],
+	Abilities[6],
 	Abilities[3],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[1],
-	Abilities[5],
+	Abilities[6],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
 	"nil",
-	Abilities[5],
+	Abilities[6],
 	"nil",
 	"talent",
 	"nil",
@@ -431,10 +432,12 @@ end
 	
 end]]
 
+-- 7.31 upgrade demonic cleanse
+Consider[5] = A.Dota.EmptyDesireFun
 
-Consider[5]=function()
-
-	local abilityNumber=5
+-- 7.31 upgrade
+Consider[6]=function()
+	local abilityNumber=6
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

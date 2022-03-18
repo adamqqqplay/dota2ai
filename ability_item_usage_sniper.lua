@@ -226,7 +226,6 @@ function Consider1()
 	end
 
 	return BOT_ACTION_DESIRE_NONE, 0;
-	
 end
 
 Consider[5]=function()

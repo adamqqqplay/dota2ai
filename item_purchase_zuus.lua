@@ -14,10 +14,13 @@ local ItemsToBuy =
 	"item_arcane_boots",
 	"item_veil_of_discord", --纷争
 	"item_aether_lens", --以太之镜7.06
-	"item_cyclone", --风杖
+	"item_kaya",
+	"item_aghanims_shard",
+	-- "item_cyclone", --风杖
 	"item_ultimate_scepter", --蓝杖
 	"item_octarine_core", --玲珑心
-	"item_wind_waker",
+	-- "item_wind_waker",
+	"item_ethereal_blade",
 	"item_ultimate_scepter_2",
 	"item_refresher",
 }

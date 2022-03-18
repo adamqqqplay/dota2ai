@@ -364,14 +364,20 @@ local function GetPhysicalDps(npc)
 	return npc:GetAttackDamage() * npc:GetAttackSpeed() / 170
 end
 
-local function OkToBeAttackedByTower(npc, targetBuilding) 
+local function AttackedByTowerRate(npc, targetBuilding)
+	if not targetBuilding then
+		return 0, "no tower provided"
+	end
 	local hpPercent = AbilityExtensions:GetHealthPercent(npc)
 	local targetHpPercent = AbilityExtensions:GetHealthPercent(targetBuilding)
-	if hpPercent >= 0.9 and npc:GetLevel() >= 10 or targetBuilding:GetAttackDamage() < 20 then
-		return true
+	if targetBuilding:HasModifier "modifier_fountain_glyph" then
+		return 0, "fountain glyph"
 	end
-	if hpPercent < 0.7 and targetHpPercent > 0.2 or hpPercent < 0.5 then
-		return false
+	if targetBuilding:GetAttackDamage() < 20 then
+		return 1, "barracks"
+	end
+	if hpPercent < 0.7 and targetHpPercent > 0.15 or hpPercent < 0.5 then
+		return 0, "bad hp percent"
 	end
 
 	local rate = 0
@@ -379,15 +385,15 @@ local function OkToBeAttackedByTower(npc, targetBuilding)
 	local enemyCount = AbilityExtensions:GetEnemyHeroNumber(npc, AbilityExtensions:GetNearbyHeroes(npc, 1400))
 	local allyCount = AbilityExtensions:GetEnemyHeroNumber(npc, AbilityExtensions:GetNearbyHeroes(npc, 1400, false))
 	if enemyCount ~= 0 and enemyCount >= allyCount - 1 then
-		return false
+		return 0, "many enemies"
 	end
 	
 	if health >= 1000 and hpPercent >= 0.7 + enemyCount * 0.1 then
-		rate = rate + hpPercent - 0.75
+		rate = rate + RemapValClamped(health-targetBuilding:GetHealth(), 500, 2000, -0.1, 0.3)
 	end
 	local armour = npc:GetArmor()
 	if armour > 12 then
-		rate = rate + RemapValClamped(armour, 12, 30, 0.1, 0.4)
+		rate = rate + RemapValClamped(armour, 12, 30, 0.04, 0.35)
 	end
 	rate = rate / (1 - npc:GetEvasion())
 	
@@ -409,7 +415,7 @@ local function OkToBeAttackedByTower(npc, targetBuilding)
 			rate = 0
 		end
 	end
-	return rate >= 0.25
+	return rate, "normal rating"
 end
 
 function UnitPushLaneThink(npcBot,lane)
@@ -436,7 +442,9 @@ function UnitPushLaneThink(npcBot,lane)
 	if target then
 		TargetLocation=GetSafeLocation(npcBot,target:GetLocation(),0)
 	end
-	local okToBeAttackedByTower = OkToBeAttackedByTower(npcBot, EnemyTower)
+	local attackedByTowerRate, attackedByTowerRateReason = AttackedByTowerRate(npcBot, EnemyTower)
+	-- print(npcBot:GetUnitName().." rate = "..attackedByTowerRate.." reason = "..attackedByTowerRateReason)
+	local okToBeAttackedByTower = attackedByTowerRate > 0.3
 
 	local goodSituation=true
 
@@ -456,14 +464,14 @@ function UnitPushLaneThink(npcBot,lane)
 	elseif goodSituation==false then
 		StepBack( npcBot )
 		print(npcBot:GetUnitName().." situation is not good")
-	elseif npcBot:WasRecentlyDamagedByTower(0.6) then
+	elseif npcBot:WasRecentlyDamagedByTower(1) then
 		local needToStepBack = AbilityExtensions:Any(npcBot:GetNearbyTowers(700 + npcBot:GetBoundingRadius(), true), function(t)
             t:HasModifier("modifier_fountain_glyph")
 		end)
 		if not needToStepBack then
 			needToStepBack = not TransferHatred(npcBot)
 		end
-		if enemyCount >= 1 and needToStepBack and not okToBeAttackedByTower then
+		if enemyCount >= 1 and needToStepBack or not okToBeAttackedByTower then
 			StepBack(npcBot)
 		else
 			npcBot:Action_AttackUnit(EnemyTower, false)
@@ -474,8 +482,8 @@ function UnitPushLaneThink(npcBot,lane)
 	elseif target then
 		print(npcBot:GetUnitName().." has target "..target:GetUnitName())
 		npcBot:Action_AttackUnit( target, true )
-	elseif TowerDistance <= 1200 then
-		print(npcBot:GetUnitName().." push lane: "..EnemyTower:GetUnitName())
+	elseif TowerDistance <= 1600 then
+		print(npcBot:GetUnitName().." push tower: "..EnemyTower:GetUnitName())
 		if CreepAttackTower or EnemyTower:GetAttackDamage() < 20 then
 			npcBot:Action_AttackUnit( EnemyTower, false )
 		else

@@ -12,7 +12,7 @@ local ItemsToBuy =
 	"item_quelling_blade", --补刀斧
     "item_magic_wand",
 	"item_arcane_boots", --秘法鞋
-	"item_bloodstone",
+	-- "item_bloodstone",
 	"item_hood_of_defiance",
 	"item_cyclone",
 	"item_ultimate_scepter", --蓝杖

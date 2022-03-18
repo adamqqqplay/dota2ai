@@ -6,12 +6,15 @@
 local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
 local M = {}
 local Linq = {}
+local Debug = {}
 local DotaExt = {}
 local AbilInfo = {}
 local ItemUseDefaultImpl = {}
 local Push = {}
 local Abil = {}
 local Math = {}
+local Hero = {}
+local UnitFun = {}
 local magicTable = {}
 function Linq.Give(t)
     setmetatable(t, magicTable)
@@ -650,6 +653,40 @@ local function AddLinqfunctionsToMetatable(mt)
     end
 end
 AddLinqfunctionsToMetatable(magicTable)
+function Debug.DebugTable(tb)
+    local msg = "{ "
+    local DebugRec
+    DebugRec = function(tc)
+        for k, v in pairs(tc) do
+            if type(v) == "number" or type(v) == "string" then
+                msg = msg..k.." = "..v..", "
+            elseif type(v) == "boolean" then
+                msg = msg..k.." = "..tostring(v)..", "
+            elseif type(v) == "table" then
+                msg = msg..k.." = ".."{ "
+                DebugRec(v)
+                msg = msg.."}, "
+            end
+        end
+    end
+    DebugRec(tb)
+    msg = msg.." }"
+    print(msg)
+end
+function Debug.DebugLongTable(tb)
+    if type(tb) ~= "table" then
+        print(tostring(tb))
+        return
+    end
+    for k, v in pairs(tb) do
+        if type(v) == "table" then
+            print(tostring(k).." = ")
+            Debug.DebugTable(v)
+        else
+            print(tostring(k).." = "..tostring(v))
+        end
+    end
+end
 local AttributeTypeEnum = {
     ATTRIBUTE_INVALID = ATTRIBUTE_INVALID,
     ATTRIBUTE_STRENGTH = ATTRIBUTE_STRENGTH,
@@ -751,6 +788,20 @@ function DotaExt.GetAllBuildings(team)
         return DotaExt.IsValidUnit(t) and not t:IsInvulnerable()
     end)
 end
+function DotaExt.GetPureHeroes(npcBot, range, getEnemy)
+    range = range or 1600
+    if getEnemy == nil then
+        getEnemy = true
+    end
+    return Linq.Filter(DotaExt.GetNearbyHeroes(npcBot, range, getEnemy), function(t)
+        return Hero.MayNotBeIllusion(npcBot, t) and not UnitFun.IsHeroLevelUnit(t)
+    end)
+end
+function DotaExt.EmptyFun()
+end
+function DotaExt.EmptyDesireFun()
+    return BOT_ACTION_DESIRE_NONE
+end
 AbilInfo.invisibleModifiers = Linq.NewTable("modifier_bounty_hunter_wind_walk", "modifier_clinkz_wind_walk", "modifier_dark_willow_shadow_realm_buff", "modifier_item_glimmer_cape_glimmer", "modifier_invoker_ghost_walk_self", "modifier_nyx_assassin_vendetta", "modifier_item_phase_boots_active", "modifier_item_shadow_amulet_fade", "modifier_item_invisibility_edge_windwalk", "modifier_shadow_fiend_requiem_thinker", "modifier_item_silver_edge_windwalk", "modifier_windrunner_wind_walk", "modifier_storm_wind_walk", "modifier_templar_assassin_meld", "modifier_visage_silent_as_the_grave", "modifier_weaver_shukuchi", "modified_invisible", "modifier_rune_invis", "modifier_nyx_assassin_burrow", "modifier_oracle_false_promise_invis")
 AbilInfo.truesightModifiers = Linq.NewTable("modifier_item_dustofappearance", "modifier_bounty_hunter_track", "modifier_slardar_amplify_damage", "modifier_truesight")
 function AbilInfo.HasAnyModifier(bot, modifiers)
@@ -820,7 +871,9 @@ function GameLoop.TickFromDota()
     local function ResumeCoroutine(thread)
         local coroutineResult = { coroutine.resume(thread, deltaTime) }
         if not coroutineResult[1] then
-            print("error in coroutine: "..tostring(coroutineResult[2]))
+            print("error in coroutine:")
+            table.remove(coroutineResult, 1)
+            Debug.DebugLongTable(coroutineResult)
         end
     end
     if dotaTimer == nil then
@@ -869,7 +922,9 @@ function GameLoop.ResumeUntilReturn(func)
             table.remove(values, 1)
             table.insert(g, values)
         else
-            print("error in coroutine: "..tostring(values[2]))
+            print("error in coroutine:")
+            table.remove(values, 1)
+            Debug.DebugLongTable(values)
             break
         end
     end
@@ -960,7 +1015,6 @@ function Abil.UseAbilityOnTree(bot, abil, tree, motive, queueType)
         bot:Action_UseAbilityOnTree(abil, tree)
     end
 end
-local UnitFun = {}
 function UnitFun.IsFarmingOrPushing(npcBot)
     local mode = npcBot:GetActiveMode()
     return mode == BOT_MODE_FARM or mode == BOT_MODE_PUSH_TOWER_BOT or mode == BOT_MODE_PUSH_TOWER_MID or mode == BOT_MODE_PUSH_TOWER_TOP or mode == BOT_MODE_DEFEND_TOWER_BOT or mode == BOT_MODE_DEFEND_TOWER_MID or mode == BOT_MODE_DEFEND_TOWER_TOP
@@ -974,14 +1028,74 @@ function UnitFun.IsAttackingEnemies(npcBot)
     return mode == BOT_MODE_ROAM or mode == BOT_MODE_TEAM_ROAM or mode == BOT_MODE_ATTACK or mode == BOT_MODE_DEFEND_ALLY
 end
 function UnitFun.IsRetreating(npcBot)
-    return npcBot:GetActiveMode() == BOT_MODE_RETREAT
+    return npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_MODERATE
 end
 function UnitFun.NotRetreating(npcBot)
-    return npcBot:GetActiveMode() ~= BOT_MODE_RETREAT
+    return not UnitFun.IsRetreating(npcBot)
 end
 local heroNamePrefixLen = #"npc_dota_hero_"
 function UnitFun.GetHeroShortName(name)
     return string.sub(name, heroNamePrefixLen + 1)
+end
+function UnitFun.IsTempestDouble(npc)
+    return npc:HasModifier "modifier_arc_warden_tempest_double"
+end
+function UnitFun.IsLoneDruidBear(npc)
+    return string.match(npc:GetUnitName(), "npc_dota_lone_druid_bear")
+end
+function UnitFun.IsVisageFamiliar(npc)
+    return string.match(npc:GetUnitName(), "npc_dota_visage_familiar")
+end
+function UnitFun.IsBrewmasterPrimalSplit(npc)
+    local unitName = npc:GetUnitName()
+    return string.match(unitName, "npc_dota_brewmaster_")
+end
+function UnitFun.IsHeroLevelUnit(npc)
+    if UnitFun.IsBrewmasterPrimalSplit(npc) then
+        return true
+    end
+    local name = npc:GetUnitName()
+    if name == "npc_dota_phoenix_sun" then
+        return true
+    end
+    if string.match(npc:GetUnitName(), "npc_dota_lone_druid_bear") then
+        return true
+    end
+    return false
+end
+local canUseItemIllusionModifiers = Linq.NewTable("modifier_arc_warden_tempest_double", "modifier_skeleton_king_reincarnation_active", "modifier_vengefulspirit_hybrid_special")
+function UnitFun.CanBuyItem(npc)
+    if UnitFun.IsHeroLevelUnit(npc) or UnitFun.IsTempestDouble(npc) then
+        return false
+    end
+    if npc:IsIllusion() then
+        return false
+    end
+    return true
+end
+function UnitFun.CanUseItem(npc)
+    if UnitFun.IsBrewmasterPrimalSplit(npc) then
+        return false
+    end
+    if string.match(npc:GetUnitName(), "npc_dota_lone_druid_bear") then
+        return true
+    end
+    if name == "npc_dota_phoenix_sun" then
+        return false
+    end
+    if npc:IsIllusion() and not AbilInfo.HasAnyModifier(npc, canUseItemIllusionModifiers) then
+        return false
+    end
+    return true
+end
+function UnitFun.IsGoodTarget(npc, target)
+    return target:IsHero() and Hero.MayNotBeIllusion(npc, target) and not UnitFun.IsHeroLevelUnit(target)
+end
+function UnitFun.GetHeroTarget(npc)
+    local t = npc:GetTarget()
+    if UnitFun.IsGoodTarget(t) then
+        return t
+    end
 end
 local ItemFun = {}
 function ItemFun.GetAvailableItem(npc, itemName, isNeutral)
@@ -1325,7 +1439,6 @@ local itemNamePrefix = "item_"
 function ItemFun.GetItemShortName(t)
     return string.sub(t, #itemNamePrefix + 1)
 end
-local Hero = {}
 function Hero.MustBeIllusion(target)
     if target:IsIllusion() then
         return true
@@ -1354,6 +1467,15 @@ function Hero.GetUniqueHeroNumber(heroes)
     return Linq.Filter(heroes, Hero.MayNotBeIllusion):GroupBy(function(t)
         return t:GetPlayerID()
     end):Count()
+end
+function Hero.HasScepter(npc)
+    return npc:HasScepter() or npc:HasModifier "modifier_wisp_tether_scepter" or npc:HasModifier "modifier_item_ultimate_scepter" or npc:HasModifier "modifier_item_ultimate_scepter_consumed_alchemist"
+end
+function Hero.HasBoughtScepter(npc)
+    return npc:HasScepter() or npc:HasModifier "modifier_item_ultimate_scepter" or npc:HasModifier "modifier_item_ultimate_scepter_consumed_alchemist"
+end
+function Hero.PrintMode(npc)
+    print("bot "..npc:GetUnitName().." in mode "..DotaExt.BotModeToString(npc:GetActiveMode())..", desire = "..npc:GetActiveModeDesire())
 end
 local oldRoleUtils = require(GetScriptDirectory().."/util/RoleUtility")
 local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
@@ -1467,16 +1589,29 @@ local function UseAvailableItems(bot, inventoryItems)
     info.mnm = bot:GetMaxMana()
     info.mnp = info.mn / info.mnm
     info.lev = bot:GetLevel()
-    info.allEnemies = DotaExt.GetNearbyHeroes(bot, 1400)
-    info.enemies = info.allEnemies:Filter(Hero.MayNotBeIllusion)
-    info.enemyCount = Hero.GetUniqueHeroNumber(info.enemies)
-    info.allAllies = DotaExt.GetNearbyHeroes(bot, 1400)
+    info.allEnemies1400 = DotaExt.GetNearbyHeroes(bot, 1400)
+    info.e1400 = info.allEnemies1400:Filter(Hero.MayNotBeIllusion)
+    info.ec1400 = Hero.GetUniqueHeroNumber(info.e1400)
+    info.allEnemies1600 = DotaExt.GetNearbyHeroes(bot, 1600)
+    info.e1600 = info.allEnemies1600:Filter(Hero.MayNotBeIllusion)
+    info.ec1600 = Hero.GetUniqueHeroNumber(info.e1600)
+    info.allEnemies1200 = DotaExt.GetNearbyHeroes(bot, 1200)
+    info.e1200 = info.allEnemies1200:Filter(Hero.MayNotBeIllusion)
+    info.ec1200 = Hero.GetUniqueHeroNumber(info.e1200)
+    info.allEnemies900 = DotaExt.GetNearbyHeroes(bot, 900)
+    info.e900 = info.allEnemies900:Filter(Hero.MayNotBeIllusion)
+    info.ec900 = Hero.GetUniqueHeroNumber(info.e900)
+    info.allEnemies650 = DotaExt.GetNearbyHeroes(bot, 650)
+    info.e650 = info.allEnemies650:Filter(Hero.MayNotBeIllusion)
+    info.ec650 = Hero.GetUniqueHeroNumber(info.e650)
+    info.allAllies = DotaExt.GetNearbyHeroes(bot, 1500)
     info.allies = info.allAllies:Filter(Hero.MayNotBeIllusion)
     info.allyCount = Hero.GetUniqueHeroNumber(info.allies)
     info.nw = bot:GetNetWorth()
     info.bp = fun1:GetBattlePower(bot)
     info.primAttr = bot:GetPrimaryAttribute()
     info.blasted = bot:HasModifier "modifier_ice_blast"
+    info.target = bot:GetTarget()
     local highDesireItem = inventoryItems:Map(function(t)
         local pack = { ConsiderAvailableItem(t, bot, itemUsageAuxiliaryInfo) }
         pack[5] = t
@@ -1509,6 +1644,9 @@ function ItemUse.CanUseAnyItem(t)
 end
 function ItemUse.ItemUsageThink()
     local bot = GetBot()
+    if not UnitFun.CanUseItem(bot) then
+        return
+    end
     GameLoop.EveryManySeconds(3, "SwapUsefulItems "..bot:GetUnitName(), function()
         return ItemFun.SwapUsefulOnes(bot)
     end)
@@ -1852,6 +1990,7 @@ function Push.UnitPushLaneThink(npc, lane)
     end
 end
 M.Linq = Linq
+M.Debug = Debug
 M.Dota = DotaExt
 M.Unit = UnitFun
 M.Game = GameLoop

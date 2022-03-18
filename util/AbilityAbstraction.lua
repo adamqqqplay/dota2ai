@@ -635,10 +635,10 @@ function M:CanBeEngaged(npcBot)
     return self:IsAttackingEnemies(npcBot) or self:IsFarmingOrPushing(npcBot) or self:IsLaning(npcBot) or not npcBot:IsBot()
 end
 M.IsRetreating = function(self, npcBot)
-    return npcBot:GetActiveMode() == BOT_MODE_RETREAT
+    return npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_ACTION_DESIRE_MODERATE
 end
 M.NotRetreating = function(self, npcBot)
-    return npcBot:GetActiveMode() ~= BOT_MODE_RETREAT
+    return not self:IsRetreating(npcBot)
 end
 M.HasEnoughManaToUseAttackAttachedAbility = function(self, npcBot, ability)
     local percent = self:GetManaPercent(npcBot)
@@ -1235,7 +1235,7 @@ M.conditionalTrueSightRootAbilityAssociation = {
     ember_spirit_searing_chains = "modifier_ember_spirit_searing_chains",
     oracle_fortunes_end = "modifier_oracle_fortunes_end_purge",
     item_rod_of_atos = "modifier_rod_of_atos_debuff",
-    item_gleipnir = "modifier_gungir_debuff",
+    item_gungir = "modifier_gungir_debuff",
 }
 M.permanentTrueSightRootAbilityAssociation = {
     broodmother_silken_bola = "modifier_broodmother_silken_bola",
@@ -2150,6 +2150,9 @@ function M:IsDuelCaster(npc)
     local function IsTaunting(_npc)
         local ability = _npc:GetAbilityByName "modifier_legion_commander_duel"
         return ability and ability:GetCooldownTimeRemaining() + self:GetModifierRemainingDuration(_npc, "modifier_legion_commander_duel") + 1 >= ability:GetCooldown()
+    end
+    if not npc then
+        return false
     end
     local npcBot = GetBot()
     if npcBot:GetTeam() == npc:GetTeam() then
@@ -3105,7 +3108,7 @@ function M:TickFromDota()
         if not coroutineResult[1] then
             table.remove(coroutineResult, 1)
             print("error in coroutine:")
-            self:DebugTable(coroutineResult)
+            self:DebugLongTable(coroutineResult)
         end
     end
     if dotaTimer == nil then
@@ -3179,7 +3182,7 @@ function M:ResumeUntilReturn(func)
         else
             table.remove(values, 1)
             print("error in coroutine:")
-            self:DebugTable(values)
+            self:DebugLongTable(values)
             break
         end
     end

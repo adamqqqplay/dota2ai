@@ -18,7 +18,18 @@ local Abilities ={}
 local AbilitiesReal ={}
 local ultTime = nil;
 
-ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
+ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
+
+-- 1 = shredder_whirling_death
+-- [VScript] 2 = shredder_timber_chain
+-- [VScript] 3 = shredder_reactive_armor
+-- [VScript] 4 = shredder_chakram_2
+-- [VScript] 5 = shredder_flamethrower
+-- [VScript] 6 = shredder_chakram
+-- [VScript] 7 = shredder_return_chakram
+-- [VScript] 8 = shredder_return_chakram_2
+-- [VScript] 9 = ability_capture
+-- [VScript] 10 = abyssal_underlord_portal_warp
 
 local AbilityToLevelUp=
 {
@@ -27,19 +38,19 @@ local AbilityToLevelUp=
 	Abilities[3],
 	Abilities[2],
 	Abilities[3],
-	Abilities[5],
+	Abilities[6],
 	Abilities[3],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
-	Abilities[5],
+	Abilities[6],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[1],
 	"nil",
-	Abilities[5],
+	Abilities[6],
 	"nil",
 	"talent",
 	"nil",
@@ -360,7 +371,7 @@ Consider[2]=function()
 end
 
 
-
+-- flamethrower
 Consider[5]=function()
 	local abilityNumber=5
 	--------------------------------------
@@ -461,6 +472,7 @@ Consider[5]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
 
+-- scepter: chakram
 Consider[6]=function()
 	local abilityNumber=6
 	--------------------------------------
@@ -490,6 +502,7 @@ Consider[6]=function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
 
+-- scepter: chakram
 Consider[4]=function()		--A杖大
 	local abilityNumber=4
 	--------------------------------------
