@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -797,8 +797,7 @@ function DotaExt.GetPureHeroes(npcBot, range, getEnemy)
         return Hero.MayNotBeIllusion(npcBot, t) and not UnitFun.IsHeroLevelUnit(t)
     end)
 end
-function DotaExt.EmptyFun()
-end
+function DotaExt.EmptyFun() end
 function DotaExt.EmptyDesireFun()
     return BOT_ACTION_DESIRE_NONE
 end

@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -626,10 +626,7 @@ local function AddMekansm()
     end
 end
 local function AddArcaneBoots()
-    local AddArcaneBootsBefore = GenerateFilter(1200, {
-        "glimmer_cape",
-        "ghost",
-    }, {})
+    local AddArcaneBootsBefore = GenerateFilter(1200, {}, {})
     local function Rate(hero)
         local heroName = fun1:GetHeroShortName(hero:GetUnitName())
         local rate = roles[heroName].arcaneBoots + math.random() * 1.5
@@ -667,7 +664,7 @@ local function AddArcaneBoots()
                 RemoveItemsInNewItemTable(hero.itemInformationTable, arcaneBoots, bootsToReplaceIndex)
             end
         else
-            AddBefore(hero.itemInformationTable, M.FullyExpandItem, AddArcaneBoots)
+            AddBefore(hero.itemInformationTable, M.FullyExpandItem "item_arcane_boots", AddArcaneBoots)
         end
     end
     local function DontBuyArcaneBoots(heroRateTable)

@@ -419,6 +419,7 @@ local function AttackedByTowerRate(npc, targetBuilding)
 end
 
 function UnitPushLaneThink(npcBot,lane)
+	print(npcBot:GetUnitName().." push lane think")
 	if (npcBot:IsChanneling() or npcBot:IsUsingAbility() or npcBot:GetQueuedActionType(0) == BOT_ACTION_TYPE_USE_ABILITY) then
 		return;
 	end
@@ -460,10 +461,10 @@ function UnitPushLaneThink(npcBot,lane)
 	
 	if IsEnemyTooMany() then
 		AssembleWithAlly(npcBot)
-		print(npcBot:GetUnitName().." assemble with ally")
+		-- print(npcBot:GetUnitName().." assemble with ally")
 	elseif goodSituation==false then
 		StepBack( npcBot )
-		print(npcBot:GetUnitName().." situation is not good")
+		-- print(npcBot:GetUnitName().." situation is not good")
 	elseif npcBot:WasRecentlyDamagedByTower(1) then
 		local needToStepBack = AbilityExtensions:Any(npcBot:GetNearbyTowers(700 + npcBot:GetBoundingRadius(), true), function(t)
             t:HasModifier("modifier_fountain_glyph")
@@ -476,22 +477,37 @@ function UnitPushLaneThink(npcBot,lane)
 		else
 			npcBot:Action_AttackUnit(EnemyTower, false)
 		end
-		print(npcBot:GetUnitName().." damaged by tower")
-	elseif GetUnitToLocationDistance(npcBot,TargetLocation)>=MinDelta then
-		npcBot:Action_MoveToLocation(TargetLocation);
+		-- print(npcBot:GetUnitName().." damaged by tower")
+	elseif GetUnitToLocationDistance(npcBot, TargetLocation) >= MinDelta then
+		-- print(npcBot:GetUnitName().." way from target location, moving")
+		npcBot:Action_MoveToLocation(TargetLocation)
+		-- if GetUnitToLocationDistanceSqr(npcBot, TargetLocation) <= 90000 then
+		-- 	if not npcBot:GetAttackTarget() then
+		-- 		npcBot:Action_AttackMove(TargetLocation)
+		-- 	end
+		-- else
+		-- 	npcBot:Action_MoveToLocation(TargetLocation)
+		-- end
 	elseif target then
-		print(npcBot:GetUnitName().." has target "..target:GetUnitName())
+		-- print(npcBot:GetUnitName().." has target "..target:GetUnitName())
 		npcBot:Action_AttackUnit( target, true )
 	elseif TowerDistance <= 1600 then
-		print(npcBot:GetUnitName().." push tower: "..EnemyTower:GetUnitName())
+		-- print(npcBot:GetUnitName().." push tower: "..EnemyTower:GetUnitName())
 		if CreepAttackTower or EnemyTower:GetAttackDamage() < 20 then
 			npcBot:Action_AttackUnit( EnemyTower, false )
 		else
 			StepBack( npcBot )
 		end
 	else
-		print(npcBot:GetUnitName().." idle move: "..AbilityExtensions:ToStringVector(TargetLocation))
-		npcBot:Action_MoveToLocation(TargetLocation);
+		-- print(npcBot:GetUnitName().." idle move: "..AbilityExtensions:ToStringVector(TargetLocation))
+		npcBot:Action_MoveToLocation(TargetLocation)
+		-- if GetUnitToLocationDistanceSqr(npcBot, TargetLocation) <= 90000 then
+		-- 	if not npcBot:GetAttackTarget() then
+		-- 		npcBot:Action_AttackMove(TargetLocation)
+		-- 	end
+		-- else
+		-- 	npcBot:Action_MoveToLocation(TargetLocation)
+		-- end
 	end
 	return true
 end

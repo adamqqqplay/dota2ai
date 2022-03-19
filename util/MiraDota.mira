@@ -848,8 +848,8 @@ function DotaExt.GetPureHeroes(npcBot, range, getEnemy)
     }
 end
 
-function DotaExt.EmptyFun() end
-function DotaExt.EmptyDesireFun() return BOT_ACTION_DESIRE_NONE end
+function DotaExt.EmptyFun() -> nil
+function DotaExt.EmptyDesireFun() -> BOT_ACTION_DESIRE_NONE
 
 
 
