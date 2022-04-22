@@ -166,7 +166,7 @@ Consider[1]=function()
 	-- If my mana is enough,use it at enemy
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if npcBot:GetMana() >= npcBot:GetMaxMana() * 0.4 + Abilities[2]:GetManaCost() then
+		if npcBot:GetMana() >= npcBot:GetMaxMana() * 0.4 + ability:GetManaCost() then
 			if (WeakestEnemy~=nil)
 			then
 				if(GetUnitToUnitDistance(npcBot,WeakestEnemy)<Radius-CastPoint*WeakestEnemy:GetCurrentMovementSpeed())
@@ -338,11 +338,8 @@ Consider[4]=function()
 	end
 	
 	local CastRange = ability:GetCastRange()
-	local Damage = ability:GetSpecialValueInt "kill_threshold"
-	local function IsWeak(t)
-		local c = CanCast[4](t) and t:GetHealth() <= Damage
-		return c
-	end
+	local Damage = ability:GetAbilityDamage()
+	local function IsWeak(t) -> CanCast[4](t) and t:GetHealth() <= Damage
 	local CastPoint = ability:GetCastPoint()
 	local enemies, enemyIllusions = fun1:GetNearbyHeroes(npcBot, CastRange + 300):Filter(IsWeak):Partition { it ->
 		fun1:MayNotBeIllusion(npcBot, it)
@@ -363,11 +360,9 @@ Consider[4]=function()
     } then
         local dis = GetUnitToUnitDistance(npcBot, target)
         if fun1:NotRetreating(npcBot) then
-            if local blink = fun1:GetAvailableBlink(npcBot) then
-                if dis > CastRange + 150 then
-                    ItemUsage.UseItemOnLocation(npcBot, blink, target:GetLocation())
-                    return 0
-                end
+            if local blink = fun1:GetAvailableBlink(npcBot); blink and dis > CastRange + 150 then
+				ItemUsage.UseItemOnLocation(npcBot, blink, target:GetLocation())
+				return 0
             end
             return BOT_ACTION_DESIRE_HIGH, target
         else
@@ -392,7 +387,7 @@ end
 
 fun1:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 
-local roarLosingTarget
+local callLosingTarget
 local cullingBladeTarget
 
 function AbilityUsageThink()
@@ -403,9 +398,9 @@ function AbilityUsageThink()
 				if not fun1:IsFarmingOrPushing(npcBot) then
 					local nearbyEnemies = fun1:GetNearbyHeroes(npcBot, AbilitiesReal[1]:GetAOERadius() + 90):Filter(CanCast[1])
 					if #nearbyEnemies == 0 then
-						if roarLosingTarget == nil then
-							roarLosingTarget = DotaTime()
-						elseif DotaTime() - roarLosingTarget > 0.15 then
+						if callLosingTarget == nil then
+							callLosingTarget = DotaTime()
+						elseif DotaTime() - callLosingTarget > 0.15 then
 							npcBot:Action_ClearActions(true)
 						end
 						return
@@ -420,7 +415,7 @@ function AbilityUsageThink()
 				-- end
 			end
 		end
-		roarLosingTarget = nil
+		callLosingTarget = nil
 		return
 	end
 	

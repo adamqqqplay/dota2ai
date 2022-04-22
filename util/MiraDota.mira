@@ -12,6 +12,7 @@ local Abil = {}
 local Math = {}
 local Hero = {}
 local UnitFun = {}
+local Building = {}
 
 
 
@@ -1221,11 +1222,37 @@ function UnitFun.IsGoodTarget(npc, target)
 end
 
 function UnitFun.GetHeroTarget(npc)
-    local t = npc:GetTarget()
-    if UnitFun.IsGoodTarget(t) then
+    if local t = npc:GetTarget(); t and UnitFun.IsGoodTarget(npc, t) then
         return t 
     end
 end
+
+
+
+
+
+
+
+
+function Building.CanBeAttacked(buillding, npc)
+    if not building:IsAlive() or building:HasModifier "modifier_foutain_glyph" then
+        return false
+    end
+    npc = npc or GetBot()
+    if buidling:HasModifier "modifier_backdoor_protection_active" then
+        if local target = building:GetAttackTarget() then
+            if not target:IsHero() or target:IsIllusion() then
+                return true
+            end
+        end
+        return DotaExt.GetNearbyHeroes(npc, 1500, false):Filter(Hero.MayNotBeIllusion)
+            :Count { it ->
+                it:GetAttackTarget() == building
+            } * 80 >= building:GetHealth()
+    end
+    return true
+end
+
 
 
 
@@ -2141,5 +2168,6 @@ M.Game = GameLoop
 M.Item = ItemFun
 M.ItemUse = ItemUse
 M.Hero = Hero
+M.Building = Building
 
 return M

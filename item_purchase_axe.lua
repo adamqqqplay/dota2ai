@@ -17,7 +17,6 @@ local ItemsToBuy =
     "item_blade_mail",
 	"item_aghanims_shard",
 	"item_black_king_bar", --BKB
-	"item_heart", --龙心7.20
 	"item_lotus_orb", --清莲宝珠,
     "item_assault",
 	"item_overwhelming_blink",

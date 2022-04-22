@@ -174,7 +174,7 @@ Consider[1]=function()
 	then
 		for _,npcEnemy in pairs( enemys )
 		do
-			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) 
+			if CanCast[abilityNumber](npcEnemy) and npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 )
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetExtrapolatedLocation(CastPoint);
 			end

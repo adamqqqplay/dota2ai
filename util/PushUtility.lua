@@ -419,7 +419,7 @@ local function AttackedByTowerRate(npc, targetBuilding)
 end
 
 function UnitPushLaneThink(npcBot,lane)
-	print(npcBot:GetUnitName().." push lane think")
+	-- print(npcBot:GetUnitName().." push lane think")
 	if (npcBot:IsChanneling() or npcBot:IsUsingAbility() or npcBot:GetQueuedActionType(0) == BOT_ACTION_TYPE_USE_ABILITY) then
 		return;
 	end

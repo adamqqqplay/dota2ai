@@ -20,7 +20,6 @@ local Abilities ={}
 local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
-AbilityExtensions:PrintAbilities(npcBot)
 
 local AbilityToLevelUp=
 {

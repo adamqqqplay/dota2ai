@@ -11,7 +11,7 @@ local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstractio
 
 local debugmode=false
 local npcBot = GetBot()
-if npcBot:IsIllusion() then return end
+if npcBot:IsIllusion() or npcBot:GetUnitName() ~= "npc_dota_hero_undying" then return end
 local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}

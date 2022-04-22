@@ -368,7 +368,7 @@ function UseAbility(AbilitiesReal, cast)
 	if (HighestDesire > 0) then
 		local j = HighestDesireAbilityNumber
 		local ability = AbilitiesReal[j]
-		-- local sToPrint = npcBot:GetUnitName()..": use "..ability:GetName()
+		local sToPrint = npcBot:GetUnitName()..": use "..ability:GetName()
 		-- if ability:GetName() ~= "doom_bringer_infernal_blade" then
 		-- 	print(sToPrint)
 		-- end
@@ -377,7 +377,7 @@ function UseAbility(AbilitiesReal, cast)
 			AbilityExtensions:DebugPause()
 			return
 		end
-        if npcBot:GetMana() < ability:GetManaCost() * 0.65 then --GetManaCost() doesn't count mana cost reduction
+        if npcBot:GetMana() < ability:GetManaCost() * 0.7 then --GetManaCost() doesn't count mana cost reduction
             print("Ability mana not enough: "..ability:GetName())
 			AbilityExtensions:DebugPause()
 			return

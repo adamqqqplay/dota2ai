@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -2162,7 +2162,7 @@ function M:IsDuelCaster(npc)
         local tauntingPlayer = self:First(players, function(t)
             return IsTaunting(t) and t:GetAttackTarget() == npc
         end)
-        return IsTaunting and not IsTaunting(tauntingPlayer)
+        return tauntingPlayer and not IsTaunting(tauntingPlayer)
     end
 end
 function M:IsMuted(npc)
@@ -2815,6 +2815,7 @@ M.IgnoreDamageModifiers = {
     "modifier_winter_wyvern_winters_curse",
     "modifier_winter_wyvern_winters_curse_aura",
     "modifier_skeleton_king_reincarnation_scepter_active",
+    "modifier_fountain_glyph",
 }
 M.CannotKillModifiers = {
     "modifier_dazzle_shadow_grave",

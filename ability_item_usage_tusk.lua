@@ -567,7 +567,7 @@ Consider[7] = function()
 	if snowballTarget:IsChanneling() or GetUnitToUnitDistanceSqr(snowballTarget, npcBot) >= 360000 then
 		return BOT_ACTION_DESIRE_VERYHIGH
 	end
-	local availableFriends = AbilityExtensions:GetNearbyHeroes(npcBot, 600):Filter(function(t) 
+	local availableFriends = AbilityExtensions:GetNearbyHeroes(npcBot, 600, false):Filter(function(t) 
 		return GetUnitToUnitDistance(npcBot, t) <= range + t:GetBoundingRadius() and CanCast[7](t)
 	end)
 	availableFriends:ForEach(function(t)

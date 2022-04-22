@@ -26,19 +26,19 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[3],
 	Abilities[1],
-	Abilities[4],
+	Abilities[5],
 	Abilities[1],
 	Abilities[2],
 	Abilities[3],
 	"talent",
 	Abilities[3],
-	Abilities[4],
+	Abilities[5],
 	Abilities[3],
 	Abilities[2],
 	"talent",
 	Abilities[2],
 	"nil",
-	Abilities[4],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -97,7 +97,7 @@ Consider[1]=function()
 	
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
-	
+	local castPoint = ability:GetCastPoint()
 
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
@@ -123,7 +123,7 @@ Consider[1]=function()
 	
 	--protect myself
 	if A.Unit.IsAttackingEnemies(npcBot) or A.Unit.IsRetreating(npcBot) then
-		local enemyAttackingMe = A.Unit.GetNearbyHeroes(npcBot, CastRange-CastPoint*300)
+		local enemyAttackingMe = A.Dota.GetNearbyHeroes(npcBot, CastRange-castPoint*300)
 			:First(function(t) return t:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) * 6 <= t:GetHealth() and CanCast[1](t) end)
 		if enemyAttackingMe then
 			return BOT_ACTION_DESIRE_MODERATE + 0.15, enemyAttackingMe
@@ -345,9 +345,12 @@ Consider[3]=function()
 	return BOT_ACTION_DESIRE_NONE, 0
 end
 
-Consider[4]=function()
+-- 7.30 new ability shield of the scion (passive)
 
-	local ability=AbilitiesReal[4];
+-- mystic flare
+Consider[5]=function()
+
+	local ability=AbilitiesReal[5]
 	
 	if not ability:IsFullyCastable() then
 		return BOT_ACTION_DESIRE_NONE, 0;

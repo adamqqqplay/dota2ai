@@ -15,6 +15,7 @@ local Abil = {}
 local Math = {}
 local Hero = {}
 local UnitFun = {}
+local Building = {}
 local magicTable = {}
 function Linq.Give(t)
     setmetatable(t, magicTable)
@@ -1091,10 +1092,32 @@ function UnitFun.IsGoodTarget(npc, target)
     return target:IsHero() and Hero.MayNotBeIllusion(npc, target) and not UnitFun.IsHeroLevelUnit(target)
 end
 function UnitFun.GetHeroTarget(npc)
-    local t = npc:GetTarget()
-    if UnitFun.IsGoodTarget(t) then
-        return t
+    do
+        local t = npc:GetTarget()
+        if t and UnitFun.IsGoodTarget(npc, t) then
+            return t
+        end
     end
+end
+function Building.CanBeAttacked(buillding, npc)
+    if not building:IsAlive() or building:HasModifier "modifier_foutain_glyph" then
+        return false
+    end
+    npc = npc or GetBot()
+    if buidling:HasModifier "modifier_backdoor_protection_active" then
+        do
+            local target = building:GetAttackTarget()
+            if target then
+                if not target:IsHero() or target:IsIllusion() then
+                    return true
+                end
+            end
+        end
+        return DotaExt.GetNearbyHeroes(npc, 1500, false):Filter(Hero.MayNotBeIllusion):Count(function(it)
+            return it:GetAttackTarget() == building
+        end) * 80 >= building:GetHealth()
+    end
+    return true
 end
 local ItemFun = {}
 function ItemFun.GetAvailableItem(npc, itemName, isNeutral)
@@ -1996,4 +2019,5 @@ M.Game = GameLoop
 M.Item = ItemFun
 M.ItemUse = ItemUse
 M.Hero = Hero
+M.Building = Building
 return M

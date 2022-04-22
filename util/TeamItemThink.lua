@@ -518,16 +518,21 @@ function M.FullyExpandItem(itemName)
     end
     return p
 end
+function M.ExpandTeamThinkItem(itemName)
+    local p = M.FullyExpandItem(itemName)
+    p.origin = "TeamItemThink"
+    return p
+end
 local function AddBefore(tb, item, before)
     for index, v in ipairs(tb) do
-        if not before(v) then
+        if before(v) then
             table.insert(tb, index, item)
             return
         end
     end
-    table.insert(tb, 1, item)
+    table.insert(tb, #tb + 1, item)
 end
-local function GenerateFilter(maxCost, putBefore, putAfter)
+local function GeneratePutBeforeFilter(maxCost, putBefore, putAfter)
     return function(itemInfo)
         local itemName = itemInfo.name
         local shortName = string.sub(itemName, 6)
@@ -535,7 +540,7 @@ local function GenerateFilter(maxCost, putBefore, putAfter)
             if fun1:Contains(putAfter, shortName) then
                 return false
             else
-                return fun1:Contains(putBefore, shortName) or GetItemCost(itemName) < maxCost
+                return fun1:Contains(putBefore, shortName) or GetItemCost(itemName) > maxCost
             end
         end)()
     end
@@ -543,6 +548,7 @@ end
 local teamItemEvents = fun1:NewTable()
 local function NotifyTeam(npcBot, itemName)
     fun1:StartCoroutine(function()
+        fun1:WaitForSeconds(math.random(20, 28))
         return table.insert(teamItemEvents, {
             npcBot,
             "I'll buy "..itemName,
@@ -563,7 +569,7 @@ local function TeamItemEventThink()
     end
 end
 local function AddMekansm()
-    local AddMekansmBefore = GenerateFilter(2000, {
+    local AddMekansmBefore = GeneratePutBeforeFilter(2000, {
         "glimmer_cape",
         "ghost",
     }, {
@@ -589,7 +595,7 @@ local function AddMekansm()
     end)
     local function BuyMekansm(hero)
         NotifyTeam(hero, "mekansm")
-        AddBefore(hero.itemInformationTable, M.FullyExpandItem "item_mekansm", AddMekansmBefore)
+        AddBefore(hero.itemInformationTable, M.ExpandTeamThinkItem "item_mekansm", AddMekansmBefore)
         local guardianGreavesTable = M.ExpandFirstLevel "item_guardian_greaves"
         fun1:Remove_Modify(guardianGreavesTable.recipe, "item_mekansm")
         do
@@ -603,7 +609,7 @@ local function AddMekansm()
         end
         while M.ExpandOnce(guardianGreavesTable) do
         end
-        AddBefore(hero.itemInformationTable, guardianGreavesTable, GenerateFilter(4800, {}, {}))
+        AddBefore(hero.itemInformationTable, guardianGreavesTable, GeneratePutBeforeFilter(4800, {}, {}))
         hero.itemInformationTable:Remove_Modify(function(t)
             return t.name == "item_urn_of_shadows"
         end)
@@ -626,7 +632,7 @@ local function AddMekansm()
     end
 end
 local function AddArcaneBoots()
-    local AddArcaneBootsBefore = GenerateFilter(1200, {}, {})
+    local AddArcaneBootsBefore = GeneratePutBeforeFilter(1200, {}, {})
     local function Rate(hero)
         local heroName = fun1:GetHeroShortName(hero:GetUnitName())
         local rate = roles[heroName].arcaneBoots + math.random() * 1.5
@@ -660,20 +666,19 @@ local function AddArcaneBoots()
             local bootsToReplaceName = hero.itemInformationTable[bootsToReplaceIndex].name
             if bootsToReplaceName == "item_arcane_boots" then
             else
-                local arcaneBoots = M.FullyExpandItem "item_arcane_boots"
+                local arcaneBoots = M.ExpandTeamThinkItem "item_arcane_boots"
                 RemoveItemsInNewItemTable(hero.itemInformationTable, arcaneBoots, bootsToReplaceIndex)
             end
         else
-            AddBefore(hero.itemInformationTable, M.FullyExpandItem "item_arcane_boots", AddArcaneBoots)
+            AddBefore(hero.itemInformationTable, M.ExpandTeamThinkItem "item_arcane_boots", AddArcaneBootsBefore)
         end
     end
     local function DontBuyArcaneBoots(heroRateTable)
-        NotifyTeam(hero, "something other than arcane boots")
         local hero = heroRateTable[1]
         local arcaneBootsIndex = A.Linq.IndexOf(hero.itemInformationTable, function(t)
             return t.name == "item_arcane_boots"
         end)
-        if arcaneBootsIndex ~= -1 then
+        if arcaneBootsIndex ~= -1 and not hero.itemInformationTable[arcaneBootsIndex].usedAsRecipeOf then
             local rd = math.random()
             local replaceBoots = (function()
                 if rd <= 0.666667 then
@@ -685,13 +690,10 @@ local function AddArcaneBoots()
             if heroRateTable[2] >= 6.65 and rd <= 0.22 then
                 replaceBoots = "item_tranquil_boots"
             end
-            local newBoots = M.FullyExpandItem(replaceBoots)
+            local newBoots = M.ExpandTeamThinkItem(replaceBoots)
             RemoveItemsInNewItemTable(hero.itemInformationTable, newBoots, arcaneBootsIndex)
         end
     end
-    heroRates:ForEach(function(t)
-        return print(t[1]:GetUnitName().." arcane_boots rate: "..t[2])
-    end)
     local teamArcaneBootsNumber = (function()
         if #heroRates >= 4 then
             return 2
@@ -709,7 +711,7 @@ local function AddArcaneBoots()
     end
     teamArcaneBootsNumber = teamArcaneBootsNumber - 1
     local function HighDesireOfBuyingArcaneBoots(heroRateTable)
-        return heroRateTable[2] >= 8.15
+        return heroRateTable[2] >= 7.55
     end
     if teamArcaneBootsNumber >= 1 then
         heroRates:Skip(buyArcaneBootsHeroIndex):Take(teamArcaneBootsNumber):Filter(HighDesireOfBuyingArcaneBoots):Map(function(t)
@@ -897,8 +899,8 @@ function M.TeamItemThink(npcBot)
             else
                 runned = true
             end
-            AddMekansm()
             AddArcaneBoots()
+            AddMekansm()
         end
     end)
 end

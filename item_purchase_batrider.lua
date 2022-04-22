@@ -8,8 +8,8 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_enchanted_mango",
-	"item_flask",
 	"item_wind_lace",
+	"item_magic_wand",
 	"item_tranquil_boots",
 	"item_blink", --跳刀
 	"item_force_staff", --推推7.14

@@ -19,7 +19,7 @@ local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
 
-ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
+ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 local AbilityToLevelUp=
 {
@@ -396,6 +396,7 @@ Consider[3]=function()
 	
 end
 
+-- shadow poison release
 --[[Consider[4]=function()
 	local abilityNumber=4
 	--------------------------------------
@@ -435,7 +436,7 @@ end]]
 -- 7.31 upgrade demonic cleanse
 Consider[5] = A.Dota.EmptyDesireFun
 
--- 7.31 upgrade
+-- demonic purge
 Consider[6]=function()
 	local abilityNumber=6
 	--------------------------------------
