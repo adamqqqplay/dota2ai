@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -174,9 +174,9 @@ Consider[2] = function()
     local CastPoint = ability:GetCastPoint()
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(Radius, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(Radius, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) then

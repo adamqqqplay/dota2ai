@@ -618,8 +618,10 @@ local function AddMekansm()
         end)
     end
     if #heroRates >= 3 then
-        local hero = heroRates[1][1]
-        BuyMekansm(hero)
+        if heroRates[1][2] > 2.85 then
+            local hero = heroRates[1][1]
+            BuyMekansm(hero)
+        end
     elseif #heroRates == 2 then
         hero = heroRates[1]
         if hero[2] >= 5 then

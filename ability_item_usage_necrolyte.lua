@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -106,11 +106,11 @@ Consider[1] = function()
     local Radius = ability:GetAOERadius()
     local CastPoint = ability:GetCastPoint()
     local allys = npcBot:GetNearbyHeroes(Radius, false, BOT_MODE_NONE)
-    local WeakestAlly,AllyHealth = utility.GetWeakestUnit(allys)
+    local WeakestAlly, AllyHealth = utility.GetWeakestUnit(allys)
     local enemys = npcBot:GetNearbyHeroes(Radius, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(Radius, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) then
@@ -182,7 +182,7 @@ Consider[2] = function()
     local Radius = 750
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(Radius, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     if npcBot:WasRecentlyDamagedByAnyHero(2.0) and #enemys >= 2 and HealthPercentage <= 0.35 + 0.05 * #enemys then
         return BOT_ACTION_DESIRE_HIGH
     end
@@ -258,7 +258,7 @@ Consider[5] = function()
     local DamagePercent = ability:GetSpecialValueFloat("damage_per_health")
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = AbilityExtensions:GetPureHeroes(npcBot, CastRange + 300)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local maxHealth = (AbilityExtensions:GetNearbyHeroes(npcBot):MaxV(function(t)
         return t:GetHealth()
     end) or npcBot:GetHealth()) / 4

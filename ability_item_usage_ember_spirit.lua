@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -169,16 +169,18 @@ Consider[1] = function()
     else
         do
             local target = fun1:GetTargetIfGood(npcBot)
-            local target = fun1:GetTargetIfBad(npcBot)
             if target then
                 local p = ChainExpectancy(#enemies, unitCount, targetNumber)
                 if p >= 0.5 then
                     return RemapValClamped(p, 0.5, 1, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_VERYHIGH)
                 end
-            elseif target then
-                local p = ChainExpectancy(#enemies, unitCount, targetNumber)
-                if p >= 1 then
-                    return RemapValClamped(p, 0.5, 1, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_VERYHIGH)
+            else
+                local target = fun1:GetTargetIfBad(npcBot)
+                if target then
+                    local p = ChainExpectancy(#enemies, unitCount, targetNumber)
+                    if p >= 1 then
+                        return RemapValClamped(p, 0.5, 1, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_VERYHIGH)
+                    end
                 end
             end
         end
