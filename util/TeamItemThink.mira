@@ -1,7 +1,6 @@
 
 local M = {}
 local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
-
 local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
 local A = require(GetScriptDirectory().."/util/MiraDota")
 
@@ -116,15 +115,11 @@ local roles = {
     zuus={3,9,},
 }
 
-local function heroItemMetaFunc(tb, key)
-    if key == "mekansm" then
-        return tb[1]
-    end
-    if key == "arcaneBoots" then
-        return tb[2]
-    end
-    return 0
-end
+local function heroItemMetaFunc(tb, key) ->
+    if key == "mekansm" { tb[1] }
+    elif key == "arcaneBoots" { tb[2] }
+    else { 0 }
+
 local heroItemMetatable = {
     __index = heroItemMetaFunc
 }
@@ -168,19 +163,14 @@ local function TeamItemInit()
     dustBuyers = if #dustBuyers >= defaultDustBuyerNumber { dustBuyers:Take(defaultDustBuyerNumber) } else { dustBuyers }
 end
 
-local function IsLeaf(item)
-    return next(GetItemComponents(item)) == nil
-end
-local function NextNodes(item)
-    return GetItemComponents(item)[1]
-end
-function M.ExpandFirstLevel(item)
-    if IsLeaf(item) then
-        return { name = item, isSingleItem = true }
-    else
-        return { name = item, recipe = NextNodes(item) }
-    end
-end
+
+local function IsLeaf(item) -> next(GetItemComponents(item)) == nil
+local function NextNodes(item) -> GetItemComponents(item)[1]
+
+function M.ExpandFirstLevel(item) ->
+    if IsLeaf(item) { { name = item, isSingleItem = true } }
+    else { { name = item, recipe = NextNodes(item) } }
+
 function M.ExpandOnce(item)
     local g = {}
     local expandSomething = false
@@ -218,14 +208,12 @@ local function AddBefore(tb, item, before)
     table.insert(tb, #tb + 1, item) 
 end
 
-local function GeneratePutBeforeFilter(maxCost, putBefore, putAfter)
-    return { itemInfo ->
+local function GeneratePutBeforeFilter(maxCost, putBefore, putAfter) -> { itemInfo ->
         local itemName = itemInfo.name
         local shortName = string.sub(itemName, 6)
         if fun1:Contains(putAfter, shortName) { false }
         else { fun1:Contains(putBefore, shortName) or GetItemCost(itemName) > maxCost }
     }
-end
 
 local teamItemEvents = fun1:NewTable()
 local function NotifyTeam(npcBot, itemName)
@@ -246,6 +234,24 @@ local function TeamItemEventThink()
             ++index
         end
     end
+end
+
+local function PrintItemInfoTableOf(npcBot)
+    local tb = npcBot.itemInformationTable
+    print(npcBot:GetUnitName().." items to buy: ")
+    A.Linq.ForEach(tb) { t, index ->
+        if t.isSingleItem then print(index..": "..t.name) 
+        else 
+            local s = ""
+            A.Linq.ForEach(t.recipe) { t1, t1Index ->
+                s = s..t1 
+                if t1Index ~= #t.recipe then
+                    s = s..", "
+                end
+            }
+            print(index..": "..t.name.." { "..s.." }")
+        end
+    }
 end
 
 local function AddMekansm()
@@ -271,12 +277,15 @@ local function AddMekansm()
             t.name == "item_arcane_boots"
         } then
             arcaneBoots.usedAsRecipeOf = guardianGreavesTable
-            fun1:Remove_Modify(guardianGreavesTable, "item_arcane_boots")
+            fun1:Remove_Modify(guardianGreavesTable) { t ->
+                t.name == "item_boots" or t.name == "item_energy_booster"
+            }
         end
         while M.ExpandOnce(guardianGreavesTable) do end
         AddBefore(hero.itemInformationTable, guardianGreavesTable, GeneratePutBeforeFilter(4800, {}, {}))
         hero.itemInformationTable:Remove_Modify { t -> t.name == "item_urn_of_shadows" }
         hero.itemInformationTable:Remove_Modify { t -> t.name == "item_spirit_vessel" }
+        PrintItemInfoTableOf(hero)
     end
 
     if #heroRates >= 3 then 
@@ -338,6 +347,7 @@ local function AddArcaneBoots()
         else
             AddBefore(hero.itemInformationTable, M.ExpandTeamThinkItem "item_arcane_boots", AddArcaneBootsBefore)
         end
+        PrintItemInfoTableOf(hero)
     end
 
     local function DontBuyArcaneBoots(heroRateTable)
@@ -350,9 +360,11 @@ local function AddArcaneBoots()
             if heroRateTable[2] >= 6.65 and rd <= 0.22 then
                 replaceBoots = "item_tranquil_boots"
             end
+            NotifyTeam(hero, replaceBoots)
             local newBoots = M.ExpandTeamThinkItem(replaceBoots)
             RemoveItemsInNewItemTable(hero.itemInformationTable, newBoots, arcaneBootsIndex)
         end
+        PrintItemInfoTableOf(hero)
     end
 
     local teamArcaneBootsNumber = 
@@ -401,20 +413,18 @@ local RefreshEnemyRespawnTime = fun1:EveryManySeconds(1) { ->
 }
 
 function M.GetEnemyRespawnTime(id)
-    return if id {
+    -> if id {
         enemyStates[IdToEnemyStateTableIndex(id)].respawnTime or 0
     } else {
         enemyStates:Map { t -> t.respawnTime }
     }
-end
-
+    
 function M.EnemyReadyToFight(id) 
-    return if id {
+    -> if id {
         (enemyStates[IdToEnemyStateTableIndex(id)].respawnTime or 0) <= 8 
     } else {
         enemyStates:Count { _, id -> M.EnemyReadyToFight(id) }
     }
-end
 
 local function TeamStateThink()
     if not finishInit then
@@ -433,7 +443,7 @@ end
 
 local npcBot
 local hasInvisibleEnemy
-local CheckInvisibleEnemy = function()
+local function CheckInvisibleEnemy()
     return fun1:Any(GetTeamPlayers(GetOtherTeam()) or {}) { t ->
         local heroName = fun1:GetHeroShortName(GetSelectedHeroName(t))
         return fun1.invisibilityHeroes[heroName] and fun1.invisibilityHeroes[heroName] == 1

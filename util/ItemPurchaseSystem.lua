@@ -12,20 +12,10 @@ local A = require(GetScriptDirectory().."/util/MiraDota")
 function M.SellExtraItem(ItemsToBuy)
     local npcBot = GetBot()
     local level = npcBot:GetLevel()
-    local item_travel_boots = M.NoNeedTpscrollForTravelBoots()
     if M.IsItemSlotsFull() then
-        if GameTime() > 6 * 60 or level >= 6 then
-            M.SellSpecifiedItem("item_faerie_fire")
-            M.SellSpecifiedItem("item_tango")
-            M.SellSpecifiedItem("item_clarity")
-            M.SellSpecifiedItem("item_flask")
-        end
         if GameTime() > 25 * 60 or level >= 10 then
             M.SellSpecifiedItem("item_orb_of_venom")
             M.SellSpecifiedItem("item_enchanted_mango")
-            M.SellSpecifiedItem("item_bracer")
-            M.SellSpecifiedItem("item_null_talisman")
-            M.SellSpecifiedItem("item_wraith_band")
         end
         if GameTime() > 35 * 60 or level >= 15 then
             M.SellSpecifiedItem("item_branches")
@@ -38,6 +28,9 @@ function M.SellExtraItem(ItemsToBuy)
             M.SellSpecifiedItem("item_soul_ring")
             M.SellSpecifiedItem("item_buckler")
             M.SellSpecifiedItem("item_headdress")
+            M.SellSpecifiedItem("item_bracer")
+            M.SellSpecifiedItem("item_null_talisman")
+            M.SellSpecifiedItem("item_wraith_band")
         end
         if GameTime() > 40 * 60 or level >= 20 then
             M.SellSpecifiedItem("item_urn_of_shadows")
@@ -45,23 +38,12 @@ function M.SellExtraItem(ItemsToBuy)
             M.SellSpecifiedItem("item_witch_blade")
         end
     end
-    if item_travel_boots[1] ~= nil or item_travel_boots[2] ~= nil then
-        M.SellSpecifiedItem("item_boots")
-        M.SellSpecifiedItem("item_arcane_boots")
-        M.SellSpecifiedItem("item_phase_boots")
-        M.SellSpecifiedItem("item_power_treads_agi")
-        M.SellSpecifiedItem("item_power_treads_int")
-        M.SellSpecifiedItem("item_power_treads_str")
-        M.SellSpecifiedItem("item_tranquil_boots")
-    end
 end
-function isLeaf(Node)
-    local recipe = GetItemComponents(Node)
-    return next(recipe) == nil
+local function isLeaf(Node)
+    return next(GetItemComponents(Node)) == nil
 end
-function nextNodes(Node)
-    local recipe = GetItemComponents(Node)
-    return recipe[1]
+local function nextNodes(Node)
+    return GetItemComponents(Node)[1]
 end
 M.ExpandItemRecipe = function(self, itemTable)
     local output = {}
@@ -276,7 +258,6 @@ function M.BuySupportItem()
             npcBot:ActionImmediate_PurchaseItem("item_ward_observer")
         end
         if item_smoke == nil and GetItemStockCount("item_smoke_of_deceit") >= 1 and npcBot:GetGold() >= GetItemCost("item_smoke_of_deceit") then
-            npcBot:ActionImmediate_PurchaseItem("item_smoke_of_deceit")
         end
     end
 end
@@ -467,6 +448,7 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
         RemoveTeamItems(g)
         TeamItemThink.TeamItemThink(npcBot)
     end
+    PrintItemInfoTableOf(npcBot)
 end
 local sNextItem
 local UseCourier = function()

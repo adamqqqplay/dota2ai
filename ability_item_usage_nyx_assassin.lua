@@ -9,6 +9,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -74,7 +75,7 @@ end
 --------------------------------------
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
-local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.CanCastNoTarget,utility.CanCastNoTarget}
+local CanCast={utility.NCanCast, function(t) return AbilityExtensions:NormalCanCast(t) and A.Unit.IsHero(t) end,utility.NCanCast,utility.UCanCast,utility.CanCastNoTarget,utility.CanCastNoTarget}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()

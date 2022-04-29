@@ -1227,6 +1227,9 @@ function UnitFun.GetHeroTarget(npc)
     end
 end
 
+function UnitFun.IsHero(npc) -> npc:IsHero() and not UnitFun.IsCreepHero(npc)
+function UnitFun.IsCreepHero(npc) -> UnitFun.IsLoneDruidBear(npc) or UnitFun.IsVisageFamiliar(npc)
+
 
 
 

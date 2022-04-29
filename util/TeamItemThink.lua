@@ -426,13 +426,15 @@ local roles = {
     },
 }
 local function heroItemMetaFunc(tb, key)
-    if key == "mekansm" then
-        return tb[1]
-    end
-    if key == "arcaneBoots" then
-        return tb[2]
-    end
-    return 0
+    return (function()
+        if key == "mekansm" then
+            return tb[1]
+        elseif key == "arcaneBoots" then
+            return tb[2]
+        else
+            return 0
+        end
+    end)()
 end
 local heroItemMetatable = { __index = heroItemMetaFunc }
 fun1:ForEachDic(roles, function(it)
@@ -484,17 +486,19 @@ local function NextNodes(item)
     return GetItemComponents(item)[1]
 end
 function M.ExpandFirstLevel(item)
-    if IsLeaf(item) then
-        return {
-            name = item,
-            isSingleItem = true,
-        }
-    else
-        return {
-            name = item,
-            recipe = NextNodes(item),
-        }
-    end
+    return (function()
+        if IsLeaf(item) then
+            return {
+                name = item,
+                isSingleItem = true,
+            }
+        else
+            return {
+                name = item,
+                recipe = NextNodes(item),
+            }
+        end
+    end)()
 end
 function M.ExpandOnce(item)
     local g = {}
@@ -568,6 +572,24 @@ local function TeamItemEventThink()
         end
     end
 end
+local function PrintItemInfoTableOf(npcBot)
+    local tb = npcBot.itemInformationTable
+    print(npcBot:GetUnitName().." items to buy: ")
+    A.Linq.ForEach(tb, function(t, index)
+        if t.isSingleItem then
+            print(index..": "..t.name)
+        else
+            local s = ""
+            A.Linq.ForEach(t.recipe, function(t1, t1Index)
+                s = s..t1
+                if t1Index ~= #t.recipe then
+                    s = s..", "
+                end
+            end)
+            print(index..": "..t.name.." { "..s.." }")
+        end
+    end)
+end
 local function AddMekansm()
     local AddMekansmBefore = GeneratePutBeforeFilter(2000, {
         "glimmer_cape",
@@ -604,7 +626,9 @@ local function AddMekansm()
             end)
             if arcaneBoots then
                 arcaneBoots.usedAsRecipeOf = guardianGreavesTable
-                fun1:Remove_Modify(guardianGreavesTable, "item_arcane_boots")
+                fun1:Remove_Modify(guardianGreavesTable, function(t)
+                    return t.name == "item_boots" or t.name == "item_energy_booster"
+                end)
             end
         end
         while M.ExpandOnce(guardianGreavesTable) do
@@ -616,6 +640,7 @@ local function AddMekansm()
         hero.itemInformationTable:Remove_Modify(function(t)
             return t.name == "item_spirit_vessel"
         end)
+        PrintItemInfoTableOf(hero)
     end
     if #heroRates >= 3 then
         if heroRates[1][2] > 2.85 then
@@ -674,6 +699,7 @@ local function AddArcaneBoots()
         else
             AddBefore(hero.itemInformationTable, M.ExpandTeamThinkItem "item_arcane_boots", AddArcaneBootsBefore)
         end
+        PrintItemInfoTableOf(hero)
     end
     local function DontBuyArcaneBoots(heroRateTable)
         local hero = heroRateTable[1]
@@ -692,9 +718,11 @@ local function AddArcaneBoots()
             if heroRateTable[2] >= 6.65 and rd <= 0.22 then
                 replaceBoots = "item_tranquil_boots"
             end
+            NotifyTeam(hero, replaceBoots)
             local newBoots = M.ExpandTeamThinkItem(replaceBoots)
             RemoveItemsInNewItemTable(hero.itemInformationTable, newBoots, arcaneBootsIndex)
         end
+        PrintItemInfoTableOf(hero)
     end
     local teamArcaneBootsNumber = (function()
         if #heroRates >= 4 then
@@ -793,7 +821,7 @@ local function GetOtherTeam()
 end
 local npcBot
 local hasInvisibleEnemy
-local CheckInvisibleEnemy = function()
+local function CheckInvisibleEnemy()
     return fun1:Any(GetTeamPlayers(GetOtherTeam()) or {}, function(t)
         local heroName = fun1:GetHeroShortName(GetSelectedHeroName(t))
         return fun1.invisibilityHeroes[heroName] and fun1.invisibilityHeroes[heroName] == 1

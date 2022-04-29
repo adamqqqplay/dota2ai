@@ -90,7 +90,7 @@ end
 
 local CanCast = {}
 CanCast[1] = function(target)
-	if target:HasModifier("modifier_shadow_demon_disruption") then
+	if target:HasModifier("modifier_shadow_demon_disruption") or A.Unit.IsCreepHero(target) then
 		return false
 	end
 	if npcBot:GetTeam() == target:GetTeam() then
@@ -108,7 +108,8 @@ end
 CanCast[4] = function(target)
 	return target:HasModifier("modifier_shadow_demon_disruption") or AbilityExtensions:NormalCanCast(target, false, DAMAGE_TYPE_MAGICAL, false, true)
 end
-CanCast[5] = function(target)
+CanCast[5] = CanCast[4]
+CanCast[6] = function(target)
     return not target:HasModifier("modifier_antimage_counterspell") and not target:HasModifier("modifier_shadow_demon_purge_slow") and (target:HasModifier("modifier_shadow_demon_disruption") or AbilityExtensions:NormalCanCast(target, false, DAMAGE_TYPE_MAGICAL, false, true))
 end
 

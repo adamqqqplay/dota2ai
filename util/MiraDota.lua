@@ -1099,6 +1099,12 @@ function UnitFun.GetHeroTarget(npc)
         end
     end
 end
+function UnitFun.IsHero(npc)
+    return npc:IsHero() and not UnitFun.IsCreepHero(npc)
+end
+function UnitFun.IsCreepHero(npc)
+    return UnitFun.IsLoneDruidBear(npc) or UnitFun.IsVisageFamiliar(npc)
+end
 function Building.CanBeAttacked(buillding, npc)
     if not building:IsAlive() or building:HasModifier "modifier_foutain_glyph" then
         return false
