@@ -12,7 +12,7 @@ local ItemsToBuy =
 	"item_tango",
 	"item_phase_boots", --相位7.21
 	"item_magic_wand", --大魔棒7.14
-	"item_bfury",
+	"item_orb_of_corrosion",
 	"item_desolator",
 	"item_black_king_bar", --bkb
     "item_basher",

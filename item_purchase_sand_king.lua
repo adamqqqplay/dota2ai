@@ -12,8 +12,8 @@ local ItemsToBuy =
 	"item_bracer",
 	"item_arcane_boots", --秘法
 	"item_magic_wand", --大魔棒7.14
-	"item_veil_of_discord", --纷争7.20
 	"item_blink", --跳刀
+	"item_veil_of_discord", --纷争7.20
 	"item_ultimate_scepter", --蓝杖
 	"item_black_king_bar", --bkb
 	"item_aghanims_shard",

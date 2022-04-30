@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -8,23 +8,14 @@ local M = BotsInit.CreateGeneric()
 local utility = require(GetScriptDirectory().."/utility")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 local TeamItemThink = require(GetScriptDirectory().."/util/TeamItemThink")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 function M.SellExtraItem(ItemsToBuy)
     local npcBot = GetBot()
     local level = npcBot:GetLevel()
-    local item_travel_boots = M.NoNeedTpscrollForTravelBoots()
     if M.IsItemSlotsFull() then
-        if GameTime() > 6 * 60 or level >= 6 then
-            M.SellSpecifiedItem("item_faerie_fire")
-            M.SellSpecifiedItem("item_tango")
-            M.SellSpecifiedItem("item_clarity")
-            M.SellSpecifiedItem("item_flask")
-        end
         if GameTime() > 25 * 60 or level >= 10 then
             M.SellSpecifiedItem("item_orb_of_venom")
             M.SellSpecifiedItem("item_enchanted_mango")
-            M.SellSpecifiedItem("item_bracer")
-            M.SellSpecifiedItem("item_null_talisman")
-            M.SellSpecifiedItem("item_wraith_band")
         end
         if GameTime() > 35 * 60 or level >= 15 then
             M.SellSpecifiedItem("item_branches")
@@ -37,6 +28,9 @@ function M.SellExtraItem(ItemsToBuy)
             M.SellSpecifiedItem("item_soul_ring")
             M.SellSpecifiedItem("item_buckler")
             M.SellSpecifiedItem("item_headdress")
+            M.SellSpecifiedItem("item_bracer")
+            M.SellSpecifiedItem("item_null_talisman")
+            M.SellSpecifiedItem("item_wraith_band")
         end
         if GameTime() > 40 * 60 or level >= 20 then
             M.SellSpecifiedItem("item_urn_of_shadows")
@@ -44,23 +38,12 @@ function M.SellExtraItem(ItemsToBuy)
             M.SellSpecifiedItem("item_witch_blade")
         end
     end
-    if item_travel_boots[1] ~= nil or item_travel_boots[2] ~= nil then
-        M.SellSpecifiedItem("item_boots")
-        M.SellSpecifiedItem("item_arcane_boots")
-        M.SellSpecifiedItem("item_phase_boots")
-        M.SellSpecifiedItem("item_power_treads_agi")
-        M.SellSpecifiedItem("item_power_treads_int")
-        M.SellSpecifiedItem("item_power_treads_str")
-        M.SellSpecifiedItem("item_tranquil_boots")
-    end
 end
-function isLeaf(Node)
-    local recipe = GetItemComponents(Node)
-    return next(recipe) == nil
+local function isLeaf(Node)
+    return next(GetItemComponents(Node)) == nil
 end
-function nextNodes(Node)
-    local recipe = GetItemComponents(Node)
-    return recipe[1]
+local function nextNodes(Node)
+    return GetItemComponents(Node)[1]
 end
 M.ExpandItemRecipe = function(self, itemTable)
     local output = {}
@@ -275,7 +258,6 @@ function M.BuySupportItem()
             npcBot:ActionImmediate_PurchaseItem("item_ward_observer")
         end
         if item_smoke == nil and GetItemStockCount("item_smoke_of_deceit") >= 1 and npcBot:GetGold() >= GetItemCost("item_smoke_of_deceit") then
-            npcBot:ActionImmediate_PurchaseItem("item_smoke_of_deceit")
         end
     end
 end
@@ -329,142 +311,141 @@ M.Consumables = {
 M.IsConsumableItem = function(self, item)
     return AbilityExtensions:Contains(self.Consumables, string.sub(item, 6))
 end
-M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
-    local function ExpandFirstLevel(item)
-        if isLeaf(item) then
-            return {
-                name = item,
-                isSingleItem = true,
-            }
-        else
-            return {
-                name = item,
-                recipe = nextNodes(item),
-            }
-        end
+local function ExpandFirstLevel(item)
+    if isLeaf(item) then
+        return {
+            name = item,
+            isSingleItem = true,
+        }
+    else
+        return {
+            name = item,
+            recipe = nextNodes(item),
+        }
     end
-    local function ExpandOnce(item)
-        local g = {}
-        local expandSomething = false
-        for _, v in ipairs(item.recipe) do
-            if isLeaf(v) then
-                table.insert(g, v)
-            else
-                expandSomething = true
-                for _, i in ipairs(nextNodes(v)) do
-                    table.insert(g, i)
-                end
-            end
-        end
-        item.recipe = g
-        return expandSomething
-    end
-    local function RemoveBoughtItems()
-        local boughtItems = AbilityExtensions:Map(AbilityExtensions:GetAllBoughtItems(npcBot), function(t)
-            return t:GetName()
-        end)
-        local function TryRemoveItemWithName(itemName, tbToRemoveFirst)
-            if self:IsConsumableItem(itemName) then
-                table.remove(tbToRemoveFirst, 1)
-                return true
-            end
-            for i, boughtItem in ipairs(boughtItems) do
-                if boughtItem and boughtItem == itemName then
-                    table.remove(boughtItems, i)
-                    table.remove(tbToRemoveFirst, 1)
-                    return true
-                end
-            end
-        end
-        local function TryRemoveItem(item, tbToRemoveFirst)
-            if self:IsConsumableItem(item.name) then
-                table.remove(tbToRemoveFirst, 1)
-                return true
-            end
-            local i = 1
-            local boughtItem
-            while i <= #boughtItems do
-                boughtItem = boughtItems[i]
-                if boughtItem and boughtItem == item.name then
-                    table.remove(boughtItems, i)
-                    table.remove(tbToRemoveFirst, 1)
-                    return true
-                elseif item.usedAsRecipeOf and AbilityExtensions:Contains(boughtItems, item.usedAsRecipeOf) then
-                    table.remove(tbToRemoveFirst, 1)
-                    return true
-                end
-                i = i + 1
-            end
-        end
-        local infoTable = npcBot.itemInformationTable
-        while TryRemoveItem(infoTable[1], infoTable) do
-        end
-        while infoTable[1] and infoTable[1].recipe do
-            while #infoTable[1].recipe > 0 and TryRemoveItemWithName(infoTable[1].recipe[1], infoTable[1].recipe) do
-            end
-            if #infoTable[1].recipe == 0 then
-                table.remove(infoTable, 1)
-            else
-                break
-
-            end
-        end
-        if npcBot:HasModifier "modifier_item_ultimate_scepter" then
-            AbilityExtensions:Remove_Modify(infoTable, function(t)
-                return t.name == "item_ultimate_scepter" or t.name == "item_ultimate_scepter_2"
-            end)
-        end
-        if npcBot:HasModifier "modifier_item_moon_shard_consumed" then
-            AbilityExtensions:Remove_Modify(infoTable, function(t)
-                return t.name == "item_moon_shard"
-            end)
-        end
-    end
+end
+local function ExpandOnce(item)
     local g = {}
-    g.hero = npcBot
-    for _, item in pairs(itemTable) do
-        local itemInformation = ExpandFirstLevel(item)
-        if itemInformation.isSingleItem then
+    local expandSomething = false
+    for _, v in ipairs(item.recipe) do
+        if isLeaf(v) then
+            table.insert(g, v)
         else
-            ::h::
-            local recipe = itemInformation.recipe
-            local deletedKeys = {}
-            for _, boughtItem in pairs(g) do
-                if not boughtItem.usedAsRecipeOf then
-                    for componentIndex, componentName in ipairs(recipe) do
-                        if componentName == boughtItem.name then
-                            table.insert(deletedKeys, componentName)
-                            boughtItem.usedAsRecipeOf = itemInformation.name
-                            break
-
+            expandSomething = true
+            for _, i in ipairs(nextNodes(v)) do
+                table.insert(g, i)
+            end
+        end
+    end
+    item.recipe = g
+    return expandSomething
+end
+local function PrintItemInfoTableOf(npcBot)
+    local tb = npcBot.itemInformationTable
+    print(npcBot:GetUnitName().." items to buy: ")
+    A.Linq.ForEach(tb, function(t, index)
+        if t.isSingleItem then
+            print(index..": "..t.name)
+        else
+            local s = ""
+            A.Linq.ForEach(t.recipe, function(t1, t1Index)
+                s = s..t1
+                if t1Index ~= #t.recipe then
+                    s = s..", "
+                end
+            end)
+            print(index..": "..t.name.." { "..s.." }")
+        end
+    end)
+end
+M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
+    local g = A.Linq.NewTable()
+    g.hero = npcBot
+    if not A.Unit.CanBuyItem(npcBot) then
+        npcBot.itemInformationTable = g
+        return
+    end
+    local boughtItems = AbilityExtensions:GetAllBoughtItems(npcBot):Map(function(t)
+        return {
+            name = t:GetName(),
+            charge = t:GetCurrentCharges(),
+        }
+    end)
+    for _, item in pairs(itemTable) do
+        local dontExpand
+        if DotaTime() > 0 and M:IsConsumableItem(item) then
+            dontExpand = true
+        end
+        for i, b in ipairs(boughtItems) do
+            if item == b.name then
+                dontExpand = true
+                table.remove(boughtItems, i)
+                break
+            end
+        end
+        if item == "item_ultimate_scepter" and A.Hero.HasBoughtScepter(npcBot) then
+            dontExpand = true
+        end
+        if item == "item_ultimate_scepter_2" and (npcBot:HasModifier "modifier_item_ultimate_scepter" or npcBot:HasModifier "modifier_item_ultimate_scepter_consumed_alchemist") then
+            dontExpand = true
+        end
+        if item == "item_moon_shard" and npcBot:HasModifier "modifier_item_moon_shard_consumed" then
+            dontExpand = true
+        end
+        if item == "item_aghanims_shard" and npcBot:HasModifier "modifier_item_agahanims_shard" then
+            dontExpand = true
+        end
+        if not dontExpand then
+            local itemInformation = ExpandFirstLevel(item)
+            if itemInformation.isSingleItem then
+            else
+                ::expandSuccess::
+                local recipe = itemInformation.recipe
+                for _, builtItem in ipairs(g) do
+                    if not builtItem.usedAsRecipeOf then
+                        for componentIndex, componentName in ipairs(recipe) do
+                            if componentName == builtItem.name then
+                                builtItem.usedAsRecipeOf = itemInformation.name
+                                table.remove(recipe, componentIndex)
+                                break
+                            end
                         end
                     end
                 end
-            end
-            for _, v in pairs(deletedKeys) do
-                for t1, t2 in ipairs(recipe) do
-                    if t2 == v then
-                        table.remove(recipe, t1)
-                        break
-
+                ::removeBoughtItems::
+                local boughtItemIndex = 1
+                while boughtItemIndex <= #boughtItems do
+                    local boughtItem = boughtItems[boughtItemIndex]
+                    for componentIndex, componentName in ipairs(recipe) do
+                        if componentName == boughtItem.name then
+                            table.remove(boughtItems, boughtItemIndex)
+                            table.remove(recipe, componentIndex)
+                            goto removeBoughtItems
+                        end
                     end
+                    boughtItemIndex = boughtItemIndex + 1
+                end
+                if ExpandOnce(itemInformation) then
+                    goto expandSuccess
                 end
             end
-            if ExpandOnce(itemInformation) then
-                goto h
+            if itemInformation.recipe and #itemInformation.recipe > 0 or itemInformation.isSingleItem then
+                table.insert(g, itemInformation)
             end
         end
-        table.insert(g, itemInformation)
     end
     npcBot.itemInformationTable = g
+<<<<<<< HEAD
     if not AbilityExtensions:GameNotReallyStarting() then
         RemoveBoughtItems()
     end
+=======
+>>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
     local function RemoveTeamItems(t)
         local implmentedItems = TeamItemThink.ImplmentedTeamItems or {}
         AbilityExtensions:ForEach(implmentedItems, function(itemName)
             AbilityExtensions:Remove_Modify(t, function(itemInfo)
-                return itemInfo.name == itemName or itemInfo.usedAsRecipeOf == itemName or itemInfo.recipe and AbilityExtensions:Contains(itemInfo.recipe, itemName)
+                return itemInfo.name == itemName
             end)
         end)
         return t
@@ -473,10 +454,14 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
         RemoveTeamItems(g)
         TeamItemThink.TeamItemThink(npcBot)
     end
+    PrintItemInfoTableOf(npcBot)
 end
 local sNextItem
 local UseCourier = function()
     local npcBot = GetBot()
+    if not A.Unit.CanBuyItem(npcBot) then
+        return
+    end
     local courier = AbilityExtensions:GetMyCourier(npcBot)
     if courier == nil then
         return
@@ -570,7 +555,7 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
             return AbilityExtensions:MayNotBeIllusion(GetBot(), t)
         end)
         if AbilityExtensions:Any(enemies, function(t)
-            return t:GetUnitName() == AbilityExtensions:GetHeroFullName("bounty_hunter") or t:GetUnitName() == AbilityExtensions:GetHeroFullName("slardar") or t:GetUnitName() == AbilityExtensions:GetHeroFullName("rattletrap") and t:GetLevel() >= 18
+            return t:GetUnitName() == AbilityExtensions:GetHeroFullName("bounty_hunter") or t:GetUnitName() == AbilityExtensions:GetHeroFullName("slardar") or t:GetUnitName() == AbilityExtensions:GetHeroFullName("rattletrap") and t:GetLevel() >= 12
         end) then
             M:RemoveInvisibleItemPurchase(GetBot())
         end
@@ -620,7 +605,11 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
             npcBot.secretShopMode = false
             RemoveTopItemToBuy()
         elseif PurchaseResult ~= -2 then
+<<<<<<< HEAD
             print("purchase item failed: "..sNextItem..", fail code: "..AbilityExtensions:ToIntItemPurchaseResult(PurchaseResult))
+=======
+            print(npcBot:GetUnitName().."purchase item failed: "..sNextItem..", fail code: "..AbilityExtensions:ToIntItemPurchaseResult(PurchaseResult))
+>>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
         end
         if PurchaseResult == PURCHASE_ITEM_OUT_OF_STOCK then
             M.SellSpecifiedItem("item_faerie_fire")

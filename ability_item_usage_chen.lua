@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -102,9 +102,9 @@ Consider[1] = function()
     local CastPoint = ability:GetCastPoint()
     local allys = fun1:GetNearbyHeroes(npcBot, 1200, false)
     local enemys = fun1:GetNearbyHeroes(npcBot, CastRange + 300, true)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = fun1:GetNearbyCreeps(npcBot, CastRange + 300, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     local enemys2 = fun1:GetNearbyCreeps(npcBot, 400, true)
     if (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) or #enemys2 > 0 then
         for _, npcEnemy in pairs(enemys) do
@@ -151,11 +151,11 @@ Consider[2] = function()
     local CastPoint = ability:GetCastPoint()
     local allys = fun1:GetNearbyHeroes(npcBot, 1200, false)
     local enemys = fun1:GetNearbyHeroes(npcBot, CastRange + 300, true)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = fun1:GetNearbyCreeps(npcBot, CastRange + 300, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     local creepsNeutral = npcBot:GetNearbyNeutralCreeps(1600)
-    local StrongestCreep,CreepHealth2 = utility.GetStrongestUnit(creepsNeutral)
+    local StrongestCreep, CreepHealth2 = utility.GetStrongestUnit(creepsNeutral)
     if ManaPercentage >= 0.3 then
         for k, creep in pairs(creepsNeutral) do
             if IsGoodNeutralCreeps(creep) or (creep:IsAncientCreep() and fun1:HasScepter(npcBot)) and CanCast[1](creep) then
@@ -163,7 +163,7 @@ Consider[2] = function()
             end
         end
     end
-    local recallDesire,target = ConsiderRecall()
+    local recallDesire, target = ConsiderRecall()
     if recallDesire > 0 then
         return recallDesire, target
     end
@@ -177,9 +177,9 @@ function ConsiderRecall()
     end
     local allys = fun1:GetNearbyHeroes(npcBot, 1200, false)
     local enemys = fun1:GetNearbyHeroes(npcBot, 1600, true)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = fun1:GetNearbyCreeps(npcBot, 1600, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     local numPlayer = GetTeamPlayers(GetTeam())
     return BOT_ACTION_DESIRE_NONE, 0
 end

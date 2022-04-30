@@ -3,22 +3,22 @@ module("PushUtility", package.seeall)
 
 local role = require(GetScriptDirectory() ..  "/util/RoleUtility")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 
 function GetLane( nTeam ,hHero )
-        local vBot = GetLaneFrontLocation(nTeam, LANE_BOT, 0)
-        local vTop = GetLaneFrontLocation(nTeam, LANE_TOP, 0)
-        local vMid = GetLaneFrontLocation(nTeam, LANE_MID, 0)
-        --print(GetUnitToLocationDistance(hHero, vMid))
-        if GetUnitToLocationDistance(hHero, vBot) < 2500 then
-            return LANE_BOT
-        end
-        if GetUnitToLocationDistance(hHero, vTop) < 2500 then
-            return LANE_TOP
-        end
-        if GetUnitToLocationDistance(hHero, vMid) < 2500 then
-            return LANE_MID
-        end
-        return LANE_NONE
+    local vBot = GetLaneFrontLocation(nTeam, LANE_BOT, 0)
+    local vTop = GetLaneFrontLocation(nTeam, LANE_TOP, 0)
+    local vMid = GetLaneFrontLocation(nTeam, LANE_MID, 0)
+    if GetUnitToLocationDistance(hHero, vBot) < 2500 then
+        return LANE_BOT
+    end
+    if GetUnitToLocationDistance(hHero, vTop) < 2500 then
+        return LANE_TOP
+    end
+    if GetUnitToLocationDistance(hHero, vMid) < 2500 then
+        return LANE_MID
+    end
+    return LANE_NONE
 end
 
 function IsThisLaneNeedToClean(npcBot,lane)
@@ -57,7 +57,7 @@ function IsThisLaneNeedToClean(npcBot,lane)
 	return false
 end
 
-function GetUnitPushLaneDesire(npcBot,lane)
+function GetUnitPushLaneDesire(npcBot, lane)
 	local team = GetTeam()
 	local teamPush = GetPushLaneDesire( lane );
 
@@ -79,7 +79,7 @@ function GetUnitPushLaneDesire(npcBot,lane)
 	local healthRate = npcBot:GetHealth() / npcBot:GetMaxHealth()
 	local manaRate = npcBot:GetMana() / npcBot:GetMaxMana()
 	local stateFactor = healthRate * 0.7 + manaRate * 0.3
-	local roleFactor =0
+	local roleFactor = 0
 
 	if role.IsPusher(npcBot:GetUnitName())==true then
 		roleFactor=roleFactor+0.2;
@@ -119,6 +119,9 @@ function GetUnitPushLaneDesire(npcBot,lane)
 	end
 
 	local sumFactor=0.2 + 0.2 * levelFactor + 0.2 * stateFactor + 0.2 * distFactor + roleFactor;
+	if npcBot.pushWhenNoEnemies then
+		sumFactor = sumFactor + 1
+	end
 	local desire =  math.min(sumFactor * teamPush , 0.8)
 
 	return desire
@@ -140,7 +143,89 @@ function isNoCreeps(npcBot,lane)		--判断兵线位置在不在塔前，不要�
 	return false;
 end
 
-function getTargetLocation(npcBot,lane)
+local function IsRanged(npc)
+	return npc:GetAttackRange() >= 260 or npc:GetUnitName() == "npc_dota_hero_templar_assassin"
+end
+
+local function GetSafeLocationToEnemyBuilding(npc, building)
+	local EnemyTeam = GetOpposingTeam()
+	local Allys = npc:GetNearbyHeroes(1600,false,BOT_MODE_NONE)
+	local enemys = npc:GetNearbyHeroes(1600,true,BOT_MODE_NONE)
+	local allyCount = AbilityExtensions:GetEnemyHeroNumber(npc, Allys) 
+	local enemyCount = AbilityExtensions:GetEnemyHeroNumber(npc, enemys)
+	local attackRange = npc:GetAttackRange() + building:GetBoundingRadius()
+	local buildingLocation = building:GetLocation()
+	
+	local RandomInt = 240
+	local isRanged = IsRanged(npc)
+	
+	local ids = {}
+	local MinDamageHeroID
+	local MinDamage=1000
+	for k,v in pairs(Allys)
+	do
+		local damage=v:GetAttackDamage()
+		if damage<MinDamage and role.IsSupport(v:GetUnitName()) and IsRanged(v)
+		then
+			MinDamage=damage
+			MinDamageHeroID=v:GetPlayerID()
+		end
+	end
+	
+	for k,v in pairs(Allys)
+	do
+		local IsRange2 = IsRanged(v)
+		if isRanged == IsRange2 then
+			table.insert(ids,v:GetPlayerID())
+		end
+	end
+	table.sort(ids)
+
+	if(MinDamageHeroID==npc:GetPlayerID() and allyCount>=3 and enemyCount~=0)
+	then
+		attackRange = 800
+	end
+
+	local alpha
+	if isRanged then
+		alpha=210
+	else
+		alpha=300
+	end
+	local spawnloc=GetEnemySpawnLocation()
+	local DistanceToEnemyHome=GetUnitToLocationDistance(npc, spawnloc)
+	local DistanceToHome=npc:DistanceFromFountain() 
+	local UnitVector
+	if(DistanceToEnemyHome-DistanceToHome<0)
+	then
+		UnitVector=GetUnitVector(spawnloc, buildingLocation)
+	else
+		UnitVector=GetUnitVector(buildingLocation, GetAllySpawnLocation())
+	end
+	
+	local theta=math.deg(math.atan2(UnitVector.y,UnitVector.x))
+	if(theta<0)
+	then
+		theta=theta+360
+	end
+	local myid=npc:GetPlayerID()
+	local myNumber=1
+	for k,v in pairs(ids)
+	do
+		if(myid==v)
+		then
+			myNumber=k
+		end
+	end
+	
+	local delta=math.rad(theta-alpha/2+alpha/(#ids+1)*myNumber)
+	local FinalVector=Vector(math.cos(delta),math.sin(delta))
+	local TargetLocation=buildingLocation+attackRange*FinalVector
+	
+	return TargetLocation --+ RandomVector( RandomInt ) 
+end
+
+local function GetTargetLocation(npcBot,lane)
 	local front = GetLaneFrontLocation( GetTeam(), lane, 0 )
 	local EnemyTower = GetNearestBuilding(GetOpposingTeam(), front) or GetAncient(GetOpposingTeam())
 	local AllyTower = GetNearestBuilding(GetTeam(), front)
@@ -152,14 +237,8 @@ function getTargetLocation(npcBot,lane)
 
 	if(TowerDistance<1000)
 	then
-		-- if(lane==LANE_MID) then
-		-- 	gamma=-15
-		-- end
-		return GetSafeLocation(npcBot,EnemyTower:GetLocation(),gamma);
+		return GetSafeLocationToEnemyBuilding(npcBot,EnemyTower)
 	else
-		-- if(lane==LANE_MID) then
-		-- 	gamma=-5
-		-- end
 		if(PointToPointDistance(front,EnemySpawnLocation)<DistanceTowerToEnemyHome-MaxDiveLength and npcBot:GetLevel()<=12)
 		then
 			return GetSafeLocation(npcBot,AllyTower:GetLocation(),gamma) ;
@@ -167,7 +246,6 @@ function getTargetLocation(npcBot,lane)
 			return GetSafeLocation(npcBot,front,gamma) ;
 		end
 	end
-
 end
 
 function IsCreepAttackTower(creepsNearTower,EnemyTower)
@@ -185,7 +263,6 @@ function IsCreepAttackTower(creepsNearTower,EnemyTower)
 end
 
 function IsSafe(npcBot,lane,creepsNearTower)
-
 	local front = GetLaneFrontLocation( GetTeam(), lane, 0 )
 	local EnemyTower = GetNearestBuilding(GetOpposingTeam(), front)
 	local AllyTower = GetNearestBuilding(GetTeam(), front)
@@ -204,7 +281,7 @@ function IsSafe(npcBot,lane,creepsNearTower)
 	end
 
 	local CreepMinDistance=99999
-	if(creepsNearTower~=nil and #creepsNearTower>=2)
+	if(creepsNearTower~=nil and #creepsNearTower>=1)
 	then
 		for k,v in pairs(creepsNearTower)
 		do
@@ -283,12 +360,71 @@ local function getMyTarget(npcBot,lane,TargetLocation)
 	return nil;
 end
 
+local function GetPhysicalDps(npc)
+	return npc:GetAttackDamage() * npc:GetAttackSpeed() / 170
+end
+
+local function AttackedByTowerRate(npc, targetBuilding)
+	if not targetBuilding then
+		return 0, "no tower provided"
+	end
+	local hpPercent = AbilityExtensions:GetHealthPercent(npc)
+	local targetHpPercent = AbilityExtensions:GetHealthPercent(targetBuilding)
+	if targetBuilding:HasModifier "modifier_fountain_glyph" then
+		return 0, "fountain glyph"
+	end
+	if targetBuilding:GetAttackDamage() < 20 then
+		return 1, "barracks"
+	end
+	if hpPercent < 0.7 and targetHpPercent > 0.15 or hpPercent < 0.5 then
+		return 0, "bad hp percent"
+	end
+
+	local rate = 0
+	local health = npc:GetHealth()
+	local enemyCount = AbilityExtensions:GetEnemyHeroNumber(npc, AbilityExtensions:GetNearbyHeroes(npc, 1400))
+	local allyCount = AbilityExtensions:GetEnemyHeroNumber(npc, AbilityExtensions:GetNearbyHeroes(npc, 1400, false))
+	if enemyCount ~= 0 and enemyCount >= allyCount - 1 then
+		return 0, "many enemies"
+	end
+	
+	if health >= 1000 and hpPercent >= 0.7 + enemyCount * 0.1 then
+		rate = rate + RemapValClamped(health-targetBuilding:GetHealth(), 500, 2000, -0.1, 0.3)
+	end
+	local armour = npc:GetArmor()
+	if armour > 12 then
+		rate = rate + RemapValClamped(armour, 12, 30, 0.04, 0.35)
+	end
+	rate = rate / (1 - npc:GetEvasion())
+	
+	local allyCreepCount = AbilityExtensions:GetNearbyLaneCreeps(npc, 1400, false):Count(function(t) return GetUnitToUnitDistanceSqr(t, targetBuilding) <= 720*720 end)
+	if allyCreepCount == 0 and targetHpPercent > 0.25 and rate < 0.3 then
+		rate = rate - 0.1
+	end
+	local allAlliesCount = AbilityExtensions:GetNearbyHeroes(npc, 1400, false):Concat(AbilityExtensions:GetNearbyLaneCreeps(npc, 1400, false)):Count(function(t) return GetUnitToUnitDistanceSqr(t, targetBuilding) <= 720*720 end)
+	
+	local dps = GetPhysicalDps(npc)
+	if targetBuilding:HasModifier "modifier_backdoor_protection_active" then
+		if dps < 360 / allyCount then
+			rate = rate - 0.15
+		end
+	end
+
+	if targetBuilding:HasModifier "modifier_fountain_glyph" then
+		if allAlliesCount <= 6 and rate < 0.32 or allAlliesCount <= 8 and rate <= 0.24 then
+			rate = 0
+		end
+	end
+	return rate, "normal rating"
+end
+
 function UnitPushLaneThink(npcBot,lane)
+	-- print(npcBot:GetUnitName().." push lane think")
 	if (npcBot:IsChanneling() or npcBot:IsUsingAbility() or npcBot:GetQueuedActionType(0) == BOT_ACTION_TYPE_USE_ABILITY) then
 		return;
 	end
 	
-	tryTP(npcBot,lane);								--use tp to push quickly
+	tryTP(npcBot,lane)
 
 	local team = GetTeam()
 	local front = GetLaneFrontLocation( team, lane, 0 )
@@ -296,61 +432,82 @@ function UnitPushLaneThink(npcBot,lane)
 	local TowerDistance = GetUnitToUnitDistance(npcBot,EnemyTower)
 	
 	local creepsNearTower = getCreepsNearTower(npcBot,EnemyTower);
-	local TargetLocation = getTargetLocation(npcBot,lane)		--Scatter positions to avoid AOE
+	local TargetLocation = GetTargetLocation(npcBot,lane)		--Scatter positions to avoid AOE
 	local CreepAttackTower = IsCreepAttackTower(creepsNearTower,EnemyTower)
 	local Safe = IsSafe(npcBot,lane,creepsNearTower);
 	local noCreeps=isNoCreeps(npcBot,lane)
 
-	
-	--print(getShortName(npcBot).."\tCreepAttackTower: "..tostring(CreepAttackTower).." Safe:"..tostring(Safe).." noCreeps:"..tostring(noCreeps))
-
-	local enemys = npcBot:GetNearbyHeroes(1200,true,BOT_MODE_NONE)
-	
-	local target=getMyTarget(npcBot,lane,TargetLocation)
-
-	if target~=nil then
+	local enemys = npcBot:GetNearbyHeroes(1200,true,BOT_MODE_NONE) or {}
+	local enemyCount = A.Hero.GetUniqueHeroNumber(enemys)
+	local target = getMyTarget(npcBot,lane,TargetLocation)
+	if target then
 		TargetLocation=GetSafeLocation(npcBot,target:GetLocation(),0)
 	end
-	
+	local attackedByTowerRate, attackedByTowerRateReason = AttackedByTowerRate(npcBot, EnemyTower)
+	-- print(npcBot:GetUnitName().." rate = "..attackedByTowerRate.." reason = "..attackedByTowerRateReason)
+	local okToBeAttackedByTower = attackedByTowerRate > 0.3
 
-	local goodSituation=true;
+	local goodSituation=true
 
 	if (npcBot:GetLevel()>=12 and npcBot:GetHealth()>=1500 or npcBot:GetHealth() >= 700 and #enemys == 0)
 	then
-		goodSituation=true;
-	elseif ((Safe==false or noCreeps==true) and EnemyTower:GetHealth()/EnemyTower:GetMaxHealth()>=0.2)
+		goodSituation=true
+	elseif ((Safe==false or noCreeps and not okToBeAttackedByTower) and EnemyTower:GetHealth()/EnemyTower:GetMaxHealth()>=0.2)
 	then
-		goodSituation=false;
+		goodSituation=false
 	end
 
 	local MinDelta=200
 	
-	if(IsEnemyTooMany()) then
+	if IsEnemyTooMany() then
 		AssembleWithAlly(npcBot)
+		-- print(npcBot:GetUnitName().." assemble with ally")
 	elseif goodSituation==false then
 		StepBack( npcBot )
-		--print(getCurrentFileName().." "..getShortName(npcBot).." situation is not good");
-	elseif npcBot:WasRecentlyDamagedByTower(1) then		--if I'm under attck of tower, then try to avoid attack
-		if not TransferHatred( npcBot ) or (enemys~=nil and #enemys>=1) or AbilityExtensions:Any(npcBot:GetNearbyTowers(700, true), function(t)
+		-- print(npcBot:GetUnitName().." situation is not good")
+	elseif npcBot:WasRecentlyDamagedByTower(1) then
+		local needToStepBack = AbilityExtensions:Any(npcBot:GetNearbyTowers(700 + npcBot:GetBoundingRadius(), true), function(t)
             t:HasModifier("modifier_fountain_glyph")
 		end)
-		then
-			StepBack( npcBot )
-			--print(getCurrentFileName().." "..getShortName(npcBot).." attacked");
+		if not needToStepBack then
+			needToStepBack = not TransferHatred(npcBot)
 		end
-	elseif GetUnitToLocationDistance(npcBot,TargetLocation)>=MinDelta then
-		npcBot:Action_MoveToLocation(TargetLocation);
+		if enemyCount >= 1 and needToStepBack or not okToBeAttackedByTower then
+			StepBack(npcBot)
+		else
+			npcBot:Action_AttackUnit(EnemyTower, false)
+		end
+		-- print(npcBot:GetUnitName().." damaged by tower")
+	elseif GetUnitToLocationDistance(npcBot, TargetLocation) >= MinDelta then
+		-- print(npcBot:GetUnitName().." way from target location, moving")
+		npcBot:Action_MoveToLocation(TargetLocation)
+		-- if GetUnitToLocationDistanceSqr(npcBot, TargetLocation) <= 90000 then
+		-- 	if not npcBot:GetAttackTarget() then
+		-- 		npcBot:Action_AttackMove(TargetLocation)
+		-- 	end
+		-- else
+		-- 	npcBot:Action_MoveToLocation(TargetLocation)
+		-- end
 	elseif target then
+		-- print(npcBot:GetUnitName().." has target "..target:GetUnitName())
 		npcBot:Action_AttackUnit( target, true )
-	elseif TowerDistance <= 1200 then
-		if (CreepAttackTower) then
+	elseif TowerDistance <= 1600 then
+		-- print(npcBot:GetUnitName().." push tower: "..EnemyTower:GetUnitName())
+		if CreepAttackTower or EnemyTower:GetAttackDamage() < 20 then
 			npcBot:Action_AttackUnit( EnemyTower, false )
 		else
-			--print(getCurrentFileName().." "..getShortName(npcBot).." tower distance too high");
 			StepBack( npcBot )
 		end
 	else
-		npcBot:Action_MoveToLocation(TargetLocation);
+		-- print(npcBot:GetUnitName().." idle move: "..AbilityExtensions:ToStringVector(TargetLocation))
+		npcBot:Action_MoveToLocation(TargetLocation)
+		-- if GetUnitToLocationDistanceSqr(npcBot, TargetLocation) <= 90000 then
+		-- 	if not npcBot:GetAttackTarget() then
+		-- 		npcBot:Action_AttackMove(TargetLocation)
+		-- 	end
+		-- else
+		-- 	npcBot:Action_MoveToLocation(TargetLocation)
+		-- end
 	end
 	return true
 end
@@ -517,7 +674,9 @@ function GetNearestBuilding(team, location)
 	return nearestBuilding
 end
 
-function GetAllBuilding( team,location )
+
+
+function GetAllBuilding(team, location)
 	local buildings = {}
 	for i=0,10 do
 		local tower = GetTower(team,i)
@@ -582,7 +741,7 @@ end
 Locations = {
 	["RadiantSpawn"]= Vector(-6950,-6275),
 	["DireSpawn"]= Vector(7150, 6300),
-	}
+}
 	
 
 function TransferHatred( unit )
@@ -596,7 +755,6 @@ function TransferHatred( unit )
 		tower = towers[1]
 	end
     local creeps = unit:GetNearbyCreeps( 1500, false )
-	-- print("hurt",#creeps)
 	for k,creep in pairs(creeps) do
 		if NotNilOrDead(creep) and NotNilOrDead(tower) and GetUnitToUnitDistance(tower, creep)<=tower:GetAttackRange() then
 			unit:Action_AttackUnit( creep, true )
@@ -655,34 +813,6 @@ function StepBack( unit )
 
 	local targetloc = Normalized(spawnloc - unit:GetLocation()) * 500 + unit:GetLocation()
 	unit:Action_MoveToLocation(targetloc+RandomVector( 100 ) )
-end
-
-function StepBackCreeps(unit)
-	if not NotNilOrDead(unit) then
-		return
-	end
-	local tower = unit:GetNearbyTowers(700, true)
-	tower = AbilityExtensions:First(tower, function(t) return t:GetAttackTarget() == unit end)
-	if tower == nil then
-		return
-	end
-
-	local friends = unit:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-	local enemies = unit:GetNearbyHeroes(1200, true, BOT_MODE_NONE)
-	local friendCreeps = tower:GetNearbyCreeps(tower:GetAttackRange(), true)
-	friendCreeps = AbilityExtensions:SortByMinFirst(friendCreeps, function(t) return GetUnitToUnitDistance(t, tower) end)
-	if #friendCreeps == 0 then
-		if AbilityExtensions:GetHealthPercent(unit) >= 0.75 or #friends >= #enemies + 1 and AbilityExtensions:GetHealthPercent(unit) >= 0.6 then
-			if tower:HasModifier("modifier_fountain_glyph") then
-				unit:Action_MoveDirectly(AbilityExtensions:GetPointFromLineByDistance(tower:GetLocation(), unit:GetLocation(), tower:GetAttackRange() + 10))
-			end
-		end
-	else
-		local g = GetUnitToUnitDistance(tower, friendCreeps[1]) + unit:GetBoundingRadius()
-		unit:Action_MoveDirectly(AbilityExtensions:GetPointFromLineByDistance(tower:GetLocation(), unit:GetLocation(), g))
-		coroutine.yield(g)
-		TransferHatred(unit)
-	end
 end
 	
 function Normalized(vector)

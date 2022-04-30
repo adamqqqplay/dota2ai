@@ -247,7 +247,7 @@ Consider[2]=function()
 	end
 	
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:DistanceFromFountain()>=2000 and (ManaPercentage>=0.6 or HealthPercentage<=0.5 or npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) )
+	if ( AbilityExtensions:IsRetreating(npcBot) and npcBot:DistanceFromFountain()>=2000 and (ManaPercentage>=0.6 or HealthPercentage<=0.5 or npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) )
 	then
 		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
 	end

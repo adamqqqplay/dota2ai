@@ -123,7 +123,7 @@ Consider[1] = function()
     end
 
     if AbilityExtensions:IsAttackingEnemies(npcBot) then
-        if local atos = AbilityExtensions:GetAvailableItem(npcBot, "item_rod_of_atos") or AbilityExtensions:GetAvailableItem(npcBot, "item_gleipnir") then
+        if local atos = AbilityExtensions:GetAvailableItem(npcBot, "item_rod_of_atos") or AbilityExtensions:GetAvailableItem(npcBot, "item_gungir") then
             if local t = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range):First { t ->
                 not AbilityExtensions:CannotMove(t) and T(t) and AbilityExtensions:NormalCanCast(t)
             } then

@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -104,9 +104,9 @@ Consider[1] = function()
     local CastPoint = ability:GetCastPoint()
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(CastRange + 300, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(CastRange + 300, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes(1000, false, BOT_MODE_ATTACK)
     if #tableNearbyAttackingAlliedHeroes >= 2 then
         local npcMostDangerousEnemy = nil
@@ -167,7 +167,7 @@ Consider[2] = function()
     local damage = ability:GetAbilityDamage()
     local castRange = ability:GetCastRange()
     local enemyHeroes = fun1:GetNearbyHeroes(npcBot, castRange + 200, true)
-    local enemies,enemyIllusions = enemyHeroes:Partition(function(it)
+    local enemies, enemyIllusions = enemyHeroes:Partition(function(it)
         return fun1:MayNotBeIllusion(npcBot, it)
     end)
     local allies = fun1:GetNearbyNonIllusionHeroes(npcBot, 900, false)
@@ -339,9 +339,9 @@ Consider[4] = function()
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(CastRange + 300, true, BOT_MODE_NONE)
     local enemys2 = npcBot:GetNearbyHeroes(CastRange - 300, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(CastRange + 300, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     local abilityLevel = ability:GetLevel()
     local radius = ability:GetAOERadius() - 100
     local castPoint = ability:GetCastPoint()
@@ -464,7 +464,7 @@ function AbilityUsageThink()
     if debugmode == true then
         ability_item_usage_generic.PrintDebugInfo(AbilitiesReal, cast)
     end
-    local index,target = ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
+    local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
     if index == 2 then
         drainSnapTarget = target
     elseif index == 4 then

@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -339,8 +340,92 @@ Consider[2]=function()
 	return BOT_ACTION_DESIRE_NONE, 0 ,"nil";
 end
 
+-- 7.31 upgrade
+Consider[3] = function()
+	local abilityNumber=3
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
+	local ability=AbilitiesReal[abilityNumber];
+	
+	if not ability:IsFullyCastable() or AbilityExtensions:CannotMove(npcBot) then
+		return BOT_ACTION_DESIRE_NONE, 0;
+	end
+	
+	local CastRange = 0
+	local Damage = ability:GetAbilityDamage()
+	local Radius = ability:GetAOERadius() - 50
+	local CastPoint = ability:GetCastPoint()
+	
+	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
+	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
+	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
+	local creeps = npcBot:GetNearbyCreeps(Radius+300,true)
+	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+	--Try to kill enemy hero
+	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
+	then
+		if (WeakestEnemy~=nil)
+		then
+			if ( CanCast[abilityNumber]( WeakestEnemy ) )
+			then
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and GetUnitToUnitDistance(npcBot,WeakestEnemy) <= Radius-CastPoint* WeakestEnemy:GetCurrentMovementSpeed())
+				then
+					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy
+				end
+			end
+		end
+	end
+	
+	-- protect myself
+	if(npcBot:WasRecentlyDamagedByAnyHero(2) or #enemys >=2)
+	then
+		for _,npcEnemy in pairs( enemys )
+		do
+			if ( CanCast[abilityNumber]( npcEnemy ) )
+			then
+				return BOT_ACTION_DESIRE_HIGH
+			end
+		end
+	end
+	
+	-- If my mana is enough,use it at enemy
+	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
+	then
+		if((ManaPercentage>0.75 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )
+		then
+			if (WeakestEnemy~=nil)
+			then
+				if ( CanCast[abilityNumber]( WeakestEnemy ) )
+				then
+					if(GetUnitToUnitDistance(npcBot,WeakestEnemy)<Radius-CastPoint*WeakestEnemy:GetCurrentMovementSpeed())
+					then
+						return BOT_ACTION_DESIRE_LOW
+					end
+				end
+			end
+		end
+	end
+
+	-- If we're going after someone
+	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
+	then
+		local npcEnemy = AbilityExtensions:GetTargetIfGood(npcBot)
+		if npcEnemy then
+			if CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy) <= Radius then
+				return BOT_ACTION_DESIRE_MODERATE
+			end
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE
+end
+
 local function DontSteal(enemy)
-	return AbilityExtensions:GetUnitList(npcBot, UNIT_LIST_ALLIED_HERO):Remove(npcBot):Any(function(t) return enemy:WasRecentlyDamagedByHero(t, 1.5) end) and not enemy:WasRecentlyDamagedByHero(npcBot, 2.5)
+	return AbilityExtensions:GetUnitList(UNIT_LIST_ALLIED_HEROES):Remove(npcBot):Any(function(t) return enemy:WasRecentlyDamagedByHero(t, 1.5) end) and not enemy:WasRecentlyDamagedByHero(npcBot, 2.5)
 end
 local function ShouldUseUltimate(enemy)
 	return CanCast[6](enemy) and DontSteal(enemy)

@@ -14,10 +14,10 @@ local ItemsToBuy =
 	"item_power_treads", --假腿7.21
 	"item_orb_of_corrosion",
 	"item_magic_wand",
+	"item_diffusal_blade", --散失
 	"item_skadi",
 	"item_basher",
 	"item_black_king_bar", --bkb
-	"item_diffusal_blade", --散失
     "item_basher",
 	"item_abyssal_blade", --大晕锤
 	"item_butterfly",

@@ -12,8 +12,8 @@ local ItemsToBuy =
 	"item_power_treads", --假腿7.21
 	"item_wraith_band",
 	"item_magic_wand", --大魔棒7.14
-	"item_desolator", --黯灭
 	"item_orchid", --紫苑
+	"item_desolator", --黯灭
 	"item_black_king_bar", --bkb
 	"item_sheepstick",
 	"item_bloodthorn", --血棘

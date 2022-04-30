@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -106,9 +106,9 @@ Consider[1] = function()
     end
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(Radius, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(Radius, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     for _, npcEnemy in pairs(enemys) do
         if npcEnemy:IsChanneling() then
             return BOT_ACTION_DESIRE_HIGH
@@ -127,7 +127,7 @@ Consider[1] = function()
         end
     end
     if npcBot:GetActiveMode() == BOT_MODE_LANING then
-        if (ManaPercentage > 0.4 or npcBot:GetMana() > ComboMana) then
+        if npcBot:GetMana() >= npcBot:GetMaxMana() * 0.4 + ability:GetManaCost() then
             if WeakestEnemy ~= nil then
                 if GetUnitToUnitDistance(npcBot, WeakestEnemy) < Radius - CastPoint * WeakestEnemy:GetCurrentMovementSpeed() then
                     return BOT_ACTION_DESIRE_LOW
@@ -161,9 +161,9 @@ Consider[2] = function()
     local CastPoint = ability:GetCastPoint()
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(CastRange + 300, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(CastRange + 300, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) then
@@ -227,13 +227,12 @@ Consider[4] = function()
         return BOT_ACTION_DESIRE_NONE
     end
     local CastRange = ability:GetCastRange()
-    local Damage = ability:GetSpecialValueInt "kill_threshold"
+    local Damage = ability:GetAbilityDamage()
     local function IsWeak(t)
-        local c = CanCast[4](t) and t:GetHealth() <= Damage
-        return c
+        return CanCast[4](t) and t:GetHealth() <= Damage
     end
     local CastPoint = ability:GetCastPoint()
-    local enemies,enemyIllusions = fun1:GetNearbyHeroes(npcBot, CastRange + 300):Filter(IsWeak):Partition(function(it)
+    local enemies, enemyIllusions = fun1:GetNearbyHeroes(npcBot, CastRange + 300):Filter(IsWeak):Partition(function(it)
         return fun1:MayNotBeIllusion(npcBot, it)
     end)
     if fun1:NotRetreating(npcBot) and #enemies == 0 then
@@ -259,11 +258,9 @@ Consider[4] = function()
             if fun1:NotRetreating(npcBot) then
                 do
                     local blink = fun1:GetAvailableBlink(npcBot)
-                    if blink then
-                        if dis > CastRange + 150 then
-                            ItemUsage.UseItemOnLocation(npcBot, blink, target:GetLocation())
-                            return 0
-                        end
+                    if blink and dis > CastRange + 150 then
+                        ItemUsage.UseItemOnLocation(npcBot, blink, target:GetLocation())
+                        return 0
                     end
                 end
                 return BOT_ACTION_DESIRE_HIGH, target
@@ -287,7 +284,7 @@ Consider[4] = function()
     return BOT_ACTION_DESIRE_NONE
 end
 fun1:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
-local roarLosingTarget
+local callLosingTarget
 local cullingBladeTarget
 function AbilityUsageThink()
     if npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() then
@@ -296,9 +293,9 @@ function AbilityUsageThink()
                 if not fun1:IsFarmingOrPushing(npcBot) then
                     local nearbyEnemies = fun1:GetNearbyHeroes(npcBot, AbilitiesReal[1]:GetAOERadius() + 90):Filter(CanCast[1])
                     if #nearbyEnemies == 0 then
-                        if roarLosingTarget == nil then
-                            roarLosingTarget = DotaTime()
-                        elseif DotaTime() - roarLosingTarget > 0.15 then
+                        if callLosingTarget == nil then
+                            callLosingTarget = DotaTime()
+                        elseif DotaTime() - callLosingTarget > 0.15 then
                             npcBot:Action_ClearActions(true)
                         end
                         return
@@ -307,7 +304,7 @@ function AbilityUsageThink()
             else
             end
         end
-        roarLosingTarget = nil
+        callLosingTarget = nil
         return
     end
     ComboMana = GetComboMana()
@@ -318,7 +315,7 @@ function AbilityUsageThink()
     if debugmode == true then
         ability_item_usage_generic.PrintDebugInfo(AbilitiesReal, cast)
     end
-    local index,target = ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
+    local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
     if index == 4 then
         cullingBladeTarget = target
     end

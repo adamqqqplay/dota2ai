@@ -347,7 +347,7 @@ end
 local activeRemnants
 local refreshRemnantToken
 local function RefreshActiveRemnants()
-    activeRemnants = fun1:Filter(GetUnitList(UNIT_LIST_ALL), function(t) return t:GetUnitName() == "npc_dota_ember_spirit_remnant" end)
+    activeRemnants = fun1:Filter(GetUnitList(UNIT_LIST_ALLIES), function(t) return t:GetUnitName() == "npc_dota_ember_spirit_remnant" end)
 end
 local DetectRemnant = fun1:EveryManySeconds(2, RefreshActiveRemnants)
 RefreshActiveRemnants()

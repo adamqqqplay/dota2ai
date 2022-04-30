@@ -10,6 +10,7 @@ local utility = require( GetScriptDirectory().."/utility" )
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 local AbilityHelper = dofile(GetScriptDirectory() .. "/util/AbilityHelper")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -18,7 +19,7 @@ local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
 
-ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
+ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents)
 
 local AbilityToLevelUp=
 {
@@ -27,19 +28,19 @@ local AbilityToLevelUp=
 	Abilities[3],
 	Abilities[2],
 	Abilities[3],
-	Abilities[5],
+	Abilities[6],
 	Abilities[3],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[1],
-	Abilities[5],
+	Abilities[6],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
 	"nil",
-	Abilities[5],
+	Abilities[6],
 	"nil",
 	"talent",
 	"nil",
@@ -89,7 +90,7 @@ end
 
 local CanCast = {}
 CanCast[1] = function(target)
-	if target:HasModifier("modifier_shadow_demon_disruption") then
+	if target:HasModifier("modifier_shadow_demon_disruption") or A.Unit.IsCreepHero(target) then
 		return false
 	end
 	if npcBot:GetTeam() == target:GetTeam() then
@@ -107,7 +108,8 @@ end
 CanCast[4] = function(target)
 	return target:HasModifier("modifier_shadow_demon_disruption") or AbilityExtensions:NormalCanCast(target, false, DAMAGE_TYPE_MAGICAL, false, true)
 end
-CanCast[5] = function(target)
+CanCast[5] = CanCast[4]
+CanCast[6] = function(target)
     return not target:HasModifier("modifier_antimage_counterspell") and not target:HasModifier("modifier_shadow_demon_purge_slow") and (target:HasModifier("modifier_shadow_demon_disruption") or AbilityExtensions:NormalCanCast(target, false, DAMAGE_TYPE_MAGICAL, false, true))
 end
 
@@ -395,6 +397,7 @@ Consider[3]=function()
 	
 end
 
+-- shadow poison release
 --[[Consider[4]=function()
 	local abilityNumber=4
 	--------------------------------------
@@ -431,10 +434,12 @@ end
 	
 end]]
 
+-- 7.31 upgrade demonic cleanse
+Consider[5] = A.Dota.EmptyDesireFun
 
-Consider[5]=function()
-
-	local abilityNumber=5
+-- demonic purge
+Consider[6]=function()
+	local abilityNumber=6
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------

@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -13,7 +13,7 @@ end
 if npcBot:IsIllusion() then
     return
 end
-local AbilityNames,Abilities,Talents = fun1:InitAbility()
+local AbilityNames, Abilities, Talents = fun1:InitAbility()
 local AbilityToLevelUp = {
     AbilityNames[1],
     AbilityNames[3],
@@ -201,7 +201,7 @@ function AbilityUsageThink()
     neutralCreeps = npcBot:GetNearbyNeutralCreeps(900)
     tower = fun1:GetLaningTower(npcBot)
     cast = ability_item_usage_generic.ConsiderAbility(Abilities, Consider)
-    local abilityIndex,target,castType = ability_item_usage_generic.UseAbility(Abilities, cast)
+    local abilityIndex, target, castType = ability_item_usage_generic.UseAbility(Abilities, cast)
     if abilityIndex == 1 then
         illusoryOrbCastLocation = npcBot:GetLocation()
         illusoryOrbMaxTravelDistance = Abilities[1]:GetSpecialValueInt("max_distance") - 50
