@@ -17,21 +17,21 @@ local AbilitiesReal = {}
 ability_item_usage_generic.InitAbility(Abilities, AbilitiesReal, Talents)
 local AbilityToLevelUp = {
     Abilities[1],
-    Abilities[3],
-    Abilities[1],
     Abilities[2],
     Abilities[1],
+    Abilities[3],
+    Abilities[1],
     Abilities[5],
     Abilities[1],
-    Abilities[3],
-    Abilities[3],
-    "talent",
-    Abilities[3],
-    Abilities[5],
     Abilities[2],
     Abilities[2],
     "talent",
     Abilities[2],
+    Abilities[5],
+    Abilities[3],
+    Abilities[3],
+    "talent",
+    Abilities[3],
     "nil",
     Abilities[5],
     "nil",
@@ -44,7 +44,7 @@ local AbilityToLevelUp = {
 }
 local TalentTree = {
     function()
-        return Talents[1]
+        return Talents[2]
     end,
     function()
         return Talents[4]
@@ -53,7 +53,7 @@ local TalentTree = {
         return Talents[6]
     end,
     function()
-        return Talents[7]
+        return Talents[8]
     end,
 }
 utility.CheckAbilityBuild(AbilityToLevelUp)
@@ -68,6 +68,7 @@ local Consider = {}
 local CanCast = {
     utility.NCanCast,
     utility.NCanCast,
+    AbilityExtensions.PhysicalCanCastFunction,
     utility.NCanCast,
     utility.UCanCast,
 }
@@ -267,8 +268,8 @@ Consider[2] = function()
     end
     return BOT_ACTION_DESIRE_NONE, 0
 end
-Consider[4] = function()
-    local abilityNumber = 4
+Consider[3] = function()
+    local abilityNumber = 3
     local ability = AbilitiesReal[abilityNumber]
     if not ability:IsFullyCastable() or AbilityExtensions:IsPhysicalOutputDisabled(npcBot) then
         return 0
@@ -309,7 +310,7 @@ Consider[4] = function()
     end
     return false
 end
-Consider[4] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[4], Consider[4])
+Consider[3] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[3], Consider[3])
 Consider[5] = function()
     local abilityNumber = 5
     local ability = AbilitiesReal[abilityNumber]

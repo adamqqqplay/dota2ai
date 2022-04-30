@@ -285,7 +285,7 @@ local function AddMekansm()
         AddBefore(hero.itemInformationTable, guardianGreavesTable, GeneratePutBeforeFilter(4800, {}, {}))
         hero.itemInformationTable:Remove_Modify { t -> t.name == "item_urn_of_shadows" }
         hero.itemInformationTable:Remove_Modify { t -> t.name == "item_spirit_vessel" }
-        PrintItemInfoTableOf(hero)
+        -- PrintItemInfoTableOf(hero)
     end
 
     if #heroRates >= 3 then 
@@ -347,7 +347,7 @@ local function AddArcaneBoots()
         else
             AddBefore(hero.itemInformationTable, M.ExpandTeamThinkItem "item_arcane_boots", AddArcaneBootsBefore)
         end
-        PrintItemInfoTableOf(hero)
+        -- PrintItemInfoTableOf(hero)
     end
 
     local function DontBuyArcaneBoots(heroRateTable)
@@ -364,7 +364,7 @@ local function AddArcaneBoots()
             local newBoots = M.ExpandTeamThinkItem(replaceBoots)
             RemoveItemsInNewItemTable(hero.itemInformationTable, newBoots, arcaneBootsIndex)
         end
-        PrintItemInfoTableOf(hero)
+        -- PrintItemInfoTableOf(hero)
     end
 
     local teamArcaneBootsNumber = 

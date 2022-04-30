@@ -96,10 +96,10 @@ local CanCast = {
     function(t)
         return not t:IsHero() and not fun1:IsRoshan(t) and t:GetLevel() <= AbilitiesReal[1]:GetLevel() + 3 and (not t:IsAncient() or level >= 28)
     end,
-    AbilityExtensions.NormalCanCastFunction,
-    AbilityExtensions.PhysicalCanCastFunction,
-    AbilityExtensions.NormalCanCastFunction,
-    AbilityExtensions.NormalCanCastFunction,
+    fun1.NormalCanCastFunction,
+    fun1.PhysicalCanCastFunction,
+    fun1.NormalCanCastFunction,
+    fun1.NormalCanCastFunction,
     utility.UCanCast,
 }
 local enemyDisabled = utility.enemyDisabled

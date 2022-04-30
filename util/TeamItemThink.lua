@@ -640,7 +640,6 @@ local function AddMekansm()
         hero.itemInformationTable:Remove_Modify(function(t)
             return t.name == "item_spirit_vessel"
         end)
-        PrintItemInfoTableOf(hero)
     end
     if #heroRates >= 3 then
         if heroRates[1][2] > 2.85 then
@@ -699,7 +698,6 @@ local function AddArcaneBoots()
         else
             AddBefore(hero.itemInformationTable, M.ExpandTeamThinkItem "item_arcane_boots", AddArcaneBootsBefore)
         end
-        PrintItemInfoTableOf(hero)
     end
     local function DontBuyArcaneBoots(heroRateTable)
         local hero = heroRateTable[1]
@@ -722,7 +720,6 @@ local function AddArcaneBoots()
             local newBoots = M.ExpandTeamThinkItem(replaceBoots)
             RemoveItemsInNewItemTable(hero.itemInformationTable, newBoots, arcaneBootsIndex)
         end
-        PrintItemInfoTableOf(hero)
     end
     local teamArcaneBootsNumber = (function()
         if #heroRates >= 4 then

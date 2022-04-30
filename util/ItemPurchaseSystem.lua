@@ -448,7 +448,6 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
         RemoveTeamItems(g)
         TeamItemThink.TeamItemThink(npcBot)
     end
-    PrintItemInfoTableOf(npcBot)
 end
 local sNextItem
 local UseCourier = function()
