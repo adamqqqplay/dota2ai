@@ -12,12 +12,11 @@ local ItemsToBuy =
 	"item_quelling_blade", --补刀斧
     "item_magic_wand",
 	"item_arcane_boots", --秘法鞋
-	"item_bloodstone",
 	"item_hood_of_defiance",
-	"item_cyclone",
+	"item_octarine_core",
+	-- "item_cyclone",
 	"item_ultimate_scepter", --蓝杖
 	"item_shivas_guard", --希瓦
-	"item_octarine_core",
 	"item_ultimate_scepter_2",
 	"item_black_king_bar",
 	"item_wind_waker",

@@ -365,7 +365,7 @@ Consider[4]=function()
 		then
 			if npcBot:HasModifier "modifier_bounty_hunter_track" or npcBot:HasModifier "modifier_slardar_amplify_damage" then
 			else
-				local hasDust = enemys:Any(function(t) 
+				local hasDust = AbilityExtensions:Any(enemys, function(t) 
 					return AbilityExtensions:GetCarriedItems(t):Map(function(t) return t:GetName() end):Any(function(t) return t == "item_gem" or t == "item_dust" end)
 				end)
 				if not hasDust then

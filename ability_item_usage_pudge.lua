@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -126,7 +126,7 @@ Consider[1] = function()
     end
     if AbilityExtensions:IsAttackingEnemies(npcBot) then
         do
-            local atos = AbilityExtensions:GetAvailableItem(npcBot, "item_rod_of_atos") or AbilityExtensions:GetAvailableItem(npcBot, "item_gleipnir")
+            local atos = AbilityExtensions:GetAvailableItem(npcBot, "item_rod_of_atos") or AbilityExtensions:GetAvailableItem(npcBot, "item_gungir")
             if atos then
                 do
                     local t = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range):First(function(t)

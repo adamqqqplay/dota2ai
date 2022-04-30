@@ -514,7 +514,7 @@ Consider[4]=function()
 	end
 	
 	--Try to kill enemy hero
-	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
+	if AbilityExtensions:IsAttackingEnemies(npcBot)
 	then
 		if (WeakestEnemy~=nil)
 		then
@@ -534,7 +534,7 @@ Consider[4]=function()
 	--protect myself
 	local enemys2 = npcBot:GetNearbyHeroes( 400, true, BOT_MODE_NONE );
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) or #enemys2>0) 
+	if npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH
 	then
 		for _,npcEnemy in pairs( enemys )
 		do

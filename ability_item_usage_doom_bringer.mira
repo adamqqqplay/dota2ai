@@ -17,6 +17,7 @@ local Abilities ={}
 local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
+-- utility.PrintAbilityName(Abilities)
 
 local AbilityToLevelUp=
 {
@@ -106,10 +107,12 @@ local friendCreeps
 local neutralCreeps
 local tower
 
-local CanCast={function(t) 
-	return not t:IsHero() and not fun1:IsRoshan(t) and t:GetLevel() <= AbilitiesReal[1]:GetLevel()+3
-end
-	,utility.NCanCast,utility.NCanCast,utility.UCanCast,utility.UCanCast,utility.UCanCast}
+local CanCast = {function(t) -> not t:IsHero() and not fun1:IsRoshan(t) and t:GetLevel() <= AbilitiesReal[1]:GetLevel()+3 and (not t:IsAncient() or level >= 28),
+	AbilityExtensions.NormalCanCastFunction,
+	AbilityExtensions.PhysicalCanCastFunction,
+	AbilityExtensions.NormalCanCastFunction,
+	AbilityExtensions.NormalCanCastFunction,
+	utility.UCanCast}
 local enemyDisabled=utility.enemyDisabled
 
 local function GetComboMana()
@@ -147,34 +150,17 @@ Consider[1]=function()
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
-	local ability=AbilitiesReal[abilityNumber];
+	local ability=AbilitiesReal[abilityNumber]
 	
 	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
+		return BOT_ACTION_DESIRE_NONE
 	end
 	
-	local CastRange = ability:GetCastRange();
-	local Damage = ability:GetAbilityDamage();
+	local creeps = A.Dota.GetNearbyCreeps(npcBot, 800, true):Concat(A.Dota.GetNearbyNeutralCreeps(npcBot, 800))
+	local strongstCreep = A.Linq.Filter(utility.GetStrongestUnit(creeps), CanCast[1])
 	
-	local CreepHealth=10000
-	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
-
-	local creeps = npcBot:GetNearbyCreeps(CastRange + 200, true)
-	if npcBot:GetAbilityByName "special_bonus_unique_doom_bringer_3":GetLevel() < 1 then
-		creeps = fun1:Filter(creeps, function(t) return not t:IsAncientCreep() end)
-	end
-	local StrongstCreep,CreepHealth=utility.GetStrongestUnit(creeps)
-	
-	if StrongstCreep and CanCast[abilityNumber](StrongstCreep) then
-		return BOT_ACTION_DESIRE_HIGH, StrongstCreep
-	end
-	
-	for _,npcEnemy in pairs( creeps )
-	do
-		if ( CanCast[abilityNumber]( npcEnemy ) ) 
-		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy
-		end
+	if strongstCreep then
+		return BOT_ACTION_DESIRE_MODERATE, strongstCreep
 	end
 	
 	return BOT_ACTION_DESIRE_NONE
@@ -202,6 +188,7 @@ Consider[2]=function()
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(Radius+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+	local abilityLevel = ability:GetLevel()
 	
 	--try to kill enemy hero
 
@@ -226,7 +213,7 @@ Consider[2]=function()
 		then
 			if ( npcEnemy ~= nil ) 
 			then
-				if ( GetUnitToUnitDistance(npcBot,npcEnemy) > 450 or npcEnemy:GetHealth()/npcEnemy:GetMaxHealth() < 0.4) and GetUnitToLocationDistance(npcBot, npcEnemy) < 1100
+				if ( GetUnitToUnitDistance(npcBot,npcEnemy) > 350 or npcEnemy:GetHealth()/npcEnemy:GetMaxHealth() < 0.4) and GetUnitToUnitDistance(npcBot, npcEnemy) < 900
 				then
 					return BOT_ACTION_DESIRE_HIGH
 				end
@@ -237,7 +224,7 @@ Consider[2]=function()
 	-- If we're farming
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
-		if ( #creeps >= 3 and (ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)) and allyCount < 3
+		if ( #creeps >= 3 and (ManaPercentage>0.4 or npcBot:GetMana()>ComboMana)) and allyCount < 3 and abilityLevel >= 3
 		then
 			return BOT_ACTION_DESIRE_LOW;
 		end
@@ -351,7 +338,7 @@ local function centaur_khan_war_stomp(ability)
 			end
 		end
 	else
-		if enemies:Count(fun1.NormalCanCastFunction) then 
+		if enemies:Any(fun1.NormalCanCastFunction) then 
 			return RemapValClamped(mana, 100, ComboMana, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_HIGH) 
 		end
 	end

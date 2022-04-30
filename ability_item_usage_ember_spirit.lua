@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -13,7 +13,7 @@ end
 if npcBot:IsIllusion() then
     return
 end
-local AbilityNames,Abilities,Talents = fun1:InitAbility(npcBot)
+local AbilityNames, Abilities, Talents = fun1:InitAbility(npcBot)
 local AbilityToLevelUp = {
     AbilityNames[2],
     AbilityNames[3],
@@ -169,16 +169,18 @@ Consider[1] = function()
     else
         do
             local target = fun1:GetTargetIfGood(npcBot)
-            local target = fun1:GetTargetIfBad(npcBot)
             if target then
                 local p = ChainExpectancy(#enemies, unitCount, targetNumber)
                 if p >= 0.5 then
                     return RemapValClamped(p, 0.5, 1, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_VERYHIGH)
                 end
-            elseif target then
-                local p = ChainExpectancy(#enemies, unitCount, targetNumber)
-                if p >= 1 then
-                    return RemapValClamped(p, 0.5, 1, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_VERYHIGH)
+            else
+                local target = fun1:GetTargetIfBad(npcBot)
+                if target then
+                    local p = ChainExpectancy(#enemies, unitCount, targetNumber)
+                    if p >= 1 then
+                        return RemapValClamped(p, 0.5, 1, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_VERYHIGH)
+                    end
                 end
             end
         end
@@ -208,7 +210,7 @@ Consider[2] = function()
     local enemyCreeps = fun1:GetNearbyAttackableCreeps(npcBot, castRange + radius)
     local friendCreeps = fun1:GetNearbyAttackableCreeps(npcBot, npcBot:GetAttackRange() + 150, false)
     local neutralCreeps = npcBot:GetNearbyNeutralCreeps(castRange)
-    local weakestEnemy,enemyHealth = utility.GetWeakestUnit(targettableEnemies)
+    local weakestEnemy, enemyHealth = utility.GetWeakestUnit(targettableEnemies)
     local creepDamage = npcBot:GetAttackDamage() * (1 + ability:GetSpecialValueInt "creep_damage_penalty" / 100)
     local weakCreeps = fun1:Filter(enemyCreeps, function(t)
         return t:GetHealth() < t:GetActualIncomingDamage(creepDamage, DAMAGE_TYPE_MAGICAL)
@@ -296,7 +298,7 @@ Consider[3] = function()
     local enemyCreeps = fun1:GetNearbyAttackableCreeps(npcBot, 900)
     local friendCreeps = fun1:GetNearbyAttackableCreeps(npcBot, npcBot:GetAttackRange() + 150, false)
     local neutralCreeps = npcBot:GetNearbyNeutralCreeps(castRange)
-    local weakestEnemy,enemyHealth = utility.GetWeakestUnit(targettableEnemies)
+    local weakestEnemy, enemyHealth = utility.GetWeakestUnit(targettableEnemies)
     local weakCreeps = enemyCreeps
     local weakestCreep = utility.GetWeakestUnit(weakCreeps)
     local forbiddenCreeps = {}
@@ -364,7 +366,7 @@ end
 local activeRemnants
 local refreshRemnantToken
 local function RefreshActiveRemnants()
-    activeRemnants = fun1:Filter(GetUnitList(UNIT_LIST_ALL), function(t)
+    activeRemnants = fun1:Filter(GetUnitList(UNIT_LIST_ALLIES), function(t)
         return t:GetUnitName() == "npc_dota_ember_spirit_remnant"
     end)
 end
@@ -593,7 +595,7 @@ function AbilityUsageThink()
     neutralCreeps = npcBot:GetNearbyNeutralCreeps(1599)
     tower = fun1:GetLaningTower(npcBot)
     cast = ability_item_usage_generic.ConsiderAbility(Abilities, Consider)
-    local abilityIndex,target,castType = ability_item_usage_generic.UseAbility(Abilities, cast)
+    local abilityIndex, target, castType = ability_item_usage_generic.UseAbility(Abilities, cast)
     fun1:RecordAbility(npcBot, abilityIndex, target, castType, Abilities)
     if abilityIndex == 5 then
         refreshRemnantToken = true

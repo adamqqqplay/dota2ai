@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -135,8 +135,8 @@ function GetTargetFactor2()
             table.remove(allycreeps, i)
         end
     end
-    local HighestFactor,TempTarget = GetTargetFactor()
-    local HighestFactor2,TempTarget2 = ComputeFactor(allycreeps)
+    local HighestFactor, TempTarget = GetTargetFactor()
+    local HighestFactor2, TempTarget2 = ComputeFactor(allycreeps)
     if HighestFactor2 > HighestFactor then
         return HighestFactor2, TempTarget2
     else
@@ -171,14 +171,14 @@ Consider[1] = function()
         return not t:HasModifier("modifier_ice_blast")
     end)
     local enemys = npcBot:GetNearbyHeroes(CastRange + 300, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(CastRange + 300, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) then
                 if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or (HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and npcBot:GetMana() > ComboMana) then
-                    local desire,target = GetAbilityTarget(WeakestEnemy)
+                    local desire, target = GetAbilityTarget(WeakestEnemy)
                     if desire > 0 then
                         return desire, target
                     end
@@ -209,7 +209,7 @@ Consider[1] = function()
         local npcEnemy = npcBot:GetTarget()
         if npcEnemy ~= nil then
             if CanCast[abilityNumber](npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys then
-                local desire,target = GetAbilityTarget(npcEnemy)
+                local desire, target = GetAbilityTarget(npcEnemy)
                 if desire > 0 then
                     return desire - 0.02, target
                 end
@@ -230,7 +230,7 @@ Consider[2] = function()
     local enemys = npcBot:GetNearbyHeroes(CastRange + 300, true, BOT_MODE_NONE)
     local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, CastRange + 300, false, BOT_MODE_ATTACK)
     if npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
-        local weakestAlly,allyHealth = utility.GetWeakestUnit(allys)
+        local weakestAlly, allyHealth = utility.GetWeakestUnit(allys)
         if weakestAlly ~= nil then
             local allyNeaybyEnemys = weakestAlly:GetNearbyHeroes(CastRange, true, BOT_MODE_NONE)
             if allyHealth / weakestAlly:GetMaxHealth() < 0.4 + 0.4 * ManaPercentage + #allyNeaybyEnemys * 0.05 or #allyNeaybyEnemys >= 2 then
@@ -275,7 +275,7 @@ Consider[4] = function()
     end
     local CastRange = ability:GetCastRange()
     local enemys = npcBot:GetNearbyHeroes(CastRange + 100, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local function UseAt(target)
         if not CanCast[abilityNumber](target) then
             return false
@@ -320,7 +320,7 @@ Consider[5] = function()
     local Damage = 0
     local allys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1600, false, BOT_MODE_NONE)
     local enemys = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, 1600)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         if #allys + #enemys >= 5 then
             for i, npcTarget in pairs(allys) do

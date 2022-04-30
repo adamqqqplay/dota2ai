@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -25,19 +26,19 @@ local AbilityToLevelUp=
 	Abilities[1],
 	Abilities[3],
 	Abilities[1],
-	Abilities[4],
+	Abilities[5],
 	Abilities[1],
 	Abilities[2],
 	Abilities[3],
 	"talent",
 	Abilities[3],
-	Abilities[4],
+	Abilities[5],
 	Abilities[3],
 	Abilities[2],
 	"talent",
 	Abilities[2],
 	"nil",
-	Abilities[4],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -96,7 +97,7 @@ Consider[1]=function()
 	
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
-	
+	local castPoint = ability:GetCastPoint()
 
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
@@ -121,20 +122,14 @@ Consider[1]=function()
 	end
 	
 	--protect myself
-	local enemys2 = npcBot:GetNearbyHeroes( 500, true, BOT_MODE_NONE );
-	if(npcBot:WasRecentlyDamagedByAnyHero(5))
-	then
-		for _,enemy in pairs( enemys2 )
-		do
-			if ( CanCast[1]( enemy ) )
-			then
-				return BOT_ACTION_DESIRE_HIGH, enemy
-			end
+	if A.Unit.IsAttackingEnemies(npcBot) or A.Unit.IsRetreating(npcBot) then
+		local enemyAttackingMe = A.Dota.GetNearbyHeroes(npcBot, CastRange-castPoint*300)
+			:First(function(t) return t:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) * 6 <= t:GetHealth() and CanCast[1](t) end)
+		if enemyAttackingMe then
+			return BOT_ACTION_DESIRE_MODERATE + 0.15, enemyAttackingMe
 		end
 	end
-	--------------------------------------
-	-- Mode based usage
-	--------------------------------------
+
 	--消耗
 	--if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	--then
@@ -212,7 +207,7 @@ Consider[2]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
+					return BOT_ACTION_DESIRE_HIGH
 				end
 			end
 		end
@@ -301,22 +296,26 @@ Consider[3]=function()
 		end
 	end
 
-	-- If a mode has set a target, and we can kill them, do it
-	local npcTarget = npcBot:GetTarget();
-	if ( npcTarget ~= nil )
+	if(npcBot:WasRecentlyDamagedByAnyHero(2.5) and A.Unit.IsRetreating(npcBot))
 	then
-		if(CanCast[3]( npcTarget ))
+		local enemy = A.Dota.GetNearbyHeroes(npcBot, CastRange-CastRange*npcBot:GetCurrentMovementSpeed()):Filter(CanCast[3])
+		if enemy then
+			return BOT_ACTION_DESIRE_HIGH, enemy
+		end
+	end
+
+	-- If a mode has set a target, and we can kill them, do it
+	local npcTarget = A.Unit.GetHeroTarget(npcBot)
+	if npcTarget and (CanCast[3]( npcTarget )) then
+		if GetUnitToUnitDistance( npcTarget, npcBot ) < ( CastRange + 200 )
 		then
-			if (GetComboDamage() > npcTarget:GetHealth() and GetUnitToUnitDistance( npcTarget, npcBot ) < ( CastRange + 200 ) )
-			then
-				return BOT_ACTION_DESIRE_HIGH, npcTarget;
-			end
+			return BOT_ACTION_DESIRE_MODERATE-0.05, npcTarget
 		end
 	end
 	
 	-- If we're in a teamfight, use it on the scariest enemy
 	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes( 1000, false, BOT_MODE_ATTACK );
-	if ( #tableNearbyAttackingAlliedHeroes >= 2 ) 
+	if ( #tableNearbyAttackingAlliedHeroes >= 1 ) 
 	then
 
 		local npcMostDangerousEnemy = nil;
@@ -342,29 +341,16 @@ Consider[3]=function()
 		end
 	end
 	
-	-- If we're going after someone
-	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-		 npcBot:GetActiveMode() == BOT_MODE_ATTACK ) 
-	then
-		local npcTarget = AbilityExtensions:GetTargetIfGood(npcBot)
-
-		if ( npcTarget ~= nil ) 
-		then
-			if ( CanCast[3]( npcTarget ) and not npcTarget:IsSilenced() and GetUnitToUnitDistance(npcBot,npcTarget)< CastRange)
-			then
-				return BOT_ACTION_DESIRE_MODERATE, npcTarget;
-			end
-		end
-	end
 	
 	return BOT_ACTION_DESIRE_NONE, 0
 end
 
-Consider[4]=function()
+-- 7.30 new ability shield of the scion (passive)
 
-	local ability=AbilitiesReal[4];
+-- mystic flare
+Consider[5]=function()
+
+	local ability=AbilitiesReal[5]
 	
 	if not ability:IsFullyCastable() then
 		return BOT_ACTION_DESIRE_NONE, 0;

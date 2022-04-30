@@ -539,13 +539,13 @@ end
 
 M.Sort = M.SlowSort
 M.SortByMaxFirst = function(self, tb, map)
-    map = map or function(a, b) return b-a end
+    map = map or M.IdentityFunction
     return self:Sort(tb, function(a, b)
         return map(b) - map(a)
     end)
 end
 M.SortByMinFirst = function(self, tb, map)
-    map = map or function(a, b) return a-b end
+    map = map or M.IdentityFunction
     return self:Sort(tb, function(a, b)
         return map(a) - map(b)
     end)
@@ -682,10 +682,10 @@ function M:CanBeEngaged(npcBot)
 end
 
 M.IsRetreating = function(self, npcBot)
-    return npcBot:GetActiveMode() == BOT_MODE_RETREAT
+    return npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_ACTION_DESIRE_MODERATE
 end
 M.NotRetreating = function(self, npcBot)
-    return npcBot:GetActiveMode() ~= BOT_MODE_RETREAT
+    return not self:IsRetreating(npcBot)
 end
 
 M.HasEnoughManaToUseAttackAttachedAbility = function(self, npcBot, ability)
@@ -1189,7 +1189,6 @@ M.basicDispellWorthNegativeModifiers = {
 M.basicDispellableNegativeModifiers = {
     "modifier_abaddon_frostmourne_debuff",
     "modifier_abaddon_frostmourne_debuff_bonus",
-
 }
 
 M.unbreakableChannelAbilities = {
@@ -1199,6 +1198,7 @@ M.unbreakableChannelAbilities = {
     "lycan_shapeshift",
     "item_trusty_shovel",
     "item_fallen_sky",
+    "pangolier_rollup",
 }
 -- items cannot be break by silence
 
@@ -1362,7 +1362,7 @@ M.conditionalTrueSightRootAbilityAssociation = {
     ember_spirit_searing_chains = "modifier_ember_spirit_searing_chains",
     oracle_fortunes_end = "modifier_oracle_fortunes_end_purge",
     item_rod_of_atos = "modifier_rod_of_atos_debuff",
-    item_gleipnir = "modifier_gungir_debuff",
+    item_gungir = "modifier_gungir_debuff",
 }
 
 M.permanentTrueSightRootAbilityAssociation = {
@@ -2167,7 +2167,7 @@ function M:GetMyCourier(npcBot)
     if npcBot.courierIDNew == nil then
         self:FindCourier(npcBot)
     end
-    return GetCourier(npcBot.courierIDNew)
+    return GetCourier(npcBot.courierIDNew or 0)
 end
 
 function M:FindCourier(npcBot)
@@ -2311,6 +2311,9 @@ function M:IsDuelCaster(npc)
         local ability = _npc:GetAbilityByName "modifier_legion_commander_duel"
         return ability and ability:GetCooldownTimeRemaining() + self:GetModifierRemainingDuration(_npc, "modifier_legion_commander_duel") + 1 >= ability:GetCooldown()
     end
+    if not npc then --dont know why _npc can be null
+        return false
+    end
     local npcBot = GetBot()
     if npcBot:GetTeam() == npc:GetTeam() then
         return IsTaunting(npc)
@@ -2319,12 +2322,12 @@ function M:IsDuelCaster(npc)
         local tauntingPlayer = self:First(players, function(t)
             return IsTaunting(t) and t:GetAttackTarget() == npc
         end)
-        return IsTaunting and not IsTaunting(tauntingPlayer)
+        return tauntingPlayer and not IsTaunting(tauntingPlayer)
     end
 end
 
 function M:IsMuted(npc)
-    return npc:IsHexed() or self:HasAnyModifier(npc, self.muteModifiers)
+    return self:HasAnyModifier(npc, self.muteModifiers)
 end
 
 function M:IsHypnosed(npc)
@@ -2404,7 +2407,7 @@ M.invisibilityItems = {
 }
 M.invisibilityHeroes = {
     riki = 6,
-    clinkz = 1,
+    clinkz = 4,
     bounty_hunter = 1,
     phantom_assassin = 2,
     weaver = 1,
@@ -2533,7 +2536,7 @@ function M:HasBasicDispellablePositiveModifier(npc)
 end
 
 function M:DontInterruptAlly(npc)
-    return self:HasAnyModifier(npc, self.positiveForceMovementModifiers) or self:HasAnyModifier(npc, self.timeSensitivePositiveModifiers) or self:IsDuelCaster(npc)
+    return self:HasAnyModifier(npc, self.positiveForceMovementModifiers) or self:HasAnyModifier(npc, self.timeSensitivePositiveModifiers) or self:IsDuelCaster(npc) or npc:IsChanneling()
 end
 
 M.MidLaneTowers = { TOWER_MID_1, TOWER_MID_2, TOWER_MID_3 }
@@ -3080,6 +3083,7 @@ M.IgnoreDamageModifiers = {
     "modifier_winter_wyvern_winters_curse",
     "modifier_winter_wyvern_winters_curse_aura",
     "modifier_skeleton_king_reincarnation_scepter_active",
+    "modifier_fountain_glyph",
 }
 
 M.CannotKillModifiers = {
@@ -3135,13 +3139,18 @@ M.GetIllusionBattlePower = function(self, npc)
     end
     local t = 0.1
     if self:Contains(self.GoodIllusionHero, name) then
-        t = 0.25
-    elseif self:Contains(self.ModerateIllusionHero, name) then
         t = 0.4
+<<<<<<< HEAD
     elseif not self:IsMeleeHero(npc) then
         t = t + t:GetAttackRange() / 2000
+=======
+    elseif self:Contains(self.ModerateIllusionHero, name) then
+        t = 0.25
+    elseif not self:IsMeleeHero(npc) then
+        t = t + npc:GetAttackRange() / 2000
+>>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
     end
-    local inventory = self:Map(self:GetInventoryItems(npc), function(t) return t:GetName() end)
+    local inventory = self:Map(self:GetInventoryItems(npc)) { t -> t:GetName() }
     if self:Contains(inventory, "item_radiance") then
         t = t+0.07
     end
@@ -3383,7 +3392,7 @@ function M:TickFromDota()
         if not coroutineResult[1] then
             table.remove(coroutineResult, 1)
             print("error in coroutine:")
-            self:DebugTable(coroutineResult)
+            self:DebugLongTable(coroutineResult)
         end
     end
     if dotaTimer == nil then
@@ -3460,7 +3469,7 @@ function M:ResumeUntilReturn(func)
         else
             table.remove(values, 1)
             print("error in coroutine:")
-            self:DebugTable(values)
+            self:DebugLongTable(values)
             break
         end
     end

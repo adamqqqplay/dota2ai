@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -403,6 +404,17 @@ Consider[3]=function()
 		end
 	end
 
+	if npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+	npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
+	npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
+		local tower = towers[1]
+		if tower then
+			if A.Building.CanBeAttacked(tower) then
+				return BOT_ACTION_DESIRE_VERYHIGH, tower
+			end
+		end
+	end
+
 	-- If we're pushing or defending a lane and can hit 3+ creeps, go for it
 	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
 		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
@@ -411,10 +423,6 @@ Consider[3]=function()
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
 	then
-		if(#towers>=1)
-		then
-			return BOT_ACTION_DESIRE_VERYHIGH, towers[1];
-		end
 		if (WeakestEnemy~=nil)
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy )and GetUnitToUnitDistance(npcBot,WeakestEnemy)< CastRange + 75*#allys )

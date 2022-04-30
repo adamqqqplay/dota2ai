@@ -184,7 +184,7 @@ Consider[1]=function()
 	-- If we're farming and can hit 2+ creeps
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
-		if ( #creeps >= 2 ) 
+		if ( #creeps >= 3 ) 
 		then
 			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana)
 			then

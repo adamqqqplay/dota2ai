@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -170,7 +170,6 @@ M.Take = function(self, tb, number)
             table.insert(g, v)
         else
             break
-
         end
     end
     return g
@@ -243,7 +242,6 @@ M.GroupBy = function(self, collection, keySelector, elementSelector, resultSelec
                 keyFound = true
                 table.insert(values[readKeyIndex], elementSelector(k))
                 break
-
             end
         end
         if not keyFound then
@@ -298,7 +296,7 @@ function M:Max(tb, map)
         return nil
     end
     map = map or self.IdentityFunction
-    local maxv,maxm = tb[1], map(tb[1])
+    local maxv, maxm = tb[1], map(tb[1])
     for i = 2, #tb do
         local m = map(tb[i])
         if m > maxm then
@@ -313,7 +311,11 @@ function M:MaxV(tb, map)
         return nil
     end
     map = map or self.IdentityFunction
+<<<<<<< HEAD
     local maxv,maxm = tb[1], map(tb[1])
+=======
+    local maxv, maxm = tb[1], map(tb[1])
+>>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
     for i = 2, #tb do
         local m = map(tb[i])
         if m > maxm then
@@ -328,7 +330,7 @@ function M:Min(tb, map)
         return nil
     end
     map = map or self.IdentityFunction
-    local maxv,maxm = tb[1], map(tb[1])
+    local maxv, maxm = tb[1], map(tb[1])
     for i = 2, #tb do
         local m = map(tb[i])
         if m < maxm then
@@ -343,7 +345,11 @@ function M:MinV(tb, map)
         return nil
     end
     map = map or self.IdentityFunction
+<<<<<<< HEAD
     local maxv,maxm = tb[1], map(tb[1])
+=======
+    local maxv, maxm = tb[1], map(tb[1])
+>>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
     for i = 2, #tb do
         local m = map(tb[i])
         if m < maxm then
@@ -517,17 +523,13 @@ M.MergeSort = function(self, tb, sort)
 end
 M.Sort = M.SlowSort
 M.SortByMaxFirst = function(self, tb, map)
-    map = map or function(a, b)
-        return b - a
-    end
+    map = map or M.IdentityFunction
     return self:Sort(tb, function(a, b)
         return map(b) - map(a)
     end)
 end
 M.SortByMinFirst = function(self, tb, map)
-    map = map or function(a, b)
-        return a - b
-    end
+    map = map or M.IdentityFunction
     return self:Sort(tb, function(a, b)
         return map(a) - map(b)
     end)
@@ -641,10 +643,10 @@ function M:CanBeEngaged(npcBot)
     return self:IsAttackingEnemies(npcBot) or self:IsFarmingOrPushing(npcBot) or self:IsLaning(npcBot) or not npcBot:IsBot()
 end
 M.IsRetreating = function(self, npcBot)
-    return npcBot:GetActiveMode() == BOT_MODE_RETREAT
+    return npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_ACTION_DESIRE_MODERATE
 end
 M.NotRetreating = function(self, npcBot)
-    return npcBot:GetActiveMode() ~= BOT_MODE_RETREAT
+    return not self:IsRetreating(npcBot)
 end
 M.HasEnoughManaToUseAttackAttachedAbility = function(self, npcBot, ability)
     local percent = self:GetManaPercent(npcBot)
@@ -656,7 +658,7 @@ end
 M.ToggleFunctionToAction = function(self, npcBot, oldConsider, ability)
     local name = ability:GetName()
     return function()
-        local value,target,castType = oldConsider()
+        local value, target, castType = oldConsider()
         if type(value) == "number" then
             return value, target, castType
         end
@@ -667,7 +669,7 @@ M.ToggleFunctionToAction = function(self, npcBot, oldConsider, ability)
 end
 M.ToggleFunctionToAutoCast = function(self, npcBot, ability, oldToggle)
     return function()
-        local value,target,castType = oldToggle()
+        local value, target, castType = oldToggle()
         if type(value) == "number" then
             return value, target, castType
         end
@@ -679,7 +681,7 @@ M.ToggleFunctionToAutoCast = function(self, npcBot, ability, oldToggle)
 end
 M.PreventAbilityAtIllusion = function(self, npcBot, oldConsiderFunction, ability)
     return function()
-        local desire,target,targetTypeString = oldConsiderFunction()
+        local desire, target, targetTypeString = oldConsiderFunction()
         if desire == 0 or target == nil or target == 0 or self:IsVector(target) or targetTypeString == "Location" then
             return desire, target, targetTypeString
         end
@@ -691,7 +693,7 @@ M.PreventAbilityAtIllusion = function(self, npcBot, oldConsiderFunction, ability
 end
 M.PreventEnemyTargetAbilityUsageAtAbilityBlock = function(self, npcBot, oldConsiderFunction, ability)
     local newConsider = function()
-        local desire,target,targetTypeString = oldConsiderFunction()
+        local desire, target, targetTypeString = oldConsiderFunction()
         if desire == 0 or target == nil or target == 0 or self:IsVector(target) or targetTypeString == "Location" then
             return desire, target, targetTypeString
         end
@@ -1105,6 +1107,7 @@ M.unbreakableChannelAbilities = {
     "lycan_shapeshift",
     "item_trusty_shovel",
     "item_fallen_sky",
+    "pangolier_rollup",
 }
 M.lowPriorityChannelAbilities = {
     "windrunner_powershot",
@@ -1240,7 +1243,7 @@ M.conditionalTrueSightRootAbilityAssociation = {
     ember_spirit_searing_chains = "modifier_ember_spirit_searing_chains",
     oracle_fortunes_end = "modifier_oracle_fortunes_end_purge",
     item_rod_of_atos = "modifier_rod_of_atos_debuff",
-    item_gleipnir = "modifier_gungir_debuff",
+    item_gungir = "modifier_gungir_debuff",
 }
 M.permanentTrueSightRootAbilityAssociation = {
     broodmother_silken_bola = "modifier_broodmother_silken_bola",
@@ -1270,7 +1273,7 @@ local function ExtendAssociation(association)
     end):Distinct()
 end
 abilityInformationKeys:ForEach(function(t)
-    local a,b = ExtendAssociation(M[t])
+    local a, b = ExtendAssociation(M[t])
     local k = t:sub(1, #t - #"AbilityAssociation")
     M[k.."Abilities"] = a
     M[k.."Modifiers"] = b
@@ -2029,7 +2032,7 @@ function M:GetMyCourier(npcBot)
     if npcBot.courierIDNew == nil then
         self:FindCourier(npcBot)
     end
-    return GetCourier(npcBot.courierIDNew)
+    return GetCourier(npcBot.courierIDNew or 0)
 end
 function M:FindCourier(npcBot)
     for i = 0, 4 do
@@ -2156,6 +2159,9 @@ function M:IsDuelCaster(npc)
         local ability = _npc:GetAbilityByName "modifier_legion_commander_duel"
         return ability and ability:GetCooldownTimeRemaining() + self:GetModifierRemainingDuration(_npc, "modifier_legion_commander_duel") + 1 >= ability:GetCooldown()
     end
+    if not npc then
+        return false
+    end
     local npcBot = GetBot()
     if npcBot:GetTeam() == npc:GetTeam() then
         return IsTaunting(npc)
@@ -2164,11 +2170,11 @@ function M:IsDuelCaster(npc)
         local tauntingPlayer = self:First(players, function(t)
             return IsTaunting(t) and t:GetAttackTarget() == npc
         end)
-        return IsTaunting and not IsTaunting(tauntingPlayer)
+        return tauntingPlayer and not IsTaunting(tauntingPlayer)
     end
 end
 function M:IsMuted(npc)
-    return npc:IsHexed() or self:HasAnyModifier(npc, self.muteModifiers)
+    return self:HasAnyModifier(npc, self.muteModifiers)
 end
 function M:IsHypnosed(npc)
     return self:HasAnyModifier(npc, self.hypnosisModifiers)
@@ -2235,7 +2241,7 @@ M.invisibilityItems = {
 }
 M.invisibilityHeroes = {
     riki = 6,
-    clinkz = 1,
+    clinkz = 4,
     bounty_hunter = 1,
     phantom_assassin = 2,
     weaver = 1,
@@ -2359,7 +2365,7 @@ function M:HasBasicDispellablePositiveModifier(npc)
     end)
 end
 function M:DontInterruptAlly(npc)
-    return self:HasAnyModifier(npc, self.positiveForceMovementModifiers) or self:HasAnyModifier(npc, self.timeSensitivePositiveModifiers) or self:IsDuelCaster(npc)
+    return self:HasAnyModifier(npc, self.positiveForceMovementModifiers) or self:HasAnyModifier(npc, self.timeSensitivePositiveModifiers) or self:IsDuelCaster(npc) or npc:IsChanneling()
 end
 M.MidLaneTowers = {
     TOWER_MID_1,
@@ -2793,7 +2799,7 @@ M.GetCollapseInfo = function(self, obj1, obj2, timeLimit)
 end
 M.PreventHealAtHealSuppressTarget = function(self, npcBot, oldConsiderFunction, ability)
     return function()
-        local desire,target,targetTypeString = oldConsiderFunction()
+        local desire, target, targetTypeString = oldConsiderFunction()
         if desire == 0 or target == nil or target == 0 or targetTypeString == "Location" then
             return desire, target, targetTypeString
         end
@@ -2817,6 +2823,7 @@ M.IgnoreDamageModifiers = {
     "modifier_winter_wyvern_winters_curse",
     "modifier_winter_wyvern_winters_curse_aura",
     "modifier_skeleton_king_reincarnation_scepter_active",
+    "modifier_fountain_glyph",
 }
 M.CannotKillModifiers = {
     "modifier_dazzle_shadow_grave",
@@ -2877,11 +2884,16 @@ M.GetIllusionBattlePower = function(self, npc)
     end
     local t = 0.1
     if self:Contains(self.GoodIllusionHero, name) then
-        t = 0.25
-    elseif self:Contains(self.ModerateIllusionHero, name) then
         t = 0.4
+<<<<<<< HEAD
     elseif not self:IsMeleeHero(npc) then
         t = t + t:GetAttackRange() / 2000
+=======
+    elseif self:Contains(self.ModerateIllusionHero, name) then
+        t = 0.25
+    elseif not self:IsMeleeHero(npc) then
+        t = t + npc:GetAttackRange() / 2000
+>>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
     end
     local inventory = self:Map(self:GetInventoryItems(npc), function(t)
         return t:GetName()
@@ -3110,7 +3122,7 @@ function M:TickFromDota()
         if not coroutineResult[1] then
             table.remove(coroutineResult, 1)
             print("error in coroutine:")
-            self:DebugTable(coroutineResult)
+            self:DebugLongTable(coroutineResult)
         end
     end
     if dotaTimer == nil then
@@ -3184,9 +3196,8 @@ function M:ResumeUntilReturn(func)
         else
             table.remove(values, 1)
             print("error in coroutine:")
-            self:DebugTable(values)
+            self:DebugLongTable(values)
             break
-
         end
     end
     return g

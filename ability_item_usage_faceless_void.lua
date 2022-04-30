@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -91,7 +91,7 @@ Consider[1] = function()
     local CastRange = ability:GetSpecialValueInt("range")
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(CastRange + 300, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local trees = npcBot:GetNearbyTrees(300)
     if npcBot.FacelessVoidSkill1 == nil or DotaTime() - npcBot.FacelessVoidSkill1.Timer >= 2 then
         npcBot.FacelessVoidSkill1 = {
@@ -118,7 +118,7 @@ Consider[1] = function()
             return BOT_ACTION_DESIRE_HIGH, fun1:GetPointFromLineByDistance(npcBot:GetLocation(), p.location, 450)
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_RETREAT or npcBot.FacelessVoidSkill1.Hp - HealthPercentage >= 0.25 + 0.05 * #enemys then
+    if AbilityExtensions:IsRetreating(npcBot) or npcBot.FacelessVoidSkill1.Hp - HealthPercentage >= 0.25 + 0.05 * #enemys then
         return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot, GetAncient(GetTeam()), CastRange)
     end
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT and ManaPercentage > ComboMana and AbilitiesReal[4]:IsFullyCastable() then
@@ -153,9 +153,9 @@ Consider[2] = function()
     local Radius = ability:GetAOERadius()
     local CastPoint = ability:GetCastPoint()
     local allys = npcBot:GetNearbyHeroes(Radius, false, BOT_MODE_NONE)
-    local WeakestAlly,AllyHealth = utility.GetWeakestUnit(allys)
+    local WeakestAlly, AllyHealth = utility.GetWeakestUnit(allys)
     local enemys = npcBot:GetNearbyHeroes(Radius, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) then
@@ -236,7 +236,7 @@ Consider[5] = function()
     local CastPoint = ability:GetCastPoint()
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(CastRange + 300, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     for _, npcEnemy in pairs(enemys) do
         if npcEnemy:IsChanneling() then
             local TargetLocation = npcEnemy:GetLocation()
@@ -294,7 +294,7 @@ function AbilityUsageThink()
     if debugmode == true then
         ability_item_usage_generic.PrintDebugInfo(AbilitiesReal, cast)
     end
-    local index,target = ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
+    local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
     if index == 1 then
         timeWalkLocation = npcBot:GetLocation()
         timeWalkTime = DotaTime()

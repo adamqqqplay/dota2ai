@@ -1,11 +1,12 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
 local utility = require(GetScriptDirectory().."/utility")
 require(GetScriptDirectory().."/ability_item_usage_generic")
 local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 local debugmode = false
 local npcBot = GetBot()
 if npcBot:IsIllusion() then
@@ -92,7 +93,7 @@ local useTorrentAtXMark
 local useTorrentAtXMarkTime
 local xMarkTargetWasTeleporting
 local function XMarksEnemy()
-    return xMarkTarget ~= nil and xMarkTarget:IsAlive() and xMarkTarget:GetTeam() ~= npcBot:GetTeam()
+    return A.Dota.IsValidUnit(xMarkTarget) and xMarkTarget:GetTeam() ~= npcBot:GetTeam()
 end
 Consider[1] = function()
     local abilityNumber = 1
@@ -106,9 +107,9 @@ Consider[1] = function()
     local CastPoint = 2
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(CastRange, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(CastRange, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     for _, npcEnemy in pairs(enemys) do
         if npcEnemy:IsChanneling() then
             return BOT_ACTION_DESIRE_HIGH - 0.1, npcEnemy:GetLocation()
@@ -176,7 +177,7 @@ Consider[3] = function()
     local Damage = ability:GetAbilityDamage()
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(CastRange, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     for _, enemy in pairs(enemys) do
         if enemy:IsChanneling() and CanCast[3](enemy) and not enemy:IsSilenced() then
             return BOT_ACTION_DESIRE_HIGH, enemy
@@ -239,9 +240,9 @@ Consider[6] = function()
     local CastPoint = ability:GetCastPoint()
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(CastRange, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(CastRange, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) then
@@ -377,7 +378,7 @@ function AbilityUsageThink()
             useTorrentAtXMarkTime = nil
         end
     end)
-    local index,target = ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
+    local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
     if index == 3 and target ~= nil then
         xMarkTarget = target
         xMarkTime = DotaTime() + AbilitiesReal[3]:GetCastPoint()

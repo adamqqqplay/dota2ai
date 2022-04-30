@@ -226,8 +226,12 @@ Consider[2]=function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 	
-	if npcBot:HasModifier("modifier_centaur_stampede") and AbilitiesReal[1]:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
+	local function PrioritiseStompFactor(enemy)
+		if npcBot:HasModifier("modifier_centaur_stampede") and AbilitiesReal[1]:IsFullyCastable() and CanCast[1](enemy) then
+			return 0.25
+		else
+			return 1
+		end
 	end
 	
 	local CastRange = ability:GetCastRange();
@@ -253,7 +257,7 @@ Consider[2]=function()
 			then
 				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_MAGICAL) and npcBot:GetMana()>ComboMana))
 				then
-					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
+					return BOT_ACTION_DESIRE_HIGH * PrioritiseStompFactor(WeakestEnemy), WeakestEnemy
 				end
 			end
 		end
@@ -268,7 +272,7 @@ Consider[2]=function()
 		then
 			if(CreepHealth<=WeakestCreep:GetActualIncomingDamage(Damage,DAMAGE_TYPE_MAGICAL) and HealthPercentage>=0.4+selfDamage)
 			then
-				return BOT_ACTION_DESIRE_LOW, WeakestCreep;
+				return BOT_ACTION_DESIRE_LOW, WeakestCreep
 			end
 		end
 	end
@@ -282,7 +286,7 @@ Consider[2]=function()
 		then
 			if ( CanCast[abilityNumber]( creeps[1] )and GetUnitToUnitDistance(npcBot,creeps[1])< CastRange + 75*#allys and HealthPercentage>=0.6-0.05*#allys)
 			then
-				return BOT_ACTION_DESIRE_LOW, creeps[1];
+				return BOT_ACTION_DESIRE_LOW, creeps[1]
 			end
 		end
 	end
@@ -298,64 +302,65 @@ Consider[2]=function()
 		then
 			if ( CanCast[abilityNumber]( npcEnemy )  and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys and HealthPercentage>=0.6-0.05*#allys)
 			then
-				return BOT_ACTION_DESIRE_MODERATE, npcEnemy;
+				return BOT_ACTION_DESIRE_MODERATE * PrioritiseStompFactor(npcEnemy), npcEnemy
 			end
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
+	return BOT_ACTION_DESIRE_NONE, 0
 	
 end
 
-Consider[3]=function()
+-- retaliate is no longer an active ability
+-- Consider[3]=function()
 
-	local abilityNumber=3
-	--------------------------------------
-	-- Generic Variable Setting
-	--------------------------------------
-	local ability=AbilitiesReal[abilityNumber];
+-- 	local abilityNumber=3
+-- 	--------------------------------------
+-- 	-- Generic Variable Setting
+-- 	--------------------------------------
+-- 	local ability=AbilitiesReal[abilityNumber];
 	
-	if not ability:IsFullyCastable() then
-		return BOT_ACTION_DESIRE_NONE, 0;
-	end
+-- 	if not ability:IsFullyCastable() then
+-- 		return BOT_ACTION_DESIRE_NONE, 0;
+-- 	end
 
-	-- Get some of its values
-	local nRadius = 300;
-	local maxStacks = ability:GetSpecialValueInt('max_stacks');
-	local stack = 0;
-	local modIdx = npcBot:GetModifierByName("modifier_centaur_return_counter");
-	if modIdx > -1 then
-		stack = npcBot:GetModifierStackCount(modIdx);
-	end
-	if stack <= maxStacks / 2 then
-		return BOT_ACTION_DESIRE_NONE;
-	end
-	--------------------------------------
-	-- Mode based usage
-	--------------------------------------
-	if ( npcBot:GetActiveMode() == BOT_MODE_ROSHAN  ) 
-	then
-		local npcTarget = npcBot:GetAttackTarget();
-		if ( utility.IsRoshan(npcTarget) and GetUnitToUnitDistance(npcBot,npcTarget) < nRadius )
-		then
-			return BOT_ACTION_DESIRE_LOW;
-		end
-	end
+-- 	-- Get some of its values
+-- 	local nRadius = 300;
+-- 	local maxStacks = ability:GetSpecialValueInt('max_stacks');
+-- 	local stack = 0;
+-- 	local modIdx = npcBot:GetModifierByName("modifier_centaur_return_counter");
+-- 	if modIdx > -1 then
+-- 		stack = npcBot:GetModifierStackCount(modIdx);
+-- 	end
+-- 	if stack <= maxStacks / 2 then
+-- 		return BOT_ACTION_DESIRE_NONE;
+-- 	end
+-- 	--------------------------------------
+-- 	-- Mode based usage
+-- 	--------------------------------------
+-- 	if ( npcBot:GetActiveMode() == BOT_MODE_ROSHAN  ) 
+-- 	then
+-- 		local npcTarget = npcBot:GetAttackTarget();
+-- 		if ( utility.IsRoshan(npcTarget) and GetUnitToUnitDistance(npcBot,npcTarget) < nRadius )
+-- 		then
+-- 			return BOT_ACTION_DESIRE_LOW;
+-- 		end
+-- 	end
 
-	-- If we're going after someone
-	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
-		 npcBot:GetActiveMode() == BOT_MODE_ATTACK )
-	then
-		local npcTarget = npcBot:GetTarget();
-		if ( CanCast[abilityNumber]( npcTarget ) and GetUnitToUnitDistance(npcBot,npcTarget) < nRadius )
-		then
-			return BOT_ACTION_DESIRE_HIGH;
-		end
-	end
-	return BOT_ACTION_DESIRE_NONE;
-end
+-- 	-- If we're going after someone
+-- 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
+-- 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+-- 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
+-- 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK )
+-- 	then
+-- 		local npcTarget = npcBot:GetTarget();
+-- 		if ( CanCast[abilityNumber]( npcTarget ) and GetUnitToUnitDistance(npcBot,npcTarget) < nRadius )
+-- 		then
+-- 			return BOT_ACTION_DESIRE_HIGH;
+-- 		end
+-- 	end
+-- 	return BOT_ACTION_DESIRE_NONE;
+-- end
 
 Consider[4]=function()
 

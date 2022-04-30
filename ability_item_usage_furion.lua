@@ -99,7 +99,8 @@ Consider[1]=function()
     end
 
 	local function HasDagger(t)
-		return t:GetUnitName() == "npc_dota_hero_spectre" and t:GetAbilityByName("spectre_spectres_dagger"):IsFullyCastable()
+		local dagger = t:GetAbilityByName "spectre_spectres_dagger"
+		return dagger and dagger:IsFullyCastable() and not t:IsSilenced()
 	end
 
 	local blockNearbyMeleeHeroes = AbilityExtensions:Any(npcBot:GetNearbyHeroes(350, false, BOT_MODE_NONE), function(p)

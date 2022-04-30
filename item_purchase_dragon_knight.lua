@@ -12,11 +12,10 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
 	"item_power_treads", --假腿7.21
 	"item_ancient_janggo", --战鼓7.20
-	"item_maelstrom", --电锤7.14
+	"item_lesser_crit",
 	"item_black_king_bar", --BKB
-	"item_blink",
-	"item_mjollnir", --大雷锤
 	"item_assault", --强袭
+	"item_blink",
 	"item_greater_crit",
 	"item_overwhelming_blink",
 }
