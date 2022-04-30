@@ -9,6 +9,8 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local A = require(GetScriptDirectory().."/util/MiraDota")
+-- ItemUsageThink = A.Dota.EmptyDesireFun
 
 local debugmode=false
 local npcBot = GetBot()

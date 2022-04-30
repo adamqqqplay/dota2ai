@@ -139,7 +139,7 @@ Consider[1]=function() --Location AOE Example
 	-- Mode based usage
 	--------------------------------------
 	-- If we're farming and can kill 3+ creeps with LSA
-	if npcBot:GetActiveMode() == BOT_MODE_FARM and mana > maxMana * 0.3 + manaCost then
+	if npcBot:GetActiveMode() == BOT_MODE_FARM and mana > maxMana * 0.55 + manaCost then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 
 		if ( locationAoE.count >= 3 ) then
@@ -314,9 +314,9 @@ end
 local function FindNearbyTeleportTarget(target)
 	local isEnemy = not AbilityExtensions:IsOnSameTeam(npcBot, target)
 	local castDelay = AbilitiesReal[4]:GetSpecialValueInt("cast_delay")
-	local creeps = target:GetNearbyCreeps(600, isEnemy)
-	creeps = AbilityExtensions:Filter(creeps, function(t) return not t:WasRecentlyDamagedByAnyHero(3) and #AbilityExtensions:GetNearbyHeroes(t, 500, true, BOT_MODE_NONE) == 0 end)
-	creeps = AbilityExtensions:Max(creeps, function(t) return t:GetHealth() end)
+	local creeps = AbilityExtensions:GetNearbyCreeps(target, 600, isEnemy)
+		:Filter(function(t) return not t:WasRecentlyDamagedByAnyHero(3) and #AbilityExtensions:GetNearbyHeroes(t, 500, true, BOT_MODE_NONE) == 0 end)
+		:Max(function(t) return t:GetHealth() end)
 	local buildings = AbilityExtensions:Concat(target:GetNearbyTowers(700, isEnemy), target:GetNearbyBarracks(700, isEnemy))
 	buildings = AbilityExtensions:Filter(buildings, function(t) return t:HasModifier("modifier_backdoor_protection_active") and t:GetHealth() >= 100 or t:GetHealth() >= 300 and not t:WasRecentlyDamagedByAnyHero(castDelay-2) or t:GetHealth() >= 800 or t:HasModifier("modifier_fountain_glyph") end)
 	buildings = AbilityExtensions:Max(buildings, function(t) return AbilityExtensions:GetBuildingPhysicalHealth(t) end)

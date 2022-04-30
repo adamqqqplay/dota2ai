@@ -12,14 +12,14 @@ local ItemsToBuy =
 	"item_wraith_band", --系带
 	"item_flask",
 	"item_phase_boots",
-	"item_radiance",
-	"item_manta", --分身
+	"item_orb_of_corrosion",
 	"item_diffusal_blade", --散失刀
+	"item_manta", --分身
 	"item_heart", --龙心7.20
-	"item_aghanims_shard",
 	"item_black_king_bar",
-	"item_butterfly",
     "item_ultimate_scepter",
+	"item_butterfly",
+	"item_aghanims_shard",
     "item_ultimate_scepter_2",
 	"item_skadi",
 }

@@ -9,15 +9,6 @@ local utility = require( GetScriptDirectory().."/utility" )
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 
--- for k,v in pairs(GetUnitList(UNIT_LIST_ALLIED_WARDS)) do
--- 	print("unit: "..v:GetUnitName()..", "..AbilityExtensions:ToStringVector(v:GetLocation()))
--- end
--- for k,v in pairs(GetUnitList(UNIT_LIST_ENEMY_WARDS)) do
--- 	print("unit: "..v:GetUnitName()..", "..AbilityExtensions:ToStringVector(v:GetLocation()))
--- end
--- for k,v in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES)) do
--- 	print("unit: "..v:GetUnitName()..", "..AbilityExtensions:ToStringVector(v:GetLocation()))
--- end
 
 local debugmode=false
 local npcBot = GetBot()
@@ -168,7 +159,7 @@ Consider[2]=function()
 	end
 	
 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
-	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:DistanceFromFountain()>=2000 and (ManaPercentage>=0.6 or npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH or HealthPercentage<=0.6)) 
+	if ( AbilityExtensions:IsRetreating(npcBot) and npcBot:DistanceFromFountain()>=2000 and (ManaPercentage>=0.6 or npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH or HealthPercentage<=0.6)) 
 	then
 		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
 	end
@@ -207,7 +198,7 @@ Consider[2]=function()
     if #projectiles ~= 0 and not AbilitiesReal[3]:IsFullyCastable() and not npcBot:HasModifier("modifier_antimage_counterspell") then
         for _, projectile in pairs(projectiles) do
             if GetUnitToLocationDistance(npcBot, projectile.location) > castPoint * defaultProjectileVelocity then
-                local escapeLocation = utility.GetUnitsTowardsLocation(npcBot, projectile.location, 400)
+                local escapeLocation = AbilityExtensions:GetPointFromLineByDistance(npcBot:GetLocation(), projectile.location, 400)
                 return BOT_ACTION_DESIRE_MODERATE, escapeLocation
             end
         end

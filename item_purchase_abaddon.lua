@@ -29,5 +29,4 @@ ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
 function ItemPurchaseThink()
 	ItemPurchaseSystem.BuySupportItem()
 	ItemPurchaseSystem:ItemPurchaseExtend()
-
 end

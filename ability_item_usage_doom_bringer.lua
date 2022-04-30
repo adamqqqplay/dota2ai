@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -94,12 +94,12 @@ local neutralCreeps
 local tower
 local CanCast = {
     function(t)
-        return not t:IsHero() and not fun1:IsRoshan(t) and t:GetLevel() <= AbilitiesReal[1]:GetLevel() + 3
+        return not t:IsHero() and not fun1:IsRoshan(t) and t:GetLevel() <= AbilitiesReal[1]:GetLevel() + 3 and (not t:IsAncient() or level >= 28)
     end,
-    utility.NCanCast,
-    utility.NCanCast,
-    utility.UCanCast,
-    utility.UCanCast,
+    AbilityExtensions.NormalCanCastFunction,
+    AbilityExtensions.PhysicalCanCastFunction,
+    AbilityExtensions.NormalCanCastFunction,
+    AbilityExtensions.NormalCanCastFunction,
     utility.UCanCast,
 }
 local enemyDisabled = utility.enemyDisabled
@@ -143,26 +143,12 @@ Consider[1] = function()
     local abilityNumber = 1
     local ability = AbilitiesReal[abilityNumber]
     if not ability:IsFullyCastable() then
-        return BOT_ACTION_DESIRE_NONE, 0
+        return BOT_ACTION_DESIRE_NONE
     end
-    local CastRange = ability:GetCastRange()
-    local Damage = ability:GetAbilityDamage()
-    local CreepHealth = 10000
-    local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-    local creeps = npcBot:GetNearbyCreeps(CastRange + 200, true)
-    if npcBot:GetAbilityByName "special_bonus_unique_doom_bringer_3":GetLevel() < 1 then
-        creeps = fun1:Filter(creeps, function(t)
-            return not t:IsAncientCreep()
-        end)
-    end
-    local StrongstCreep,CreepHealth = utility.GetStrongestUnit(creeps)
-    if StrongstCreep and CanCast[abilityNumber](StrongstCreep) then
-        return BOT_ACTION_DESIRE_HIGH, StrongstCreep
-    end
-    for _, npcEnemy in pairs(creeps) do
-        if CanCast[abilityNumber](npcEnemy) then
-            return BOT_ACTION_DESIRE_HIGH, npcEnemy
-        end
+    local creeps = A.Dota.GetNearbyCreeps(npcBot, 800, true):Concat(A.Dota.GetNearbyNeutralCreeps(npcBot, 800))
+    local strongstCreep = A.Linq.Filter(utility.GetStrongestUnit(creeps), CanCast[1])
+    if strongstCreep then
+        return BOT_ACTION_DESIRE_MODERATE, strongstCreep
     end
     return BOT_ACTION_DESIRE_NONE
 end
@@ -177,9 +163,10 @@ Consider[2] = function()
     local allys = fun1:GetNearbyNonIllusionHeroes(npcBot, 1200, false)
     local allyCount = fun1:GetEnemyHeroNumber(npcBot, allys)
     local enemys = npcBot:GetNearbyHeroes(Radius + 300, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(Radius + 300, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
+    local abilityLevel = ability:GetLevel()
     if npcBot:WasRecentlyDamagedByAnyHero(2) or (npcBot:GetActiveMode() == BOT_MODE_RETREAT and HealthPercentage <= 0.4 + #enemys * 0.05) then
         return BOT_ACTION_DESIRE_HIGH
     end
@@ -187,14 +174,14 @@ Consider[2] = function()
         local npcEnemy = npcBot:GetTarget()
         if ManaPercentage > 0.4 or npcBot:GetMana() > ComboMana then
             if npcEnemy ~= nil then
-                if (GetUnitToUnitDistance(npcBot, npcEnemy) > 450 or npcEnemy:GetHealth() / npcEnemy:GetMaxHealth() < 0.4) and GetUnitToLocationDistance(npcBot, npcEnemy) < 1100 then
+                if (GetUnitToUnitDistance(npcBot, npcEnemy) > 350 or npcEnemy:GetHealth() / npcEnemy:GetMaxHealth() < 0.4) and GetUnitToUnitDistance(npcBot, npcEnemy) < 900 then
                     return BOT_ACTION_DESIRE_HIGH
                 end
             end
         end
     end
     if npcBot:GetActiveMode() == BOT_MODE_FARM then
-        if (#creeps >= 3 and (ManaPercentage > 0.4 or npcBot:GetMana() > ComboMana)) and allyCount < 3 then
+        if (#creeps >= 3 and (ManaPercentage > 0.4 or npcBot:GetMana() > ComboMana)) and allyCount < 3 and abilityLevel >= 3 then
             return BOT_ACTION_DESIRE_LOW
         end
     end
@@ -210,9 +197,9 @@ Consider[3] = function()
     local Damage = ability:GetAbilityDamage()
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(CastRange + 150, true, BOT_MODE_NONE)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(CastRange + 150, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     for _, npcEnemy in pairs(enemys) do
         if npcEnemy:IsChanneling() and CanCast[abilityNumber](npcEnemy) then
             return BOT_ACTION_DESIRE_HIGH, npcEnemy
@@ -265,7 +252,7 @@ local function centaur_khan_war_stomp(ability)
             end
         end
     else
-        if enemies:Count(fun1.NormalCanCastFunction) then
+        if enemies:Any(fun1.NormalCanCastFunction) then
             return RemapValClamped(mana, 100, ComboMana, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_HIGH)
         end
     end
@@ -419,9 +406,9 @@ Consider[6] = function()
     local CastRange = ability:GetCastRange()
     local allys = fun1:GetNearbyNonIllusionHeroes(npcBot, 1200, false)
     local enemys = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange + 300, true)
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
+    local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(CastRange + 300, true)
-    local WeakestCreep,CreepHealth = utility.GetWeakestUnit(creeps)
+    local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes(1000, false, BOT_MODE_ATTACK)
     if #tableNearbyAttackingAlliedHeroes >= 2 or #allys >= 3 then
         local npcMostDangerousEnemy = nil

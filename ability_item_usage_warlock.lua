@@ -487,7 +487,7 @@ Consider[4]=function()
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
-	local channelling = enemys:First(function(t) return AbilityExtensions:IsChannelingBreakWorthAbility(t, "moderate") and CanCast[4](t) end)
+	local channelling = AbilityExtensions:First(enemys, function(t) return AbilityExtensions:IsChannelingBreakWorthAbility(t, "moderate") and CanCast[4](t) end)
 	if channelling then
 		return BOT_ACTION_DESIRE_MODERATE-0.1, channelling:GetLocation()
 	end

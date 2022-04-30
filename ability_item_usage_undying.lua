@@ -11,7 +11,7 @@ local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstractio
 
 local debugmode=false
 local npcBot = GetBot()
-if npcBot:IsIllusion() then return end
+if npcBot:IsIllusion() or npcBot:GetUnitName() ~= "npc_dota_hero_undying" then return end
 local Talents ={}
 local Abilities ={}
 local AbilitiesReal ={}
@@ -388,7 +388,7 @@ Consider[3]=function()
 			-- don't give the bounty of the tombstome to enemies if there's no chance
 			if HealthPercentage <= 0.3 and AbilityExtensions:All(enemys, function(t)
 				return AbilityExtensions:GetHealthPercent(t) >= 0.7
-			end) and npcBot:GetHeroLevel() <= 15 then
+			end) and npcBot:GetLevel() <= 15 then
 				return 0
 			end
 			if(trees~=nil and #trees>=1 and #enemys>=1)
