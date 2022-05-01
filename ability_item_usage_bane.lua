@@ -287,7 +287,7 @@ Consider[3] = function()
             return BOT_ACTION_DESIRE_HIGH, target
         end
     end
-    if fun1:IsRetreating(npcBot) and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH then
+    if fun1:IsRetreating(npcBot) then
         do
             local target = fun1:GetNearbyNonIllusionHeroes(npcBot, castRange + 120):First(function(it)
                 return CanCast[3](it) and not fun1:IsOrGoingToBeSeverelyDisabled(it)
@@ -438,12 +438,12 @@ function AbilityUsageThink()
     if npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() then
         if npcBot:IsCastingAbility() then
             if npcBot:GetCurrentActiveAbility() == AbilitiesReal[2] then
-                if drainSnapTarget and AbilityExtensions:HasAbilityRetargetModifier(drainSnapTarget) then
+                if drainSnapTarget and AbilityExtensions:IsGoodTarget(drainSnapTarget) and AbilityExtensions:HasAbilityRetargetModifier(drainSnapTarget) then
                     npcBot:Action_ClearActions(true)
                 end
             end
             if npcBot:GetCurrentActiveAbility() == AbilitiesReal[4] and not npcBot:IsChanneling() then
-                if fiendsGripTarget and AbilityExtensions:HasAbilityRetargetModifier(fiendsGripTarget) then
+                if fiendsGripTarget and AbilityExtensions:IsGoodTarget(drainSnapTarget) and AbilityExtensions:HasAbilityRetargetModifier(fiendsGripTarget) then
                     npcBot:Action_ClearActions(true)
                 end
             end

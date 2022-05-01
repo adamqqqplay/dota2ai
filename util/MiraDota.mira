@@ -852,6 +852,18 @@ end
 function DotaExt.EmptyFun() -> nil
 function DotaExt.EmptyDesireFun() -> BOT_ACTION_DESIRE_NONE
 
+function DotaExt.GetNearbyCreeps(npc, range, getEnemy)
+    local r = npc:GetNearbyCreeps(range, getEnemy)
+    Linq.Give(r)
+    return r
+end
+
+function DotaExt.GetNearbyNeutralCreeps(npc, range)
+    local r = npc:GetNearbyNeutralCreeps(range)
+    Linq.Give(r)
+    return r 
+end
+
 
 
 

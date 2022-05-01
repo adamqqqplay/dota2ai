@@ -1036,6 +1036,8 @@ M.positiveForceMovementModifiers = {
     "modifier_monkey_king_bounce_perch",
     "modifier_monkey_king_right_click_jump_activity",
     "modifier_pangolier_swashbuckle",
+    "modifier_pangolier_swashbuckle_attack",
+    "modifier_pangolier_swashbuckle_stunned",
     "modiifer_pangolier_shield_crash_jump",
     "modifier_pangolier_rollup",
     "modifier_snapfire_firesnap_cookie",
@@ -1099,13 +1101,13 @@ M.unbreakableChannelAbilities = {
     "lycan_shapeshift",
     "item_trusty_shovel",
     "item_fallen_sky",
-    "pangolier_rollup",
 }
 M.lowPriorityChannelAbilities = {
     "windrunner_powershot",
     "ability_capture",
     "tinker_keen_conveyance",
     "tinker_rearm",
+    "lion_mana_drain",
 }
 M.moderatePriorityChannelAbilities = {
     "keeper_of_the_light_illuminate",
@@ -2324,7 +2326,7 @@ function M:GetManaDeficit(npc)
     return npc:GetMaxMana() - npc:GetMana()
 end
 function M:IsGoodTarget(npc, target)
-    return target:IsHero() and self:MayNotBeIllusion(npc, target) and not self:IsHeroLevelUnit(target)
+    return target:IsHero() and target:IsAlive() and self:MayNotBeIllusion(npc, target) and not self:IsHeroLevelUnit(target)
 end
 function M:GetTargetIfGood(npc)
     local target = npc:GetTarget()
