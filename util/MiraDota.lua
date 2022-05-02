@@ -1115,6 +1115,9 @@ end
 function UnitFun.IsCreepHero(npc)
     return UnitFun.IsLoneDruidBear(npc) or UnitFun.IsVisageFamiliar(npc)
 end
+function UnitFun.IsNotCreepHero(npc)
+    return not UnitFun.IsCreepHero(npc)
+end
 function Building.CanBeAttacked(buillding, npc)
     if not building:IsAlive() or building:HasModifier "modifier_foutain_glyph" then
         return false
@@ -1514,6 +1517,17 @@ function Hero.HasBoughtScepter(npc)
 end
 function Hero.PrintMode(npc)
     print("bot "..npc:GetUnitName().." in mode "..DotaExt.BotModeToString(npc:GetActiveMode())..", desire = "..npc:GetActiveModeDesire())
+end
+Hero.teleportAbilities = Linq.NewTable("furion_teleportation", "item_tpscroll")
+function Hero.IsTeleporting(npc)
+    return (function()
+        local activeAbility = npc:GetCurrentActiveAbility()
+        if activeAbility and Hero.teleportAbilities:Contains(activeAbility:GetName()) then
+            return true
+        else
+            return false
+        end
+    end)()
 end
 local oldRoleUtils = require(GetScriptDirectory().."/util/RoleUtility")
 local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")

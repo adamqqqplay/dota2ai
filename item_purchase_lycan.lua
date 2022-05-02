@@ -8,7 +8,6 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_flask",
-	"item_quelling_blade", --补刀斧
 	"item_power_treads", --假腿7.21
 	"item_orb_of_corrosion",
 	"item_helm_of_the_dominator",

@@ -518,7 +518,7 @@ Consider[2]=function()
 	then
 		if(#enemys>=1 and CanCast[abilityNumber]( npcBot ))
 		then
-			if(ManaPercentage>0.5)
+			if npcBot:GetMana() > npcBot:GetMaxMana() * 0.7 + AbilitiesReal[2]:GetManaCost()
 			then
 				npcBot:SetTarget(WeakestEnemy)
 				return BOT_ACTION_DESIRE_LOW,npcBot; 

@@ -1072,6 +1072,9 @@ M.basicDispellablePositiveModifiers = {
     "modifier_spirit_breaker_bulldoze",
     "modifier_item_spider_legs_active",
     "modifier_item_bullwhip_buff",
+    "modifier_haste_rune_haste",
+    "modifier_double_damage_rune",
+    "modifier_arcane_rune",
 }
 M.basicDispellWorthPositiveModifiers = {
     "modifier_omniknight_guardian_angle",

@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -213,17 +214,25 @@ Consider[4]=function()
 	end
 	
 	local CastRange = ability:GetCastRange() - 150;
-	local Damage = 5*AbilitiesReal[1]:GetAbilityDamage()
+	local singleShotDamage = AbilitiesReal[1]:GetAbilityDamage()
+	local compoundDamage = singleShotDamage * (1 + ability:GetSpecialValueInt("beams"))
 	local Radius = ability:GetAOERadius()
-	
 
 	local allys = npcBot:GetNearbyHeroes( 1600, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(Radius,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(Radius,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
-    local damage = AbilitiesReal[1]:GetAbilityDamage()
-    damage = damage * (1 + ability:GetSpecialValueInt("beams"))
+
+	local function IsStealing(target)
+		if AbilityExtensions:ShouldNotBeAttacked(target) or A.Hero.IsTeleporting(target) then
+			return false
+		end
+		if target:GetActualIncomingDamage(singleShotDamage * (#allys + 1), DAMAGE_TYPE_MAGICAL) >= target:GetHealth() then
+			return true
+		end
+		return false
+	end
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
@@ -266,10 +275,10 @@ Consider[4]=function()
         then
             local npcEnemy = npcBot:GetTarget();
             local creeps2 = npcBot:GetNearbyCreeps(Radius,true)
-            local incomingDamage = npcEnemy:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL)
+            local incomingDamage = npcEnemy:GetActualIncomingDamage(compoundDamage, DAMAGE_TYPE_MAGICAL)
 			if ( npcEnemy ~= nil and #creeps2<=1) 
 			then
-                if not (npcEnemy:GetHealth() <= incomingDamage * 0.4 and #allys >= 2 ) and CanCast[abilityNumber]( npcEnemy ) and (npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(damage,DAMAGE_TYPE_MAGICAL) or npcEnemy:GetHealth()<=Damage )  and GetUnitToUnitDistance(npcEnemy,npcBot)<=CastRange
+                if not (npcEnemy:GetHealth() <= incomingDamage * 0.4 and #allys >= 2 ) and CanCast[abilityNumber]( npcEnemy ) and (npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(compoundDamage,DAMAGE_TYPE_MAGICAL) or npcEnemy:GetHealth()<=Damage )  and GetUnitToUnitDistance(npcEnemy,npcBot)<=CastRange and not IsStealing(npcEnemy)
 				then
 					return BOT_ACTION_DESIRE_MODERATE,npcEnemy:GetExtrapolatedLocation(0.5),"Location"
 				end
@@ -290,6 +299,7 @@ Consider[4]=function()
 		-- end
 		
 		-- If we're going after someone
+
 		if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 			 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
 			 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
@@ -299,7 +309,7 @@ Consider[4]=function()
 
 			if ( npcEnemy ~= nil and #creeps<=1)
 			then
-				if ( CanCast[abilityNumber]( npcEnemy ) and (npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(npcBot:GetOffensivePower(),DAMAGE_TYPE_MAGICAL) or npcEnemy:GetHealth()<=Damage ) and GetUnitToUnitDistance(npcEnemy,npcBot)<=Radius)
+				if ( CanCast[abilityNumber]( npcEnemy ) and (npcEnemy:GetHealth()<=npcEnemy:GetActualIncomingDamage(npcBot:GetOffensivePower(),DAMAGE_TYPE_MAGICAL) or npcEnemy:GetHealth()<=compoundDamage ) and GetUnitToUnitDistance(npcEnemy,npcBot)<=Radius) and not IsStealing(npcEnemy)
 				then
 					return BOT_ACTION_DESIRE_MODERATE
 				end

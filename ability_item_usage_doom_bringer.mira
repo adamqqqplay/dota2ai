@@ -406,6 +406,55 @@ local function satyr_soulstealer_mana_burn(ability)
 	return 0
 end
 
+local function satyr_trickster_purge(ability)
+	if not ability:IsFullyCastable() then 
+		return 0
+	end
+	local castRange = ability:GetCastRange()
+	local enemies = fun1:GetNearbyNonIllusionHeroes(npcBot, castRange + 200)
+	if mana >= ComboMana + manaCost then
+		if local enemy = enemies:First { t -> 
+			fun1:HasBasicDispellablePositiveModifier(t)
+		} then
+			return BOT_ACTION_DESIRE_HIGH, enemy
+		end
+	end
+	return 0
+end
+
+local function giant_wolf_intimidate(ability)
+	if not ability:IsFullyCastable() then 
+		return 0
+	end
+	local aoe = ability:GetAOERadius()
+	local enemies = fun1:GetNearbyNonIllusionHeroes(npcBot, castRange + 200)
+	if fun1:IsAttackingEnemies(npcBot) or fun1:IsRetreating(npcBot) then 
+		if mana >= ComboMana + manaCost then
+			if enemies:Any { t ->
+				t:GetAttackTarget() and t:GetAttackTarget():IsHero() or t:GetCurrentActiveAbility() and fun1.NormalCanCastFunction(t)
+			} then
+				return BOT_ACTION_DESIRE_HIGH
+			end
+		end
+	end 
+	return 0
+end
+
+local function ogre_bruiser_ogre_smash(ability)
+	if not ability:IsFullyCastable() then 
+		return 0
+	end
+	local castRange = ability:GetSpecialValueInt "distance" or 200
+	local enemies = fun1:GetNearbyNonIllusionHeroes(npcBot, castRange + ability:GetAOERadius())
+	local allys = fun1:GetNearbyNonIllusionHeroes(npcBot, 1200)
+	if local enemy = enemies:First { t ->
+		fun1.NormalCanCastFunction(t) and (#allys >= 3 and (fun1:GetStunRemainingDuration(t) >= 1.5 or t:IsRooted()) or t:IsChanneling())
+	} then
+		return BOT_ACTION_DESIRE_MODERATE, enemy
+	end
+	return 0
+end
+
 local function enraged_wildkin_tornado(ability)
 	return 0
 end
@@ -423,6 +472,12 @@ local function DoomAcquiredAbilityThink(ability)
 		return mud_golem_hurl_boulder(ability)
 	elseif abilityName == "enraged_wildkin_tornado" then
 		return enraged_wildkin_tornado(ability)
+	elseif abilityName:match("ogre_smash") then
+		return ogre_bruiser_ogre_smash(ability)
+	elseif abilityName == "giant_wolf_intimidate" then
+		return giant_wolf_intimidate(ability)
+	elseif abilityName == "satyr_trickster_purge" then
+		return satyr_trickster_purge(ability)
 	else
 		return 0
 	end

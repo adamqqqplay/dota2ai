@@ -13,7 +13,6 @@ end)
 local ItemsToBuy =
 {
 	"item_tango",
-	"item_quelling_blade", --补刀斧
     "item_bracer",
 	"item_magic_wand", --大魔棒7.14
     "item_power_treads",
