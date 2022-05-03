@@ -9,7 +9,7 @@ function MinionThink(  hMinionUnit )
 	if minionutils.IsValidUnit(hMinionUnit) then
 		if hMinionUnit:IsIllusion() then
 			minionutils.IllusionThink(hMinionUnit)
-		elseif CantBeControlled(hMinionUnit:GetUnitName()) then
+		elseif CannotBeControlled(hMinionUnit:GetUnitName()) then
 			return
 		else
 			print("unrecognised minion: "..hMinionUnit:GetUnitName())
