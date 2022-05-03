@@ -75,7 +75,7 @@ end
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
 local CanCast={utility.NCanCast,AbilityExtensions.PhysicalCanCastFunction,utility.NCanCast,function(t)
-	AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_PURE, true, false) and not A.Unit.IsNotCreepHero(t)
+	return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_PURE, true, false) and not A.Unit.IsNotCreepHero(t)
 end}
 local enemyDisabled=utility.enemyDisabled
 
