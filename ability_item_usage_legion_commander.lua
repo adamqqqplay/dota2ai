@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -75,7 +76,9 @@ local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
 local CanCast={utility.NCanCast,function(t)
 	return AbilityExtensions:AllyCanCast(t, false) and not t:HasModifier "modifier_ice_blast"
-end,utility.NCanCast,utility.UCanCast}
+end,utility.NCanCast,function(t)
+	return utility.UCanCast(t) and A.Unit.IsNotCreepHero(t) and not AbilityExtensions:ShouldNotBeAttacked(t)
+end}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()
@@ -364,6 +367,10 @@ Consider[4]=function()
 	-- Global high-priorty usage
 	--------------------------------------
 
+	if AbilityExtensions:IsPhysicalOutputDisabled(npcBot) then
+		return 0
+	end
+
 	--try to kill enemy hero
 	if(npcBot:GetActiveMode() ~= BOT_MODE_RETREAT ) 
 	then
@@ -371,7 +378,7 @@ Consider[4]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ))
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_ALL) and #allys >=#enemys)
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_ALL) and #allys >=#enemys) and
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
 				end

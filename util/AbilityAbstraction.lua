@@ -311,11 +311,7 @@ function M:MaxV(tb, map)
         return nil
     end
     map = map or self.IdentityFunction
-<<<<<<< HEAD
-    local maxv,maxm = tb[1], map(tb[1])
-=======
     local maxv, maxm = tb[1], map(tb[1])
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
     for i = 2, #tb do
         local m = map(tb[i])
         if m > maxm then
@@ -345,11 +341,7 @@ function M:MinV(tb, map)
         return nil
     end
     map = map or self.IdentityFunction
-<<<<<<< HEAD
-    local maxv,maxm = tb[1], map(tb[1])
-=======
     local maxv, maxm = tb[1], map(tb[1])
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
     for i = 2, #tb do
         local m = map(tb[i])
         if m < maxm then
@@ -1044,6 +1036,8 @@ M.positiveForceMovementModifiers = {
     "modifier_monkey_king_bounce_perch",
     "modifier_monkey_king_right_click_jump_activity",
     "modifier_pangolier_swashbuckle",
+    "modifier_pangolier_swashbuckle_attack",
+    "modifier_pangolier_swashbuckle_stunned",
     "modiifer_pangolier_shield_crash_jump",
     "modifier_pangolier_rollup",
     "modifier_snapfire_firesnap_cookie",
@@ -1078,6 +1072,9 @@ M.basicDispellablePositiveModifiers = {
     "modifier_spirit_breaker_bulldoze",
     "modifier_item_spider_legs_active",
     "modifier_item_bullwhip_buff",
+    "modifier_haste_rune_haste",
+    "modifier_double_damage_rune",
+    "modifier_arcane_rune",
 }
 M.basicDispellWorthPositiveModifiers = {
     "modifier_omniknight_guardian_angle",
@@ -1107,13 +1104,13 @@ M.unbreakableChannelAbilities = {
     "lycan_shapeshift",
     "item_trusty_shovel",
     "item_fallen_sky",
-    "pangolier_rollup",
 }
 M.lowPriorityChannelAbilities = {
     "windrunner_powershot",
     "ability_capture",
     "tinker_keen_conveyance",
     "tinker_rearm",
+    "lion_mana_drain",
 }
 M.moderatePriorityChannelAbilities = {
     "keeper_of_the_light_illuminate",
@@ -2332,7 +2329,7 @@ function M:GetManaDeficit(npc)
     return npc:GetMaxMana() - npc:GetMana()
 end
 function M:IsGoodTarget(npc, target)
-    return target:IsHero() and self:MayNotBeIllusion(npc, target) and not self:IsHeroLevelUnit(target)
+    return target:IsHero() and target:IsAlive() and self:MayNotBeIllusion(npc, target) and not self:IsHeroLevelUnit(target)
 end
 function M:GetTargetIfGood(npc)
     local target = npc:GetTarget()
@@ -2885,15 +2882,10 @@ M.GetIllusionBattlePower = function(self, npc)
     local t = 0.1
     if self:Contains(self.GoodIllusionHero, name) then
         t = 0.4
-<<<<<<< HEAD
-    elseif not self:IsMeleeHero(npc) then
-        t = t + t:GetAttackRange() / 2000
-=======
     elseif self:Contains(self.ModerateIllusionHero, name) then
         t = 0.25
     elseif not self:IsMeleeHero(npc) then
         t = t + npc:GetAttackRange() / 2000
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
     end
     local inventory = self:Map(self:GetInventoryItems(npc), function(t)
         return t:GetName()

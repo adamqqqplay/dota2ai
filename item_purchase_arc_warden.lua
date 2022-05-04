@@ -9,7 +9,7 @@ local ItemsToBuy =
 	"item_tango",
 	"item_wraith_band", --系带
 	"item_flask",
-	"item_wraith_band", --系带
+	-- "item_wraith_band", --系带
 	"item_boots",
 	"item_hand_of_midas", --点金
 	"item_maelstrom", --电锤7.14

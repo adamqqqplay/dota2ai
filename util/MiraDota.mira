@@ -852,6 +852,18 @@ end
 function DotaExt.EmptyFun() -> nil
 function DotaExt.EmptyDesireFun() -> BOT_ACTION_DESIRE_NONE
 
+function DotaExt.GetNearbyCreeps(npc, range, getEnemy)
+    local r = npc:GetNearbyCreeps(range, getEnemy)
+    Linq.Give(r)
+    return r
+end
+
+function DotaExt.GetNearbyNeutralCreeps(npc, range)
+    local r = npc:GetNearbyNeutralCreeps(range)
+    Linq.Give(r)
+    return r 
+end
+
 
 
 
@@ -1229,7 +1241,7 @@ end
 
 function UnitFun.IsHero(npc) -> npc:IsHero() and not UnitFun.IsCreepHero(npc)
 function UnitFun.IsCreepHero(npc) -> UnitFun.IsLoneDruidBear(npc) or UnitFun.IsVisageFamiliar(npc)
-
+function UnitFun.IsNotCreepHero(npc) -> not UnitFun.IsCreepHero(npc)
 
 
 
@@ -1616,6 +1628,7 @@ end
 
 
 
+
 function Hero.MustBeIllusion(target)
     if target:IsIllusion() then
         return true
@@ -1653,6 +1666,9 @@ end
 function Hero.PrintMode(npc)
     print("bot "..npc:GetUnitName().." in mode "..DotaExt.BotModeToString(npc:GetActiveMode())..", desire = "..npc:GetActiveModeDesire())
 end
+
+Hero.teleportAbilities = Linq.NewTable("furion_teleportation", "item_tpscroll")
+function Hero.IsTeleporting(npc) -> if local activeAbility = npc:GetCurrentActiveAbility(); activeAbility and Hero.teleportAbilities:Contains(activeAbility:GetName()) { true } else { false }
 
 
 

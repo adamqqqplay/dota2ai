@@ -6,120 +6,12 @@
 local M = {}
 local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
 local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
-<<<<<<< HEAD
-=======
 local A = require(GetScriptDirectory().."/util/MiraDota")
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
 M.ImplmentedTeamItems = {
     "item_mekansm",
     "item_guardian_greaves",
 }
 local roles = {
-<<<<<<< HEAD
-    abaddon = { 9 },
-    abyssal_underlord = { 4 },
-    alchemist = { 0 },
-    ancient_apparition = { 2 },
-    antimage = { 1 },
-    arc_warden = { 0 },
-    axe = { 2 },
-    bane = { 3 },
-    batrider = { 4 },
-    beastmaster = { 0 },
-    bloodseeker = { 1 },
-    bounty_hunter = { 3 },
-    brewmaster = { 0 },
-    bristleback = { 4 },
-    broodmother = { 5 },
-    centaur = { 3 },
-    chaos_knight = { 2 },
-    chen = { 9 },
-    clinkz = { 1 },
-    crystal_maiden = { 8 },
-    dark_seer = { 7 },
-    dazzle = { 9 },
-    death_prophet = { 5 },
-    disruptor = { 6 },
-    doom_bringer = { 1 },
-    dragon_knight = { 0 },
-    drow_ranger = { 0 },
-    earth_spirit = { 6 },
-    earthshaker = { 5 },
-    ember_spirit = { 2 },
-    enchantress = { 3 },
-    enigma = { 8 },
-    faceless_void = { 1 },
-    furion = { 5 },
-    gyrocopter = { 4 },
-    hoodwink = { 5 },
-    huskar = { 1 },
-    jakiro = { 7 },
-    juggernaut = { 0 },
-    keeper_of_the_light = { 4 },
-    kunkka = { 1 },
-    legion_commander = { 1 },
-    leshrac = { 4 },
-    lich = { 5 },
-    life_stealer = { 2 },
-    lina = { 5 },
-    lion = { 5 },
-    luna = { 1 },
-    lycan = { 4 },
-    magnataur = { 0 },
-    medusa = { 0 },
-    mirana = { 1 },
-    monkey_king = { 0 },
-    naga_siren = { 3 },
-    necrolyte = { 7 },
-    nevermore = { 3 },
-    night_stalker = { 2 },
-    nyx_assassin = { 5 },
-    obsidian_destroyer = { 4 },
-    ogre_magi = { 4 },
-    omniknight = { 8 },
-    oracle = { 8 },
-    phantom_assassin = { 1 },
-    phantom_lancer = { 1 },
-    pugna = { 5 },
-    puck = { 4 },
-    pudge = { 1 },
-    queenofpain = { 3 },
-    rattletrap = { 4 },
-    razor = { 6 },
-    riki = { 3 },
-    sand_king = { 5 },
-    shadow_demon = { 6 },
-    shadow_shaman = { 8 },
-    shredder = { 3 },
-    silencer = { 6 },
-    skeleton_king = { 1 },
-    skywrath_mage = { 4 },
-    slardar = { 2 },
-    slark = { 1 },
-    sniper = { 0 },
-    spectre = { 4 },
-    spirit_breaker = { 3 },
-    sven = { 1 },
-    templar_assassin = { 1 },
-    terrorblade = { 1 },
-    tidehunter = { 7 },
-    tinker = { 0 },
-    tiny = { 2 },
-    treant = { 7 },
-    troll_warlord = { 0 },
-    tusk = { 4 },
-    undying = { 6 },
-    ursa = { 0 },
-    vengefulspirit = { 5 },
-    venomancer = { 7 },
-    viper = { 6 },
-    warlock = { 7 },
-    weaver = { 2 },
-    windrunner = { 4 },
-    winter_wyvern = { 7 },
-    witch_doctor = { 6 },
-    zuus = { 3 },
-=======
     abaddon = {
         9,
         6,
@@ -532,7 +424,6 @@ local roles = {
         3,
         9,
     },
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
 }
 local function heroItemMetaFunc(tb, key)
     return (function()
@@ -710,11 +601,7 @@ local function AddMekansm()
     })
     local function Rate(hero)
         local heroName = fun1:GetHeroShortName(hero:GetUnitName())
-<<<<<<< HEAD
-        local rate = roles[heroName].mekansm + math.random(0, 1.5)
-=======
         local rate = roles[heroName].mekansm + math.random() * 1.5
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
         if hero:GetPrimaryAttribute() == ATTRIBUTE_INTELLECT and rate <= 7 then
             rate = rate + 1
         end
@@ -730,11 +617,7 @@ local function AddMekansm()
     end)
     local function BuyMekansm(hero)
         NotifyTeam(hero, "mekansm")
-<<<<<<< HEAD
-        AddBefore(hero.itemInformationTable, M.FullyExpandItem "item_mekansm", AddMekansmBefore)
-=======
         AddBefore(hero.itemInformationTable, M.ExpandTeamThinkItem "item_mekansm", AddMekansmBefore)
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
         local guardianGreavesTable = M.ExpandFirstLevel "item_guardian_greaves"
         fun1:Remove_Modify(guardianGreavesTable.recipe, "item_mekansm")
         do
@@ -743,22 +626,13 @@ local function AddMekansm()
             end)
             if arcaneBoots then
                 arcaneBoots.usedAsRecipeOf = guardianGreavesTable
-<<<<<<< HEAD
-                fun1:Remove_Modify(guardianGreavesTable, "item_arcane_boots")
-=======
                 fun1:Remove_Modify(guardianGreavesTable, function(t)
                     return t.name == "item_boots" or t.name == "item_energy_booster"
                 end)
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
             end
         end
         while M.ExpandOnce(guardianGreavesTable) do
         end
-<<<<<<< HEAD
-        AddBefore(hero.itemInformationTable, guardianGreavesTable, GenerateFilter(4800, {}, {}))
-        fun1:Remove_Modify(hero.itemInformationTable, "item_urn_of_shadows")
-        fun1:Remove_Modify(hero.itemInformationTable, "item_spirit_vessel")
-=======
         AddBefore(hero.itemInformationTable, guardianGreavesTable, GeneratePutBeforeFilter(4800, {}, {}))
         hero.itemInformationTable:Remove_Modify(function(t)
             return t.name == "item_urn_of_shadows"
@@ -766,8 +640,6 @@ local function AddMekansm()
         hero.itemInformationTable:Remove_Modify(function(t)
             return t.name == "item_spirit_vessel"
         end)
-        PrintItemInfoTableOf(hero)
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
     end
     if #heroRates >= 3 then
         if heroRates[1][2] > 2.85 then
@@ -785,8 +657,6 @@ local function AddMekansm()
         end
     end
 end
-<<<<<<< HEAD
-=======
 local function AddArcaneBoots()
     local AddArcaneBootsBefore = GeneratePutBeforeFilter(1200, {}, {})
     local function Rate(hero)
@@ -828,7 +698,6 @@ local function AddArcaneBoots()
         else
             AddBefore(hero.itemInformationTable, M.ExpandTeamThinkItem "item_arcane_boots", AddArcaneBootsBefore)
         end
-        PrintItemInfoTableOf(hero)
     end
     local function DontBuyArcaneBoots(heroRateTable)
         local hero = heroRateTable[1]
@@ -851,7 +720,6 @@ local function AddArcaneBoots()
             local newBoots = M.ExpandTeamThinkItem(replaceBoots)
             RemoveItemsInNewItemTable(hero.itemInformationTable, newBoots, arcaneBootsIndex)
         end
-        PrintItemInfoTableOf(hero)
     end
     local teamArcaneBootsNumber = (function()
         if #heroRates >= 4 then
@@ -882,7 +750,6 @@ local function AddArcaneBoots()
     end
     heroRates:Skip(buyArcaneBootsHeroIndex):FilterNot(HighDesireOfBuyingArcaneBoots):ForEach(DontBuyArcaneBoots)
 end
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
 local function IdToEnemyStateTableIndex(id)
     return (function()
         if id <= 4 then

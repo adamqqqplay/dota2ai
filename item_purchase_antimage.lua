@@ -8,7 +8,6 @@ local p = {
     "item_tango",
     "item_tango",
     "item_flask",
-    "item_quelling_blade",
     "item_wraith_band",
     "item_power_treads",
     "item_orb_of_corrosion",

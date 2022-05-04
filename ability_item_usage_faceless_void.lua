@@ -118,7 +118,7 @@ Consider[1] = function()
             return BOT_ACTION_DESIRE_HIGH, fun1:GetPointFromLineByDistance(npcBot:GetLocation(), p.location, 450)
         end
     end
-    if AbilityExtensions:IsRetreating(npcBot) or npcBot.FacelessVoidSkill1.Hp - HealthPercentage >= 0.25 + 0.05 * #enemys then
+    if fun1:IsRetreating(npcBot) or npcBot.FacelessVoidSkill1.Hp - HealthPercentage >= 0.25 + 0.05 * #enemys then
         return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot, GetAncient(GetTeam()), CastRange)
     end
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT and ManaPercentage > ComboMana and AbilitiesReal[4]:IsFullyCastable() then

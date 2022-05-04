@@ -13,6 +13,8 @@ local ItemsToBuy =
 	"item_orb_of_venom",
 	"item_phase_boots", --相位7.21
 	"item_orb_of_corrosion",
+	"item_armlet",
+	"item_aghanims_shard",
 	"item_desolator",
 	"item_basher",
 	"item_abyssal_blade",

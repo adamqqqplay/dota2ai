@@ -72,11 +72,7 @@ local Consider = {}
 local CanCast = {
     utility.NCanCast,
     function(t)
-<<<<<<< HEAD
-        return AbilityExtensions:PhysicalCanCast(t) or t:IsTower() and not t:HasModifier "modifier_fountain_glyph"
-=======
         return AbilityExtensions.PhysicalCanCastFunction(t) or t:IsTower() and not t:HasModifier "modifier_fountain_glyph"
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
     end,
     utility.NCanCast,
     utility.UCanCast,
@@ -161,11 +157,7 @@ Consider[2] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[2
     end
     local CastRange = ability:GetCastRange()
     local enemys = npcBot:GetNearbyHeroes(CastRange + 100, true, BOT_MODE_NONE)
-<<<<<<< HEAD
-    local WeakestEnemy,HeroHealth = utility.GetWeakestUnit(enemys)
-=======
     local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
     local function UseAt(target)
         if not CanCast[abilityNumber](target) then
             return false

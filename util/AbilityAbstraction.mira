@@ -1126,6 +1126,8 @@ M.positiveForceMovementModifiers = {
     "modifier_monkey_king_bounce_perch",
     "modifier_monkey_king_right_click_jump_activity",
     "modifier_pangolier_swashbuckle",
+	"modifier_pangolier_swashbuckle_attack",
+	"modifier_pangolier_swashbuckle_stunned",
     "modiifer_pangolier_shield_crash_jump",
     "modifier_pangolier_rollup",
     "modifier_snapfire_firesnap_cookie",
@@ -1163,6 +1165,9 @@ M.basicDispellablePositiveModifiers = {
     "modifier_spirit_breaker_bulldoze",
     "modifier_item_spider_legs_active",
     "modifier_item_bullwhip_buff",
+    "modifier_haste_rune_haste",
+    "modifier_double_damage_rune",
+    "modifier_arcane_rune", -- not sure what the names are
 }
 
 M.basicDispellWorthPositiveModifiers = {
@@ -1198,7 +1203,6 @@ M.unbreakableChannelAbilities = {
     "lycan_shapeshift",
     "item_trusty_shovel",
     "item_fallen_sky",
-    "pangolier_rollup",
 }
 -- items cannot be break by silence
 
@@ -1207,6 +1211,7 @@ M.lowPriorityChannelAbilities = {
     "ability_capture",
     "tinker_keen_conveyance",
     "tinker_rearm",
+    "lion_mana_drain",
 }
 
 M.moderatePriorityChannelAbilities = {
@@ -2501,7 +2506,7 @@ function M:GetManaDeficit(npc)
 end
 
 function M:IsGoodTarget(npc, target)
-    return target:IsHero() and self:MayNotBeIllusion(npc, target) and not self:IsHeroLevelUnit(target)
+    return target:IsHero() and target:IsAlive() and self:MayNotBeIllusion(npc, target) and not self:IsHeroLevelUnit(target)
 end
 function M:GetTargetIfGood(npc)
     local target = npc:GetTarget()
@@ -3140,15 +3145,10 @@ M.GetIllusionBattlePower = function(self, npc)
     local t = 0.1
     if self:Contains(self.GoodIllusionHero, name) then
         t = 0.4
-<<<<<<< HEAD
-    elseif not self:IsMeleeHero(npc) then
-        t = t + t:GetAttackRange() / 2000
-=======
     elseif self:Contains(self.ModerateIllusionHero, name) then
         t = 0.25
     elseif not self:IsMeleeHero(npc) then
         t = t + npc:GetAttackRange() / 2000
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
     end
     local inventory = self:Map(self:GetInventoryItems(npc)) { t -> t:GetName() }
     if self:Contains(inventory, "item_radiance") then

@@ -262,7 +262,7 @@ Consider[2] = function()
     end
     if npcBot:GetActiveMode() == BOT_MODE_LANING then
         if #enemys >= 1 and CanCast[abilityNumber](npcBot) then
-            if ManaPercentage > 0.5 then
+            if npcBot:GetMana() > npcBot:GetMaxMana() * 0.7 + AbilitiesReal[2]:GetManaCost() then
                 npcBot:SetTarget(WeakestEnemy)
                 return BOT_ACTION_DESIRE_LOW, npcBot
             end

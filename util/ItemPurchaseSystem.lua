@@ -435,12 +435,6 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
         end
     end
     npcBot.itemInformationTable = g
-<<<<<<< HEAD
-    if not AbilityExtensions:GameNotReallyStarting() then
-        RemoveBoughtItems()
-    end
-=======
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
     local function RemoveTeamItems(t)
         local implmentedItems = TeamItemThink.ImplmentedTeamItems or {}
         AbilityExtensions:ForEach(implmentedItems, function(itemName)
@@ -454,7 +448,6 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
         RemoveTeamItems(g)
         TeamItemThink.TeamItemThink(npcBot)
     end
-    PrintItemInfoTableOf(npcBot)
 end
 local sNextItem
 local UseCourier = function()
@@ -605,11 +598,7 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
             npcBot.secretShopMode = false
             RemoveTopItemToBuy()
         elseif PurchaseResult ~= -2 then
-<<<<<<< HEAD
-            print("purchase item failed: "..sNextItem..", fail code: "..AbilityExtensions:ToIntItemPurchaseResult(PurchaseResult))
-=======
             print(npcBot:GetUnitName().."purchase item failed: "..sNextItem..", fail code: "..AbilityExtensions:ToIntItemPurchaseResult(PurchaseResult))
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
         end
         if PurchaseResult == PURCHASE_ITEM_OUT_OF_STOCK then
             M.SellSpecifiedItem("item_faerie_fire")

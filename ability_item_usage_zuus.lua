@@ -78,7 +78,7 @@ local Consider ={}
 local CanCast={utility.NCanCast,utility.NCanCast,utility.NCanCast,utility.UCanCast,
 	AbilityExtensions.NormalCanCastFunction,
 	function(t)
-	return AbilityExtensions:NormalCanCast(t) and AbilityExtensions:MayNotBeIllusion(npcBot, t) and not AbilityExtensions:IsHeroLevelUnit(t)
+	return AbilityExtensions:NormalCanCast(t) and AbilityExtensions:MayNotBeIllusion(npcBot, t) and not AbilityExtensions:IsHeroLevelUnit(t) and A.Unit.IsNotCreepHero(t)
 end}
 local enemyDisabled=utility.enemyDisabled
 
