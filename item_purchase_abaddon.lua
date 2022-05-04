@@ -8,7 +8,6 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_tango",
-	"item_quelling_blade",
 	"item_enchanted_mango",
 	"item_magic_wand",
 	"item_boots",

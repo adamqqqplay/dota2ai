@@ -187,14 +187,10 @@ Consider[1]=function()
 	--消耗
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if((ManaPercentage>0.4 or npcBot:GetMana()>ComboMana) and ability:GetLevel()>=2 )
+		if npcBot:GetMana()>npcBot:GetMaxMana() * 0.6 + AbilitiesReal[abilityNumber]:GetManaCost() and ability:GetLevel()>=2
 		then
-			if (WeakestEnemy~=nil)
-			then
-				if ( CanCast[abilityNumber]( WeakestEnemy ) )
-				then
-					return BOT_ACTION_DESIRE_LOW,WeakestEnemy
-				end
+			if WeakestEnemy and CanCast[abilityNumber]( WeakestEnemy ) then
+				return BOT_ACTION_DESIRE_LOW,WeakestEnemy
 			end
 		end
 	end

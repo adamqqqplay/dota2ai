@@ -146,7 +146,7 @@ Consider[1]=function()
     end
 	
 	-- If we're seriously retreating
-	if ( AbilityExtensions:IsRetreating(npcBot) or npcBot.FacelessVoidSkill1.Hp-HealthPercentage>=0.25+0.05*#enemys) 
+	if ( fun1:IsRetreating(npcBot) or npcBot.FacelessVoidSkill1.Hp-HealthPercentage>=0.25+0.05*#enemys) 
 	then
 		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot,GetAncient(GetTeam()),CastRange)
 	end

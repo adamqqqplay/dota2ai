@@ -3,10 +3,7 @@ local M = {}
 local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
 local BotsInit = require("game/botsinit")
 local role = require(GetScriptDirectory() .. "/util/RoleUtility")
-<<<<<<< HEAD
-=======
 local A = require(GetScriptDirectory().."/util/MiraDota")
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
 
 local function IsItemAvailable(item_name)
     return fun1:GetAvailableItem(GetBot(), item_name)
@@ -254,11 +251,7 @@ local CannotFade = function(t)
 end
 
 local DontUseItemIfBreakInvisibility = function(t)
-<<<<<<< HEAD
-    return t:IsInvisible() and (not CannotFade(t) or not t:UsingItemBreakInvisibility())
-=======
     return t:IsInvisible() and (not CannotFade(t) or not t:UsingItemBreaksInvisibility())
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
 end
 
 local giveTime = -90
@@ -310,11 +303,7 @@ function M.ItemUsageThink()
         if math.floor(DotaTime()) / 4 ~= 0 then
             return 
         end
-<<<<<<< HEAD
-        if npcBot:IsInvisible() and npcBot:UsingItemBreakInvisibility() then
-=======
         if npcBot:IsInvisible() and npcBot:UsingItemBreaksInvisibility() then
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
             if npcBot:HasModifier("modifier_item_dustofappearance") then
                 M.UseItemNoTarget(npcBot, treads)
                 return true
@@ -507,15 +496,16 @@ function M.ItemUsageThink()
         end
     end
 
-    --[[local IsUsingArmlet = npcBot:HasModifier("modifier_item_armlet_unholy_health")
+    --[[
+    local IsUsingArmlet = npcBot:HasModifier("modifier_item_armlet_unholy_health")
     local itemArmlet = GetItemIfNotImplemented("item_armlet")
     if itemArmlet then
-        if itemArmlet.lastOpenTime == nil and IsUsingArmlet then
-            itemArmlet.lastOpenTime = DotaTime()
+        if npcBot.armlet_lastOpenTime == nil and IsUsingArmlet then
+            npcBot.armlet_lastOpenTime = DotaTime()
             return
         end
         if not IsUsingArmlet then
-            itemArmlet.lastOpenTime = nil
+            npcBot.armlet_lastOpenTime = nil
             return
         end
     end
@@ -526,18 +516,18 @@ function M.ItemUsageThink()
             if target and target:IsAlive() and (fun1:GetHealthPercent(npcBot) >= 0.45 or npcBot:GetHealth() <= 400 or npcBot:GetUnitName() == "npc_bot_hero_huskar" and npcBot:GetLevel() >= 7) then
                 if not IsUsingArmlet then
                     M.UseItemNoTarget(npcBot, itemArmlet)
-                    itemArmlet.lastOpenTime = DotaTime()
+                    npcBot.armlet_lastOpenTime = DotaTime()
                     return
                 else
                     if npcBot:GetHealth() <= 250 and not npcBot:WasRecentlyDamagedByAnyHero(0.8) then
                         M.UseItemNoTarget(npcBot, itemArmlet)
-                        itemArmlet.lastOpenTime = nil
+                        npcBot.armlet_lastOpenTime = nil
                     end
                 end
             else
                 if IsUsingArmlet then
                     M.UseItemNoTarget(npcBot, itemArmlet)
-                    itemArmlet.lastOpenTime = nil
+                    npcBot.armlet_lastOpenTime = nil
                     return
                 end
             end
@@ -545,15 +535,15 @@ function M.ItemUsageThink()
             if not IsUsingArmlet then
                 if #npcBot:GetNearbyHeroes(1000, true, BOT_MODE_NONE) > 0 or npcBot:WasRecentlyDamagedByAnyHero(1.5) then
                     M.UseItemNoTarget(npcBot, itemArmlet)
-                    itemArmlet.lastOpenTime = DotaTime()
+                    npcBot.armlet_lastOpenTime = DotaTime()
                     return
                 end
             else
                 if npcBot:GetHealth() <= 300 then
                     local projectiles = fun1:FilterNot(npcBot:GetIncomingTrackingProjectiles(), function(t) return fun1:IsOnSameTeam(t, npcBot) end)
-                    if (#projectiles == 0 or fun1:CannotBeKilledNormally(npcBot)) and DotaTime() - itemArmlet.lastOpenTime >= 1 then
+                    if (#projectiles == 0 or fun1:CannotBeKilledNormally(npcBot)) and DotaTime() - npcBot.armlet_lastOpenTime >= 1 then
                         M.UseItemNoTarget(npcBot, itemArmlet)
-                        itemArmlet.lastOpenTime = DotaTime()
+                        npcBot.armlet_lastOpenTime = DotaTime()
                         return
                     end
                 end
@@ -561,7 +551,7 @@ function M.ItemUsageThink()
         else
             if IsUsingArmlet then
                 M.UseItemNoTarget(npcBot, itemArmlet)
-                itemArmlet.lastOpenTime = nil
+                npcBot.armlet_lastOpenTime = nil
                 return
             end
         end

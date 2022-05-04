@@ -229,11 +229,7 @@ local CannotFade = function(t)
     return false
 end
 local DontUseItemIfBreakInvisibility = function(t)
-<<<<<<< HEAD
-    return t:IsInvisible() and (not CannotFade(t) or not t:UsingItemBreakInvisibility())
-=======
     return t:IsInvisible() and (not CannotFade(t) or not t:UsingItemBreaksInvisibility())
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
 end
 local giveTime = -90
 function M.ItemUsageThink()
@@ -285,11 +281,7 @@ function M.ItemUsageThink()
         if math.floor(DotaTime()) / 4 ~= 0 then
             return
         end
-<<<<<<< HEAD
-        if npcBot:IsInvisible() and npcBot:UsingItemBreakInvisibility() then
-=======
         if npcBot:IsInvisible() and npcBot:UsingItemBreaksInvisibility() then
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
             if npcBot:HasModifier("modifier_item_dustofappearance") then
                 M.UseItemNoTarget(npcBot, treads)
                 return true

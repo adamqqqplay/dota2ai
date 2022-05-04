@@ -323,7 +323,7 @@ function ConsiderAbility(AbilitiesReal, Consider)
 	cast.Target = {}
 	cast.Type = {}
 	for i, ability in pairs(AbilitiesReal) do
-		if ability:IsPassive() == false and Consider[i] ~= nil then
+		if not ability:IsHidden() and ability:IsPassive() == false and Consider[i] ~= nil then
 			cast.Desire[i], cast.Target[i], cast.Type[i] = Consider[i]()
 		end
 	end

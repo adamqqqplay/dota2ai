@@ -9,12 +9,10 @@ local ItemsToBuy =
 {
 	"item_tango",
     "item_flask",
-	"item_quelling_blade", --补刀斧
     "item_magic_wand",
 	"item_arcane_boots", --秘法鞋
 	"item_hood_of_defiance",
 	"item_octarine_core",
-	-- "item_cyclone",
 	"item_ultimate_scepter", --蓝杖
 	"item_shivas_guard", --希瓦
 	"item_ultimate_scepter_2",

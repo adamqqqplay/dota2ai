@@ -802,6 +802,16 @@ function DotaExt.EmptyFun() end
 function DotaExt.EmptyDesireFun()
     return BOT_ACTION_DESIRE_NONE
 end
+function DotaExt.GetNearbyCreeps(npc, range, getEnemy)
+    local r = npc:GetNearbyCreeps(range, getEnemy)
+    Linq.Give(r)
+    return r
+end
+function DotaExt.GetNearbyNeutralCreeps(npc, range)
+    local r = npc:GetNearbyNeutralCreeps(range)
+    Linq.Give(r)
+    return r
+end
 AbilInfo.invisibleModifiers = Linq.NewTable("modifier_bounty_hunter_wind_walk", "modifier_clinkz_wind_walk", "modifier_dark_willow_shadow_realm_buff", "modifier_item_glimmer_cape_glimmer", "modifier_invoker_ghost_walk_self", "modifier_nyx_assassin_vendetta", "modifier_item_phase_boots_active", "modifier_item_shadow_amulet_fade", "modifier_item_invisibility_edge_windwalk", "modifier_shadow_fiend_requiem_thinker", "modifier_item_silver_edge_windwalk", "modifier_windrunner_wind_walk", "modifier_storm_wind_walk", "modifier_templar_assassin_meld", "modifier_visage_silent_as_the_grave", "modifier_weaver_shukuchi", "modified_invisible", "modifier_rune_invis", "modifier_nyx_assassin_burrow", "modifier_oracle_false_promise_invis")
 AbilInfo.truesightModifiers = Linq.NewTable("modifier_item_dustofappearance", "modifier_bounty_hunter_track", "modifier_slardar_amplify_damage", "modifier_truesight")
 function AbilInfo.HasAnyModifier(bot, modifiers)
@@ -1104,6 +1114,9 @@ function UnitFun.IsHero(npc)
 end
 function UnitFun.IsCreepHero(npc)
     return UnitFun.IsLoneDruidBear(npc) or UnitFun.IsVisageFamiliar(npc)
+end
+function UnitFun.IsNotCreepHero(npc)
+    return not UnitFun.IsCreepHero(npc)
 end
 function Building.CanBeAttacked(buillding, npc)
     if not building:IsAlive() or building:HasModifier "modifier_foutain_glyph" then
@@ -1504,6 +1517,17 @@ function Hero.HasBoughtScepter(npc)
 end
 function Hero.PrintMode(npc)
     print("bot "..npc:GetUnitName().." in mode "..DotaExt.BotModeToString(npc:GetActiveMode())..", desire = "..npc:GetActiveModeDesire())
+end
+Hero.teleportAbilities = Linq.NewTable("furion_teleportation", "item_tpscroll")
+function Hero.IsTeleporting(npc)
+    return (function()
+        local activeAbility = npc:GetCurrentActiveAbility()
+        if activeAbility and Hero.teleportAbilities:Contains(activeAbility:GetName()) then
+            return true
+        else
+            return false
+        end
+    end)()
 end
 local oldRoleUtils = require(GetScriptDirectory().."/util/RoleUtility")
 local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")

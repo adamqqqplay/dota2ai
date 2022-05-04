@@ -77,11 +77,7 @@ local HealthPercentage;
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
 local CanCast={utility.NCanCast,{ t ->
-<<<<<<< HEAD
-	AbilityExtensions:PhysicalCanCast(t) or t:IsTower() and not t:HasModifier "modifier_fountain_glyph"
-=======
 	AbilityExtensions.PhysicalCanCastFunction(t) or t:IsTower() and not t:HasModifier "modifier_fountain_glyph"
->>>>>>> fb1118d0d0092b991ad855021d58837357d90b5a
 },utility.NCanCast,utility.UCanCast,{ t ->
 	not t:IsAncientCreep() and not t:IsRoshan()
 }}
