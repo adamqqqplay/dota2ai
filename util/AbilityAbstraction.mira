@@ -1925,13 +1925,11 @@ M.CanHardlyMove = function(self, npc)
     return npc:IsStunned() or npc:IsRooted() or npc:GetCurrentMovementSpeed() <= 150
 end
 
-M.GetModifierRemainingDuration = function(self, npc, modifierName)
-    local mod = npc:GetModifierByName(modifierName)
-    if mod ~= -1 then
+M.GetModifierRemainingDuration = function(self, npc, modifierName) ->
+    if local mod = npc:GetModifierByName(modifierName); mod ~= -1 {
         return npc:GetModifierRemainingDuration(mod)
-    end
-    return 0
-end
+    }
+    else { 0 }
 
 M.imprisonmentModifier = {
     "modifier_item_cyclone",

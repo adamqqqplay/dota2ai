@@ -18,11 +18,6 @@ local AbilitiesReal ={}
 
 ability_item_usage_generic.InitAbility(Abilities,AbilitiesReal,Talents) 
 
--- utility.PrintAbilityName(Abilities)
-local abilityName =  { "riki_smoke_screen", "riki_blink_strike", "riki_tricks_of_the_trade", "riki_poison_dart", "riki_backstab" }
-local abilityIndex = utility.ReverseTable(abilityName)
-
-
 local AbilityToLevelUp=
 {
 	Abilities[3],

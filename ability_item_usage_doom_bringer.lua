@@ -140,6 +140,26 @@ local function GetComboMana()
     end
     return mana
 end
+local acquiredAbilityPriority = A.Linq.NewTable("satyr_trickster_purge", "mud_golem_hurl_boulder", "giant_wolf_intimidate", "granite_golem_granite_aura", "centaur_khan_war_stomp", "thunderhide_frenzy")
+local devourUnitPriority = A.Linq.NewTable("npc_dota_unit_satyr_trickster", "npc_dota_unit_mud_golem", "npc_dota_unit_giant_wolf", "npc_dota_unit_granite_golem", "npc_dota_unit_centaur_khan", "npc_dota_unit_thunderhide")
+local function GetAcquiredAbilityUnitPriority(acquiredAbility)
+    return (function()
+        if acquiredAbility == nil or acquiredAbility:IsHidden() then
+            return -100
+        else
+            return acquiredAbilityPriority:IndexOf(acquiredAbility:GetName())
+        end
+    end)()
+end
+local function GetUnitPriority(unit)
+    return devourUnitPriority:IndexOf(unit:GetUnitName())
+end
+local function ToggleDevourAutoCast(ability, targetState)
+    if ability:GetAutoCastState() ~= targetState then
+        ability:ToggleAutoCast()
+        return true
+    end
+end
 Consider[1] = function()
     local abilityNumber = 1
     local ability = AbilitiesReal[abilityNumber]
@@ -149,6 +169,15 @@ Consider[1] = function()
     do
         local strongstCreep = utility.GetStrongestUnit(A.Dota.GetNearbyCreeps(npcBot, 800, true):Concat(A.Dota.GetNearbyNeutralCreeps(npcBot, 800)):Filter(CanCast[1]))
         if strongstCreep then
+            if GetUnitPriority(strongstCreep) > GetAcquiredAbilityUnitPriority(AbilitiesReal[4]) then
+                if ToggleDevourAutoCast(ability, true) then
+                    return 0
+                end
+            else
+                if ToggleDevourAutoCast(ability, false) then
+                    return 0
+                end
+            end
             return BOT_ACTION_DESIRE_MODERATE, strongstCreep
         end
     end

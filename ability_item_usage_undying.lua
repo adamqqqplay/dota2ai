@@ -154,24 +154,6 @@ Consider[1]=function()
 			end
 		end
 	end
-	
-	-- If we're pushing or defending a lane and can hit 4+ creeps, go for it
-	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
-	then
-		if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana )
-		then
-			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
-			if ( locationAoE.count >=2 and GetUnitToLocationDistance(npcBot,locationAoE.targetloc)<=CastRange) 
-			then
-				return BOT_ACTION_DESIRE_MODERATE-0.03, locationAoE.targetloc;
-			end
-		end
-	end
 
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
@@ -193,7 +175,7 @@ Consider[1]=function()
 	--laning
 	if ( npcBot:GetActiveMode() == BOT_MODE_LANING ) 
 	then
-		if((ManaPercentage>0.4 or npcBot:GetMana()>ComboMana))
+		if ManaPercentage>0.8 and npcBot:GetMana()>ComboMana + 230
 		then
 			local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, CastPoint, Damage );
 
@@ -201,11 +183,7 @@ Consider[1]=function()
 			then
 				return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 			end
-		end
-		
-		if((ManaPercentage>0.4 or npcBot:GetMana()>ComboMana))
-		then
-			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
+			
 			if ( locationAoE.count >= 2 and GetUnitToLocationDistance(npcBot,locationAoE.targetloc)<=CastRange)
 			then
 				return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
@@ -215,7 +193,7 @@ Consider[1]=function()
 	
 	-- If we're farming and can kill 3+ creeps
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
-		if(ManaPercentage>0.4 or npcBot:GetMana()>ComboMana )
+		if ManaPercentage>0.8 and npcBot:GetMana()>ComboMana + 230
 		then
 			local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0 );
 			if ( locationAoE.count >= 3 and GetUnitToLocationDistance(npcBot,locationAoE.targetloc)<=CastRange) then

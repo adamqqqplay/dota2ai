@@ -237,6 +237,9 @@ Consider[2] = function()
         if not CanCast[abilityNumber](target) then
             return false
         end
+		if AbilityExtensions:IsAttackingEnemies(npcBot) and npcBot:WasRecentlyDamagedByAnyHero(1) then
+			return false
+		end
         if target:IsHero() then
             if AbilityExtensions:MustBeIllusion(npcBot, target) then
                 return AbilityExtensions:GetManaPercent(npcBot) >= 0.8 or AbilityExtensions:GetHealthPercent(target) <= 0.4
@@ -248,10 +251,18 @@ Consider[2] = function()
         else
             return AbilityExtensions:GetManaPercent(npcBot) >= 0.8
         end
-
     end
 
+	local attackRange = npcBot:GetAttackRange()
     if AbilityExtensions:NotRetreating(npcBot) then
+		if npcBot:GetActiveMode() == BOT_MODE_LANING then
+			local creeps = npcBot:GetNearbyLaneCreeps(attackRange+120, true)
+			local allyCreeps = npcBot:GetNearbyLaneCreeps(attackRange+120, false)
+			if creeps and #creeps > 0 or allyCreeps and #allyCreeps > 0 then
+				return false
+			end
+		end
+		
         local target = npcBot:GetAttackTarget() or npcBot:GetTarget()
         if target == nil then
             if WeakestEnemy ~= nil then

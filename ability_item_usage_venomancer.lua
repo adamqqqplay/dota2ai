@@ -149,7 +149,7 @@ Consider[1]=function()	--Target Ability Example
 	then
 		for _,npcEnemy in pairs( enemys )
 		do
-			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) 
+			if ( npcBot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) ) and CanCast[1](npcEnemy)
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation();
 			end
@@ -169,7 +169,7 @@ Consider[1]=function()	--Target Ability Example
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM ) then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, Damage );
 
-		if ( locationAoE.count >= 3 ) then
+		if ( locationAoE.count >= 3 ) and #allys <= 2 then
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 		end
 	end
@@ -184,7 +184,7 @@ Consider[1]=function()	--Target Ability Example
 	then
 		local locationAoE = npcBot:FindAoELocation( true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
 
-		if ( locationAoE.count >= 3 ) 
+		if ( locationAoE.count >= 3 ) and #allys <= 2
 		then
 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
 		end

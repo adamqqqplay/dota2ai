@@ -395,23 +395,23 @@ Consider[3]=function()
 		end
 	end
 
+	if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
+	npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+	npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT then
+		local tower = towers[1]
+		if tower then
+			if A.Building.CanBeAttacked(tower) and tower:GetAttackTarget() and tower:GetAttackTarget() ~= npcBot or GetUnitToUnitDistanceSqr(npcBot, tower) >= 250000 then
+				return BOT_ACTION_DESIRE_HIGH, tower
+			end
+		end
+	end
+
 	-- If we're farming and can hit 2+ creeps and kill 1+ 
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
 		if ( #creeps >= 2 ) 
 		then
-			return BOT_ACTION_DESIRE_LOW, WeakestCreep;
-		end
-	end
-
-	if npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
-	npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
-	npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
-		local tower = towers[1]
-		if tower then
-			if A.Building.CanBeAttacked(tower) then
-				return BOT_ACTION_DESIRE_VERYHIGH, tower
-			end
+			return BOT_ACTION_DESIRE_MODERATE, WeakestCreep
 		end
 	end
 
@@ -530,12 +530,23 @@ Consider[4] = function()
 		end
 	end
 
+	if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
+	npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+	npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT then
+		local tower = towers[1]
+		if tower then
+			if A.Building.CanBeAttacked(tower) and tower:GetAttackTarget() and tower:GetAttackTarget() ~= npcBot or GetUnitToUnitDistanceSqr(npcBot, tower) >= 250000 then
+				return BOT_ACTION_DESIRE_HIGH, tower
+			end
+		end
+	end
+
 	-- If we're farming and can hit 2+ creeps and kill 1+ 
 	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
 	then
 		if ( #creeps >= 2 ) 
 		then
-			return BOT_ACTION_DESIRE_LOW, WeakestCreep;
+			return BOT_ACTION_DESIRE_MODERATE, WeakestCreep
 		end
 	end
 
