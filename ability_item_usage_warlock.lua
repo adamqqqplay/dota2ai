@@ -419,22 +419,6 @@ Consider[3]=function()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-	-- If we're pushing or defending a lane and can hit 4+ creeps, go for it
-	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
-		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT ) 
-	then
-		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0 );
-
-		if ( locationAoE.count >= 2 ) 
-		then
-			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
-		end
-	end
-
 	-- If we're going after someone
 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
@@ -548,11 +532,10 @@ function AbilityUsageThink()
             if upheavelTimer == nil then
                 upheavelTimer = DotaTime()
             else
-                local enemies = npcBot:GetNearbyHeroes(1500, true, BOT_MODE_NONE)
-                enemies = AbilityExtensions:Count(enemies, function(t)
+                local enemies = AbilityExtensions:Count(npcBot:GetNearbyHeroes(1500, true, BOT_MODE_NONE), function(t)
                     return t:HasModifier("modifier_warlock_upheavel")
                 end)
-                if enemies == 0 then
+                if #enemies == 0 then
                     if DotaTime() > upheavelTimer + 1.5 then
                         npcBot:Action_ClearActions(true)
                         upheavelTimer = nil

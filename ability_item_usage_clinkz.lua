@@ -163,24 +163,34 @@ Consider[2] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[2
             return false
         end
         if target:IsHero() then
-            if AbilityExtensions:MustBeIllusion(npcBot, target) then
+            if GetUnitToUnitDistanceSqr(npcBot, target) <= 190000 then
+                return false
+            elseif AbilityExtensions:MustBeIllusion(npcBot, target) then
                 return AbilityExtensions:GetManaPercent(npcBot) >= 0.8 or AbilityExtensions:GetHealthPercent(target) <= 0.4
             else
                 return true
             end
         elseif target:IsBuilding() then
-            return false
+            return true
         else
             return AbilityExtensions:GetManaPercent(npcBot) >= 0.8
         end
     end
+    local attackRange = npcBot:GetAttackRange()
     if AbilityExtensions:NotRetreating(npcBot) then
+        if npcBot:GetActiveMode() == BOT_MODE_LANING then
+            local creeps = npcBot:GetNearbyLaneCreeps(attackRange + 120, true)
+            local allyCreeps = npcBot:GetNearbyLaneCreeps(attackRange + 120, false)
+            if creeps and #creeps > 0 or allyCreeps and #allyCreeps > 0 then
+                return false
+            end
+        end
         local target = npcBot:GetAttackTarget() or npcBot:GetTarget()
         if target == nil then
             if WeakestEnemy ~= nil then
                 local b = UseAt(WeakestEnemy)
                 if b then
-                    return BOT_ACTION_DESIRE_HIGH, WeakestEnemy
+                    return BOT_ACTION_DESIRE_MODERATE, WeakestEnemy
                 else
                     return false
                 end

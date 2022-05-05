@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -28,16 +29,16 @@ local AbilityToLevelUp=
 	Abilities[2],
 	Abilities[1],
 	Abilities[2],
-	Abilities[5],
+	Abilities[4],
 	"talent",
 	Abilities[2],
-	Abilities[5],
+	Abilities[4],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
 	"nil",
-	Abilities[5],
+	Abilities[4],
 	"nil",
 	"talent",
 	"nil",
@@ -247,12 +248,9 @@ Consider[2]=function() --Location AOE Example
 	-- Global high-priorty usage
 	--------------------------------------
 	-- Check for a channeling enemy
-	for _,npcEnemy in pairs( enemys )
-	do
-		if ( npcEnemy:IsChanneling() ) 
-		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation();
-		end
+	local channelingEnemy = A.Linq.First(enemys, function(t) A.Hero.IsTeleporting(t) and CanCast[2](t) end)
+	if channelingEnemy then
+		return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation()
 	end
 
 	--try to kill enemy hero
@@ -334,9 +332,9 @@ local darkRiftOriginalTarget
 local trackOriginalTargetPosition
 local darkRiftChosenTarget
 
-Consider[5]=function()
-	
-	local abilityNumber=5
+-- 7.31 rework fiends_gate
+Consider[4]=function()
+	local abilityNumber=4
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -380,7 +378,7 @@ Consider[5]=function()
 				local target = FindNearbyTeleportTarget(npcEnemy)
 				if target ~= nil then
 					darkRiftOriginalTarget = npcEnemy
-					return BOT_ACTION_DESIRE_HIGH, target, "Target"
+					return BOT_ACTION_DESIRE_HIGH, target:GetLocation(), "Location"
 				end
 			end
 		end
@@ -390,8 +388,8 @@ Consider[5]=function()
 end
 
 local darkRiftCancelRange = 1200^2
-Consider[6] = function()
-	local ability = AbilitiesReal[6]
+Consider[5] = function()
+	local ability = AbilitiesReal[5]
 	if not ability:IsFullyCastable() or ability:IsHidden() then
 		return 0
 	end
@@ -411,6 +409,7 @@ Consider[6] = function()
 	end 
 	return 0
 end
+Consider[5] = A.Dota.EmptyDesireFun
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()

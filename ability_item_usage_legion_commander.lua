@@ -378,7 +378,7 @@ Consider[4]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ))
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_ALL) and #allys >=#enemys) and
+				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_ALL) and #allys >=#enemys)
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
 				end

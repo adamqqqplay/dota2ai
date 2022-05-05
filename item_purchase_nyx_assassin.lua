@@ -12,15 +12,14 @@ local ItemsToBuy =
 	"item_flask",
 	"item_magic_stick", --大魔棒7.14
 	"item_boots",
-	"item_hand_of_midas", --点金
 	"item_arcane_boots",
-	"item_blink",
-    "item_dagon",
+	"item_magic_wand",
+	"item_hand_of_midas", --点金
 	"item_ultimate_scepter", --蓝杖
+    "item_dagon",
 	"item_force_staff", --推推
 	"item_guardian_greaves",
 	"item_dagon_3",
-	"item_recipe_dagon",
 	"item_overwhelming_blink",
 	"item_ultimate_scepter_2",
 	"item_sheepstick",
