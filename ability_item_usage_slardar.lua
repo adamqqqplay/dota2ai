@@ -318,7 +318,7 @@ Consider[4]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_PHYSICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_PHYSICAL) and npcBot:GetMana()>ComboMana)) and CorrosiveHazeRemainingDurationLessThan(WeakestEnemy, 6)
+				if (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_PHYSICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_PHYSICAL) and npcBot:GetMana()>ComboMana)) and CorrosiveHazeRemainingDurationLessThan(WeakestEnemy, 6)
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
 				end
@@ -336,7 +336,7 @@ Consider[4]=function()
 		then
 			for _,npcEnemy in pairs(enemys)
 			do
-				if(CanCast[abilityNumber]( npcEnemy )) and CorrosiveHazeRemainingDurationLessThan(npcEnemy, 12)
+				if CanCast[abilityNumber]( npcEnemy ) and CorrosiveHazeRemainingDurationLessThan(npcEnemy, 12)
 				then
 					return BOT_ACTION_DESIRE_LOW, npcEnemy;
 				end
@@ -354,7 +354,7 @@ Consider[4]=function()
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and CorrosiveHazeRemainingDurationLessThan(npcEnemy, 6)
+			if  CanCast[abilityNumber]( npcEnemy ) and CorrosiveHazeRemainingDurationLessThan(npcEnemy, 6)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end

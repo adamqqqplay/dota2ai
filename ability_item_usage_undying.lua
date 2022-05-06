@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -163,7 +164,7 @@ Consider[1]=function()
 	then
 		local npcEnemy = npcBot:GetTarget();
 
-		if ( npcEnemy ~= nil ) 
+		if npcEnemy and npcEnemy:IsHero() and AbilityExtensions:MayNotBeIllusion(npcBot, npcEnemy) and A.Hero.IsNotCreepHero(npcEnemy)
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange)
 			then
