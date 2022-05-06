@@ -164,7 +164,7 @@ Consider[1]=function()
 	then
 		local npcEnemy = npcBot:GetTarget();
 
-		if npcEnemy and npcEnemy:IsHero() and AbilityExtensions:MayNotBeIllusion(npcBot, npcEnemy) and A.Hero.IsNotCreepHero(npcEnemy)
+		if npcEnemy and npcEnemy:IsHero() and AbilityExtensions:MayNotBeIllusion(npcBot, npcEnemy) and A.Unit.IsNotCreepHero(npcEnemy)
 		then
 			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange)
 			then

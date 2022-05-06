@@ -353,7 +353,7 @@ Consider[5]=function()
 	
 
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
-	local enemys = AbilityExtensions:GetPureHeroes(npcBot, CastRange+300):Filter(A.Hero.IsNotCreepHero)
+	local enemys = AbilityExtensions:GetPureHeroes(npcBot, CastRange+300):Filter(A.Unit.IsNotCreepHero)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local maxHealth = (AbilityExtensions:GetNearbyHeroes(npcBot):MaxV { t ->
 		t:GetHealth()
