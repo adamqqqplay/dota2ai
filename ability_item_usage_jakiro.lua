@@ -415,6 +415,17 @@ Consider[3]=function()
 		end
 	end
 
+	if npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+	npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
+	npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
+		local tower = towers[1]
+		if tower then
+			if A.Building.CanBeAttacked(tower) then
+				return BOT_ACTION_DESIRE_VERYHIGH, tower
+			end
+		end
+	end
+
 	-- If we're pushing or defending a lane and can hit 3+ creeps, go for it
 	if ( npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
 		 npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or

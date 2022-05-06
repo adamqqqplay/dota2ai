@@ -387,3 +387,21 @@ v1.7.8 (2021.09.05)
 4. Fix the issue of AI selecting lane in the early game.
 5. Fix many abilities that could not be used.
 6. Temporarily remove Hoodwink.
+v1.7.9 (2021.10.05)
+1. Add team purchase mechanism of Mekansm, Dust and Guardian Greaves.
+2. Try to fix the issue where the illusion can use abilities.
+3. Fix the issue of Medusa, Clinkz, Drow ranger, Silencer can not auto cast abilities.
+4. Fix many small issues.
+v1.7.10 (2022.05.04)
+Update to 7.31b
+1. Fix Doom not using abilities.
+2. Fix the abilities usage of Tusk and Ember Spirit.
+3. Fix Shadow Demon, Nyx Assasin casting certain abilities on creep heroes.
+4. Fix Omniknight never using Purification on damaged allies when mana is enough.
+5. Ogre Magi now prefers to use Bloodlust on allies with higher battle power.
+6. Decrease the desire of Zeus to use Thundergods Wrath at far enemies.
+7. Decrease Necrophos and Zeus (again) use ultimate to steal kills.
+8. Temporarily Disable Brewmaster Drunken Brawler.
+9. Fix Faceless Void item building.
+10. Remove Battle Fury and Radiance from item building lists of some heroes.
+11. Add Arcane Boots and Guardian Greaves to team purchase lists.
