@@ -163,6 +163,9 @@ Consider[2] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[2
             return false
         end
         if target:IsHero() then
+            if AbilityExtensions:IsAttackingEnemies(npcBot) and npcBot:WasRecentlyDamagedByAnyHero(1) then
+                return false
+            end
             if GetUnitToUnitDistanceSqr(npcBot, target) <= 190000 then
                 return false
             elseif AbilityExtensions:MustBeIllusion(npcBot, target) then

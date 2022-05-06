@@ -127,7 +127,7 @@ Consider[1]=function() -- TODO: lv 25 AOE mist coil
 
 	local allys = npcBot:GetNearbyHeroes( CastRange+150, false, BOT_MODE_NONE );
 	local allys = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange+150, false)
-		:Filter(A.Hero.IsNotCreepHero)
+		:Filter(A.Unit.IsNotCreepHero)
 	
 	local WeakestAlly,AllyHealth=utility.GetWeakestUnit(allys)
 	local enemys = npcBot:GetNearbyHeroes(CastRange+150,true,BOT_MODE_NONE)
