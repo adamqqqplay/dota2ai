@@ -13,10 +13,10 @@ end
 
 function OnStart()
     bot = GetBot()
-    PrintCarriedItems(bot)
+    -- PrintCarriedItems(bot)
 end
 
 function OnEnd()
-    PrintCarriedItems(bot)
+    -- PrintCarriedItems(bot)
 end
 

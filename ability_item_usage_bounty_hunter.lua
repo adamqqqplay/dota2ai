@@ -6,6 +6,7 @@
 local utility = require(GetScriptDirectory().."/utility")
 require(GetScriptDirectory().."/ability_item_usage_generic")
 local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 local debugmode = false
 local npcBot = GetBot()
 if npcBot:IsIllusion() then
@@ -215,7 +216,7 @@ Consider[4] = function()
     end
     local CastRange = Clamp(ability:GetCastRange(), 0, 1599)
     local realEnemies = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange):Filter(function(it)
-        return fun1:SpellCanCast(it) and it:IsHero() and fun1:MayNotBeIllusion(npcBot, it)
+        return fun1:SpellCanCast(it) and it:IsHero() and fun1:MayNotBeIllusion(npcBot, it) and A.Unit.IsNotCreepHero(it)
     end):Map(function(it)
         return {
             it,
@@ -242,7 +243,7 @@ Consider[4] = function()
     end
     do
         local target = fun1:GetTargetIfGood(npcBot)
-        if target then
+        if target and target:GetTeam() ~= npcBot:GetTeam() and A.Unit.IsNotCreepHero(target) then
             return BOT_ACTION_DESIRE_HIGH, target
         end
     end

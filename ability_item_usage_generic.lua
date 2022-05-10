@@ -393,6 +393,9 @@ function UseAbility(AbilitiesReal, cast)
 
         local function CallWithTarget()
             cast.Type[j] = "Target"
+			-- if cast.Target[j]:GetTeam() == npcBot:GetTeam() then
+			-- 	print(ability:GetName().." used at "..cast.Target[j]:GetUnitName())
+			-- end
 			-- if not AbilityExtensions:IsHero(cast.Target[j]) then
 			-- 	print("target at creep"..ability:GetName())
 			-- end

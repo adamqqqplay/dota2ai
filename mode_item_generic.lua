@@ -18,8 +18,6 @@ local function PrintCarriedItems(bot)
 end
 function OnStart()
     bot = GetBot()
-    PrintCarriedItems(bot)
 end
 function OnEnd()
-    PrintCarriedItems(bot)
 end
