@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 
 local debugmode=false
 local npcBot = GetBot()
@@ -329,7 +330,8 @@ Consider[4]=function()
 	
 	local CastRange = Clamp(ability:GetCastRange(), 0, 1599)
 	local realEnemies = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange):Filter { it ->
-		fun1:SpellCanCast(it) and it:IsHero() and fun1:MayNotBeIllusion(npcBot, it)
+		fun1:SpellCanCast(it) and it:IsHero() and fun1:MayNotBeIllusion(npcBot, it) 
+		and A.Unit.IsNotCreepHero(it)
 	}:Map { it ->
 		{ it, it:GetHealth() * HasTrackModifierPenalty(it) }
 	}:SortByMinFirst { it -> it[2] }
@@ -337,16 +339,21 @@ Consider[4]=function()
 		local target = t[1]
 		if fun1:IsFarmingOrPushing(npcBot) or npcBot:GetActiveMode() == BOT_MODE_LANING then 
 			if ManaPercentage >= 0.7 then 
+				-- realEnemies:ForEach { t -> print("bh 1 "..t[1]:GetUnitName())}
 				return BOT_ACTION_DESIRE_MODERATE, target 
 			end
 			if fun1:GetHealthPercent(target) <= 0.5 then 
+				-- realEnemies:ForEach { t -> print("bh 2 "..t[1]:GetUnitName())}
 				return BOT_ACTION_DESIRE_HIGH, target 
 			end
 		else
 			return BOT_ACTION_DESIRE_HIGH, target 
 		end
 	end
-	if local target = fun1:GetTargetIfGood(npcBot) then 
+	if local target = fun1:GetTargetIfGood(npcBot); target and target:GetTeam() ~= npcBot:GetTeam() 
+	and A.Unit.IsNotCreepHero(target) 
+	then 
+		-- print("bh 3 "..target:GetUnitName())
 		return BOT_ACTION_DESIRE_HIGH, target 
 	end
 	

@@ -16,22 +16,22 @@ local Abilities = {}
 local AbilitiesReal = {}
 ability_item_usage_generic.InitAbility(Abilities, AbilitiesReal, Talents)
 local AbilityToLevelUp = {
-    Abilities[3],
     Abilities[1],
-    Abilities[3],
+    Abilities[2],
+    Abilities[2],
     Abilities[1],
-    Abilities[3],
-    Abilities[4],
-    Abilities[3],
-    Abilities[1],
-    Abilities[1],
-    "talent",
     Abilities[2],
     Abilities[4],
     Abilities[2],
-    Abilities[2],
+    Abilities[1],
+    Abilities[1],
     "talent",
-    Abilities[2],
+    Abilities[3],
+    Abilities[4],
+    Abilities[3],
+    Abilities[3],
+    "talent",
+    Abilities[3],
     "nil",
     Abilities[4],
     "nil",
@@ -47,13 +47,13 @@ local TalentTree = {
         return Talents[2]
     end,
     function()
-        return Talents[4]
+        return Talents[3]
     end,
     function()
-        return Talents[5]
+        return Talents[6]
     end,
     function()
-        return Talents[8]
+        return Talents[7]
     end,
 }
 utility.CheckAbilityBuild(AbilityToLevelUp)
@@ -156,9 +156,11 @@ Consider[2] = function()
     local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     local creepsNeutral = npcBot:GetNearbyNeutralCreeps(1600)
     local StrongestCreep, CreepHealth2 = utility.GetStrongestUnit(creepsNeutral)
+    local holyPersuasionLevelLimit = AbilitiesReal[2]:GetLevel() + 2
+    local canEnchantAncientCreep = npcBot:GetLevel() <= 15
     if ManaPercentage >= 0.3 then
         for k, creep in pairs(creepsNeutral) do
-            if IsGoodNeutralCreeps(creep) or (creep:IsAncientCreep() and fun1:HasScepter(npcBot)) and CanCast[1](creep) then
+            if (IsGoodNeutralCreeps(creep) and holyPersuasionLevelLimit >= creep:GetLevel() or (creep:IsAncientCreep() and fun1:HasScepter(npcBot))) and CanCast[2](creep) and not creep:WasRecentlyDamagedByAnyHero(1.5) then
                 return BOT_ACTION_DESIRE_HIGH, creep
             end
         end

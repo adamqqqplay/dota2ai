@@ -141,7 +141,7 @@ local function GetComboMana()
     return mana
 end
 local acquiredAbilityPriority = A.Linq.NewTable("satyr_trickster_purge", "mud_golem_hurl_boulder", "giant_wolf_intimidate", "granite_golem_granite_aura", "centaur_khan_war_stomp", "thunderhide_frenzy")
-local devourUnitPriority = A.Linq.NewTable("npc_dota_unit_satyr_trickster", "npc_dota_unit_mud_golem", "npc_dota_unit_giant_wolf", "npc_dota_unit_granite_golem", "npc_dota_unit_centaur_khan", "npc_dota_unit_thunderhide")
+local devourUnitPriority = A.Linq.NewTable("npc_dota_neutral_satyr_trickster", "npc_dota_neutral_mud_golem", "npc_dota_neutral_giant_wolf", "npc_dota_neutral_granite_golem", "npc_dota_neutral_centaur_khan", "npc_dota_neutral_thunderhide")
 local function GetAcquiredAbilityUnitPriority(acquiredAbility)
     return (function()
         if acquiredAbility == nil or acquiredAbility:IsHidden() then

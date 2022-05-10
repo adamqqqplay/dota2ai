@@ -2931,13 +2931,14 @@ function M:GetBattlePower(npc)
             power = power + 1000
         end
         if npc:GetLevel() >= 30 then
-            power = power + 1000
+            power = power + 600
+        end
+        if name:match("lone_druid") then
+            power = power * 0.25
         end
     elseif string.match(name, "npc_dota_lone_druid_bear") then
         local heroLevel = GetHeroLevel(npc:GetPlayerID())
-        power = name[#"npc_dota_lone_druid_bear" + 1] * 2000 - 1000
-        power = power + heroLevel * 310
-        power = power + npc:GetNetWorth()
+        power = name[#"npc_dota_lone_druid_bear" + 2] * 2000 - 1000 + heroLevel * 310 + npc:GetNetWorth() * 0.75
     end
     if npc:HasModifier "modifier_item_assault_positive" and not npc:HasModifier "modifier_item_assault_positive_aura" then
         power = power + 1500
