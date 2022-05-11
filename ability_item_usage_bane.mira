@@ -397,7 +397,9 @@ Consider[3]=function()
 		return BOT_ACTION_DESIRE_MODERATE, target
 	end
 	if local target = allies:First { t1 ->
-		fun1:Any(fun1:GetIncomingDodgeWorthProjectiles(t1)) {t -> GetUnitToLocationDistance(it, t.location) <= 400 and not t.is_attack}
+		fun1:Any(fun1:GetIncomingDodgeWorthProjectiles(t1)) {
+			t -> GetUnitToLocationDistance(it, t.location) <= 400 and not t.is_attack and not fun1:DontInterruptAlly(t) 
+		}
 	} then
 		return BOT_ACTION_DESIRE_MODERATE, target
 	end

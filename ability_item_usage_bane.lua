@@ -318,7 +318,7 @@ Consider[3] = function()
     do
         local target = allies:First(function(t1)
             return fun1:Any(fun1:GetIncomingDodgeWorthProjectiles(t1), function(t)
-                return GetUnitToLocationDistance(it, t.location) <= 400 and not t.is_attack
+                return GetUnitToLocationDistance(it, t.location) <= 400 and not t.is_attack and not fun1:DontInterruptAlly(t)
             end)
         end)
         if target then
