@@ -235,7 +235,7 @@ Consider[1]=function()	--Target Ability Example
 			then
 				if GetUnitToUnitDistance(npcBot,npcEnemy)<CastRange then
 					return BOT_ACTION_DESIRE_HIGH, npcEnemy;
-				elseif creeps[1]~=nil and npcEnemy:HasModifier("modifier_bounty_hunter_track") then
+				elseif creeps[1] and GetUnitToUnitDistanceSqr(creeps[1], npcEnemy) <= 810000 and npcEnemy:HasModifier("modifier_bounty_hunter_track") then
 					return BOT_ACTION_DESIRE_HIGH, creeps[1];
 				end
 			end
