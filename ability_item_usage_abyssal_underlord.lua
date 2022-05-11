@@ -248,7 +248,7 @@ Consider[2]=function() --Location AOE Example
 	-- Global high-priorty usage
 	--------------------------------------
 	-- Check for a channeling enemy
-	local channelingEnemy = A.Linq.First(enemys, function(t) A.Hero.IsTeleporting(t) and CanCast[2](t) end)
+	local channelingEnemy = A.Linq.First(enemys, function(t) return A.Hero.IsTeleporting(t) and CanCast[2](t) end)
 	if channelingEnemy then
 		return BOT_ACTION_DESIRE_HIGH, npcEnemy:GetLocation()
 	end
