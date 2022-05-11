@@ -1040,6 +1040,7 @@ M.positiveForceMovementModifiers = {
     "modifier_pangolier_swashbuckle_stunned",
     "modiifer_pangolier_shield_crash_jump",
     "modifier_pangolier_rollup",
+    "modifier_lone_druid_true_form_transform",
     "modifier_snapfire_firesnap_cookie",
     "modifier_snapfire_gobble_up",
     "modifier_sand_king_burrowstrike",
@@ -1621,7 +1622,7 @@ M.enemyVisibleIllusionModifiers = {
     "modifier_vengefulspirit_hybrid_special",
 }
 M.MustBeIllusion = function(self, npcBot, target)
-    if npcBot:GetTeam() == target:GetTeam() then
+    if target.GetTeam and npcBot:GetTeam() == target:GetTeam() then
         return target:IsIllusion()
     end
     if target.markedAsIllusion then
