@@ -108,14 +108,17 @@ Consider[1] = function()
             return false
         end
         if target:IsHero() then
+			if AbilityExtensions:IsAttackingEnemies(npcBot) and npcBot:WasRecentlyDamagedByAnyHero(1) then
+				return false
+			end
             local modifier = target:GetModifierByName("modifier_drow_ranger_frost_arrows_slow")
             if modifier ~= -1 and target:GetModifierRemainingDuration(modifier) > npcBot:GetAttackSpeed()/100*0.7/1.7 + 0.2 then
                 return AbilityExtensions:GetManaPercent(npcBot) >= 0.65
             end
             if AbilityExtensions:MustBeIllusion(npcBot, target) then
-                return (AbilityExtensions:GetManaPercent(npcBot) >= 0.8 or AbilityExtensions:GetHealthPercent(target) <= 0.4) and (GetUnitToUnitDistance(npcBot, target) >= 300 or npcBot:GetLevel() < 6)
+                return (AbilityExtensions:GetManaPercent(npcBot) >= 0.8 or AbilityExtensions:GetHealthPercent(target) <= 0.4) and GetUnitToUnitDistanceSqr(npcBot, target) >= 190000
             else
-                return AbilityExtensions:GetManaPercent(npcBot) >= 0.3 or AbilityExtensions:GetManaPercent(npcBot) >= 0.2 and (GetUnitToUnitDistance(npcBot, target) >= 300 or npcBot:GetLevel() < 6)
+                return AbilityExtensions:GetManaPercent(npcBot) >= 0.3 or AbilityExtensions:GetManaPercent(npcBot) >= 0.2 and GetUnitToUnitDistanceSqr(npcBot, target) >= 190000
             end
         elseif target:IsBuilding() then
             return false
@@ -125,13 +128,22 @@ Consider[1] = function()
 		return 0
     end
 
+	local attackRange = npcBot:GetAttackRange()
     if AbilityExtensions:NotRetreating(npcBot) then
+		if npcBot:GetActiveMode() == BOT_MODE_LANING then
+			local creeps = npcBot:GetNearbyLaneCreeps(attackRange+120, true)
+			local allyCreeps = npcBot:GetNearbyLaneCreeps(attackRange+120, false)
+			if creeps and #creeps > 0 or allyCreeps and #allyCreeps > 0 then
+				return false
+			end
+		end
+
         local target = npcBot:GetAttackTarget()
         if target == nil then
             if WeakestEnemy ~= nil then
                 local b = UseAt(WeakestEnemy)
                 if b then
-                    return BOT_ACTION_DESIRE_HIGH, WeakestEnemy
+                    return BOT_ACTION_DESIRE_MODERATE, WeakestEnemy
                 else
                     return false
                 end

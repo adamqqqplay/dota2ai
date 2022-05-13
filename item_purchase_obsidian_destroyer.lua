@@ -9,6 +9,7 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_null_talisman", --无用挂件
+	"item_null_talisman", --无用挂件
 	"item_power_treads", --假腿7.21
     "item_dragon_lance", --魔龙枪
     "item_witch_blade",

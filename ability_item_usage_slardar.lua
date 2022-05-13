@@ -281,8 +281,11 @@ Consider[2]=function()
 		end
 	end
 
-	return BOT_ACTION_DESIRE_NONE, 0;
-	
+	return BOT_ACTION_DESIRE_NONE, 0
+end
+
+local function CorrosiveHazeRemainingDurationLessThan(target, time)
+	return AbilityExtensions:GetMagicImmuneRemainingDuration(target, "modifier_slardar_amplify_damage") <= time
 end
 
 Consider[4]=function()
@@ -299,12 +302,12 @@ Consider[4]=function()
 	local CastRange = ability:GetCastRange();
 	local Damage = ability:GetAbilityDamage();
 	
-
 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
+
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
@@ -315,7 +318,7 @@ Consider[4]=function()
 		then
 			if ( CanCast[abilityNumber]( WeakestEnemy ) )
 			then
-				if(HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_PHYSICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_PHYSICAL) and npcBot:GetMana()>ComboMana))
+				if (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(Damage,DAMAGE_TYPE_PHYSICAL) or (HeroHealth<=WeakestEnemy:GetActualIncomingDamage(GetComboDamage(),DAMAGE_TYPE_PHYSICAL) and npcBot:GetMana()>ComboMana)) and CorrosiveHazeRemainingDurationLessThan(WeakestEnemy, 6)
 				then
 					return BOT_ACTION_DESIRE_HIGH,WeakestEnemy; 
 				end
@@ -333,24 +336,9 @@ Consider[4]=function()
 		then
 			for _,npcEnemy in pairs(enemys)
 			do
-				if(CanCast[abilityNumber]( npcEnemy ))
+				if CanCast[abilityNumber]( npcEnemy ) and CorrosiveHazeRemainingDurationLessThan(npcEnemy, 12)
 				then
 					return BOT_ACTION_DESIRE_LOW, npcEnemy;
-				end
-			end
-		end
-	end
-	
-	-- If we're farming
-	if ( npcBot:GetActiveMode() == BOT_MODE_FARM )
-	then
-		if ( #creeps >= 1 ) 
-		then
-			for _,tempcreep in pairs(creeps)
-			do
-				if(tempcreep:GetHealth()>=600 and npcBot:GetMana()>ComboMana and CanCast[abilityNumber]( tempcreep ))
-				then
-					return BOT_ACTION_DESIRE_LOW, tempcreep;
 				end
 			end
 		end
@@ -366,7 +354,7 @@ Consider[4]=function()
 
 		if ( npcEnemy ~= nil ) 
 		then
-			if ( CanCast[abilityNumber]( npcEnemy ) and GetUnitToUnitDistance(npcBot,npcEnemy)< CastRange + 75*#allys)
+			if  CanCast[abilityNumber]( npcEnemy ) and CorrosiveHazeRemainingDurationLessThan(npcEnemy, 6)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, npcEnemy
 			end

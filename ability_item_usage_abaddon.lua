@@ -7,6 +7,7 @@ local utility = require(GetScriptDirectory().."/utility")
 require(GetScriptDirectory().."/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
 local fun1 = AbilityExtensions
+local A = require(GetScriptDirectory().."/util/MiraDota")
 local debugmode = false
 local npcBot = GetBot()
 if npcBot:IsIllusion() then
@@ -101,11 +102,7 @@ Consider[1] = function()
     local Damage = ability:GetAbilityDamage()
     local SelfDamage = ability:GetSpecialValueInt("self_damage")
     local allys = npcBot:GetNearbyHeroes(CastRange + 150, false, BOT_MODE_NONE)
-    for _, hero in pairs(allys) do
-        if hero == npcBot then
-            table.remove(allys, _)
-        end
-    end
+    local allys = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange + 150, false):Filter(A.Hero.IsNotCreepHero)
     local WeakestAlly, AllyHealth = utility.GetWeakestUnit(allys)
     local enemys = npcBot:GetNearbyHeroes(CastRange + 150, true, BOT_MODE_NONE)
     local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
@@ -223,9 +220,9 @@ Consider[2] = function()
             return RemapValClamped(rate, 15, 80, BOT_ACTION_DESIRE_MODERATE - 0.1, BOT_ACTION_DESIRE_VERYHIGH), t
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ATTACK or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY then
+    if fun1:IsAttackingEnemies(npcBot) then
         if WeakestAlly ~= nil then
-            if AllyHealth / WeakestAlly:GetMaxHealth() < 0.3 + 0.4 * ManaPercentage then
+            if AllyHealth / WeakestAlly:GetMaxHealth() < 0.3 then
                 if CanCast[abilityNumber](WeakestAlly) then
                     return BOT_ACTION_DESIRE_MODERATE, WeakestAlly
                 end

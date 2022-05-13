@@ -6,6 +6,7 @@
 local utility = require(GetScriptDirectory().."/utility")
 require(GetScriptDirectory().."/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 local debugmode = false
 local npcBot = GetBot()
 if npcBot:IsIllusion() then
@@ -257,21 +258,31 @@ Consider[5] = function()
     local CastRange = ability:GetCastRange()
     local DamagePercent = ability:GetSpecialValueFloat("damage_per_health")
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
-    local enemys = AbilityExtensions:GetPureHeroes(npcBot, CastRange + 300)
+    local enemys = AbilityExtensions:GetPureHeroes(npcBot, CastRange + 300):Filter(A.Unit.IsNotCreepHero)
     local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local maxHealth = (AbilityExtensions:GetNearbyHeroes(npcBot):MaxV(function(t)
         return t:GetHealth()
-    end) or npcBot:GetHealth()) / 4
+    end) or npcBot:GetHealth()) / 3
+    local allyNumber = AbilityExtensions:GetEnemyHeroNumber(npcBot, AbilityExtensions:Filter(allys, function(t)
+        return AbilityExtensions:IsAttackingEnemies(t) or not t:IsBot()
+    end))
+    do
+        local enemy = enemys:First(A.Hero.IsTeleporting)
+        if enemy and CanCast[abilityNumber](enemy) then
+            local k = (1 - enemy:GetMagicResist()) * d * (1 + 0.08 * allyNumber)
+            local maxHealthPercentToKill = k / (1 + k)
+            if AbilityExtensions:GetHealthPercent(enemy) <= maxHealthPercentToKill then
+                return BOT_ACTION_DESIRE_HIGH, enemy
+            end
+        end
+    end
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         for i, npcEnemy in pairs(enemys) do
             if (CanCast[abilityNumber](npcEnemy)) and not npcEnemy:IsMagicImmune() then
-                local Damage = (npcEnemy:GetMaxHealth() - npcEnemy:GetHealth()) * DamagePercent
+                local Damage = (npcEnemy:GetMaxHealth() - npcEnemy:GetHealth()) * DamagePercent * (1 + allyNumber * 0.06)
                 local n1 = npcEnemy:GetHealth()
                 local n2 = npcEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL)
-                if npcBot:GetActiveMode() == BOT_MODE_ATTACK then
-                    Damage = Damage * (1 + 0.05 * #allys)
-                end
-                if npcEnemy:GetHealth() <= npcEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) * (0.85 + #allys * 0.05) and (npcEnemy:GetHealth() >= (ability:GetLevel() * 100 + 300) and npcEnemy:GetHealth() > maxHealth or AbilityExtensions:GetHealthPercent(npcEnemy) <= 0.45 and AbilityExtensions:GetHealthPercent(npcEnemy) >= 0.2) then
+                if npcEnemy:GetHealth() <= npcEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) and (npcEnemy:GetHealth() >= (ability:GetLevel() * 100 + 300) and npcEnemy:GetHealth() > maxHealth and AbilityExtensions:GetHealthPercent(npcEnemy) >= 0.25) then
                     return BOT_ACTION_DESIRE_HIGH, npcEnemy
                 end
             end

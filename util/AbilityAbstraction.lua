@@ -1040,6 +1040,7 @@ M.positiveForceMovementModifiers = {
     "modifier_pangolier_swashbuckle_stunned",
     "modiifer_pangolier_shield_crash_jump",
     "modifier_pangolier_rollup",
+    "modifier_lone_druid_true_form_transform",
     "modifier_snapfire_firesnap_cookie",
     "modifier_snapfire_gobble_up",
     "modifier_sand_king_burrowstrike",
@@ -1621,7 +1622,7 @@ M.enemyVisibleIllusionModifiers = {
     "modifier_vengefulspirit_hybrid_special",
 }
 M.MustBeIllusion = function(self, npcBot, target)
-    if npcBot:GetTeam() == target:GetTeam() then
+    if target.GetTeam and npcBot:GetTeam() == target:GetTeam() then
         return target:IsIllusion()
     end
     if target.markedAsIllusion then
@@ -1797,11 +1798,14 @@ M.CanHardlyMove = function(self, npc)
     return npc:IsStunned() or npc:IsRooted() or npc:GetCurrentMovementSpeed() <= 150
 end
 M.GetModifierRemainingDuration = function(self, npc, modifierName)
-    local mod = npc:GetModifierByName(modifierName)
-    if mod ~= -1 then
-        return npc:GetModifierRemainingDuration(mod)
-    end
-    return 0
+    return (function()
+        local mod = npc:GetModifierByName(modifierName)
+        if mod ~= -1 then
+            return npc:GetModifierRemainingDuration(mod)
+        else
+            return 0
+        end
+    end)()
 end
 M.imprisonmentModifier = {
     "modifier_item_cyclone",
@@ -2928,13 +2932,14 @@ function M:GetBattlePower(npc)
             power = power + 1000
         end
         if npc:GetLevel() >= 30 then
-            power = power + 1000
+            power = power + 600
+        end
+        if name:match("lone_druid") then
+            power = power * 0.25
         end
     elseif string.match(name, "npc_dota_lone_druid_bear") then
         local heroLevel = GetHeroLevel(npc:GetPlayerID())
-        power = name[#"npc_dota_lone_druid_bear" + 1] * 2000 - 1000
-        power = power + heroLevel * 310
-        power = power + npc:GetNetWorth()
+        power = name[#"npc_dota_lone_druid_bear" + 2] * 2000 - 1000 + heroLevel * 310 + npc:GetNetWorth() * 0.75
     end
     if npc:HasModifier "modifier_item_assault_positive" and not npc:HasModifier "modifier_item_assault_positive_aura" then
         power = power + 1500

@@ -11,7 +11,9 @@ local ItemsToBuy =
     "item_flask",
     "item_magic_wand",
 	"item_arcane_boots", --秘法鞋
+	"item_aether_lens",
 	"item_hood_of_defiance",
+	"item_kaya",
 	"item_octarine_core",
 	"item_ultimate_scepter", --蓝杖
 	"item_shivas_guard", --希瓦

@@ -299,51 +299,26 @@ consider[2] = function()
 		end
 	end
 
-	-- Attack roshan
-	--if (npcBot:GetActiveMode() == BOT_MODE_ROSHAN) then
-	--	local npcTarget
-	--	for _, creep in pairs(creeps) do
-	--		if (AbilityHelper.isRoshan(creep)) then
-	--			npcTarget = creep
-	--			break
-	--		end
-	--	end
-    --
-	--	local roshanTarget = npcTarget:GetAttackTarget()
-	--	if (isManaEnough and AbilityHelper.isValidTarget(roshanTarget)) then
-	--		return BOT_ACTION_DESIRE_HIGH, roshanTarget
-	--	end
-	--end
-
-	-- If we're farming
-	if (activeMode == BOT_MODE_FARM) then
-		if (#creeps >= 2 and CanCast[abilityIndex](weakestCreep)) then
-			if (isManaEnough) then
-				return BOT_ACTION_DESIRE_LOW, npcBot
-			end
-		end
-	end
-
 	-- If we're pushing or defending a lane
-	if
-		(npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
-			npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
-			npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
-			npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
-			npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT)
-	 then
-		local allyCreeps = npcBot:GetNearbyCreeps(serachDistance, false)
-		local strongestAllyCreep = AbilityHelper.getStrongestUnit(allyCreeps)
-		if (isManaEnough and abilities[abilityIndex]:GetLevel() >= 1) then
-			if (#allyCreeps >= 1) then
-				if (CanCast[abilityIndex](strongestAllyCreep)) then
-					if (GetUnitToUnitDistance(npcBot, strongestAllyCreep) < castRange + 75 * #allys) then
-						return BOT_ACTION_DESIRE_LOW, strongestAllyCreep
-					end
-				end
-			end
-		end
-	end
+	-- if
+	-- 	(npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+	-- 		npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or
+	-- 		npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+	-- 		npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
+	-- 		npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT)
+	--  then
+	-- 	local allyCreeps = npcBot:GetNearbyCreeps(serachDistance, false)
+	-- 	local strongestAllyCreep = AbilityHelper.getStrongestUnit(allyCreeps)
+	-- 	if (isManaEnough and abilities[abilityIndex]:GetLevel() >= 1) then
+	-- 		if (#allyCreeps >= 1) then
+	-- 			if (CanCast[abilityIndex](strongestAllyCreep)) then
+	-- 				if (GetUnitToUnitDistance(npcBot, strongestAllyCreep) < castRange + 75 * #allys) then
+	-- 					return BOT_ACTION_DESIRE_LOW, strongestAllyCreep
+	-- 				end
+	-- 			end
+	-- 		end
+	-- 	end
+	-- end
 
 	-- If we're going after someone
 	if

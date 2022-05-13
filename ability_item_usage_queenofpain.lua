@@ -508,7 +508,7 @@ function AbilityUsageThink()
 	local index, target = ability_item_usage_generic.UseAbility(AbilitiesReal,cast)
 	if index == 4 then
 		if sonicWaveTime and sonicWaveTargetLoc == target then
-			if DotaTime() - sonicWaveTime > 0.8 then
+			if DotaTime() - sonicWaveTime > 0.45 then
 				npcBot:Action_ClearActions(false)
 				sonicWaveTime = nil
 			end

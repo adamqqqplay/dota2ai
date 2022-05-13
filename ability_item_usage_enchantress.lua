@@ -8,6 +8,7 @@
 local utility = require( GetScriptDirectory().."/utility" ) 
 require(GetScriptDirectory() ..  "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local A = require(GetScriptDirectory().."/util/MiraDota")
 
 
 local debugmode=false
@@ -50,7 +51,7 @@ local AbilityToLevelUp=
 
 local TalentTree={
 	function()
-		return Talents[1]
+		return Talents[2]
 	end,
 	function()
 		return Talents[3]
@@ -59,7 +60,7 @@ local TalentTree={
 		return Talents[5]
 	end,
 	function()
-		return Talents[7]
+		return Talents[8]
 	end
 }
 
@@ -140,18 +141,27 @@ Consider[2]=function()
 
 	-- dispell
 	local buffedEnemies = AbilityExtensions:Filter(enemys, function(t) return CanCast[2](t) end)
-	buffedEnemies = AbilityExtensions:Map(enemys, function(t) return {t, AbilityExtensions:IndexOfBasicDispellablePositiveModifier(t)} end)
-	buffedEnemies = AbilityExtensions:Filter(buffedEnemies, function(t) return t[2] ~= -1 end)
-	buffedEnemies = AbilityExtensions:SortByMinFirst(buffedEnemies, function(t) return t[2] end)
+		:Map(function(t) return {t, AbilityExtensions:IndexOfBasicDispellablePositiveModifier(t)} end)
+		:Filter(function(t) return t[2] ~= -1 end)
+		:SortByMinFirst(function(t) return t[2] end)
 	if AbilityExtensions:Any(buffedEnemies) then
 		return BOT_ACTION_DESIRE_MODERATE, buffedEnemies[1][1]
 	end
 
+	-- 7.31c level limit on enchanting
+	local enchantLevelLimit = 6
+	local abilityLevel = AbilitiesReal[2]:GetLevel()
+	if abilityLevel == 1 then
+		enchantLevelLimit = 4
+	elseif abilityLevel == 2 then
+		enchantLevelLimit = 5
+	end
+	local canEnchantAncientCreep = npcBot:GetLevel() >= 20
 	-- Find neural creeps
 	if(ManaPercentage>=0.4)
 	then
-		for k,creep in pairs(creepsNeutral) do
-			if IsGoodNeutralCreeps(creep) and not creep:WasRecentlyDamagedByAnyHero(1.5)
+		for _, creep in pairs(creepsNeutral) do
+			if (IsGoodNeutralCreeps(creep) and creep:GetLevel() <= enchantLevelLimit or creep:IsAncientCreep() and canEnchantAncientCreep) and not creep:WasRecentlyDamagedByAnyHero(1.5)
 			then
 				return BOT_ACTION_DESIRE_MODERATE, creep;
 			end

@@ -16,7 +16,7 @@ local ItemsToBuy =
 	"item_vladmir", --祭品
 	"item_black_king_bar", --BKB
 	"item_helm_of_the_overlord", --level 2 helm dominator 7.30
-	"item_solar_crest", --大勋章7.20
+	"item_assault",
 	"item_ultimate_scepter",
 	"item_ultimate_scepter_2",
 	"item_heart",

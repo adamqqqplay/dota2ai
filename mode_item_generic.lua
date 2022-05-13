@@ -1,5 +1,5 @@
 ---------------------------------------------
--- Generated from Mirana Compiler version 1.6.1
+-- Generated from Mirana Compiler version 1.6.2
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
@@ -18,8 +18,6 @@ local function PrintCarriedItems(bot)
 end
 function OnStart()
     bot = GetBot()
-    PrintCarriedItems(bot)
 end
 function OnEnd()
-    PrintCarriedItems(bot)
 end

@@ -77,8 +77,11 @@ end
 local cast={} cast.Desire={} cast.Target={} cast.Type={}
 local Consider ={}
 local CanCast={function(t)
-	return AbilityExtensions:StunCanCast(t, AbilitiesReal[1], false, false, true, false) 
-end,utility.CanCastNoTarget,utility.CanCastNoTarget,utility.NCanCast,utility.NCanCast,AbilityExtensions.NormalCanCastFunction}
+	return AbilityExtensions:StunCanCast(t, AbilitiesReal[1], false, false, true, false)
+	and A.Unit.IsNotCreepHero(t)
+end,utility.CanCastNoTarget,utility.CanCastNoTarget,utility.NCanCast,utility.NCanCast, function(t)
+	return AbilityExtensions:NormalCanCast(t, _, DAMAGE_TYPE_PURE, true) and A.Unit.IsNotCreepHero(t)
+end}
 local enemyDisabled=utility.enemyDisabled
 
 function GetComboDamage()

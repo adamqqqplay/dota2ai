@@ -9,7 +9,6 @@ local ItemsToBuy =
 	"item_null_talisman",
 	"item_tango",
 	"item_enchanted_mango",
-	"item_null_talisman",
 	"item_boots",
 	"item_magic_wand", --大魔棒7.14
 	"item_veil_of_discord", --纷争7.20
