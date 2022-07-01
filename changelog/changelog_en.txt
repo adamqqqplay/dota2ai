@@ -405,7 +405,7 @@ Update to 7.31b
 9. Fix Faceless Void item building.
 10. Remove Battle Fury and Radiance from item building lists of some heroes.
 11. Add Arcane Boots and Guardian Greaves to team purchase lists.
-v1.7.10 (2022.06.30)
+v1.7.10 (2022.07.01)
 Update to 7.31c
 1. Prevent crystal_maiden from casting frostbite on antimage_counterspell;
 2. Add doom_bringer auto-cast devour when devouring better creeps;
