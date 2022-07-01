@@ -405,3 +405,30 @@ Update to 7.31b
 9. Fix Faceless Void item building.
 10. Remove Battle Fury and Radiance from item building lists of some heroes.
 11. Add Arcane Boots and Guardian Greaves to team purchase lists.
+v1.7.11 (2022.07.01)
+Update to 7.31c
+1. Prevent crystal_maiden from casting frostbite on antimage_counterspell;
+2. Add doom_bringer auto-cast devour when devouring better creeps;
+3. Decrease desire of lich casting frost_armour on creeps;
+4. Add necrolyte casting reapers_scythe on teleporting enemies;
+5. Prevent slardar from casting corrosive_haze on affected units;
+6. Decrease desire of undying casting decay on creeps;
+7. Change brewmaster, viper ability level-up up to 7.31c;
+8. Prevent nyx_assassin casting impale on magic immune targets;
+9. Prevent venomancer casting venomous_gale on magic immune targets;
+10. Decrease desire of warlock casting upheavel on creeps;
+11. Change item build lists of some heroes;
+12. Forbid bane casting nightmare on transforming lone_druid;
+13. Fix legion_commander;
+14. Fix abaddon cast certain abilities on creep heroes;
+15. Fix drow_ranger, clinkz, silencer auto-cast abilities cast whenever possible;
+16. Fix jakiro doesn't cast liquid_fire, liquid_frost on buildings;
+17. Fix abyssal_underlord casting pit_of_malice on non-teleporting enemeis;
+18. Fix mirana casting moon_shadow on creep heroes;
+19. Fix typos in winter_wyvern source;
+20. Fix errors in slardar;
+21. Fix bounty_hunter uses track at ally lone_druid_bear;
+22. Fix chen ability level up to 7.31c;
+23. Fix enchantress_enchant neutral creep level limit to 7.31c;
+24. Fix terrorblade uses reflection or sunder at creep heroes;
+25. Fix abyssal errors;
