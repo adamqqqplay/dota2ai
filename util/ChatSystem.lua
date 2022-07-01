@@ -1,8 +1,8 @@
 local BotsInit = require("game/botsinit")
 local M = BotsInit.CreateGeneric()
 
-local version = "1.7.10"
-local updateDate = "May 4, 2022"
+local version = "1.7.11"
+local updateDate = "June 30, 2022"
 
 local announceFlag = false
 function M.SendVersionAnnouncement()
