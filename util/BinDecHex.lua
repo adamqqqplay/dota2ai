@@ -184,7 +184,7 @@ function Bin2Dec(s)
 
 	l = ex + 1
 	for i = 1, l do
-		b = string.sub(s, i, i)
+		local b = string.sub(s, i, i)
 		if b == "1" then
 			num = num + 2 ^ ex
 		end
@@ -275,8 +275,8 @@ function BMAnd(v, m)
 
 
 	for i = 1, 32 do
-		cv = string.sub(bv, i, i)
-		cm = string.sub(bm, i, i)
+		local cv = string.sub(bv, i, i)
+		local cm = string.sub(bm, i, i)
 		if cv == cm then
 			if cv == "1" then
 				s = s .. "1"
@@ -319,8 +319,8 @@ function BMNAnd(v, m)
 
 
 	for i = 1, 32 do
-		cv = string.sub(bv, i, i)
-		cm = string.sub(bm, i, i)
+		local cv = string.sub(bv, i, i)
+		local cm = string.sub(bm, i, i)
 		if cv == cm then
 			if cv == "1" then
 				s = s .. "0"
@@ -363,8 +363,8 @@ function BMOr(v, m)
 
 
 	for i = 1, 32 do
-		cv = string.sub(bv, i, i)
-		cm = string.sub(bm, i, i)
+		local cv = string.sub(bv, i, i)
+		local cm = string.sub(bm, i, i)
 		if cv == "1" then
 			s = s .. "1"
 		elseif cm == "1" then
@@ -404,8 +404,8 @@ function BMXOr(v, m)
 
 
 	for i = 1, 32 do
-		cv = string.sub(bv, i, i)
-		cm = string.sub(bm, i, i)
+		local cv = string.sub(bv, i, i)
+		local cm = string.sub(bm, i, i)
 		if cv == "1" then
 			if cm == "0" then
 				s = s .. "1"
@@ -454,8 +454,8 @@ function BMNot(v, m)
 
 
 	for i = 1, 32 do
-		cv = string.sub(bv, i, i)
-		cm = string.sub(bm, i, i)
+		local cv = string.sub(bv, i, i)
+		local cm = string.sub(bm, i, i)
 		if cm == "1" then
 			if cv == "1" then
 				-- turn off

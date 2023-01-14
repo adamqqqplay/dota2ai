@@ -662,7 +662,7 @@ local function AddMekansm()
             BuyMekansm(hero)
         end
     elseif #heroRates == 2 then
-        hero = heroRates[1]
+        local hero = heroRates[1]
         if hero[2] >= 5 then
             BuyMekansm(hero[1])
         end

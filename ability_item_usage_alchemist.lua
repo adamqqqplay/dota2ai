@@ -6,7 +6,7 @@
 -- General Initialization
 --------------------------------------
 local utility = require(GetScriptDirectory() .. "/utility")
-require(GetScriptDirectory() .. "/ability_item_usage_generic")
+local ability_item_usage_generic = require(GetScriptDirectory() .. "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local A = require(GetScriptDirectory() .. "/util/MiraDota")
 local ItemUsage = require(GetScriptDirectory() .. "/util/ItemUsage-New")

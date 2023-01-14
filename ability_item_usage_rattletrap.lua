@@ -1,6 +1,6 @@
 -- v1.7 template by AaronSong321
 local utility = require(GetScriptDirectory() .. "/utility")
-require(GetScriptDirectory() .. "/ability_item_usage_generic")
+local ability_item_usage_generic = require(GetScriptDirectory() .. "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 
 local npcBot = GetBot()

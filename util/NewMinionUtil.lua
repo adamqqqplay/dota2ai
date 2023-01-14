@@ -449,6 +449,7 @@ function CastThink(minion, ability)
 				end
 			end
 		else
+			local target
 			minion.castDesire, target = ConsiderUnitTarget(minion, ability);
 			if minion.castDesire > 0 then
 				--print(minion:GetUnitName()..tostring(minion.castDesire).." Use Ability "..ability:GetName())
@@ -457,6 +458,7 @@ function CastThink(minion, ability)
 			end
 		end
 	elseif CheckFlag(ability:GetBehavior(), ABILITY_BEHAVIOR_POINT) then
+		local loc
 		minion.castDesire, loc = ConsiderPointTarget(minion, ability);
 		if minion.castDesire > 0 then
 			--print(minion:GetUnitName()..tostring(minion.castDesire).." Use Ability "..ability:GetName())

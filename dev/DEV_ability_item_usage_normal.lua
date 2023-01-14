@@ -5,7 +5,7 @@
 --------------------------------------
 -- General Initialization
 --------------------------------------
-require(GetScriptDirectory() .. "/ability_item_usage_generic")
+local ability_item_usage_generic = require(GetScriptDirectory() .. "/ability_item_usage_generic")
 local AbilityHelper = dofile(GetScriptDirectory() .. "/util/AbilityHelper")
 
 local enableDebug = true
