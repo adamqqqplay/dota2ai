@@ -14,16 +14,16 @@ local p =
 	"item_phase_boots", --相位
 	"item_magic_wand",
 	"item_vanguard", --先锋
-    "item_crimson_guard",
-    "item_heart", --龙心7.20
+	"item_crimson_guard",
+	"item_heart", --龙心7.20
 	"item_black_king_bar", --BKB
-    "item_shivas_guard",
-    "item_ultimate_scepter",
-    "item_ultimate_scepter_2",
-    "item_lotus_orb",
+	"item_shivas_guard",
+	"item_ultimate_scepter",
+	"item_ultimate_scepter_2",
+	"item_lotus_orb",
 }
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), p)
 
 function ItemPurchaseThink()
-    ItemPurchaseSystem:ItemPurchaseExtend()
+	ItemPurchaseSystem:ItemPurchaseExtend()
 end

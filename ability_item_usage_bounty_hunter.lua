@@ -3,10 +3,10 @@
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
-local utility = require(GetScriptDirectory().."/utility")
-require(GetScriptDirectory().."/ability_item_usage_generic")
-local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
-local A = require(GetScriptDirectory().."/util/MiraDota")
+local utility = require(GetScriptDirectory() .. "/utility")
+require(GetScriptDirectory() .. "/ability_item_usage_generic")
+local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
+local A = require(GetScriptDirectory() .. "/util/MiraDota")
 local debugmode = false
 local npcBot = GetBot()
 if npcBot:IsIllusion() then
@@ -61,6 +61,7 @@ utility.CheckAbilityBuild(AbilityToLevelUp)
 function AbilityLevelUpThink()
     ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
 end
+
 local cast = {}
 cast.Desire = {}
 cast.Target = {}
@@ -76,9 +77,11 @@ local enemyDisabled = utility.enemyDisabled
 function GetComboDamage()
     return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
 end
+
 function GetComboMana()
     return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
+
 Consider[1] = function()
     local abilityNumber = 1
     local ability = AbilitiesReal[abilityNumber]
@@ -106,10 +109,15 @@ Consider[1] = function()
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) then
-                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or (HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and npcBot:GetMana() > ComboMana) then
-                    if GetUnitToUnitDistance(npcBot, WeakestEnemy) < CastRange and not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk") then
+                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or
+                    (
+                    HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and
+                        npcBot:GetMana() > ComboMana) then
+                    if GetUnitToUnitDistance(npcBot, WeakestEnemy) < CastRange and
+                        not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk") then
                         return BOT_ACTION_DESIRE_HIGH, WeakestEnemy
-                    elseif creeps[1] ~= nil and not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk") and WeakestEnemy:HasModifier("modifier_bounty_hunter_track") then
+                    elseif creeps[1] ~= nil and not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk") and
+                        WeakestEnemy:HasModifier("modifier_bounty_hunter_track") then
                         return BOT_ACTION_DESIRE_HIGH, creeps[1]
                     end
                 end
@@ -133,14 +141,18 @@ Consider[1] = function()
         end
     end
     local enemys2 = npcBot:GetNearbyHeroes(400, true, BOT_MODE_NONE)
-    if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
+    if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+        npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
         if #enemys >= 1 then
             if ManaPercentage > 0.5 or npcBot:GetMana() > ComboMana then
                 if WeakestEnemy ~= nil then
                     if CanCast[abilityNumber](WeakestEnemy) then
-                        if GetUnitToUnitDistance(npcBot, WeakestEnemy) < CastRange and not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk") then
+                        if GetUnitToUnitDistance(npcBot, WeakestEnemy) < CastRange and
+                            not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk") then
                             return BOT_ACTION_DESIRE_HIGH, WeakestEnemy
-                        elseif creeps[1] ~= nil and WeakestEnemy:HasModifier("modifier_bounty_hunter_track") and not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk") then
+                        elseif creeps[1] ~= nil and WeakestEnemy:HasModifier("modifier_bounty_hunter_track") and
+                            not npcBot:HasModifier("modifier_bounty_hunter_shadow_walk") then
                             return BOT_ACTION_DESIRE_HIGH, creeps[1]
                         end
                     end
@@ -148,13 +160,15 @@ Consider[1] = function()
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = npcBot:GetTarget()
         if npcEnemy ~= nil then
             if CanCast[abilityNumber](npcEnemy) then
                 if GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange then
                     return BOT_ACTION_DESIRE_HIGH, npcEnemy
-                elseif creeps[1] and GetUnitToUnitDistanceSqr(creeps[1], npcEnemy) <= 810000 and npcEnemy:HasModifier("modifier_bounty_hunter_track") then
+                elseif creeps[1] and GetUnitToUnitDistanceSqr(creeps[1], npcEnemy) <= 810000 and
+                    npcEnemy:HasModifier("modifier_bounty_hunter_track") then
                     return BOT_ACTION_DESIRE_HIGH, creeps[1]
                 end
             end
@@ -195,7 +209,8 @@ Consider[3] = function()
             return BOT_ACTION_DESIRE_HIGH
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = fun1:GetTargetIfGood(npcBot)
         if npcEnemy ~= nil then
             if GetUnitToUnitDistance(npcBot, npcEnemy) <= 2000 then
@@ -208,6 +223,7 @@ end
 local function HasTrackModifierPenalty(t)
     return fun1:GetModifierRemainingDuration(t, "modifier_bounty_hunter_track") <= 5 and 1 or 0.5
 end
+
 Consider[4] = function()
     local abilityNumber = 4
     local ability = AbilitiesReal[abilityNumber]
@@ -264,6 +280,7 @@ function AbilityUsageThink()
     end
     ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
 end
+
 function CourierUsageThink()
     ability_item_usage_generic.CourierUsageThink()
 end

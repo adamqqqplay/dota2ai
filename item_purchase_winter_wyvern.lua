@@ -9,7 +9,7 @@ local ItemsToBuy =
 	"item_tango",
 	"item_tango",
 	"item_clarity",
-    "item_magic_stick",
+	"item_magic_stick",
 	"item_tranquil_boots",
 	"item_urn_of_shadows",
 	"item_glimmer_cape", --微光

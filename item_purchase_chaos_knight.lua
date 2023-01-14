@@ -20,5 +20,5 @@ local ItemsToBuy =
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
 
 function ItemPurchaseThink()
-    ItemPurchaseSystem:ItemPurchaseExtend()
+	ItemPurchaseSystem:ItemPurchaseExtend()
 end

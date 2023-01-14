@@ -13,7 +13,7 @@ local ItemsToBuy =
 	"item_tranquil_boots",
 	"item_blink", --跳刀
 	"item_force_staff", --推推7.14
-    "item_ultimate_scepter", --蓝杖
+	"item_ultimate_scepter", --蓝杖
 	"item_black_king_bar", --bkb
 	"item_cyclone", --风杖
 	"item_ultimate_scepter_2",
@@ -23,9 +23,9 @@ local ItemsToBuy =
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
- --检查装备列表
+--检查装备列表
 
 function ItemPurchaseThink()
 	ItemPurchaseSystem:ItemPurchaseExtend()
- --购买装备
+	--购买装备
 end

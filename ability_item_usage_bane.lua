@@ -3,11 +3,11 @@
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
-local utility = require(GetScriptDirectory().."/utility")
-require(GetScriptDirectory().."/ability_item_usage_generic")
-local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
-local role = require(GetScriptDirectory().."/util/RoleUtility")
-local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local utility = require(GetScriptDirectory() .. "/utility")
+require(GetScriptDirectory() .. "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
+local role = require(GetScriptDirectory() .. "/util/RoleUtility")
+local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local debugmode = false
 local npcBot = GetBot()
 if npcBot:IsIllusion() then
@@ -62,6 +62,7 @@ utility.CheckAbilityBuild(AbilityToLevelUp)
 function AbilityLevelUpThink()
     ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
 end
+
 local cast = {}
 cast.Desire = {}
 cast.Target = {}
@@ -72,7 +73,9 @@ CanCast[1] = function(t)
     return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_MAGICAL, false, true)
 end
 CanCast[2] = function(t)
-    return AbilityExtensions:NormalCanCast(t, true, DAMAGE_TYPE_PURE, false, true) and not AbilityExtensions:HasAbilityRetargetModifier(t) and not (t:HasModifier("modifier_item_blade_mail") and AbilityExtensions:IsRetreating(npcBot))
+    return AbilityExtensions:NormalCanCast(t, true, DAMAGE_TYPE_PURE, false, true) and
+        not AbilityExtensions:HasAbilityRetargetModifier(t) and
+        not (t:HasModifier("modifier_item_blade_mail") and AbilityExtensions:IsRetreating(npcBot))
 end
 CanCast[3] = function(t)
     return fun1:StunCanCast(t, AbilitiesReal[3], false, true, true, false) and not fun1:DontControlAgain(t)
@@ -84,9 +87,11 @@ local enemyDisabled = utility.enemyDisabled
 function GetComboDamage()
     return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
 end
+
 function GetComboMana()
     return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
+
 local health
 local maxHealth
 local healthPercentage
@@ -132,18 +137,22 @@ Consider[1] = function()
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
+    if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+        npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
         if #enemys >= 1 then
             if ManaPercentage > 0.5 or npcBot:GetMana() > ComboMana then
                 if WeakestEnemy ~= nil then
-                    if CanCast[abilityNumber](WeakestEnemy) and GetUnitToUnitDistance(npcBot, WeakestEnemy) < CastRange + 75 * #allys then
+                    if CanCast[abilityNumber](WeakestEnemy) and
+                        GetUnitToUnitDistance(npcBot, WeakestEnemy) < CastRange + 75 * #allys then
                         return BOT_ACTION_DESIRE_LOW, WeakestEnemy
                     end
                 end
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = npcBot:GetTarget()
         if npcEnemy ~= nil then
             if CanCast[abilityNumber](npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys then
@@ -175,7 +184,8 @@ Consider[2] = function()
     if fun1:NotRetreating(npcBot) then
         do
             local target = enemies:Filter(CanCast[2]):Filter(function(it)
-                return it:GetHealth() <= it:GetActualIncomingDamage(damage, DAMAGE_TYPE_PURE) or it:GetHealth() <= it:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_PURE) and mana > ComboMana
+                return it:GetHealth() <= it:GetActualIncomingDamage(damage, DAMAGE_TYPE_PURE) or
+                    it:GetHealth() <= it:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_PURE) and mana > ComboMana
             end):Max(function(it)
                 return it:GetHealth()
             end)
@@ -203,7 +213,8 @@ Consider[2] = function()
         end
         do
             local target = enemies:First(function(it)
-                return CanCast[2](it) and npcBot:WasRecentlyDamagedByHero(it, 2) and GetUnitToUnitDistance(npcBot, it) <= castRange + it:GetBoundingRadius()
+                return CanCast[2](it) and npcBot:WasRecentlyDamagedByHero(it, 2) and
+                    GetUnitToUnitDistance(npcBot, it) <= castRange + it:GetBoundingRadius()
             end)
             if target then
                 return BOT_ACTION_DESIRE_HIGH, target
@@ -242,11 +253,13 @@ Consider[2] = function()
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         do
             local target = fun1:GetTargetIfGood(npcBot)
             if target then
-                if CanCast[2](target) and GetUnitToUnitDistance(npcBot, target) < castRange + target:GetBoundingRadius() + 50 * #allies then
+                if CanCast[2](target) and
+                    GetUnitToUnitDistance(npcBot, target) < castRange + target:GetBoundingRadius() + 50 * #allies then
                     return BOT_ACTION_DESIRE_MODERATE, target
                 end
             end
@@ -302,14 +315,16 @@ Consider[3] = function()
         local allys2 = fun1:GetNearbyNonIllusionHeroes(npcBot, 600)
         local allys3 = fun1:GetNearbyNonIllusionHeroes(npcBot, 1000)
         if npcEnemy and #allys2 < #allys3 then
-            if CanCast[abilityNumber](npcEnemy) and not fun1:IsOrGoingToBeSeverelyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < castRange + npcEnemy:GetBoundingRadius() then
+            if CanCast[abilityNumber](npcEnemy) and not fun1:IsOrGoingToBeSeverelyDisabled(npcEnemy) and
+                GetUnitToUnitDistance(npcBot, npcEnemy) < castRange + npcEnemy:GetBoundingRadius() then
                 return BOT_ACTION_DESIRE_MODERATE, npcEnemy
             end
         end
     end
     do
         local target = allies:First(function(t1)
-            return AbilityExtensions:IsOrGoingToBeSeverelyDisabled(t1) and not t1:IsChanneling() and not fun1:DontInterruptAlly(t1)
+            return AbilityExtensions:IsOrGoingToBeSeverelyDisabled(t1) and not t1:IsChanneling() and
+                not fun1:DontInterruptAlly(t1)
         end)
         if target then
             return BOT_ACTION_DESIRE_MODERATE, target
@@ -318,7 +333,8 @@ Consider[3] = function()
     do
         local target = allies:First(function(t1)
             return fun1:Any(fun1:GetIncomingDodgeWorthProjectiles(t1), function(t)
-                return GetUnitToLocationDistance(it, t.location) <= 400 and not t.is_attack and not fun1:DontInterruptAlly(t)
+                return GetUnitToLocationDistance(it, t.location) <= 400 and not t.is_attack and
+                    not fun1:DontInterruptAlly(t)
             end)
         end)
         if target then
@@ -350,7 +366,8 @@ Consider[4] = function()
     local damage = ability:GetAbilityDamage()
     local castRange = ability:GetCastRange()
     for _, npcEnemy in pairs(enemys) do
-        if npcEnemy:IsChanneling() and CanCast[abilityNumber](npcEnemy) and not AbilityExtensions:HasAbilityRetargetModifier(npcEnemy) then
+        if npcEnemy:IsChanneling() and CanCast[abilityNumber](npcEnemy) and
+            not AbilityExtensions:HasAbilityRetargetModifier(npcEnemy) then
             return BOT_ACTION_DESIRE_HIGH, npcEnemy
         end
     end
@@ -360,7 +377,10 @@ Consider[4] = function()
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) and not enemyDisabled(WeakestEnemy) and #enemys <= 2 then
-                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or (HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and npcBot:GetMana() > ComboMana) then
+                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or
+                    (
+                    HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and
+                        npcBot:GetMana() > ComboMana) then
                     return BOT_ACTION_DESIRE_HIGH, WeakestEnemy
                 end
             end
@@ -383,7 +403,8 @@ Consider[4] = function()
             return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy
         end
     end
-    if AbilityExtensions:IsRetreating(npcBot) and #enemys == 1 and not AbilityExtensions:HasAbilityRetargetModifier(enemys[1]) then
+    if AbilityExtensions:IsRetreating(npcBot) and #enemys == 1 and
+        not AbilityExtensions:HasAbilityRetargetModifier(enemys[1]) then
         return BOT_ACTION_DESIRE_HIGH, enemys[1]
     end
     if fun1:IsAttackingEnemies(npcBot) then
@@ -412,11 +433,14 @@ Consider[5] = function()
         return t:HasModifier("modifier_bane_nightmare")
     end)
     if #nightmaredEnemies ~= 0 then
-        if #enemies == 1 and #friends >= 2 and AbilityExtensions:GetModifierRemainingDuration(nightmaredEnemies[1], "modifier_bane_nightmare") <= 4 or nightmaredEnemies:All(function(it)
-            return fun1:GetHealthPercent(it) <= 0.3 and fun1:GetModifierRemainingDuration(it, "modifier_bane_nightmare") <= 4
-        end) and friends:All(function(it)
-            return fun1:GetHealthPercent(it) >= 0.5
-        end) then
+        if #enemies == 1 and #friends >= 2 and
+            AbilityExtensions:GetModifierRemainingDuration(nightmaredEnemies[1], "modifier_bane_nightmare") <= 4 or
+            nightmaredEnemies:All(function(it)
+                return fun1:GetHealthPercent(it) <= 0.3 and
+                    fun1:GetModifierRemainingDuration(it, "modifier_bane_nightmare") <= 4
+            end) and friends:All(function(it)
+                return fun1:GetHealthPercent(it) >= 0.5
+            end) then
             return BOT_ACTION_DESIRE_HIGH
         end
     end
@@ -438,12 +462,14 @@ function AbilityUsageThink()
     if npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() then
         if npcBot:IsCastingAbility() then
             if npcBot:GetCurrentActiveAbility() == AbilitiesReal[2] then
-                if drainSnapTarget and AbilityExtensions:IsGoodTarget(drainSnapTarget) and AbilityExtensions:HasAbilityRetargetModifier(drainSnapTarget) then
+                if drainSnapTarget and AbilityExtensions:IsGoodTarget(drainSnapTarget) and
+                    AbilityExtensions:HasAbilityRetargetModifier(drainSnapTarget) then
                     npcBot:Action_ClearActions(true)
                 end
             end
             if npcBot:GetCurrentActiveAbility() == AbilitiesReal[4] and not npcBot:IsChanneling() then
-                if fiendsGripTarget and AbilityExtensions:IsGoodTarget(drainSnapTarget) and AbilityExtensions:HasAbilityRetargetModifier(fiendsGripTarget) then
+                if fiendsGripTarget and AbilityExtensions:IsGoodTarget(drainSnapTarget) and
+                    AbilityExtensions:HasAbilityRetargetModifier(fiendsGripTarget) then
                     npcBot:Action_ClearActions(true)
                 end
             end
@@ -471,6 +497,7 @@ function AbilityUsageThink()
         fiendsGripTarget = target
     end
 end
+
 function CourierUsageThink()
     ability_item_usage_generic.CourierUsageThink()
 end

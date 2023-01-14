@@ -11,13 +11,13 @@ local ItemsToBuy =
 	"item_enchanted_mango",
 	"item_enchanted_mango",
 	"item_magic_wand", --大魔棒7.14
-    "item_soul_ring",
+	"item_soul_ring",
 	"item_arcane_boots", --秘法鞋
 	"item_ghost",
 	"item_mekansm", --梅肯
-    "item_guardian_greaves",
+	"item_guardian_greaves",
 	"item_ultimate_scepter", --蓝杖
-    "item_force_staff",
+	"item_force_staff",
 	"item_ultimate_scepter_2",
 	"item_lotus_orb", --清莲宝珠
 }

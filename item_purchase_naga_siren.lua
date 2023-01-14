@@ -9,7 +9,7 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_flask",
-    "item_magic_stick",
+	"item_magic_stick",
 	"item_tranquil_boots",
 	"item_urn_of_shadows",
 	"item_solar_crest", --大勋章7.20
@@ -24,7 +24,7 @@ local ItemsToBuy =
 
 local ItemsToBuy1 = {
 	"item_wraith_brand",
-	"item_tango","item_tango",
+	"item_tango", "item_tango",
 	"item_power_treads",
 	"item_manta",
 	"item_diffusal_blade",

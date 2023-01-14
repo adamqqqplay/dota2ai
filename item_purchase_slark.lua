@@ -18,7 +18,7 @@ local ItemsToBuy =
 	"item_skadi",
 	"item_basher",
 	"item_black_king_bar", --bkb
-    "item_basher",
+	"item_basher",
 	"item_abyssal_blade", --大晕锤
 	"item_butterfly",
 }

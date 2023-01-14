@@ -14,17 +14,16 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
 	"item_bracer",
 	"item_blink", --跳刀
-    "item_blade_mail",
+	"item_blade_mail",
 	"item_aghanims_shard",
 	"item_black_king_bar", --BKB
 	"item_lotus_orb", --清莲宝珠,
-    "item_assault",
+	"item_assault",
 	"item_overwhelming_blink",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
 
 function ItemPurchaseThink()
-    ItemPurchaseSystem:ItemPurchaseExtend()
+	ItemPurchaseSystem:ItemPurchaseExtend()
 end
-

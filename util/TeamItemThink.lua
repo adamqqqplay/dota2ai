@@ -4,9 +4,9 @@
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
 local M = {}
-local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
-local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
-local A = require(GetScriptDirectory().."/util/MiraDota")
+local ItemUsage = require(GetScriptDirectory() .. "/util/ItemUsage-New")
+local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
+local A = require(GetScriptDirectory() .. "/util/MiraDota")
 M.ImplmentedTeamItems = {
     "item_mekansm",
     "item_guardian_greaves",
@@ -436,6 +436,7 @@ local function heroItemMetaFunc(tb, key)
         end
     end)()
 end
+
 local heroItemMetatable = { __index = heroItemMetaFunc }
 fun1:ForEachDic(roles, function(it)
     return setmetatable(it, heroItemMetatable)
@@ -445,7 +446,7 @@ setmetatable(zeroTable, { __index = function(_)
     return 0
 end })
 setmetatable(roles, { __index = function(_, heroName)
-    print(heroName.." doesn't have a table")
+    print(heroName .. " doesn't have a table")
     return zeroTable
 end })
 local humanPlayers
@@ -479,12 +480,15 @@ local function TeamItemInit()
         end
     end)()
 end
+
 local function IsLeaf(item)
     return next(GetItemComponents(item)) == nil
 end
+
 local function NextNodes(item)
     return GetItemComponents(item)[1]
 end
+
 function M.ExpandFirstLevel(item)
     return (function()
         if IsLeaf(item) then
@@ -500,6 +504,7 @@ function M.ExpandFirstLevel(item)
         end
     end)()
 end
+
 function M.ExpandOnce(item)
     local g = {}
     local expandSomething = false
@@ -516,17 +521,20 @@ function M.ExpandOnce(item)
     item.recipe = g
     return expandSomething
 end
+
 function M.FullyExpandItem(itemName)
     local p = M.ExpandFirstLevel(itemName)
     while M.ExpandOnce(p) do
     end
     return p
 end
+
 function M.ExpandTeamThinkItem(itemName)
     local p = M.FullyExpandItem(itemName)
     p.origin = "TeamItemThink"
     return p
 end
+
 local function AddBefore(tb, item, before)
     for index, v in ipairs(tb) do
         if before(v) then
@@ -536,6 +544,7 @@ local function AddBefore(tb, item, before)
     end
     table.insert(tb, #tb + 1, item)
 end
+
 local function GeneratePutBeforeFilter(maxCost, putBefore, putAfter)
     return function(itemInfo)
         local itemName = itemInfo.name
@@ -549,17 +558,19 @@ local function GeneratePutBeforeFilter(maxCost, putBefore, putAfter)
         end)()
     end
 end
+
 local teamItemEvents = fun1:NewTable()
 local function NotifyTeam(npcBot, itemName)
     fun1:StartCoroutine(function()
         fun1:WaitForSeconds(math.random(20, 28))
         return table.insert(teamItemEvents, {
             npcBot,
-            "I'll buy "..itemName,
+            "I'll buy " .. itemName,
             false,
         })
     end)
 end
+
 local function TeamItemEventThink()
     local index = 1
     while index <= #teamItemEvents do
@@ -572,24 +583,26 @@ local function TeamItemEventThink()
         end
     end
 end
+
 local function PrintItemInfoTableOf(npcBot)
     local tb = npcBot.itemInformationTable
-    print(npcBot:GetUnitName().." items to buy: ")
+    print(npcBot:GetUnitName() .. " items to buy: ")
     A.Linq.ForEach(tb, function(t, index)
         if t.isSingleItem then
-            print(index..": "..t.name)
+            print(index .. ": " .. t.name)
         else
             local s = ""
             A.Linq.ForEach(t.recipe, function(t1, t1Index)
-                s = s..t1
+                s = s .. t1
                 if t1Index ~= #t.recipe then
-                    s = s..", "
+                    s = s .. ", "
                 end
             end)
-            print(index..": "..t.name.." { "..s.." }")
+            print(index .. ": " .. t.name .. " { " .. s .. " }")
         end
     end)
 end
+
 local function AddMekansm()
     local AddMekansmBefore = GeneratePutBeforeFilter(2000, {
         "glimmer_cape",
@@ -607,6 +620,7 @@ local function AddMekansm()
         end
         return rate
     end
+
     local heroRates = fun1:Map(teamMembers, function(it)
         return {
             it,
@@ -641,6 +655,7 @@ local function AddMekansm()
             return t.name == "item_spirit_vessel"
         end)
     end
+
     if #heroRates >= 3 then
         if heroRates[1][2] > 2.85 then
             local hero = heroRates[1][1]
@@ -657,6 +672,7 @@ local function AddMekansm()
         end
     end
 end
+
 local function AddArcaneBoots()
     local AddArcaneBootsBefore = GeneratePutBeforeFilter(1200, {}, {})
     local function Rate(hero)
@@ -664,6 +680,7 @@ local function AddArcaneBoots()
         local rate = roles[heroName].arcaneBoots + math.random() * 1.5
         return rate
     end
+
     local heroRates = fun1:Map(teamMembers, function(it)
         return {
             it,
@@ -673,18 +690,22 @@ local function AddArcaneBoots()
         return it[2]
     end)
     local function IsUpgradedBoots(itemTable)
-        return A.Item.IsBoots(itemTable.name) and itemTable.name ~= "item_boots" and not string.match(itemTable.name, "item_travel_boots")
+        return A.Item.IsBoots(itemTable.name) and itemTable.name ~= "item_boots" and
+            not string.match(itemTable.name, "item_travel_boots")
     end
+
     local function RemoveItemsInNewItemTable(informationTable, newItemTable, newItemIndex)
         informationTable[newItemIndex] = newItemTable
         local function ShouldRemove(itemTable)
             return A.Linq.Contains(newItemTable.recipe, itemTable.name)
         end
+
         informationTable:Take(newItemIndex - 1):Filter(ShouldRemove):ForEach(function(t)
             t.usedAsRecipeOf = newItemTable
             return A.Linq.Remove_Modify(newItemTable.recipe, t.name)
         end)
     end
+
     local function BuyArcaneBoots(hero)
         NotifyTeam(hero, "arcane boots")
         local bootsToReplaceIndex = A.Linq.IndexOf(hero.itemInformationTable, IsUpgradedBoots)
@@ -699,6 +720,7 @@ local function AddArcaneBoots()
             AddBefore(hero.itemInformationTable, M.ExpandTeamThinkItem "item_arcane_boots", AddArcaneBootsBefore)
         end
     end
+
     local function DontBuyArcaneBoots(heroRateTable)
         local hero = heroRateTable[1]
         local arcaneBootsIndex = A.Linq.IndexOf(hero.itemInformationTable, function(t)
@@ -721,6 +743,7 @@ local function AddArcaneBoots()
             RemoveItemsInNewItemTable(hero.itemInformationTable, newBoots, arcaneBootsIndex)
         end
     end
+
     local teamArcaneBootsNumber = (function()
         if #heroRates >= 4 then
             return 2
@@ -740,6 +763,7 @@ local function AddArcaneBoots()
     local function HighDesireOfBuyingArcaneBoots(heroRateTable)
         return heroRateTable[2] >= 7.55
     end
+
     if teamArcaneBootsNumber >= 1 then
         heroRates:Skip(buyArcaneBootsHeroIndex):Take(teamArcaneBootsNumber):Filter(HighDesireOfBuyingArcaneBoots):Map(function(t)
             return t[1]
@@ -750,6 +774,7 @@ local function AddArcaneBoots()
     end
     heroRates:Skip(buyArcaneBootsHeroIndex):FilterNot(HighDesireOfBuyingArcaneBoots):ForEach(DontBuyArcaneBoots)
 end
+
 local function IdToEnemyStateTableIndex(id)
     return (function()
         if id <= 4 then
@@ -759,6 +784,7 @@ local function IdToEnemyStateTableIndex(id)
         end
     end)()
 end
+
 local RefreshEnemyRespawnTime = fun1:EveryManySeconds(1, function()
     return fun1:GroupBy(GetUnitList(UNIT_LIST_ENEMY_HEROES), function(t)
         return t:GetPlayerID()
@@ -792,6 +818,7 @@ function M.GetEnemyRespawnTime(id)
         end
     end)()
 end
+
 function M.EnemyReadyToFight(id)
     return (function()
         if id then
@@ -803,12 +830,14 @@ function M.EnemyReadyToFight(id)
         end
     end)()
 end
+
 local function TeamStateThink()
     if not finishInit then
         return
     end
     RefreshEnemyRespawnTime()
 end
+
 local function GetOtherTeam()
     if GetTeam() == TEAM_RADIANT then
         return TEAM_DIRE
@@ -816,6 +845,7 @@ local function GetOtherTeam()
         return TEAM_RADIANT
     end
 end
+
 local npcBot
 local hasInvisibleEnemy
 local function CheckInvisibleEnemy()
@@ -828,6 +858,7 @@ local function CheckInvisibleEnemy()
         return fun1:HasInvisibility(t)
     end)
 end
+
 local RefreshInvisibleEnemies_One = fun1:EveryManySeconds(2, function()
     gemPlayers = fun1:Range(1, 5):Map(function(t)
         return GetTeamMember(t)
@@ -892,6 +923,7 @@ local function UseDustThink()
         end
     end
 end
+
 function M.Think()
     if fun1:GameNotReallyStarting() then
         return
@@ -903,6 +935,7 @@ function M.Think()
     BuyDustIfInvisibleEnemies()
     UseDustThink()
 end
+
 function M.TeamItemThink(npcBot)
     if npcBot:IsIllusion() then
         return
@@ -931,4 +964,5 @@ function M.TeamItemThink(npcBot)
         end
     end)
 end
+
 return M

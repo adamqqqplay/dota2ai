@@ -9,10 +9,10 @@ local ItemsToBuy =
 	"item_wraith_band", --系带
 	"item_tango",
 	"item_tango",
-    "item_magic_stick",
+	"item_magic_stick",
 	"item_wraith_band", --系带
 	"item_boots",
-    "item_magic_wand",
+	"item_magic_wand",
 	"item_arcane_boots",
 	"item_veil_of_discord", --纷争7.20
 	"item_aghanims_shard",

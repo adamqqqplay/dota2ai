@@ -15,8 +15,8 @@ local ItemsToBuy =
 	"item_arcane_boots",
 	"item_holy_locket",
 	"item_mekansm", --梅肯
-    "item_shivas_guard", --希瓦
-    "item_bloodthorn",
+	"item_shivas_guard", --希瓦
+	"item_bloodthorn",
 	"item_ultimate_scepter", --蓝杖
 	"item_guardian_greaves", --卫士胫甲
 	"item_ultimate_scepter_2",

@@ -8,7 +8,7 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_clarity",
-    "item_magic_stick",
+	"item_magic_stick",
 	"item_power_treads", --假腿7.21
 	"item_medallion_of_courage", --勋章
 	"item_force_staff", --推推7.14

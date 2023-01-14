@@ -3,8 +3,8 @@
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
-local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
-local A = require(GetScriptDirectory().."/util/MiraDota")
+local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
+local A = require(GetScriptDirectory() .. "/util/MiraDota")
 local M = {}
 local avoidCurseList = fun1:NewTable()
 local bot
@@ -54,8 +54,10 @@ local pushModes = A.Linq.NewTable(BOT_MODE_PUSH_TOWER_BOT, BOT_MODE_PUSH_TOWER_M
 local function IsPushingMode(mode)
     return pushModes:Contains(mode)
 end
+
 local NoNearbyEnemiesWhenLaning = function()
-    if bot:GetActiveMode() == BOT_MODE_LANING or IsPushingMode(bot:GetActiveMode()) and A.Dota.GetNearbyHeroes(bot, 1600):Count() == 0 then
+    if bot:GetActiveMode() == BOT_MODE_LANING or
+        IsPushingMode(bot:GetActiveMode()) and A.Dota.GetNearbyHeroes(bot, 1600):Count() == 0 then
         if bot.noNearbyEnemiesWhenLaningTime == nil then
             bot.noNearbyEnemiesWhenLaningTime = DotaTime()
         end
@@ -75,4 +77,5 @@ function M.Think()
     Init()
     Think()
 end
+
 return M

@@ -1,9 +1,10 @@
-local minionutils = dofile( GetScriptDirectory().."/util/NewMinionUtil" )
-local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local minionutils = dofile(GetScriptDirectory() .. "/util/NewMinionUtil")
+local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 
 
 local function DiveBombCanCast(target)
-	return target ~= nil and AbilityExtensions:NormalCanCast(target, false) and not AbilityExtensions:IsSeverelyDisabled(target)
+	return target ~= nil and AbilityExtensions:NormalCanCast(target, false) and
+		not AbilityExtensions:IsSeverelyDisabled(target)
 end
 
 function HawkThink(minion)
@@ -25,7 +26,7 @@ end
 local hawkName = "npc_dota_beastmaster_hawk_"
 local boarName = "npc_dota_beastmaster_boar_"
 
-function MinionThink(u) 
+function MinionThink(u)
 	if minionutils.IsValidUnit(u) then
 		if string.sub(u:GetUnitName(), 1, #hawkName) == hawkName then
 			HawkThink(u)
@@ -37,4 +38,4 @@ function MinionThink(u)
 			minionutils.IllusionThink(u)
 		end
 	end
-end	
+end

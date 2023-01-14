@@ -72,13 +72,12 @@ function M.isSuspiciousIllusion(npcTarget)
 	--TO DO Need to detect enemy hero's illusions better
 	local bot = GetBot()
 	--Detect allies's illusions
-	if
-		npcTarget:IsIllusion() or npcTarget:HasModifier("modifier_illusion") or
-			npcTarget:HasModifier("modifier_phantom_lancer_doppelwalk_illusion") or
-			npcTarget:HasModifier("modifier_phantom_lancer_juxtapose_illusion") or
-			npcTarget:HasModifier("modifier_darkseer_wallofreplica_illusion") or
-			npcTarget:HasModifier("modifier_terrorblade_conjureimage")
-	 then
+	if npcTarget:IsIllusion() or npcTarget:HasModifier("modifier_illusion") or
+		npcTarget:HasModifier("modifier_phantom_lancer_doppelwalk_illusion") or
+		npcTarget:HasModifier("modifier_phantom_lancer_juxtapose_illusion") or
+		npcTarget:HasModifier("modifier_darkseer_wallofreplica_illusion") or
+		npcTarget:HasModifier("modifier_terrorblade_conjureimage")
+	then
 		return true
 	else
 		--Detect replicate and wall of replica illusions

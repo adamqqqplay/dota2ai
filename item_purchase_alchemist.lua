@@ -17,7 +17,7 @@ local ItemsToBuy =
 	"item_basher", --晕锤7.14
 	"item_assault", --强袭
 	"item_abyssal_blade", --大晕
-    "item_travel_boots",
+	"item_travel_boots",
 	"item_overwhelming_blink",
 }
 

@@ -3,9 +3,9 @@
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
-local utility = require(GetScriptDirectory().."/utility")
-require(GetScriptDirectory().."/ability_item_usage_generic")
-local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local utility = require(GetScriptDirectory() .. "/utility")
+require(GetScriptDirectory() .. "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local debugmode = false
 local npcBot = GetBot()
 if npcBot:IsIllusion() then
@@ -60,6 +60,7 @@ utility.CheckAbilityBuild(AbilityToLevelUp)
 function AbilityLevelUpThink()
     ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
 end
+
 local cast = {}
 cast.Desire = {}
 cast.Target = {}
@@ -73,7 +74,8 @@ local CanCast = {
     utility.NCanCast,
     utility.CanCastNoTarget,
     function(t)
-        return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_MAGICAL, true, true) and not AbilityExtensions:HasAbilityRetargetModifier(t)
+        return AbilityExtensions:NormalCanCast(t, false, DAMAGE_TYPE_MAGICAL, true, true) and
+            not AbilityExtensions:HasAbilityRetargetModifier(t)
     end,
 }
 Consider[1] = function()
@@ -88,11 +90,13 @@ Consider[1] = function()
     local allNearbyUnits = AbilityExtensions:GetNearbyAllUnits(npcBot, range):Remove(npcBot)
     local function NotBlockedByAnyUnit(line, target, distance)
         return AbilityExtensions:Remove(allNearbyUnits, target):All(function(t)
-            local closeEnough = AbilityExtensions:GetPointToLineDistance(t:GetLocation(), line) <= searchRadius + target:GetBoundingRadius()
+            local closeEnough = AbilityExtensions:GetPointToLineDistance(t:GetLocation(), line) <=
+                searchRadius + target:GetBoundingRadius()
             local mayHook = closeEnough and distance > GetUnitToUnitDistance(npcBot, t)
             return not mayHook or t:IsInvulnerable()
         end)
     end
+
     local function T(target)
         if not CanCast[1](target) then
             return false
@@ -103,6 +107,7 @@ Consider[1] = function()
         local result = GetUnitToLocationDistance(npcBot, point) <= range and NotBlockedByAnyUnit(line, target, distance)
         return result
     end
+
     if AbilityExtensions:IsAttackingEnemies(npcBot) then
         local enemies = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, true, BOT_MODE_NONE)
         enemies = AbilityExtensions:SortByMaxFirst(enemies, function(t)
@@ -110,20 +115,24 @@ Consider[1] = function()
         end)
         enemies = AbilityExtensions:Filter(enemies, T)
         if #enemies ~= 0 then
-            return BOT_MODE_DESIRE_HIGH, enemies[1]:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemies[1]) / hookSpeed)
+            return BOT_MODE_DESIRE_HIGH,
+                enemies[1]:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemies[1]) / hookSpeed)
         end
         do
-            local ally = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, false, BOT_MODE_NONE):Filter(allies, function(t)
+            local ally = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, false, BOT_MODE_NONE):Filter(allies
+                , function(t)
                 return t:IsStunned() or t:IsRooted()
             end):First(allies, T)
             if ally then
-                return BOT_MODE_DESIRE_HIGH, ally:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemies[1]) / hookSpeed)
+                return BOT_MODE_DESIRE_HIGH,
+                    ally:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemies[1]) / hookSpeed)
             end
         end
     end
     if AbilityExtensions:IsAttackingEnemies(npcBot) then
         do
-            local atos = AbilityExtensions:GetAvailableItem(npcBot, "item_rod_of_atos") or AbilityExtensions:GetAvailableItem(npcBot, "item_gungir")
+            local atos = AbilityExtensions:GetAvailableItem(npcBot, "item_rod_of_atos") or
+                AbilityExtensions:GetAvailableItem(npcBot, "item_gungir")
             if atos then
                 do
                     local t = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range):First(function(t)
@@ -144,7 +153,8 @@ Consider[1] = function()
             local target = AbilityExtensions:GetTargetIfGood(npcBot)
             if target then
                 if T(target) then
-                    return BOT_ACTION_DESIRE_HIGH, target:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, target) / hookSpeed + castPoint)
+                    return BOT_ACTION_DESIRE_HIGH,
+                        target:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, target) / hookSpeed + castPoint)
                 end
             end
         end
@@ -153,7 +163,8 @@ Consider[1] = function()
                 return (AbilityExtensions:CannotMove(t) or AbilityExtensions:GetMovementSpeedPercent(t) <= 0.3) and T(t)
             end)
             if enemy then
-                return BOT_ACTION_DESIRE_HIGH, enemy:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemy) / hookSpeed + castPoint)
+                return BOT_ACTION_DESIRE_HIGH,
+                    enemy:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemy) / hookSpeed + castPoint)
             end
         end
     end
@@ -177,7 +188,8 @@ Consider[2] = function()
         local target = npcBot:GetTarget()
         if target and GetUnitToUnitDistance(target, npcBot) <= radius and CanCast[2](target) then
             if not AbilityExtensions:IsHero(target) or AbilityExtensions:MustBeIllusion(npcBot, target) then
-                if npcBot:GetHealth() <= 270 or AbilityExtensions:GetHealthPercent(npcBot) <= 0.3 and npcBot:WasRecentlyDamagedByHero(target, 1.5) then
+                if npcBot:GetHealth() <= 270 or
+                    AbilityExtensions:GetHealthPercent(npcBot) <= 0.3 and npcBot:WasRecentlyDamagedByHero(target, 1.5) then
                     return false
                 end
             end
@@ -194,7 +206,8 @@ Consider[4] = function()
     if not ability:IsFullyCastable() or npcBot:IsChanneling() then
         return 0
     end
-    swallowingSomething = npcBot:HasModifier("modifier_pudge_swallow") or npcBot:HasModifier("modifier_pudge_swallow_effect") or npcBot:HasModifier("modifier_pudge_swallow_hide")
+    swallowingSomething = npcBot:HasModifier("modifier_pudge_swallow") or
+        npcBot:HasModifier("modifier_pudge_swallow_effect") or npcBot:HasModifier("modifier_pudge_swallow_hide")
     if swallowingSomething then
         if swallowTimer ~= nil then
             if DotaTime() >= swallowTimer + 3 then
@@ -212,7 +225,8 @@ Consider[5] = function()
         return nil
     end
     local range = ability:GetCastRange() + 100
-    local hookedEnemy = AbilityExtensions:First(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, true, BOT_MODE_NONE), function(t)
+    local hookedEnemy = AbilityExtensions:First(AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, true,
+        BOT_MODE_NONE), function(t)
         return t:IsHero() and AbilityExtensions:MayNotBeIllusion(npcBot, t) and t:HasModifier("modifier_pudge_meat_hook")
     end)
     if hookedEnemy then
@@ -246,6 +260,7 @@ end
 function CourierUsageThink()
     ability_item_usage_generic.CourierUsageThink()
 end
+
 function AbilityUsageThink()
     if npcBot:IsUsingAbility() or npcBot:IsSilenced() then
         return

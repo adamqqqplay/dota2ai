@@ -3,10 +3,10 @@
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
-local utility = require(GetScriptDirectory().."/utility")
-require(GetScriptDirectory().."/ability_item_usage_generic")
-local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
-local ItemUsage = require(GetScriptDirectory().."/util/ItemUsage-New")
+local utility = require(GetScriptDirectory() .. "/utility")
+require(GetScriptDirectory() .. "/ability_item_usage_generic")
+local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
+local ItemUsage = require(GetScriptDirectory() .. "/util/ItemUsage-New")
 local debugmode = false
 local npcBot = GetBot()
 if npcBot:IsIllusion() then
@@ -61,6 +61,7 @@ utility.CheckAbilityBuild(AbilityToLevelUp)
 function AbilityLevelUpThink()
     ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
 end
+
 local cast = {}
 cast.Desire = {}
 cast.Target = {}
@@ -80,9 +81,11 @@ local enemyDisabled = utility.enemyDisabled
 function GetComboDamage()
     return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
 end
+
 function GetComboMana()
     return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
+
 Consider[1] = function()
     local abilityNumber = 1
     local ability = AbilitiesReal[abilityNumber]
@@ -116,7 +119,9 @@ Consider[1] = function()
     end
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
-            if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or GetUnitToUnitDistance(npcBot, WeakestEnemy) <= Radius - CastPoint * WeakestEnemy:GetCurrentMovementSpeed() then
+            if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or
+                GetUnitToUnitDistance(npcBot, WeakestEnemy) <=
+                Radius - CastPoint * WeakestEnemy:GetCurrentMovementSpeed() then
                 return BOT_ACTION_DESIRE_HIGH
             end
         end
@@ -129,13 +134,15 @@ Consider[1] = function()
     if npcBot:GetActiveMode() == BOT_MODE_LANING then
         if npcBot:GetMana() >= npcBot:GetMaxMana() * 0.4 + ability:GetManaCost() then
             if WeakestEnemy ~= nil then
-                if GetUnitToUnitDistance(npcBot, WeakestEnemy) < Radius - CastPoint * WeakestEnemy:GetCurrentMovementSpeed() then
+                if GetUnitToUnitDistance(npcBot, WeakestEnemy) <
+                    Radius - CastPoint * WeakestEnemy:GetCurrentMovementSpeed() then
                     return BOT_ACTION_DESIRE_LOW
                 end
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = fun1:GetTargetIfGood(npcBot)
         if npcEnemy ~= nil then
             if GetUnitToUnitDistance(npcBot, npcEnemy) >= 300 then
@@ -167,7 +174,10 @@ Consider[2] = function()
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) then
-                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or (HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and npcBot:GetMana() > ComboMana) then
+                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or
+                    (
+                    HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and
+                        npcBot:GetMana() > ComboMana) then
                     npcBot:SetTarget(WeakestEnemy)
                     return BOT_ACTION_DESIRE_MODERATE, WeakestEnemy
                 end
@@ -194,23 +204,28 @@ Consider[2] = function()
     end
     if npcBot:GetActiveMode() == BOT_MODE_FARM then
         if #creeps >= 2 then
-            if CreepHealth <= WeakestCreep:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) and npcBot:GetMana() > ComboMana then
+            if CreepHealth <= WeakestCreep:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) and
+                npcBot:GetMana() > ComboMana then
                 return BOT_ACTION_DESIRE_LOW, WeakestCreep
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
+    if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+        npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
         if #enemys >= 1 then
             if ManaPercentage > 0.5 or npcBot:GetMana() > ComboMana then
                 if WeakestEnemy ~= nil then
-                    if CanCast[abilityNumber](WeakestEnemy) and GetUnitToUnitDistance(npcBot, WeakestEnemy) < CastRange + 75 * #allys then
+                    if CanCast[abilityNumber](WeakestEnemy) and
+                        GetUnitToUnitDistance(npcBot, WeakestEnemy) < CastRange + 75 * #allys then
                         return BOT_ACTION_DESIRE_LOW, WeakestEnemy
                     end
                 end
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = fun1:GetTargetIfGood(npcBot)
         if npcEnemy ~= nil then
             if CanCast[abilityNumber](npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys then
@@ -231,6 +246,7 @@ Consider[4] = function()
     local function IsWeak(t)
         return CanCast[4](t) and t:GetHealth() <= Damage
     end
+
     local CastPoint = ability:GetCastPoint()
     local enemies, enemyIllusions = fun1:GetNearbyHeroes(npcBot, CastRange + 300):Filter(IsWeak):Partition(function(it)
         return fun1:MayNotBeIllusion(npcBot, it)
@@ -275,7 +291,8 @@ Consider[4] = function()
         do
             local target = enemyIllusions:First()
             if target then
-                if fun1:GetHealthPercent(npcBot) <= 0.5 and not npcBot:HasModifier "modifier_axe_culling_blade_boost" and target and npcBot:GetMana() > npcBot:GetMaxMana() * 0.4 + ability:GetManaCost() then
+                if fun1:GetHealthPercent(npcBot) <= 0.5 and not npcBot:HasModifier "modifier_axe_culling_blade_boost" and
+                    target and npcBot:GetMana() > npcBot:GetMaxMana() * 0.4 + ability:GetManaCost() then
                     return BOT_ACTION_DESIRE_MODERATE, target
                 end
             end
@@ -291,7 +308,8 @@ function AbilityUsageThink()
         if npcBot:IsCastingAbility() then
             if npcBot:GetCurrentActiveAbility() == AbilitiesReal[1] then
                 if not fun1:IsFarmingOrPushing(npcBot) then
-                    local nearbyEnemies = fun1:GetNearbyHeroes(npcBot, AbilitiesReal[1]:GetAOERadius() + 90):Filter(CanCast[1])
+                    local nearbyEnemies = fun1:GetNearbyHeroes(npcBot, AbilitiesReal[1]:GetAOERadius() + 90):Filter(CanCast
+                        [1])
                     if #nearbyEnemies == 0 then
                         if callLosingTarget == nil then
                             callLosingTarget = DotaTime()
@@ -320,6 +338,7 @@ function AbilityUsageThink()
         cullingBladeTarget = target
     end
 end
+
 function CourierUsageThink()
     ability_item_usage_generic.CourierUsageThink()
 end

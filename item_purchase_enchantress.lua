@@ -16,8 +16,8 @@ local ItemsToBuy =
 	"item_magic_wand", --大魔棒7.14
 	"item_power_treads",
 	"item_dragon_lance", --魔龙枪
-    "item_black_king_bar",
-    "item_ultimate_scepter", --蓝杖
+	"item_black_king_bar",
+	"item_ultimate_scepter", --蓝杖
 	"item_force_staff", --推推7.14
 	"item_recipe_hurricane_pike", --大推推7.28
 	"item_sheepstick", --羊刀

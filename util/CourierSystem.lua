@@ -1,6 +1,6 @@
 local BotsInit = require("game/botsinit")
 
-local courierUtils = require(GetScriptDirectory() ..  "/util/CourierUtility");
+local courierUtils = require(GetScriptDirectory() .. "/util/CourierUtility");
 
 local M = BotsInit.CreateGeneric()
 
@@ -45,6 +45,7 @@ local function IsInvFull(npcHero)
     end
     return true
 end
+
 local function IsOnlyInventoryFull(npcHero)
     for i = 0, 5 do
         if npcHero:GetItemInSlot(i) == nil then
@@ -53,15 +54,17 @@ local function IsOnlyInventoryFull(npcHero)
     end
     return true
 end
+
 local function CannotCarryOnBackpack(itemName)
-    local items = {"item_gem", "item_rapier", "item_immortal"}
-    for _,v in ipairs(itemName) do
+    local items = { "item_gem", "item_rapier", "item_immortal" }
+    for _, v in ipairs(itemName) do
         if v == items then
             return true
         end
     end
     return false
 end
+
 local function HasItemCannotCarryOnBackpack(courier)
     for i = 0, 5 do
         if CannotCarryOnBackpack(courier:GetItemInSlot(i):GetName()) then
@@ -77,10 +80,9 @@ local function IsTheClosestToCourier(npcBot, npcCourier)
     local closestD = 100000
     for i = 1, #numPlayer do
         local member = GetTeamMember(i)
-        if
-            member ~= nil and IsPlayerBot(numPlayer[i]) and member:IsAlive() and member:GetCourierValue() > 0 and
-                not IsInvFull(member)
-         then
+        if member ~= nil and IsPlayerBot(numPlayer[i]) and member:IsAlive() and member:GetCourierValue() > 0 and
+            not IsInvFull(member)
+        then
             local dist = GetUnitToUnitDistance(member, npcCourier)
             if dist < closestD then
                 closest = member
@@ -92,15 +94,15 @@ local function IsTheClosestToCourier(npcBot, npcCourier)
 end
 
 local function GetBotCourier(npcBot)
-	local BotCourier = GetCourier(0)
-	local numPlayer = GetTeamPlayers(GetTeam())
-	for i = 1, #numPlayer do
+    local BotCourier = GetCourier(0)
+    local numPlayer = GetTeamPlayers(GetTeam())
+    for i = 1, #numPlayer do
         local member = GetTeamMember(i)
         if member ~= nil and member:GetUnitName() == npcBot:GetUnitName() then
-            BotCourier = GetCourier(i-1)
-		end
+            BotCourier = GetCourier(i - 1)
+        end
     end
-	return BotCourier
+    return BotCourier
 end
 
 local function GetCourierEmptySlot(courier)
@@ -145,10 +147,9 @@ local function IsTargetedByUnit(courier)
             local info = GetHeroLastSeenInfo(id)
             if info ~= nil then
                 local dInfo = info[1]
-                if
-                    dInfo ~= nil and GetUnitToLocationDistance(courier, dInfo.location) <= 700 and
-                        dInfo.time_since_seen < 0.5
-                 then
+                if dInfo ~= nil and GetUnitToLocationDistance(courier, dInfo.location) <= 700 and
+                    dInfo.time_since_seen < 0.5
+                then
                     return true
                 end
             end
@@ -165,7 +166,7 @@ local function IsFlyingCourier(npcCourier)
 end
 
 function PrintCourierState(state)
-	
+
     if state == 0 then
         print("COURIER_STATE_IDLE ");
     elseif state == 1 then
@@ -181,7 +182,7 @@ function PrintCourierState(state)
     else
         print("UNKNOWN");
     end
-    
+
 end
 
 local npcBot = GetBot()
@@ -199,7 +200,7 @@ npcBot.courierAssigned = false;
 local checkCourier = false;
 local define_courier = false;
 local cr = nil;
-local tm =  GetTeam();
+local tm = GetTeam();
 local pIDs = GetTeamPlayers(tm);
 
 
@@ -209,57 +210,58 @@ local returnToFountainWhenTransferFailed = false
 
 function M.CourierUsageThink()
     local npcBot = GetBot()
-    if GetGameMode() == 23 or npcBot:IsInvulnerable() or not npcBot:IsHero() or npcBot:IsIllusion() or npcBot:HasModifier("modifier_arc_warden_tempest_double") or GetNumCouriers() == 0 then
+    if GetGameMode() == 23 or npcBot:IsInvulnerable() or not npcBot:IsHero() or npcBot:IsIllusion() or
+        npcBot:HasModifier("modifier_arc_warden_tempest_double") or GetNumCouriers() == 0 then
         return;
     end
 
     -- if GetTeam() == TEAM_DIRE then
-        -- print(npcBot:GetUnitName().."----"..tostring(npcBot:GetPlayerID()));
-        -- for i = 1, #pIDs do
-            -- print(GetSelectedHeroName(pIDs[i])..":"..pIDs[i])
-        -- end
+    -- print(npcBot:GetUnitName().."----"..tostring(npcBot:GetPlayerID()));
+    -- for i = 1, #pIDs do
+    -- print(GetSelectedHeroName(pIDs[i])..":"..pIDs[i])
+    -- end
     -- end
 
     -- if npcBot.courierAssigned == false then
-        -- for i=1, #pIDs do
-            -- if IsPlayernpcBot(pIDs[i]) == true then
-                -- local mbr = GetTeamMember(i);
-                -- if  npcBot == mbr then
-                    -- npcBot.courierID = i - 1;
-                    -- npcBot.courierAssigned = true;
-                    -- print(npcBot:GetUnitName().." : Courier Successfully Assigned To Courier "..tostring(npcBot.courierID));
-                -- end
-            -- end
-        -- end
+    -- for i=1, #pIDs do
+    -- if IsPlayernpcBot(pIDs[i]) == true then
+    -- local mbr = GetTeamMember(i);
+    -- if  npcBot == mbr then
+    -- npcBot.courierID = i - 1;
+    -- npcBot.courierAssigned = true;
+    -- print(npcBot:GetUnitName().." : Courier Successfully Assigned To Courier "..tostring(npcBot.courierID));
+    -- end
+    -- end
+    -- end
     -- end
 
     if courierUtils.pIDInc < #pIDs + 1 and DotaTime() > -60 then
         if IsPlayerBot(pIDs[courierUtils.pIDInc]) == true then
             local currID = pIDs[courierUtils.pIDInc];
-                if npcBot:GetPlayerID() == currID  then
-                    if checkCourier == true and DotaTime() > courierUtils.calibrateTime + 5  then
-                        local cst = GetCourierState(cr);
-                        -- print(npcBot:GetUnitName());
-                        if cst == COURIER_STATE_MOVING then
-                            courierUtils.pIDInc = courierUtils.pIDInc + 1;
-                            -- print(npcBot:GetUnitName().." : Courier Successfully Assigned ."..tostring(npcBot.courierID))
-                            checkCourier = false;
-                            npcBot.courierAssigned = true;
-                            courierUtils.calibrateTime = DotaTime();
-                            npcBot:ActionImmediate_Courier( cr, COURIER_ACTION_RETURN_STASH_ITEMS );
-                            return;
-                        elseif npcBot.courierID ~= nil then
-                            --  print(npcBot:GetUnitName().. ": Failed to Assign Courier.")
-                            npcBot.courierID = npcBot.courierID + 1;
-                            checkCourier = false;
-                            courierUtils.calibrateTime = DotaTime();
-                        end
-                    elseif checkCourier == false then
-                        cr = GetBotCourier(npcBot);
-                        npcBot:ActionImmediate_Courier( cr, COURIER_ACTION_SECRET_SHOP );
-                        checkCourier = true;
+            if npcBot:GetPlayerID() == currID then
+                if checkCourier == true and DotaTime() > courierUtils.calibrateTime + 5 then
+                    local cst = GetCourierState(cr);
+                    -- print(npcBot:GetUnitName());
+                    if cst == COURIER_STATE_MOVING then
+                        courierUtils.pIDInc = courierUtils.pIDInc + 1;
+                        -- print(npcBot:GetUnitName().." : Courier Successfully Assigned ."..tostring(npcBot.courierID))
+                        checkCourier = false;
+                        npcBot.courierAssigned = true;
+                        courierUtils.calibrateTime = DotaTime();
+                        npcBot:ActionImmediate_Courier(cr, COURIER_ACTION_RETURN_STASH_ITEMS);
+                        return;
+                    elseif npcBot.courierID ~= nil then
+                        --  print(npcBot:GetUnitName().. ": Failed to Assign Courier.")
+                        npcBot.courierID = npcBot.courierID + 1;
+                        checkCourier = false;
+                        courierUtils.calibrateTime = DotaTime();
                     end
+                elseif checkCourier == false then
+                    cr = GetBotCourier(npcBot);
+                    npcBot:ActionImmediate_Courier(cr, COURIER_ACTION_SECRET_SHOP);
+                    checkCourier = true;
                 end
+            end
         else
             courierUtils.pIDInc = courierUtils.pIDInc + 1;
         end
@@ -276,7 +278,7 @@ function M.CourierUsageThink()
         -- print(itm:GetName());
         -- end
 
-        local cState = GetCourierState( npcCourier );
+        local cState = GetCourierState(npcCourier);
 
         if cState == COURIER_STATE_DEAD then
             npcCourier.latestUser = nil;
@@ -336,57 +338,59 @@ function M.CourierUsageThink()
         else
             if IsTargetedByUnit(npcCourier) then
                 if DotaTime() - returnTime > 7.0 then
-                    npcBot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_RETURN );
+                    npcBot:ActionImmediate_Courier(npcCourier, COURIER_ACTION_RETURN);
                     returnTime = DotaTime();
                     return
                 end
             end
         end
 
-        if ( IsCourierAvailable() and cState ~= COURIER_STATE_IDLE )  then
+        if (IsCourierAvailable() and cState ~= COURIER_STATE_IDLE) then
             npcCourier.latestUser = "temp";
         end
 
-        if npcBot.SShopUser and ( not npcBot:IsAlive() or npcBot:GetActiveMode() == BOT_MODE_SECRET_SHOP or not npcBot.SecretShop  ) then
+        if npcBot.SShopUser and
+            (not npcBot:IsAlive() or npcBot:GetActiveMode() == BOT_MODE_SECRET_SHOP or not npcBot.SecretShop) then
             --npcBot:ActionImmediate_Chat( "Releasing the courier to anticipate secret shop stuck", true );
             npcCourier.latestUser = "temp";
             npcBot.SShopUser = false;
-            npcBot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_RETURN_STASH_ITEMS );
+            npcBot:ActionImmediate_Courier(npcCourier, COURIER_ACTION_RETURN_STASH_ITEMS);
             return
         end
 
-        if cState == COURIER_STATE_AT_BASE or cState == COURIER_STATE_IDLE or cState == COURIER_STATE_RETURNING_TO_BASE  then
+        if cState == COURIER_STATE_AT_BASE or cState == COURIER_STATE_IDLE or cState == COURIER_STATE_RETURNING_TO_BASE then
             if courierPHP < 1.0 then
                 return;
             end
 
             --RETURN COURIER TO BASE WHEN IDLE
             if cState == COURIER_STATE_IDLE then
-                npcBot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_RETURN_STASH_ITEMS );
+                npcBot:ActionImmediate_Courier(npcCourier, COURIER_ACTION_RETURN_STASH_ITEMS);
                 return
             end
 
             --TAKE ITEM FROM STASH
-            if  cState == COURIER_STATE_AT_BASE then
+            if cState == COURIER_STATE_AT_BASE then
                 local nCSlot = GetCourierEmptySlot(npcCourier);
-                    if npcBot:IsAlive()
+                if npcBot:IsAlive()
+                then
+                    local nMSlot = GetNumStashItem(npcBot);
+                    if nMSlot > 0 and nMSlot <= nCSlot
                     then
-                        local nMSlot = GetNumStashItem(npcBot);
-                        if nMSlot > 0 and nMSlot <= nCSlot
-                        then
-                            -- print("Transfer Item");
-                            npcBot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_TAKE_STASH_ITEMS );
-                            nCSlot = nCSlot - nMSlot ;
-                            courierTime = DotaTime();
-                            return;
-                        end
+                        -- print("Transfer Item");
+                        npcBot:ActionImmediate_Courier(npcCourier, COURIER_ACTION_TAKE_STASH_ITEMS);
+                        nCSlot = nCSlot - nMSlot;
+                        courierTime = DotaTime();
+                        return;
                     end
+                end
             end
 
             --MAKE COURIER GOES TO SECRET SHOP
-            if  npcBot:IsAlive() and npcBot.SecretShop and npcCourier:DistanceFromFountain() < 7000 and IsInvFull(npcCourier) == false and DotaTime() > courierTime + 1.0 then
+            if npcBot:IsAlive() and npcBot.SecretShop and npcCourier:DistanceFromFountain() < 7000 and
+                IsInvFull(npcCourier) == false and DotaTime() > courierTime + 1.0 then
                 --npcBot:ActionImmediate_Chat( "Using Courier for secret shop.", true );
-                npcBot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_SECRET_SHOP )
+                npcBot:ActionImmediate_Courier(npcCourier, COURIER_ACTION_SECRET_SHOP)
                 npcCourier.latestUser = npcBot;
                 npcBot.SShopUser = true;
                 UpdateSShopUserStatus(npcBot);
@@ -396,9 +400,9 @@ function M.CourierUsageThink()
             end
 
             --TRANSFER ITEM IN COURIER
-            if npcBot:IsAlive() and npcBot:GetCourierValue( ) > 0
+            if npcBot:IsAlive() and npcBot:GetCourierValue() > 0
             then
-                npcBot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_TRANSFER_ITEMS )
+                npcBot:ActionImmediate_Courier(npcCourier, COURIER_ACTION_TRANSFER_ITEMS)
                 npcCourier.latestUser = npcBot;
                 courierTime = DotaTime();
                 -- print("Transfer Item 2");
@@ -406,10 +410,10 @@ function M.CourierUsageThink()
             end
 
             --RETURN STASH ITEM WHEN DEATH
-            if  not npcBot:IsAlive() and cState == COURIER_STATE_DELIVERING_ITEMS
-                and npcBot:GetCourierValue( ) > 0 and DotaTime() > courierTime + 1.0
+            if not npcBot:IsAlive() and cState == COURIER_STATE_DELIVERING_ITEMS
+                and npcBot:GetCourierValue() > 0 and DotaTime() > courierTime + 1.0
             then
-                npcBot:ActionImmediate_Courier( npcCourier, COURIER_ACTION_RETURN_STASH_ITEMS );
+                npcBot:ActionImmediate_Courier(npcCourier, COURIER_ACTION_RETURN_STASH_ITEMS);
                 npcCourier.latestUser = npcBot;
                 courierTime = DotaTime();
                 -- print("Return Item");
@@ -421,9 +425,5 @@ function M.CourierUsageThink()
     end
 
 end
-
-
-
-
 
 return M

@@ -11,7 +11,7 @@ local ItemsToBuy =
 	"item_flask",
 	"item_tranquil_boots",
 	"item_urn_of_shadows",
-    "item_ghost",
+	"item_ghost",
 	"item_glimmer_cape", --微光
 	"item_force_staff",
 	"item_ultimate_scepter", --蓝杖

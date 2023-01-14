@@ -3,7 +3,7 @@
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
-local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local M = {}
 local Linq = {}
 local Debug = {}
@@ -20,18 +20,21 @@ local magicTable = {}
 function Linq.Give(t)
     setmetatable(t, magicTable)
 end
+
 magicTable.__index = magicTable
 function Linq.NewTable(...)
     local a = { ... }
     Linq.Give(a, magicTable)
     return a
 end
+
 function Linq.Aggregate(tb, seed, aggregate)
     for k, v in ipairs(tb) do
         seed = aggregate(seed, v, k)
     end
     return seed
 end
+
 function Linq.All(tb, filter)
     for k, v in ipairs(tb) do
         if not filter(v, k) then
@@ -40,6 +43,7 @@ function Linq.All(tb, filter)
     end
     return true
 end
+
 function Linq.Any(tb, filter)
     for k, v in ipairs(tb) do
         if filter == nil or filter(v, k) then
@@ -48,11 +52,13 @@ function Linq.Any(tb, filter)
     end
     return false
 end
+
 function Linq.Append(tb, item)
     local g = Linq.ShallowCopy(tb)
     table.insert(g, item)
     return g
 end
+
 function Linq.Average(tb)
     local i = 0
     local sum = 0
@@ -62,6 +68,7 @@ function Linq.Average(tb)
     end
     return sum / i
 end
+
 function Linq.Concat(a, b)
     local g = Linq.NewTable()
     for _, v in ipairs(a) do
@@ -72,6 +79,7 @@ function Linq.Concat(a, b)
     end
     return g
 end
+
 function Linq.Contains(tb, value, equals)
     equals = equals or function(opv_1, opv_2) return opv_1 == opv_2 end
     for _, v in ipairs(tb) do
@@ -81,6 +89,7 @@ function Linq.Contains(tb, value, equals)
     end
     return false
 end
+
 function Linq.ContainsKey(tb, key, equals)
     equals = equals or function(opv_1, opv_2) return opv_1 == opv_2 end
     for k, _ in pairs(tb) do
@@ -90,6 +99,7 @@ function Linq.ContainsKey(tb, key, equals)
     end
     return false
 end
+
 function Linq.Count(tb, filter)
     local g = 0
     for k, v in ipairs(tb) do
@@ -99,6 +109,7 @@ function Linq.Count(tb, filter)
     end
     return g
 end
+
 function Linq.DeepCopy(tb)
     local copiedTables = Linq.NewTable()
     local g = Linq.NewTable()
@@ -115,6 +126,7 @@ function Linq.DeepCopy(tb)
     end
     return g
 end
+
 function Linq.Distinct(tb, equals)
     equals = equals or function(opv_1, opv_2) return opv_1 == opv_2 end
     local g = Linq.NewTable()
@@ -125,6 +137,7 @@ function Linq.Distinct(tb, equals)
     end
     return g
 end
+
 function Linq.Except(tb, tb2, equals)
     local g = Linq.NewTable()
     for _, v in ipairs(tb) do
@@ -134,6 +147,7 @@ function Linq.Except(tb, tb2, equals)
     end
     return g
 end
+
 function Linq.Filter(tb, filter)
     local g = Linq.NewTable()
     for k, v in ipairs(tb) do
@@ -143,6 +157,7 @@ function Linq.Filter(tb, filter)
     end
     return g
 end
+
 function Linq.Filter2(tb1, tb2, filter, map)
     map = map or function(a, b, c)
         return {
@@ -158,6 +173,7 @@ function Linq.Filter2(tb1, tb2, filter, map)
     end
     return g
 end
+
 function Linq.FilterNot(tb, filter)
     local g = Linq.NewTable()
     for k, v in ipairs(tb) do
@@ -167,6 +183,7 @@ function Linq.FilterNot(tb, filter)
     end
     return g
 end
+
 function Linq.First(tb, filter)
     filter = filter or function()
         return true
@@ -177,21 +194,25 @@ function Linq.First(tb, filter)
         end
     end
 end
+
 function Linq.ForEach2(tb1, tb2, func)
     for i = 1, #tb1 do
         func(tb1[i], tb2[i])
     end
 end
+
 function Linq.ForEach(tb, action)
     for k, v in ipairs(tb) do
         action(v, k)
     end
 end
+
 function Linq.ForEachDic(tb, action)
     for k, v in pairs(tb) do
         action(v, k)
     end
 end
+
 function Linq.GroupBy(collection, keySelector, elementSelector, resultSelector, comparer)
     comparer = comparer or function(opv_1, opv_2) return opv_1 == opv_2 end
     resultSelector = resultSelector or function(key, value)
@@ -218,6 +239,7 @@ function Linq.GroupBy(collection, keySelector, elementSelector, resultSelector, 
     end
     return Linq.Map2(keys, values, resultSelector)
 end
+
 function Linq.GroupJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector, comparer)
     comparer = comparer or function(opv_1, opv_2) return opv_1 == opv_2 end
     resultSelector = resultSelector or function(key, values)
@@ -241,6 +263,7 @@ function Linq.GroupJoin(outer, inner, outerKeySelector, innerKeySelector, result
     end
     return t
 end
+
 Linq.Identity = function(t)
     return t
 end
@@ -257,6 +280,7 @@ function Linq.InsertAfter_Modify(tb, item, after)
         table.insert(tb, item)
     end
 end
+
 function Linq.Intersect(tb, tb2, equals)
     local g = Linq.NewTable()
     for _, v in tb do
@@ -266,6 +290,7 @@ function Linq.Intersect(tb, tb2, equals)
     end
     return g
 end
+
 function Linq.Join(outer, inner, outerKeySelector, innerKeySelector, resultSelector, comparer)
     comparer = comparer or function(opv_1, opv_2) return opv_1 == opv_2 end
     resultSelector = resultSelector or function(o, i)
@@ -289,6 +314,7 @@ function Linq.Join(outer, inner, outerKeySelector, innerKeySelector, resultSelec
     end
     return g
 end
+
 function Linq.Keys(tb)
     local g = Linq.NewTable()
     for k, _ in pairs(tb) do
@@ -296,9 +322,11 @@ function Linq.Keys(tb)
     end
     return g
 end
+
 function Linq.Last(tb, filter)
     return Linq.First(Linq.Reverse(tb), filter)
 end
+
 function Linq.Map(tb, transform)
     local g = Linq.NewTable()
     for k, v in ipairs(tb) do
@@ -306,6 +334,7 @@ function Linq.Map(tb, transform)
     end
     return g
 end
+
 function Linq.MapDic(tb, transform)
     local g = Linq.NewTable()
     for k, v in pairs(tb) do
@@ -313,6 +342,7 @@ function Linq.MapDic(tb, transform)
     end
     return g
 end
+
 function Linq.Max(tb, map)
     if #tb == 0 then
         return nil
@@ -328,6 +358,7 @@ function Linq.Max(tb, map)
     end
     return maxm
 end
+
 function Linq.MaxKey(tb, map)
     if #tb == 0 then
         return nil
@@ -343,6 +374,7 @@ function Linq.MaxKey(tb, map)
     end
     return maxv
 end
+
 function Linq.Min(tb, map)
     if #tb == 0 then
         return nil
@@ -358,6 +390,7 @@ function Linq.Min(tb, map)
     end
     return maxm
 end
+
 function Linq.MinKey(tb, map)
     if #tb == 0 then
         return nil
@@ -373,11 +406,13 @@ function Linq.MinKey(tb, map)
     end
     return maxv
 end
+
 function Linq.NonEmpty(tb)
     return Linq.Filter(tb, function(t)
         return t ~= nil and #t ~= 0
     end)
 end
+
 function Linq.IndexOf(tb, filter)
     local g = Linq.NewTable()
     for k, v in ipairs(tb) do
@@ -393,6 +428,7 @@ function Linq.IndexOf(tb, filter)
     end
     return -1
 end
+
 function Linq.Map2(tb1, tb2, map)
     local g = Linq.NewTable()
     for i = 1, #tb1 do
@@ -400,6 +436,7 @@ function Linq.Map2(tb1, tb2, map)
     end
     return g
 end
+
 function Linq.MergeSort(tb, sort)
     sort = sort or function(opv_1, opv_2) return opv_1 - opv_2 end
     local function Merge(a, b)
@@ -429,6 +466,7 @@ function Linq.MergeSort(tb, sort)
         end
         return g
     end
+
     local function SortRec(tab)
         local tableLength = #tab
         if tableLength == 1 then
@@ -439,20 +477,24 @@ function Linq.MergeSort(tb, sort)
         local merge = Merge(left, right)
         return merge
     end
+
     return SortRec(tb)
 end
+
 function Linq.OrderBy(tb, map)
     map = map or Linq.Identity
     return Linq.Sort(tb, function(a, b)
         return map(a) - map(b)
     end)
 end
+
 function Linq.OrderByDescending(tb, map)
     map = map or Linq.Identity
     return Linq.Sort(tb, function(a, b)
         return map(b) - map(a)
     end)
 end
+
 function Linq.Partition(tb, filter)
     local a = Linq.NewTable()
     local b = Linq.NewTable()
@@ -465,9 +507,11 @@ function Linq.Partition(tb, filter)
     end
     return a, b
 end
+
 function Linq.Prepend(a, b)
     return Linq.Concat(b, a)
 end
+
 function Linq.Range(min, max, step)
     step = step or 1
     local g = Linq.NewTable()
@@ -476,6 +520,7 @@ function Linq.Range(min, max, step)
     end
     return g
 end
+
 function Linq.Remove(a, b)
     local g = Linq.ShallowCopy(a)
     for k, v in pairs(a) do
@@ -485,6 +530,7 @@ function Linq.Remove(a, b)
     end
     return g
 end
+
 function Linq.RemoveAll(a, b)
     local g = Linq.NewTable()
     for _, v in pairs(a) do
@@ -494,6 +540,7 @@ function Linq.RemoveAll(a, b)
     end
     return g
 end
+
 function Linq.Remove_Modify(tb, item)
     local filter = item
     if type(item) ~= "function" then
@@ -512,6 +559,7 @@ function Linq.Remove_Modify(tb, item)
         end
     end
 end
+
 function Linq.Repeat(element, count)
     local g = Linq.NewTable()
     for i = 1, count do
@@ -519,6 +567,7 @@ function Linq.Repeat(element, count)
     end
     return g
 end
+
 function Linq.Replace(tb, filter, map)
     local g = Linq.NewTable()
     for k, v in ipairs(tb) do
@@ -530,6 +579,7 @@ function Linq.Replace(tb, filter, map)
     end
     return g
 end
+
 function Linq.Reverse(tb)
     local g = Linq.NewTable()
     for i = #tb, 1, -1 do
@@ -537,6 +587,7 @@ function Linq.Reverse(tb)
     end
     return g
 end
+
 function Linq.ShallowCopy(tb)
     local g = Linq.NewTable()
     for k, v in pairs(tb) do
@@ -544,6 +595,7 @@ function Linq.ShallowCopy(tb)
     end
     return g
 end
+
 function Linq.SlowSort(tb, sort)
     local g = Linq.ShallowCopy(tb)
     local len = #g
@@ -566,6 +618,7 @@ function Linq.SlowSort(tb, sort)
     end
     return g
 end
+
 Linq.Sort = Linq.SlowSort
 function Linq.SelectMany(tb, map, filter)
     local g = Linq.NewTable()
@@ -579,6 +632,7 @@ function Linq.SelectMany(tb, map, filter)
     end
     return g
 end
+
 function Linq.Skip(tb, number)
     local g = Linq.NewTable()
     local i = 0
@@ -590,9 +644,11 @@ function Linq.Skip(tb, number)
     end
     return g
 end
+
 function Linq.SkipLast(tb, number)
     return Linq.Skip(Linq.Reverse(tb), number)
 end
+
 function Linq.SkipWhile(tb, filter)
     local g = Linq.NewTable()
     local failure
@@ -608,6 +664,7 @@ function Linq.SkipWhile(tb, filter)
     end
     return g
 end
+
 function Linq.Take(tb, number)
     local g = Linq.NewTable()
     local i = 0
@@ -621,6 +678,7 @@ function Linq.Take(tb, number)
     end
     return g
 end
+
 function Linq.TakeWhile(tb, filter)
     local g = Linq.NewTable()
     for k, v in ipairs(tb) do
@@ -632,6 +690,7 @@ function Linq.TakeWhile(tb, filter)
     end
     return g
 end
+
 function Linq.Zip2(tb1, tb2, map)
     map = map or function(a, b)
         return {
@@ -645,6 +704,7 @@ function Linq.Zip2(tb1, tb2, map)
     end
     return g
 end
+
 local function AddLinqfunctionsToMetatable(mt)
     for functionName, func in pairs(table) do
         mt[functionName] = func
@@ -653,6 +713,7 @@ local function AddLinqfunctionsToMetatable(mt)
         mt[k] = v
     end
 end
+
 AddLinqfunctionsToMetatable(magicTable)
 function Debug.DebugTable(tb)
     local msg = "{ "
@@ -660,20 +721,21 @@ function Debug.DebugTable(tb)
     DebugRec = function(tc)
         for k, v in pairs(tc) do
             if type(v) == "number" or type(v) == "string" then
-                msg = msg..k.." = "..v..", "
+                msg = msg .. k .. " = " .. v .. ", "
             elseif type(v) == "boolean" then
-                msg = msg..k.." = "..tostring(v)..", "
+                msg = msg .. k .. " = " .. tostring(v) .. ", "
             elseif type(v) == "table" then
-                msg = msg..k.." = ".."{ "
+                msg = msg .. k .. " = " .. "{ "
                 DebugRec(v)
-                msg = msg.."}, "
+                msg = msg .. "}, "
             end
         end
     end
     DebugRec(tb)
-    msg = msg.." }"
+    msg = msg .. " }"
     print(msg)
 end
+
 function Debug.DebugLongTable(tb)
     if type(tb) ~= "table" then
         print(tostring(tb))
@@ -681,13 +743,14 @@ function Debug.DebugLongTable(tb)
     end
     for k, v in pairs(tb) do
         if type(v) == "table" then
-            print(tostring(k).." = ")
+            print(tostring(k) .. " = ")
             Debug.DebugTable(v)
         else
-            print(tostring(k).." = "..tostring(v))
+            print(tostring(k) .. " = " .. tostring(v))
         end
     end
 end
+
 local AttributeTypeEnum = {
     ATTRIBUTE_INVALID = ATTRIBUTE_INVALID,
     ATTRIBUTE_STRENGTH = ATTRIBUTE_STRENGTH,
@@ -702,6 +765,7 @@ function DotaExt.AttributeTypeToString(i)
     end
     return "unknown attribute type"
 end
+
 function DotaExt.GetNearbyHeroes(bot, range, getEnemy, botMode)
     botMode = botMode or BOT_MODE_NONE
     getEnemy = getEnemy or true
@@ -716,6 +780,7 @@ function DotaExt.GetNearbyHeroes(bot, range, getEnemy, botMode)
     Linq.Give(units)
     return units
 end
+
 function DotaExt.GetNearbyLaneCreeps(bot, range, getEnemy)
     getEnemy = getEnemy or true
     local range1 = (function()
@@ -729,6 +794,7 @@ function DotaExt.GetNearbyLaneCreeps(bot, range, getEnemy)
     Linq.Give(units)
     return units
 end
+
 function DotaExt.GetNearbyNeutralCreeps(bot, range)
     local range1 = (function()
         if range > 1600 then
@@ -741,6 +807,7 @@ function DotaExt.GetNearbyNeutralCreeps(bot, range)
     Linq.Give(units)
     return units
 end
+
 local botModeEnum = {
     BOT_MODE_NONE = BOT_MODE_NONE,
     BOT_MODE_LANING = BOT_MODE_LANING,
@@ -770,14 +837,18 @@ function DotaExt.BotModeToString(mode)
             return k
         end
     end
-    return "unknown bot mode "..mode
+    return "unknown bot mode " .. mode
 end
-DotaExt.towerNames = Linq.NewTable(TOWER_TOP_1, TOWER_TOP_2, TOWER_TOP_3, TOWER_MID_1, TOWER_MID_2, TOWER_MID_3, TOWER_BOT_1, TOWER_BOT_2, TOWER_BOT_3, TOWER_BASE_1, TOWER_BASE_2)
-DotaExt.barracksNames = Linq.NewTable(BARRACKS_TOP_MELEE, BARRACKS_TOP_RANGED, BARRACKS_MID_MELEE, BARRACKS_MID_RANGED, BARRACKS_BOT_MELEE, BARRACKS_BOT_RANGED)
+
+DotaExt.towerNames = Linq.NewTable(TOWER_TOP_1, TOWER_TOP_2, TOWER_TOP_3, TOWER_MID_1, TOWER_MID_2, TOWER_MID_3,
+    TOWER_BOT_1, TOWER_BOT_2, TOWER_BOT_3, TOWER_BASE_1, TOWER_BASE_2)
+DotaExt.barracksNames = Linq.NewTable(BARRACKS_TOP_MELEE, BARRACKS_TOP_RANGED, BARRACKS_MID_MELEE, BARRACKS_MID_RANGED,
+    BARRACKS_BOT_MELEE, BARRACKS_BOT_RANGED)
 DotaExt.shrineNames = Linq.NewTable(SHRINE_BASE_1, SHRINE_BASE_2, SHRINE_BASE_3, SHRINE_BASE_4, SHRINE_BASE_5)
 function DotaExt.IsValidUnit(v)
     return v and not v:IsNull() and v:IsAlive()
 end
+
 function DotaExt.GetAllBuildings(team)
     return DotaExt.towerNames:Map(function(t)
         return GetTower(team, t)
@@ -789,6 +860,7 @@ function DotaExt.GetAllBuildings(team)
         return DotaExt.IsValidUnit(t) and not t:IsInvulnerable()
     end)
 end
+
 function DotaExt.GetPureHeroes(npcBot, range, getEnemy)
     range = range or 1600
     if getEnemy == nil then
@@ -798,44 +870,61 @@ function DotaExt.GetPureHeroes(npcBot, range, getEnemy)
         return Hero.MayNotBeIllusion(npcBot, t) and not UnitFun.IsHeroLevelUnit(t)
     end)
 end
+
 function DotaExt.EmptyFun() end
+
 function DotaExt.EmptyDesireFun()
     return BOT_ACTION_DESIRE_NONE
 end
+
 function DotaExt.GetNearbyCreeps(npc, range, getEnemy)
     local r = npc:GetNearbyCreeps(range, getEnemy)
     Linq.Give(r)
     return r
 end
+
 function DotaExt.GetNearbyNeutralCreeps(npc, range)
     local r = npc:GetNearbyNeutralCreeps(range)
     Linq.Give(r)
     return r
 end
-AbilInfo.invisibleModifiers = Linq.NewTable("modifier_bounty_hunter_wind_walk", "modifier_clinkz_wind_walk", "modifier_dark_willow_shadow_realm_buff", "modifier_item_glimmer_cape_glimmer", "modifier_invoker_ghost_walk_self", "modifier_nyx_assassin_vendetta", "modifier_item_phase_boots_active", "modifier_item_shadow_amulet_fade", "modifier_item_invisibility_edge_windwalk", "modifier_shadow_fiend_requiem_thinker", "modifier_item_silver_edge_windwalk", "modifier_windrunner_wind_walk", "modifier_storm_wind_walk", "modifier_templar_assassin_meld", "modifier_visage_silent_as_the_grave", "modifier_weaver_shukuchi", "modified_invisible", "modifier_rune_invis", "modifier_nyx_assassin_burrow", "modifier_oracle_false_promise_invis")
-AbilInfo.truesightModifiers = Linq.NewTable("modifier_item_dustofappearance", "modifier_bounty_hunter_track", "modifier_slardar_amplify_damage", "modifier_truesight")
+
+AbilInfo.invisibleModifiers = Linq.NewTable("modifier_bounty_hunter_wind_walk", "modifier_clinkz_wind_walk",
+    "modifier_dark_willow_shadow_realm_buff", "modifier_item_glimmer_cape_glimmer", "modifier_invoker_ghost_walk_self",
+    "modifier_nyx_assassin_vendetta", "modifier_item_phase_boots_active", "modifier_item_shadow_amulet_fade",
+    "modifier_item_invisibility_edge_windwalk", "modifier_shadow_fiend_requiem_thinker",
+    "modifier_item_silver_edge_windwalk", "modifier_windrunner_wind_walk", "modifier_storm_wind_walk",
+    "modifier_templar_assassin_meld", "modifier_visage_silent_as_the_grave", "modifier_weaver_shukuchi",
+    "modified_invisible", "modifier_rune_invis", "modifier_nyx_assassin_burrow", "modifier_oracle_false_promise_invis")
+AbilInfo.truesightModifiers = Linq.NewTable("modifier_item_dustofappearance", "modifier_bounty_hunter_track",
+    "modifier_slardar_amplify_damage", "modifier_truesight")
 function AbilInfo.HasAnyModifier(bot, modifiers)
     return modifiers:Any(function(t)
         return bot:HasModifier(t)
     end)
 end
+
 local frameNumber = 0
 local dotaTimer
 local deltaTime = 0
 local function FloatEqual(a, b)
     return math.abs(a - b) < 0.000001
 end
+
 local GameLoop = {}
 function GameLoop.GetFrameNumber()
     return frameNumber
 end
+
 function GameLoop.GetDeltaTime()
     return deltaTime
 end
+
 function GameLoop.EveryManyFrames(count, times)
     times = times or 1
     return frameNumber % count < times
 end
+
 local defaultReturn = Linq.NewTable()
 local everySecondsCallRegistry = Linq.NewTable()
 function GameLoop.EveryManySeconds(second, registerName, oldFunction, ...)
@@ -853,6 +942,7 @@ function GameLoop.EveryManySeconds(second, registerName, oldFunction, ...)
         return defaultReturn
     end
 end
+
 local singleForTeamRegistry = Linq.NewTable()
 function GameLoop.SingleForTeam(oldFunction)
     local functionName = tostring(oldFunction)
@@ -865,12 +955,15 @@ function GameLoop.SingleForTeam(oldFunction)
         end
     end
 end
+
 function GameLoop.CalledOnThisFrame(functionInvocationResult)
     return functionInvocationResult ~= defaultReturn
 end
+
 function GameLoop.AiTicking()
     return DotaTime() >= -75
 end
+
 local coroutineRegistry = Linq.NewTable()
 local coroutineExempt = Linq.NewTable()
 function GameLoop.TickFromDota()
@@ -886,6 +979,7 @@ function GameLoop.TickFromDota()
             Debug.DebugLongTable(coroutineResult)
         end
     end
+
     if dotaTimer == nil then
         dotaTimer = time
         return
@@ -923,6 +1017,7 @@ function GameLoop.TickFromDota()
         dotaTimer = time
     end
 end
+
 function GameLoop.ResumeUntilReturn(func)
     local g = NewTable()
     local thread = coroutine.create(func)
@@ -940,6 +1035,7 @@ function GameLoop.ResumeUntilReturn(func)
     end
     return g
 end
+
 function GameLoop.StartCoroutine(func)
     local newCoroutine = coroutine.create(func)
     table.insert(coroutineRegistry, newCoroutine)
@@ -949,23 +1045,26 @@ function GameLoop.StartCoroutine(func)
     })
     return newCoroutine
 end
+
 function GameLoop.WaitForSeconds(seconds)
     local t = seconds
     while t > 0 do
         t = t - coroutine.yield()
     end
 end
+
 function GameLoop.StopCoroutine(thread)
     GameLoop.Remove_Modify(coroutineExempt, function(t)
         return t[1] == thread
     end)
     GameLoop.Remove_Modify(coroutineRegistry, thread)
 end
+
 function Abil.UseAbilityOnEntity(bot, abil, entity, motive, queueType)
     if Abil.print then
-        local printContent = bot:GetUnitName().." use "..abil:GetName().." on entity "..entity:GetUnitName()
+        local printContent = bot:GetUnitName() .. " use " .. abil:GetName() .. " on entity " .. entity:GetUnitName()
         if motive then
-            printContent = printContent..", motive = "..tostring(motive)
+            printContent = printContent .. ", motive = " .. tostring(motive)
         end
         print(motive)
     end
@@ -977,11 +1076,12 @@ function Abil.UseAbilityOnEntity(bot, abil, entity, motive, queueType)
         bot:Action_UseAbilityOnEntity(abil, entity)
     end
 end
+
 function Abil.UseAbility(bot, abil, motive, queueType)
     if Abil.print then
-        local printContent = bot:GetUnitName().." use "..abil:GetName()
+        local printContent = bot:GetUnitName() .. " use " .. abil:GetName()
         if motive then
-            printContent = printContent..", motive = "..tostring(motive)
+            printContent = printContent .. ", motive = " .. tostring(motive)
         end
         print(motive)
     end
@@ -993,11 +1093,13 @@ function Abil.UseAbility(bot, abil, motive, queueType)
         bot:Action_UseAbility(abil)
     end
 end
+
 function Abil.UseAbilityOnLocation(bot, abil, location, motive, queueType)
     if Abil.print then
-        local printContent = bot:GetUnitName().." use "..abil:GetName().." on location "..fun1:ToStringVector(location)
+        local printContent = bot:GetUnitName() .. " use " ..
+            abil:GetName() .. " on location " .. fun1:ToStringVector(location)
         if motive then
-            printContent = printContent..", motive = "..tostring(motive)
+            printContent = printContent .. ", motive = " .. tostring(motive)
         end
         print(motive)
     end
@@ -1009,11 +1111,12 @@ function Abil.UseAbilityOnLocation(bot, abil, location, motive, queueType)
         bot:Action_UseAbilityOnLocation(abil, location)
     end
 end
+
 function Abil.UseAbilityOnTree(bot, abil, tree, motive, queueType)
     if Abil.print then
-        local printContent = bot:GetUnitName().." use "..abil:GetName().." on tree "..tree
+        local printContent = bot:GetUnitName() .. " use " .. abil:GetName() .. " on tree " .. tree
         if motive then
-            printContent = printContent..", motive = "..tostring(motive)
+            printContent = printContent .. ", motive = " .. tostring(motive)
         end
         print(motive)
     end
@@ -1025,41 +1128,54 @@ function Abil.UseAbilityOnTree(bot, abil, tree, motive, queueType)
         bot:Action_UseAbilityOnTree(abil, tree)
     end
 end
+
 function UnitFun.IsFarmingOrPushing(npcBot)
     local mode = npcBot:GetActiveMode()
-    return mode == BOT_MODE_FARM or mode == BOT_MODE_PUSH_TOWER_BOT or mode == BOT_MODE_PUSH_TOWER_MID or mode == BOT_MODE_PUSH_TOWER_TOP or mode == BOT_MODE_DEFEND_TOWER_BOT or mode == BOT_MODE_DEFEND_TOWER_MID or mode == BOT_MODE_DEFEND_TOWER_TOP
+    return mode == BOT_MODE_FARM or mode == BOT_MODE_PUSH_TOWER_BOT or mode == BOT_MODE_PUSH_TOWER_MID or
+        mode == BOT_MODE_PUSH_TOWER_TOP or mode == BOT_MODE_DEFEND_TOWER_BOT or mode == BOT_MODE_DEFEND_TOWER_MID or
+        mode == BOT_MODE_DEFEND_TOWER_TOP
 end
+
 function UnitFun.IsLaning(npcBot)
     local mode = npcBot:GetActiveMode()
     return mode == BOT_MODE_LANING
 end
+
 function UnitFun.IsAttackingEnemies(npcBot)
     local mode = npcBot:GetActiveMode()
     return mode == BOT_MODE_ROAM or mode == BOT_MODE_TEAM_ROAM or mode == BOT_MODE_ATTACK or mode == BOT_MODE_DEFEND_ALLY
 end
+
 function UnitFun.IsRetreating(npcBot)
     return npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_MODERATE
 end
+
 function UnitFun.NotRetreating(npcBot)
     return not UnitFun.IsRetreating(npcBot)
 end
+
 local heroNamePrefixLen = #"npc_dota_hero_"
 function UnitFun.GetHeroShortName(name)
     return string.sub(name, heroNamePrefixLen + 1)
 end
+
 function UnitFun.IsTempestDouble(npc)
     return npc:HasModifier "modifier_arc_warden_tempest_double"
 end
+
 function UnitFun.IsLoneDruidBear(npc)
     return string.match(npc:GetUnitName(), "npc_dota_lone_druid_bear")
 end
+
 function UnitFun.IsVisageFamiliar(npc)
     return string.match(npc:GetUnitName(), "npc_dota_visage_familiar")
 end
+
 function UnitFun.IsBrewmasterPrimalSplit(npc)
     local unitName = npc:GetUnitName()
     return string.match(unitName, "npc_dota_brewmaster_")
 end
+
 function UnitFun.IsHeroLevelUnit(npc)
     if UnitFun.IsBrewmasterPrimalSplit(npc) then
         return true
@@ -1073,7 +1189,9 @@ function UnitFun.IsHeroLevelUnit(npc)
     end
     return false
 end
-local canUseItemIllusionModifiers = Linq.NewTable("modifier_arc_warden_tempest_double", "modifier_skeleton_king_reincarnation_active", "modifier_vengefulspirit_hybrid_special")
+
+local canUseItemIllusionModifiers = Linq.NewTable("modifier_arc_warden_tempest_double",
+    "modifier_skeleton_king_reincarnation_active", "modifier_vengefulspirit_hybrid_special")
 function UnitFun.CanBuyItem(npc)
     if UnitFun.IsHeroLevelUnit(npc) or UnitFun.IsTempestDouble(npc) then
         return false
@@ -1083,6 +1201,7 @@ function UnitFun.CanBuyItem(npc)
     end
     return true
 end
+
 function UnitFun.CanUseItem(npc)
     if UnitFun.IsBrewmasterPrimalSplit(npc) then
         return false
@@ -1098,9 +1217,11 @@ function UnitFun.CanUseItem(npc)
     end
     return true
 end
+
 function UnitFun.IsGoodTarget(npc, target)
     return target:IsHero() and Hero.MayNotBeIllusion(npc, target) and not UnitFun.IsHeroLevelUnit(target)
 end
+
 function UnitFun.GetHeroTarget(npc)
     do
         local t = npc:GetTarget()
@@ -1109,15 +1230,19 @@ function UnitFun.GetHeroTarget(npc)
         end
     end
 end
+
 function UnitFun.IsHero(npc)
     return npc:IsHero() and not UnitFun.IsCreepHero(npc)
 end
+
 function UnitFun.IsCreepHero(npc)
     return UnitFun.IsLoneDruidBear(npc) or UnitFun.IsVisageFamiliar(npc)
 end
+
 function UnitFun.IsNotCreepHero(npc)
     return not UnitFun.IsCreepHero(npc)
 end
+
 function Building.CanBeAttacked(buillding, npc)
     if not building:IsAlive() or building:HasModifier "modifier_foutain_glyph" then
         return false
@@ -1138,6 +1263,7 @@ function Building.CanBeAttacked(buillding, npc)
     end
     return true
 end
+
 local ItemFun = {}
 function ItemFun.GetAvailableItem(npc, itemName, isNeutral)
     if npc:IsMuted() then
@@ -1162,6 +1288,7 @@ function ItemFun.GetAvailableItem(npc, itemName, isNeutral)
         end
     end
 end
+
 function ItemFun.GetAvailableTp(npc)
     do
         local teleportation = npc:GetAbilityByName("furion_teleportation")
@@ -1181,13 +1308,15 @@ function ItemFun.GetAvailableTp(npc)
     end
     return ItemFun.GetAvailableItem(npc, "item_tpscroll")
 end
+
 function ItemFun.CanUseAvailableTp(npc, tp)
     local rearm = npc:GetAbilityByName "tinker_rearm"
     if tp:GetName() == "tinker_keen_conveyance" then
         if tp:IsFullyCastable() then
             return true
         end
-        if not tp:IsCooldownReady() and not npc:HasModifier "modifier_rejuvenation_aura_buff" and rearm and rearm:IsTrained() then
+        if not tp:IsCooldownReady() and not npc:HasModifier "modifier_rejuvenation_aura_buff" and rearm and
+            rearm:IsTrained() then
             return true
         end
     end
@@ -1196,13 +1325,15 @@ function ItemFun.CanUseAvailableTp(npc, tp)
     end
     return not npc:IsMuted() and tp:IsFullyCastable()
 end
+
 function ItemFun.UseAvailableTp(npc, tp, location)
     if tp:GetName() == "tinker_keen_conveyance" then
         if tp:IsFullyCastable() then
             ItemFun.UseAbilityOnLocation(npc, tp, location)
         end
         local rearm = npc:GetAbilityByName "tinker_rearm"
-        if not tp:IsCooldownReady() and not npc:HasModifier "modifier_rejuvenation_aura_buff" and rearm and rearm:IsTrained() then
+        if not tp:IsCooldownReady() and not npc:HasModifier "modifier_rejuvenation_aura_buff" and rearm and
+            rearm:IsTrained() then
             while npc:IsSilenced() or not rearm:IsFullyCastable() do
                 coroutine.yield()
             end
@@ -1222,6 +1353,7 @@ function ItemFun.UseAvailableTp(npc, tp, location)
     end
     ItemFun.UseItemOnLocation(npc, tp, location)
 end
+
 function ItemFun.GetAvailableBlink(npc)
     local blinks = {
         "item_blink",
@@ -1233,6 +1365,7 @@ function ItemFun.GetAvailableBlink(npc)
         return a or ItemFun.GetAvailableItem(npc, blinkName)
     end)
 end
+
 function ItemFun.GetAvailableTravelBoots(npc)
     local travelBoots = {
         "item_travel_boots",
@@ -1242,6 +1375,7 @@ function ItemFun.GetAvailableTravelBoots(npc)
         return seed or ItemFun.GetAvailableItem(npc, t)
     end)
 end
+
 function ItemFun.GetEmptyInventorySlots(npc)
     local g = 0
     for i = 0, 5 do
@@ -1251,6 +1385,7 @@ function ItemFun.GetEmptyInventorySlots(npc)
     end
     return g
 end
+
 function ItemFun.GetEmptyItemSlots(npc)
     local g = 0
     for i = 0, 8 do
@@ -1260,6 +1395,7 @@ function ItemFun.GetEmptyItemSlots(npc)
     end
     return g
 end
+
 function ItemFun.GetEmptyBackpackSlots(npc)
     local g = 0
     for i = 6, 8 do
@@ -1269,6 +1405,7 @@ function ItemFun.GetEmptyBackpackSlots(npc)
     end
     return g
 end
+
 function ItemFun.SwapItemToBackpack(npc, itemIndex)
     for i = 6, 8 do
         if npc:GetItemInSlot(i) == nil then
@@ -1278,6 +1415,7 @@ function ItemFun.SwapItemToBackpack(npc, itemIndex)
     end
     return false
 end
+
 function ItemFun.GetCarriedItems(npc)
     local g = Linq.NewTable()
     for i = 0, 8 do
@@ -1288,6 +1426,7 @@ function ItemFun.GetCarriedItems(npc)
     end
     return g
 end
+
 function ItemFun.GetCarriedItemsWithIndex(npc)
     local g = Linq.NewTable()
     for i = 0, 8 do
@@ -1301,6 +1440,7 @@ function ItemFun.GetCarriedItemsWithIndex(npc)
     end
     return g
 end
+
 function ItemFun.GetInventoryItems(npc)
     local g = Linq.NewTable()
     for i = 0, 5 do
@@ -1311,6 +1451,7 @@ function ItemFun.GetInventoryItems(npc)
     end
     return g
 end
+
 function ItemFun.GetInventoryItemNames(npc)
     local g = Linq.NewTable()
     for i = 0, 5 do
@@ -1321,6 +1462,7 @@ function ItemFun.GetInventoryItemNames(npc)
     end
     return g
 end
+
 function ItemFun.GetStashItems(npc)
     local g = Linq.NewTable()
     for i = 9, 14 do
@@ -1332,6 +1474,7 @@ function ItemFun.GetStashItems(npc)
     end
     return g
 end
+
 function ItemFun.GetAllBoughtItems(npcBot)
     local g = Linq.NewTable()
     for i = 0, 16 do
@@ -1342,33 +1485,48 @@ function ItemFun.GetAllBoughtItems(npcBot)
     end
     return g
 end
+
 function ItemFun.IsBoots(item)
     if type(item) ~= "string" then
         item = item:GetName()
     end
     return string.match(item, "boots") or item == "item_guardian_greaves" or item == "item_power_treads"
 end
+
 ItemFun.InventoryOnlyItems = Linq.NewTable("item_gem", "item_rapier", "item_bloodstone", "item_aegis")
-ItemFun.PurchasedConsumables = Linq.NewTable('item_clarity', 'item_tango', 'item_flask', 'item_faerie_fire', 'item_enchanted_mango', 'item_infused_raindrop')
+ItemFun.PurchasedConsumables = Linq.NewTable('item_clarity', 'item_tango', 'item_flask', 'item_faerie_fire',
+    'item_enchanted_mango', 'item_infused_raindrop')
 ItemFun.NeutralItems = Linq.NewTable()
-ItemFun.NeutralItems.T1 = Linq.NewTable("item_arcane_ring", "item_broom_handle", "item_chipped_vest", "item_fairys_trinket", "item_keen_optic", "item_ocean_heart", "item_pig_hole", "item_possessed_mask", "item_trusty_shovel", "item_tumblers_toy")
-ItemFun.NeutralItems.T2 = Linq.NewTable("item_brigands_blade", "item_bullwhip", "item_dragon_scale", "item_essence_ring", "item_fae_grenade", "item_grove_bow", "item_nether_shawl", "item_philosophers_stome", "item_pupils_gift", "item_quicksilver_amulet", "item_ring_of_aquila", "item_vambrace")
-ItemFun.NeutralItems.T3 = Linq.NewTable("item_blast_rig", "item_ceremonial_robe", "item_cloak_of_flames", "item_elven_tunic", "item_enchanted_quiver", "item_mind_breaker", "item_paladin_sword", "item_psychic_headband", "item_quickening_charm", "item_spider_legs", "item_titan_silver")
-ItemFun.NeutralItems.T4 = Linq.NewTable("item_ascetics_cap", "item_flicker", "item_ninja_gear", "item_penta_edged_sword", "item_spell_prism", "item_stormcrafter", "item_telescope", "item_the_leveller", "item_timeless_relic", "item_trickster_cloak", "item_witchblade")
-ItemFun.NeutralItems.T5 = Linq.NewTable("item_apex", "item_arcanists_armor", "item_book_of_shadows", "item_book_of_the_dead", "item_ex_machina", "item_fallen_sky", "item_force_boots", "item_giants_ring", "item_mirror_shield", "item_pirate_hat", "item_seer_stone", "item_stygian_desolator")
+ItemFun.NeutralItems.T1 = Linq.NewTable("item_arcane_ring", "item_broom_handle", "item_chipped_vest",
+    "item_fairys_trinket", "item_keen_optic", "item_ocean_heart", "item_pig_hole", "item_possessed_mask",
+    "item_trusty_shovel", "item_tumblers_toy")
+ItemFun.NeutralItems.T2 = Linq.NewTable("item_brigands_blade", "item_bullwhip", "item_dragon_scale", "item_essence_ring"
+    , "item_fae_grenade", "item_grove_bow", "item_nether_shawl", "item_philosophers_stome", "item_pupils_gift",
+    "item_quicksilver_amulet", "item_ring_of_aquila", "item_vambrace")
+ItemFun.NeutralItems.T3 = Linq.NewTable("item_blast_rig", "item_ceremonial_robe", "item_cloak_of_flames",
+    "item_elven_tunic", "item_enchanted_quiver", "item_mind_breaker", "item_paladin_sword", "item_psychic_headband",
+    "item_quickening_charm", "item_spider_legs", "item_titan_silver")
+ItemFun.NeutralItems.T4 = Linq.NewTable("item_ascetics_cap", "item_flicker", "item_ninja_gear", "item_penta_edged_sword"
+    , "item_spell_prism", "item_stormcrafter", "item_telescope", "item_the_leveller", "item_timeless_relic",
+    "item_trickster_cloak", "item_witchblade")
+ItemFun.NeutralItems.T5 = Linq.NewTable("item_apex", "item_arcanists_armor", "item_book_of_shadows",
+    "item_book_of_the_dead", "item_ex_machina", "item_fallen_sky", "item_force_boots", "item_giants_ring",
+    "item_mirror_shield", "item_pirate_hat", "item_seer_stone", "item_stygian_desolator")
 function ItemFun.IsNeutralItem(name)
     return Linq.Range(1, 5):Map(function(t)
-        return ItemFun.NeutralItems["T"..t]
+        return ItemFun.NeutralItems["T" .. t]
     end):Any(function(t)
         return t:Contains(name)
     end)
 end
+
 function ItemFun.CannotBePutIntoBackpack(item)
     if type(item) ~= "string" then
         item = item:GetName()
     end
     return ItemFun.InventoryOnlyItems:Contains(item)
 end
+
 local function RateItem(item)
     local name = item:GetName()
     local rate = (function()
@@ -1394,6 +1552,7 @@ local function RateItem(item)
     end)()
     return rate
 end
+
 function ItemFun.SwapUsefulOnes(bot)
     local items = ItemFun.GetCarriedItemsWithIndex(bot):Map(function(t)
         return {
@@ -1402,7 +1561,8 @@ function ItemFun.SwapUsefulOnes(bot)
             rate = RateItem(t[2]),
         }
     end):OrderByDescending(function(t)
-        if bot:GetActiveMode() == BOT_MODE_WARD and (t.item:GetName() == "item_ward_observer" or t.item:GetName() == "item_ward_dispenser") then
+        if bot:GetActiveMode() == BOT_MODE_WARD and
+            (t.item:GetName() == "item_ward_observer" or t.item:GetName() == "item_ward_dispenser") then
             return 10000
         end
         return (function()
@@ -1419,67 +1579,85 @@ function ItemFun.SwapUsefulOnes(bot)
         t.correctIndex = index - 1
     end)
     local backpackItemsInInventory = items:Filter(function(t)
-        return bot:GetItemSlotType(t.inventIndex) == ITEM_SLOT_TYPE_MAIN and bot:GetItemSlotType(t.correctIndex) == ITEM_SLOT_TYPE_BACKPACK
+        return bot:GetItemSlotType(t.inventIndex) == ITEM_SLOT_TYPE_MAIN and
+            bot:GetItemSlotType(t.correctIndex) == ITEM_SLOT_TYPE_BACKPACK
     end)
     local inventoryItemsInBackpack = items:Filter(function(t)
-        return bot:GetItemSlotType(t.inventIndex) == ITEM_SLOT_TYPE_BACKPACK and bot:GetItemSlotType(t.correctIndex) == ITEM_SLOT_TYPE_MAIN
+        return bot:GetItemSlotType(t.inventIndex) == ITEM_SLOT_TYPE_BACKPACK and
+            bot:GetItemSlotType(t.correctIndex) == ITEM_SLOT_TYPE_MAIN
     end)
     Linq.ForEach2(backpackItemsInInventory, inventoryItemsInBackpack, function(a, b)
     end)
 end
-ItemFun.defaultAbilityFunctions = Linq.NewTable("CanAbilityBeUpgraded", "GetAbilityDamage", "GetAOERadius", "GetAutoCastState", "GetBehavior", "GetCaster", "GetCastPoint", "GetCastRange", "GetChannelledManaCostPerSecond", "GetChannelTime", "GetDuration", "GetCooldown", "GetCooldownTimeRemaining", "GetCurrentCharges", "GetDamageType", "GetEstimatedDamageToTarget", "GetHeroLevelRequiredToUpgrade", "GetInitialCharges", "GetLevel", "GetManaCost", "GetMaxLevel", "GetName", "GetSecondaryCharges", "GetSpecialValueFloat", "GetSpecialValueInt", "GetTargetFlags", "GetTargetTeam", "GetTargetType", "GetToggleState", "IsActivated", "IsAttributeBonus", "IsChanneling", "IsCooldownReady", "IsFullyCastable", "IsHidden", "IsInAbilityPhase", "IsItem", "IsNull", "IsOwnersManaEnough", "IsPassive", "IsStealable", "IsStolen", "IsTalent", "IsToggle", "IsTrained", "IsUltimate", "ProcsMagicStick", "ToggleAutoCast")
+
+ItemFun.defaultAbilityFunctions = Linq.NewTable("CanAbilityBeUpgraded", "GetAbilityDamage", "GetAOERadius",
+    "GetAutoCastState", "GetBehavior", "GetCaster", "GetCastPoint", "GetCastRange", "GetChannelledManaCostPerSecond",
+    "GetChannelTime", "GetDuration", "GetCooldown", "GetCooldownTimeRemaining", "GetCurrentCharges", "GetDamageType",
+    "GetEstimatedDamageToTarget", "GetHeroLevelRequiredToUpgrade", "GetInitialCharges", "GetLevel", "GetManaCost",
+    "GetMaxLevel", "GetName", "GetSecondaryCharges", "GetSpecialValueFloat", "GetSpecialValueInt", "GetTargetFlags",
+    "GetTargetTeam", "GetTargetType", "GetToggleState", "IsActivated", "IsAttributeBonus", "IsChanneling",
+    "IsCooldownReady", "IsFullyCastable", "IsHidden", "IsInAbilityPhase", "IsItem", "IsNull", "IsOwnersManaEnough",
+    "IsPassive", "IsStealable", "IsStolen", "IsTalent", "IsToggle", "IsTrained", "IsUltimate", "ProcsMagicStick",
+    "ToggleAutoCast")
 ItemFun.defaultItemExtraFunctions = Linq.NewTable("CanBeDisassembled", "IsCombineLocked", "GetPowerTreadsStat")
 ItemFun.defaultItemFunctions = ItemFun.defaultAbilityFunctions:Concat(ItemFun.defaultItemExtraFunctions)
 function ItemFun.UseItemNoTarget(npc, item, cause)
     if ItemFun.print then
-        local s = npc:GetUnitName()..": use "..item:GetName()
+        local s = npc:GetUnitName() .. ": use " .. item:GetName()
         if cause then
-            s = s.." because of "..cause
+            s = s .. " because of " .. cause
         end
         print(s)
     end
     npc:Action_UseAbility(item)
 end
+
 function ItemFun.UseItemOnEntity(npc, item, entity, cause)
     if ItemFun.print then
-        local s = npc:GetUnitName()..": use "..item:GetName().." on entity "..entity:GetUnitName()
+        local s = npc:GetUnitName() .. ": use " .. item:GetName() .. " on entity " .. entity:GetUnitName()
         if cause then
-            s = s.." because of "..cause
+            s = s .. " because of " .. cause
         end
         print(s)
     end
     npc:Action_UseAbilityOnEntity(item, entity)
 end
+
 function ItemFun.UseItemOnLocation(npc, item, loc, cause)
     if ItemFun.print then
-        local s = npc:GetUnitName()..": use "..item:GetName().." on location "..fun1:ToStringVector(loc)
+        local s = npc:GetUnitName() .. ": use " .. item:GetName() .. " on location " .. fun1:ToStringVector(loc)
         if cause then
-            s = s.." because of "..cause
+            s = s .. " because of " .. cause
         end
         print(s)
     end
     npc:Action_UseAbilityOnLocation(item, loc)
 end
+
 function ItemFun.UseItemOnTree(npc, item, tree, cause)
     if ItemFun.print then
-        local s = npc:GetUnitName()..": use "..item:GetName().." on tree "..tostring(tree)
+        local s = npc:GetUnitName() .. ": use " .. item:GetName() .. " on tree " .. tostring(tree)
         if cause then
-            s = s.." because of "..cause
+            s = s .. " because of " .. cause
         end
         print(s)
     end
     npc:Action_UseAbilityOnTree(item, tree)
 end
+
 function ItemFun.FadeWouldMakeNoSense(t)
-    if t:HasModifier "modifier_item_dustofappearance" or t:HasModifier "modifier_truesight" or t:HasModifier "modifier_bounty_hunter_track" or t:HasModifier "modifier_slardar_amplify_damage" then
+    if t:HasModifier "modifier_item_dustofappearance" or t:HasModifier "modifier_truesight" or
+        t:HasModifier "modifier_bounty_hunter_track" or t:HasModifier "modifier_slardar_amplify_damage" then
         return true
     end
     return false
 end
+
 local itemNamePrefix = "item_"
 function ItemFun.GetItemShortName(t)
     return string.sub(t, #itemNamePrefix + 1)
 end
+
 function Hero.MustBeIllusion(target)
     if target:IsIllusion() then
         return true
@@ -1498,9 +1676,11 @@ function Hero.MustBeIllusion(target)
     end
     return false
 end
+
 function Hero.MayNotBeIllusion(t)
     return not Hero.MustBeIllusion(t)
 end
+
 function Hero.GetUniqueHeroNumber(heroes)
     if #heroes == 0 then
         return 0
@@ -1509,15 +1689,24 @@ function Hero.GetUniqueHeroNumber(heroes)
         return t:GetPlayerID()
     end):Count()
 end
+
 function Hero.HasScepter(npc)
-    return npc:HasScepter() or npc:HasModifier "modifier_wisp_tether_scepter" or npc:HasModifier "modifier_item_ultimate_scepter" or npc:HasModifier "modifier_item_ultimate_scepter_consumed_alchemist"
+    return npc:HasScepter() or npc:HasModifier "modifier_wisp_tether_scepter" or
+        npc:HasModifier "modifier_item_ultimate_scepter" or
+        npc:HasModifier "modifier_item_ultimate_scepter_consumed_alchemist"
 end
+
 function Hero.HasBoughtScepter(npc)
-    return npc:HasScepter() or npc:HasModifier "modifier_item_ultimate_scepter" or npc:HasModifier "modifier_item_ultimate_scepter_consumed_alchemist"
+    return npc:HasScepter() or npc:HasModifier "modifier_item_ultimate_scepter" or
+        npc:HasModifier "modifier_item_ultimate_scepter_consumed_alchemist"
 end
+
 function Hero.PrintMode(npc)
-    print("bot "..npc:GetUnitName().." in mode "..DotaExt.BotModeToString(npc:GetActiveMode())..", desire = "..npc:GetActiveModeDesire())
+    print("bot " ..
+        npc:GetUnitName() ..
+        " in mode " .. DotaExt.BotModeToString(npc:GetActiveMode()) .. ", desire = " .. npc:GetActiveModeDesire())
 end
+
 Hero.teleportAbilities = Linq.NewTable("furion_teleportation", "item_tpscroll")
 function Hero.IsTeleporting(npc)
     return (function()
@@ -1529,8 +1718,9 @@ function Hero.IsTeleporting(npc)
         end
     end)()
 end
-local oldRoleUtils = require(GetScriptDirectory().."/util/RoleUtility")
-local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
+
+local oldRoleUtils = require(GetScriptDirectory() .. "/util/RoleUtility")
+local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local ItemUse = {}
 function ItemUse.GetItemInfo(bot, item)
     local itemAuxTable
@@ -1550,6 +1740,7 @@ function ItemUse.GetItemInfo(bot, item)
     end
     return thisItemTable
 end
+
 local primaryAbilityHasBonus = Linq.NewTable("obsidian_destroyer", "enchantress", "silencer", "drow_ranger")
 local function GetWantedPowerTreadsAttribute(npcBot, info)
     local mode = npcBot:GetActiveMode()
@@ -1570,6 +1761,7 @@ local function GetWantedPowerTreadsAttribute(npcBot, info)
         return info.primAttr, "PrimaryWhenIdle"
     end
 end
+
 local function UsePowerTreads(pt, bot, info)
     if bot:HasModifier "modifier_ice_blast" then
         return
@@ -1584,13 +1776,20 @@ local function UsePowerTreads(pt, bot, info)
         end
     end
     local wantedAttribute, reason = GetWantedPowerTreadsAttribute(bot, info)
-    print(bot:GetUnitName().." want "..DotaExt.AttributeTypeToString(wantedAttribute)..", currently "..DotaExt.AttributeTypeToString(pt:GetPowerTreadsStat())..", reason = "..reason..", mode = "..DotaExt.BotModeToString(bot:GetActiveMode()))
+    print(bot:GetUnitName() ..
+        " want " ..
+        DotaExt.AttributeTypeToString(wantedAttribute) ..
+        ", currently " ..
+        DotaExt.AttributeTypeToString(pt:GetPowerTreadsStat()) ..
+        ", reason = " .. reason .. ", mode = " .. DotaExt.BotModeToString(bot:GetActiveMode()))
     if wantedAttribute ~= pt:GetPowerTreadsStat() then
         return reason
     end
 end
+
 function ItemUseDefaultImpl.branch(item, bot, info)
 end
+
 local function CountInventoryItemCooldown(bot, inventoryItems)
     inventoryItems:ForEach(function(t)
         local r = ItemUse.GetItemInfo(bot, t)
@@ -1603,6 +1802,7 @@ local function CountInventoryItemCooldown(bot, inventoryItems)
         end
     end)
 end
+
 local entityOnlyItems = Linq.NewTable()
 local noTargetOnlyItems = Linq.NewTable("arcane_boots", "phase_boots", "power_treads")
 local treeOnlyItems = Linq.NewTable()
@@ -1611,7 +1811,7 @@ local function ConsiderAvailableItem(item, bot, itemUsageAuxiliaryInfo)
     local name = ItemFun.GetItemShortName(item:GetName())
     local itemFunc = bot.ItemUsage and bot.ItemUsage[name] or ItemUseDefaultImpl[name]
     if itemFunc == nil then
-        GameLoop.EveryManySeconds(5, "NotifyUnimplementedItem "..name, function()
+        GameLoop.EveryManySeconds(5, "NotifyUnimplementedItem " .. name, function()
         end)
         return 0
     else
@@ -1631,6 +1831,7 @@ local function ConsiderAvailableItem(item, bot, itemUsageAuxiliaryInfo)
         return desire, castTarget, targetType, cause
     end
 end
+
 local function UseAvailableItems(bot, inventoryItems)
     local itemUsageAuxiliaryInfo = Linq.NewTable()
     local info = itemUsageAuxiliaryInfo
@@ -1678,7 +1879,7 @@ local function UseAvailableItems(bot, inventoryItems)
         if t then
             if t[3] == "none" then
                 if t[5]:GetName() == "item_power_treads" then
-                    print(bot:GetUnitName().." use power treads")
+                    print(bot:GetUnitName() .. " use power treads")
                 end
                 ItemFun.UseItemNoTarget(bot, t[5], t[4])
             elseif t[3] == "location" then
@@ -1691,41 +1892,53 @@ local function UseAvailableItems(bot, inventoryItems)
         end
     end
 end
+
 function ItemUse.CanUseAnyItem(t)
     return not (fun1:IsMuted(t) or fun1:IsHypnosed(t) or fun1:IsFeared(t) or t:IsHexed() or t:IsChanneling())
 end
+
 function ItemUse.ItemUsageThink()
     local bot = GetBot()
     if not UnitFun.CanUseItem(bot) then
         return
     end
-    GameLoop.EveryManySeconds(3, "SwapUsefulItems "..bot:GetUnitName(), function()
+    GameLoop.EveryManySeconds(3, "SwapUsefulItems " .. bot:GetUnitName(), function()
         return ItemFun.SwapUsefulOnes(bot)
     end)
     local inventoryItems = ItemFun.GetInventoryItems(bot)
     CountInventoryItemCooldown(bot, inventoryItems)
     if ItemUse.CanUseAnyItem(bot) then
         UseAvailableItems(bot, inventoryItems:Filter(function(t)
-            return t:IsFullyCastable() and (not bot:IsIllusion() or bot:HasModifier "modifier_skeleton_king_reincarnation_active" or bot:HasModifier "modifier_vengefulspirit_hybrid_special" or bot:HasModifier "modifier_arc_warden_tempest_double") and ItemUse.GetItemInfo(bot, t).cooldownFromBackpack == nil
+            return t:IsFullyCastable() and
+                (
+                not bot:IsIllusion() or bot:HasModifier "modifier_skeleton_king_reincarnation_active" or
+                    bot:HasModifier "modifier_vengefulspirit_hybrid_special" or
+                    bot:HasModifier "modifier_arc_warden_tempest_double") and
+                ItemUse.GetItemInfo(bot, t).cooldownFromBackpack == nil
         end))
     end
 end
+
 local Role = {}
 function Role.GetRoleValue(npc, role)
     return oldRoleUtils.hero_roles[npc:GetUnitName()][role]
 end
+
 function Role.Push(npc)
     return Role.GetRoleValue(npc, "pusher")
 end
+
 function Math.PointToPointDistance(a, b)
     local x = a.x - b.x
     local y = a.y - b.y
     return (x * x + y * y) ^ 0.5
 end
+
 local Push_impl = {}
 function Push_impl.GetCarryRate(hero)
     return oldRoleUtils.hero_roles[hero:GetUnitName()].carry
 end
+
 function Push_impl.GetLane(nTeam, hHero)
     local vBot = GetLaneFrontLocation(nTeam, LANE_BOT, 0)
     local vTop = GetLaneFrontLocation(nTeam, LANE_TOP, 0)
@@ -1742,6 +1955,7 @@ function Push_impl.GetLane(nTeam, hHero)
         end
     end)()
 end
+
 function Push_impl.CreepRate(creep)
     local rate = 1
     rate = rate * (function()
@@ -1764,6 +1978,7 @@ function Push_impl.CreepRate(creep)
     end)()
     return rate
 end
+
 function Push_impl.CreepReward(creep)
     local rate = 1
     rate = rate * (function()
@@ -1786,9 +2001,11 @@ function Push_impl.CreepReward(creep)
     end)()
     return rate
 end
+
 function Push_impl.GetAllyTower(towerIndex)
     return GetTower(GetTeam(), towerIndex)
 end
+
 local allyTower1 = fun1:Map({
     TOWER_TOP_1,
     TOWER_MID_1,
@@ -1829,6 +2046,7 @@ function Push_impl.TowerRate(tower)
         end
     end)()
 end
+
 function Push_impl.CleanLaneDesire(npc, lane)
     local front = GetLaneFrontLocation(GetTeam(), lane, 0)
     local allyTower = GetNearestBuilding(GetTeam(), front)
@@ -1839,7 +2057,9 @@ function Push_impl.CleanLaneDesire(npc, lane)
     local allyCreeps = fun1:Filter(GetUnitList(UNIT_LIST_FRIEND_CREEPS), function(t)
         return GetUnitToLocationDistance(t, front) <= 1500
     end)
-    local creepRateDiff = fun1:Aggregate(0, creeps:Map(Push_impl.CreepRate), function(opv_1, opv_2) return opv_1 + opv_2 end) - fun1:Aggregate(0, allyCreeps:Map(Push_impl.CreepRate), function(opv_1, opv_2) return opv_1 + opv_2 end)
+    local creepRateDiff = fun1:Aggregate(0, creeps:Map(Push_impl.CreepRate),
+        function(opv_1, opv_2) return opv_1 + opv_2 end) -
+        fun1:Aggregate(0, allyCreeps:Map(Push_impl.CreepRate), function(opv_1, opv_2) return opv_1 + opv_2 end)
     local desire = 0
     local necessity = 0
     if distanceToFront <= 3000 then
@@ -1847,16 +2067,19 @@ function Push_impl.CleanLaneDesire(npc, lane)
             necessity = necessity + creepRateDiff
         end
         if creepRateDiff >= 2 and creepRateDiff then
-            desire = desire + fun1:Aggregate(0, creeps:Map(Push_impl.CreepReward), function(opv_1, opv_2) return opv_1 + opv_2 end)
+            desire = desire +
+                fun1:Aggregate(0, creeps:Map(Push_impl.CreepReward), function(opv_1, opv_2) return opv_1 + opv_2 end)
         end
     end
     necessity = necessity * TowerRate(allyTower)
     desire = desire * TowerRate(allyTower)
     return desire, necessity
 end
+
 function Push_impl.DefendLaneDesire()
     return 0
 end
+
 function Push_impl.PushLaneDesire(npc, lane)
     local team = GetTeam()
     local teamPush = TeamPushLaneDesire(lane)
@@ -1922,6 +2145,7 @@ function Push_impl.PushLaneDesire(npc, lane)
     end
     return Clamp(factor, 0, 0.8)
 end
+
 function Push_impl.NoCreepsOnLane(npc, lane)
     local team = GetTeam()
     local laneFront = GetLaneFrontLocation(team, lane, 0)
@@ -1930,8 +2154,10 @@ function Push_impl.NoCreepsOnLane(npc, lane)
     local enemySpawnLocation = Push_impl.GetEnemySpawnLocation()
     local maxDiveDistance = 400
     local towerToEnemyHomeDistance = GetUnitToLocationDistance(enemyTower, enemySpawnLocation)
-    return towerToEnemyHomeDistance < GetUnitToUnitDistance(enemyTower, allyTower) and Math.PointToPointDistance(laneFront, enemySpawnLocation) < towerToEnemyHomeDistance - maxDiveDistance
+    return towerToEnemyHomeDistance < GetUnitToUnitDistance(enemyTower, allyTower) and
+        Math.PointToPointDistance(laneFront, enemySpawnLocation) < towerToEnemyHomeDistance - maxDiveDistance
 end
+
 function Push_impl.GetAttackBuildingLocation(npc, lane)
     local team = GetTeam()
     local laneFront = GetLaneFrontLocation(team, lane, 0)
@@ -1944,18 +2170,21 @@ function Push_impl.GetAttackBuildingLocation(npc, lane)
     if distanceToTower < 1000 then
         return Push_impl.GetSafeLocation(npc, enemyTower)
     else
-        if Math.PointToPointDistance(laneFront, enemySpawnLocation) < towerToEnemyHomeDistance - maxDiveDistance and npc:GetLevel() <= 11 then
+        if Math.PointToPointDistance(laneFront, enemySpawnLocation) < towerToEnemyHomeDistance - maxDiveDistance and
+            npc:GetLevel() <= 11 then
             return Push_impl.GetSafeLocation(npc, allyTower)
         else
             return Push_impl.GetSafeLocation(npc, enemyTower)
         end
     end
 end
+
 function Push_impl.CreepAttackingTower(creeps, tower)
     return Linq.Any(creeps, function(t)
         return t:GetAttackTarget() == tower
     end)
 end
+
 function Push_impl.IsSafeToAttack(npc, lane, creeps)
     local team = GetTeam()
     local laneFront = GetLaneFrontLocation(team, lane, 0)
@@ -1970,7 +2199,8 @@ function Push_impl.IsSafeToAttack(npc, lane, creeps)
     local creepMinDistance = creeps:Min(function(t)
         return GetUnitToUnitDistanceSqr(t, enemyTower)
     end)
-    if creepMinDistance and (distanceToTower < creepMinDistance or distanceToEnemyHome < towerToEnemyHomeDistance - maxDiveDistance) then
+    if creepMinDistance and
+        (distanceToTower < creepMinDistance or distanceToEnemyHome < towerToEnemyHomeDistance - maxDiveDistance) then
         safe = true
     end
     if enemyTower:GetAttackDamage() < 20 then
@@ -1978,6 +2208,7 @@ function Push_impl.IsSafeToAttack(npc, lane, creeps)
     end
     return safe
 end
+
 function Push_impl.TryTp(npc, lane)
     local team = GetTeam()
     local laneFront = GetLaneFrontLocation(team, lane, 0)
@@ -1992,11 +2223,13 @@ function Push_impl.TryTp(npc, lane)
         end)
     end
 end
+
 function Push_impl.GetCreepsNearTower(npc, tower)
     return DotaExt.GetNearbyCreeps(npc, 1400, false):Filter(function(t)
         return GetUnitToLocationDistanceSqr(t, tower) < 640000
     end)
 end
+
 function Push.UnitPushLaneThink(npc, lane)
     if npc:IsChanneling() or npc:IsUsingAbility() or npc:GetQueuedActionType(0) == BOT_ACTION_TYPE_USE_ABILITY then
         return
@@ -2032,7 +2265,8 @@ function Push.UnitPushLaneThink(npc, lane)
     if (npc:GetLevel() >= 12 or npc:GetLevel() >= DotaTime() / 120) and npc:GetHealth() >= 700 and #enemeis == 0 then
         goodSituation = true
     end
-    if (not isSafeToAttack or noCreeps) and (fun1:GetHealthPercent(enemyTower) >= 0.2 and enemyTower:GetAttackDamage() > 20) then
+    if (not isSafeToAttack or noCreeps) and
+        (fun1:GetHealthPercent(enemyTower) >= 0.2 and enemyTower:GetAttackDamage() > 20) then
         goodSituation = false
     end
     if Push_impl.TooManyEnemies() then
@@ -2041,6 +2275,7 @@ function Push.UnitPushLaneThink(npc, lane)
         Push_impl.StepBack(npc)
     end
 end
+
 M.Linq = Linq
 M.Debug = Debug
 M.Dota = DotaExt

@@ -3,9 +3,9 @@
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
-local utility = require(GetScriptDirectory().."/utility")
-require(GetScriptDirectory().."/ability_item_usage_generic")
-local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local utility = require(GetScriptDirectory() .. "/utility")
+require(GetScriptDirectory() .. "/ability_item_usage_generic")
+local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local debugmode = false
 local npcBot = GetBot()
 if npcBot:IsIllusion() then
@@ -60,6 +60,7 @@ utility.CheckAbilityBuild(AbilityToLevelUp)
 function AbilityLevelUpThink()
     ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
 end
+
 local cast = {}
 cast.Desire = {}
 cast.Target = {}
@@ -78,9 +79,11 @@ local enemyDisabled = utility.enemyDisabled
 function GetComboDamage()
     return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
 end
+
 function GetComboMana()
     return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
+
 Consider[1] = function()
     local abilityNumber = 1
     local ability = AbilitiesReal[abilityNumber]
@@ -106,7 +109,9 @@ Consider[1] = function()
             return BOT_ACTION_DESIRE_LOW
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
+    if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+        npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
         local locationAoE = npcBot:FindAoELocation(true, false, npcBot:GetLocation(), 600, 300, 0, 0)
         if locationAoE.count >= 3 and npcBot:GetMana() / npcBot:GetMaxMana() > 0.65 and wolves < 1 then
             return BOT_ACTION_DESIRE_LOW
@@ -126,12 +131,14 @@ Consider[1] = function()
     if npcBot:GetActiveMode() == BOT_MODE_ROSHAN then
         local npcTarget = npcBot:GetAttackTarget()
         if npcTarget ~= nil then
-            if string.find(npcTarget:GetUnitName(), "roshan") and GetUnitToUnitDistance(npcBot, npcTarget) < 600 and wolves < 1 then
+            if string.find(npcTarget:GetUnitName(), "roshan") and GetUnitToUnitDistance(npcBot, npcTarget) < 600 and
+                wolves < 1 then
                 return BOT_ACTION_DESIRE_LOW
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = npcBot:GetTarget()
         if npcEnemy ~= nil then
             if GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys and wolves < 1 then
@@ -193,6 +200,7 @@ Consider[4] = function()
             end
             return desire
         end
+
         do
             local target = allys:Map(function(t)
                 return {
@@ -205,7 +213,8 @@ Consider[4] = function()
                 return t[2] >= 0.9
             end)
             if target then
-                return RemapValClamped(target[2], 0.9, 2, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_VERYHIGH), target[1]
+                return RemapValClamped(target[2], 0.9, 2, BOT_ACTION_DESIRE_MODERATE, BOT_ACTION_DESIRE_VERYHIGH),
+                    target[1]
             end
         end
     else
@@ -249,7 +258,8 @@ Consider[5] = function()
             return BOT_ACTION_DESIRE_HIGH
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = fun1:GetTargetIfGood(npcBot)
         if npcEnemy ~= nil then
             if CanCast[abilityNumber](npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < 600 + 75 * #allys then
@@ -281,6 +291,7 @@ function AbilityUsageThink()
     end
     ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
 end
+
 function CourierUsageThink()
     ability_item_usage_generic.CourierUsageThink()
 end

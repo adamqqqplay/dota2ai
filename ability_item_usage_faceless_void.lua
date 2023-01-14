@@ -3,9 +3,9 @@
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
-local utility = require(GetScriptDirectory().."/utility")
-require(GetScriptDirectory().."/ability_item_usage_generic")
-local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local utility = require(GetScriptDirectory() .. "/utility")
+require(GetScriptDirectory() .. "/ability_item_usage_generic")
+local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local debugmode = false
 local npcBot = GetBot()
 if npcBot:IsIllusion() then
@@ -60,6 +60,7 @@ utility.CheckAbilityBuild(AbilityToLevelUp)
 function AbilityLevelUpThink()
     ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
 end
+
 local cast = {}
 cast.Desire = {}
 cast.Target = {}
@@ -76,9 +77,11 @@ local enemyDisabled = utility.enemyDisabled
 function GetComboDamage()
     return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
 end
+
 function GetComboMana()
     return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
+
 Consider[1] = function()
     local abilityNumber = 1
     local ability = AbilitiesReal[abilityNumber]
@@ -103,18 +106,22 @@ Consider[1] = function()
         if WeakestEnemy ~= nil then
             local enemys2 = WeakestEnemy:GetNearbyHeroes(900, true, BOT_MODE_NONE)
             if CanCast[abilityNumber](WeakestEnemy) and #enemys2 <= 2 then
-                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and npcBot:GetMana() > ComboMana then
-                    return BOT_ACTION_DESIRE_MODERATE, utility.GetUnitsTowardsLocation(npcBot, WeakestEnemy, CastRange + 200)
+                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and
+                    npcBot:GetMana() > ComboMana then
+                    return BOT_ACTION_DESIRE_MODERATE,
+                        utility.GetUnitsTowardsLocation(npcBot, WeakestEnemy, CastRange + 200)
                 end
             end
         end
     end
     if trees ~= nil and #trees >= 6 then
-        return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot, GetAncient(GetTeam()), CastRange - 200) + RandomVector(200)
+        return BOT_ACTION_DESIRE_HIGH,
+            utility.GetUnitsTowardsLocation(npcBot, GetAncient(GetTeam()), CastRange - 200) + RandomVector(200)
     end
     local projectiles = npcBot:GetIncomingTrackingProjectiles()
     for _, p in pairs(projectiles) do
-        if GetUnitToLocationDistance(npcBot, p.location) <= 400 and p.is_attack == false and not fun1:IgnoreAbilityBlock(p.ability) then
+        if GetUnitToLocationDistance(npcBot, p.location) <= 400 and p.is_attack == false and
+            not fun1:IgnoreAbilityBlock(p.ability) then
             return BOT_ACTION_DESIRE_HIGH, fun1:GetPointFromLineByDistance(npcBot:GetLocation(), p.location, 450)
         end
     end
@@ -127,14 +134,17 @@ Consider[1] = function()
             return BOT_ACTION_DESIRE_HIGH + 0.05, locationAoE.targetloc
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = npcBot:GetTarget()
         if ManaPercentage > 0.4 or npcBot:GetMana() > ComboMana then
             if npcEnemy ~= nil then
                 local enemys2 = npcEnemy:GetNearbyHeroes(900, true, BOT_MODE_NONE)
                 if enemys2 ~= nil and #enemys2 <= 2 then
-                    if CanCast[abilityNumber](npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) > CastRange - 200 and GetUnitToUnitDistance(npcBot, npcEnemy) < 1000 then
-                        return BOT_ACTION_DESIRE_MODERATE, utility.GetUnitsTowardsLocation(npcBot, npcEnemy, CastRange + 200)
+                    if CanCast[abilityNumber](npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) > CastRange - 200 and
+                        GetUnitToUnitDistance(npcBot, npcEnemy) < 1000 then
+                        return BOT_ACTION_DESIRE_MODERATE,
+                            utility.GetUnitsTowardsLocation(npcBot, npcEnemy, CastRange + 200)
                     end
                 end
             end
@@ -159,7 +169,10 @@ Consider[2] = function()
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) then
-                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or (HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and npcBot:GetMana() > ComboMana) then
+                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or
+                    (
+                    HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and
+                        npcBot:GetMana() > ComboMana) then
                     return BOT_ACTION_DESIRE_HIGH
                 end
             end
@@ -174,7 +187,8 @@ Consider[2] = function()
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = fun1:GetTargetIfGood(npcBot)
         if npcEnemy ~= nil and #enemys == 1 then
             if CanCast[abilityNumber](npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) <= Radius then
@@ -208,9 +222,10 @@ Consider[4] = function()
         end
     end
     if fun1:IsRetreating() then
-        local timeWalkLocationEnemies = fun1:GetEnemyHeroNumber(npcBot, fun1:GetNearbyNonIllusionHeroes(npcBot, 1400):Filter(function(t)
-            return GetUnitToLocationDistance(t, timeWalkLocation) <= 350
-        end))
+        local timeWalkLocationEnemies = fun1:GetEnemyHeroNumber(npcBot,
+            fun1:GetNearbyNonIllusionHeroes(npcBot, 1400):Filter(function(t)
+                return GetUnitToLocationDistance(t, timeWalkLocation) <= 350
+            end))
         local enemies = fun1:GetEnemyHeroNumber(npcBot, fun1:GetNearbyNonIllusionHeroes(npcBot, 350))
         local timeDiff = DotaTime() - timeWalkTime
         if timeWalkLocationEnemies < enemies then
@@ -249,7 +264,8 @@ Consider[5] = function()
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) then
-                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and npcBot:GetMana() > ComboMana then
+                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and
+                    npcBot:GetMana() > ComboMana then
                     local TargetLocation = WeakestEnemy:GetExtrapolatedLocation(CastPoint)
                     local Allies = utility.GetAlliesNearLocation(TargetLocation, Radius)
                     if #Allies == 0 then
@@ -269,7 +285,8 @@ Consider[5] = function()
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local locationAoE = npcBot:FindAoELocation(true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0)
         if locationAoE.count >= 3 then
             local TargetLocation = locationAoE.targetloc
@@ -300,6 +317,7 @@ function AbilityUsageThink()
         timeWalkTime = DotaTime()
     end
 end
+
 function CourierUsageThink()
     ability_item_usage_generic.CourierUsageThink()
 end

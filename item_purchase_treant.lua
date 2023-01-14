@@ -9,7 +9,7 @@ local ItemsToBuy =
 	"item_tango",
 	"item_tango",
 	"item_enchanted_mango",
-    "item_magic_stick",
+	"item_magic_stick",
 	"item_bracer",
 	"item_arcane_boots", --秘法鞋
 	"item_medallion_of_courage", --勋章

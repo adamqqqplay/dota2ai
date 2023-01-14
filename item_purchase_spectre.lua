@@ -17,10 +17,10 @@ local ItemsToBuy =
 	"item_manta", --分身
 	"item_heart", --龙心7.20
 	"item_black_king_bar",
-    "item_ultimate_scepter",
+	"item_ultimate_scepter",
 	"item_butterfly",
 	"item_aghanims_shard",
-    "item_ultimate_scepter_2",
+	"item_ultimate_scepter_2",
 	"item_skadi",
 }
 

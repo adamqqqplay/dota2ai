@@ -1,9 +1,9 @@
 local X = {}
 
-local team =  GetTeam();
-local CStackTime = {55,55,55,55,55,54,55,55,55,55,55,55,55,55,55,55,55,55}
+local team = GetTeam();
+local CStackTime = { 55, 55, 55, 55, 55, 54, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55 }
 local CStackLoc = {
-	Vector(1854.000000, -4469.000000, 0.000000), 
+	Vector(1854.000000, -4469.000000, 0.000000),
 	Vector(1249.000000, -2416.000000, 0.000000),
 	Vector(3471.000000, -5841.000000, 0.000000),
 	Vector(5153.000000, -3620.000000, 0.000000),
@@ -70,19 +70,19 @@ end
 function X.RefreshCamp(bot)
 	local camps = GetNeutralSpawners();
 	local AllCamps = {};
-	for k,camp in pairs(camps) do
+	for k, camp in pairs(camps) do
 		if bot:GetLevel() <= 6 then
 			if not X.IsEnemyCamp(camp) and not X.IsLargeCamp(camp) and not X.IsAncientCamp(camp)
 			then
-				table.insert(AllCamps, {idx=k, cattr=camp});
+				table.insert(AllCamps, { idx = k, cattr = camp });
 			end
 		elseif bot:GetLevel() <= 10 then
 			if not X.IsEnemyCamp(camp) and not X.IsAncientCamp(camp)
 			then
-				table.insert(AllCamps, {idx=k, cattr=camp});
+				table.insert(AllCamps, { idx = k, cattr = camp });
 			end
 		else
-			table.insert(AllCamps, {idx=k, cattr=camp});
+			table.insert(AllCamps, { idx = k, cattr = camp });
 		end
 	end
 	local nCamps = #AllCamps;
@@ -91,22 +91,21 @@ end
 
 function X.IsStrongJungler(bot)
 	local name = bot:GetUnitName();
-	for _,n in pairs(jungler)
-	do
+	for _, n in pairs(jungler) do
 		if name == n then
 			return true;
 		end
-	end	
+	end
 	return false;
 end
 
 function X.PrintCamps()
 	print("========CAMPS==========")
 	local camps = GetNeutralSpawners();
-	for i=1, #camps do
+	for i = 1, #camps do
 		print("==============")
-		for k,v in pairs(camps[i]) do
-			print(tostring(k)..":"..tostring(v))
+		for k, v in pairs(camps[i]) do
+			print(tostring(k) .. ":" .. tostring(v))
 		end
 	end
 end
@@ -114,10 +113,10 @@ end
 function X.PingCamp(nCamp, nPId, nTeam, bot)
 	if bot:GetTeam() == nTeam and bot:GetPlayerID() == nPId then
 		local camps = GetNeutralSpawners();
-		for i=1, #camps do
+		for i = 1, #camps do
 			if i == nCamp then
 				local cLoc = camps[i].location;
-				bot:ActionImmediate_Ping( cLoc.x, cLoc.y, true );	
+				bot:ActionImmediate_Ping(cLoc.x, cLoc.y, true);
 			end
 		end
 	end
@@ -126,13 +125,12 @@ end
 function X.GetClosestNeutralSpwan(bot, AvailableCamp)
 	local minDist = 10000;
 	local pCamp = nil;
-	for _,camp in pairs(AvailableCamp)
-	do
-	   local dist = GetUnitToLocationDistance(bot, camp.cattr.location);
-	   if X.IsTheClosestOne(bot, dist, camp.cattr.location) and dist < minDist then
+	for _, camp in pairs(AvailableCamp) do
+		local dist = GetUnitToLocationDistance(bot, camp.cattr.location);
+		if X.IsTheClosestOne(bot, dist, camp.cattr.location) and dist < minDist then
 			minDist = dist;
 			pCamp = camp;
-	   end
+		end
 	end
 	return pCamp
 end
@@ -140,10 +138,9 @@ end
 function X.IsTheClosestOne(bot, bDis, loc)
 	local dis = bDis;
 	local closest = bot;
-	for k,v in pairs(GetTeamPlayers(GetTeam()))
-	do	
+	for k, v in pairs(GetTeamPlayers(GetTeam())) do
 		local member = GetTeamMember(k);
-		if  member ~= nil and not member:IsIllusion() and member:IsAlive() and member:GetActiveMode() == BOT_MODE_FARM then
+		if member ~= nil and not member:IsIllusion() and member:IsAlive() and member:GetActiveMode() == BOT_MODE_FARM then
 			local dist = GetUnitToLocationDistance(member, loc);
 			if dist < dis then
 				dis = dist;
@@ -157,9 +154,8 @@ end
 function X.FindFarmedTarget(Creeps)
 	local minHP = 10000;
 	local target = nil;
-	for _,creep in pairs(Creeps)
-	do
-		local hp = creep:GetHealth(); 
+	for _, creep in pairs(Creeps) do
+		local hp = creep:GetHealth();
 		--if team == TEAM_DIRE then print(tostring(creep:CanBeSeen())) end
 		if creep ~= nil and not creep:IsNull() and creep:IsAlive() and hp < minHP then
 			minHP = hp;
@@ -172,10 +168,10 @@ end
 function X.IsSuitableToFarm(bot)
 	local mode = bot:GetActiveMode();
 	if mode == BOT_MODE_RUNE
-	   or mode == BOT_MODE_DEFEND_TOWER_TOP
-	   or mode == BOT_MODE_DEFEND_TOWER_MID
-	   or mode == BOT_MODE_DEFEND_TOWER_BOT
-	   or mode == BOT_MODE_ATTACK
+		or mode == BOT_MODE_DEFEND_TOWER_TOP
+		or mode == BOT_MODE_DEFEND_TOWER_MID
+		or mode == BOT_MODE_DEFEND_TOWER_BOT
+		or mode == BOT_MODE_ATTACK
 	then
 		return false;
 	end
@@ -184,18 +180,17 @@ end
 
 function X.UpdateAvailableCamp(bot, preferedCamp, AvailableCamp)
 	if preferedCamp ~= nil then
-		for i = 1, #AvailableCamp
-		do
-			if AvailableCamp[i].cattr.location == preferedCamp.cattr.location or GetUnitToLocationDistance(bot,  AvailableCamp[i].cattr.location) < 300 then
+		for i = 1, #AvailableCamp do
+			if AvailableCamp[i].cattr.location == preferedCamp.cattr.location or
+				GetUnitToLocationDistance(bot, AvailableCamp[i].cattr.location) < 300 then
 				table.remove(AvailableCamp, i);
 				--print("Updating available camp : "..tostring(#AvailableCamp))
-				preferedCamp = nil;	
+				preferedCamp = nil;
 				return AvailableCamp, preferedCamp;
 			end
 		end
 	end
 end
-
 
 return X
 
@@ -328,4 +323,4 @@ DIRE CAMP
 [VScript] type:ancient
 [VScript] min:Vector 00000000003EAB48 [3464.000000 -752.000000 -384.000000]
 [VScript] speed:normal
-]]--
+]] --

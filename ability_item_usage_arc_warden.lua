@@ -3,13 +3,14 @@
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
-if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot():GetUnitName(), "hero") or GetBot():IsIllusion() then
+if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot():GetUnitName(), "hero") or
+    GetBot():IsIllusion() then
     return
 end
-local utility = require(GetScriptDirectory().."/utility")
-require(GetScriptDirectory().."/ability_item_usage_generic")
-local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
-local A = require(GetScriptDirectory().."/util/MiraDota")
+local utility = require(GetScriptDirectory() .. "/utility")
+require(GetScriptDirectory() .. "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
+local A = require(GetScriptDirectory() .. "/util/MiraDota")
 local debugmode = false
 local npcBot = GetBot()
 local Talents = {}
@@ -61,6 +62,7 @@ utility.CheckAbilityBuild(AbilityToLevelUp)
 function AbilityLevelUpThink()
     ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
 end
+
 function CanCast1(npcTarget)
     if npcTarget == nil or npcTarget:CanBeSeen() == false then
         return utility.NCanCast(npcTarget)
@@ -72,6 +74,7 @@ function CanCast1(npcTarget)
     end
     return utility.NCanCast(npcTarget)
 end
+
 local cast = {}
 cast.Desire = {}
 cast.Target = {}
@@ -87,9 +90,11 @@ local enemyDisabled = utility.enemyDisabled
 function GetComboDamage()
     return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
 end
+
 function GetComboMana()
     return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
+
 local health
 local maxHealth
 local healthPercent
@@ -112,7 +117,10 @@ Consider[1] = function()
     local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
-            if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or (HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and npcBot:GetMana() > ComboMana) then
+            if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or
+                (
+                HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and
+                    npcBot:GetMana() > ComboMana) then
                 if CanCast[abilityNumber](WeakestEnemy) then
                     return BOT_ACTION_DESIRE_HIGH, WeakestEnemy
                 end
@@ -136,18 +144,22 @@ Consider[1] = function()
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
+    if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+        npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
         if #enemys >= 1 then
             if ManaPercentage > 0.5 or npcBot:GetMana() > ComboMana then
                 if WeakestEnemy ~= nil then
-                    if CanCast[abilityNumber](WeakestEnemy) and GetUnitToUnitDistance(npcBot, WeakestEnemy) < CastRange + 75 * #allys then
+                    if CanCast[abilityNumber](WeakestEnemy) and
+                        GetUnitToUnitDistance(npcBot, WeakestEnemy) < CastRange + 75 * #allys then
                         return BOT_ACTION_DESIRE_LOW, WeakestEnemy
                     end
                 end
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = npcBot:GetTarget()
         if npcEnemy ~= nil then
             if CanCast[abilityNumber](npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys then
@@ -174,14 +186,17 @@ Consider[2] = function()
     local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     local towers = npcBot:GetNearbyTowers(CastRange + 300, false)
     local enemys2 = npcBot:GetNearbyHeroes(400, true, BOT_MODE_NONE)
-    if npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH or #enemys2 > 0 then
+    if npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH or
+        #enemys2 > 0 then
         for _, npcEnemy in pairs(enemys) do
-            if npcBot:WasRecentlyDamagedByHero(npcEnemy, 2.0) and CanCast[abilityNumber](npcEnemy) or GetUnitToUnitDistance(npcBot, npcEnemy) < 400 then
+            if npcBot:WasRecentlyDamagedByHero(npcEnemy, 2.0) and CanCast[abilityNumber](npcEnemy) or
+                GetUnitToUnitDistance(npcBot, npcEnemy) < 400 then
                 return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcEnemy, npcBot, Radius)
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local locationAoE = npcBot:FindAoELocation(false, true, npcBot:GetLocation(), CastRange, Radius, 0, 0)
         if locationAoE.count >= 2 then
             return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
@@ -216,7 +231,10 @@ Consider[3] = function()
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) then
-                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or (HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and npcBot:GetMana() > ComboMana) then
+                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or
+                    (
+                    HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and
+                        npcBot:GetMana() > ComboMana) then
                     return BOT_ACTION_DESIRE_HIGH, WeakestEnemy:GetExtrapolatedLocation(CastPoint + Delay)
                 end
             end
@@ -227,7 +245,9 @@ Consider[3] = function()
         if ManaPercentage > 0.7 or ManaPercentage >= 0.55 and ability:GetLevel() >= 3 then
             if WeakestEnemy ~= nil then
                 if CanCast[abilityNumber](WeakestEnemy) then
-                    return BOT_ACTION_DESIRE_LOW, utility.GetUnitsTowardsLocation(npcBot, WeakestEnemy, GetUnitToUnitDistance(npcBot, WeakestEnemy) + 300)
+                    return BOT_ACTION_DESIRE_LOW,
+                        utility.GetUnitsTowardsLocation(npcBot, WeakestEnemy,
+                            GetUnitToUnitDistance(npcBot, WeakestEnemy) + 300)
                 end
             end
         end
@@ -236,7 +256,8 @@ Consider[3] = function()
     if npcBot:GetActiveMode() == BOT_MODE_LANING then
         if manaLeft >= 0.7 * maxMana or manaLeft >= 0.55 * maxMana then
             if vulnerableEnemy then
-                local enemyFriends = vulnerableEnemy:GetNearbyCreeps(searchRadius + vulnerableEnemy + GetBoundingRadius() + 128):Count(function(t)
+                local enemyFriends = vulnerableEnemy:GetNearbyCreeps(searchRadius + vulnerableEnemy + GetBoundingRadius()
+                    + 128):Count(function(t)
                     return A.Unit.GetHealthPercent(t) >= 0.3
                 end)
                 if enemyFriends == 1 then
@@ -249,30 +270,37 @@ Consider[3] = function()
     end
     if npcBot:GetActiveMode() == BOT_MODE_FARM then
         if #creeps >= 2 and ability:GetLevel() >= 3 then
-            if CreepHealth <= WeakestCreep:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) and manaLeft >= 0.75 * maxMana then
+            if CreepHealth <= WeakestCreep:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) and
+                manaLeft >= 0.75 * maxMana then
                 return BOT_ACTION_DESIRE_LOW, WeakestCreep:GetExtrapolatedLocation(CastPoint + Delay)
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
+    if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+        npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
         if #enemys >= 1 then
             if manaLeft >= 0.65 * maxMana and npcBot:GetMana() > ComboMana and ability:GetLevel() >= 4 then
                 if WeakestEnemy ~= nil then
-                    if CanCast[abilityNumber](WeakestEnemy) and GetUnitToUnitDistance(npcBot, WeakestEnemy) < CastRange + 75 * #allys then
+                    if CanCast[abilityNumber](WeakestEnemy) and
+                        GetUnitToUnitDistance(npcBot, WeakestEnemy) < CastRange + 75 * #allys then
                         return BOT_ACTION_DESIRE_LOW, WeakestEnemy:GetExtrapolatedLocation(CastPoint + Delay)
                     end
                 end
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
-        local locationAoE = npcBot:FindAoELocation(true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint + Delay, 0)
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+        local locationAoE = npcBot:FindAoELocation(true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint + Delay
+            , 0)
         if locationAoE.count >= 2 then
             return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
         end
         local npcEnemy = npcBot:GetTarget()
         if npcEnemy ~= nil then
-            if CanCast[abilityNumber](npcEnemy) and not enemyDisabled(npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys then
+            if CanCast[abilityNumber](npcEnemy) and not enemyDisabled(npcEnemy) and
+                GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys then
                 return BOT_ACTION_DESIRE_MODERATE, npcEnemy:GetExtrapolatedLocation(CastPoint + Delay)
             end
         end
@@ -282,7 +310,8 @@ end
 Consider[4] = function()
     local abilityNumber = 4
     local ability = AbilitiesReal[abilityNumber]
-    if not ability:IsFullyCastable() or AbilityExtensions:CannotTeleport(npcBot) or AbilityExtensions:IsTempestDouble(npcBot) then
+    if not ability:IsFullyCastable() or AbilityExtensions:CannotTeleport(npcBot) or
+        AbilityExtensions:IsTempestDouble(npcBot) then
         return BOT_ACTION_DESIRE_NONE, 0
     end
     local CastRange = 0
@@ -293,7 +322,10 @@ Consider[4] = function()
     local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(800, true)
     local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
-    if (npcBot:GetHealth() <= 450 or HealthPercentage <= 0.3) and (npcBot:WasRecentlyDamagedByAnyHero(1.5) or AbilityExtensions:CanHardlyMove(npcBot) or AbilityExtensions:CannotTeleport(npcBot)) and not AbilityExtensions:Outnumber(npcBot, allys, enemys) then
+    if (npcBot:GetHealth() <= 450 or HealthPercentage <= 0.3) and
+        (
+        npcBot:WasRecentlyDamagedByAnyHero(1.5) or AbilityExtensions:CanHardlyMove(npcBot) or
+            AbilityExtensions:CannotTeleport(npcBot)) and not AbilityExtensions:Outnumber(npcBot, allys, enemys) then
         return 0
     end
     local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes(1000, false, BOT_MODE_ATTACK)
@@ -301,14 +333,17 @@ Consider[4] = function()
         return BOT_ACTION_DESIRE_HIGH
     end
     local enemys2 = npcBot:GetNearbyHeroes(400, true, BOT_MODE_NONE)
-    if npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH or #enemys2 > 0 then
+    if npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH or
+        #enemys2 > 0 then
         for _, npcEnemy in pairs(enemys) do
-            if npcBot:WasRecentlyDamagedByHero(npcEnemy, 2.0) and CanCast[abilityNumber](npcEnemy) or GetUnitToUnitDistance(npcBot, npcEnemy) < 400 then
+            if npcBot:WasRecentlyDamagedByHero(npcEnemy, 2.0) and CanCast[abilityNumber](npcEnemy) or
+                GetUnitToUnitDistance(npcBot, npcEnemy) < 400 then
                 return BOT_ACTION_DESIRE_HIGH
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = npcBot:GetTarget()
         if npcEnemy ~= nil then
             if CanCast[abilityNumber](npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys then
@@ -342,6 +377,7 @@ function AbilityUsageThink()
     end
     ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
 end
+
 function CourierUsageThink()
     ability_item_usage_generic.CourierUsageThink()
 end

@@ -16,7 +16,7 @@ local ItemsToBuy =
 	"item_magic_wand",
 	"item_hand_of_midas", --点金
 	"item_ultimate_scepter", --蓝杖
-    "item_dagon",
+	"item_dagon",
 	"item_force_staff", --推推
 	"item_guardian_greaves",
 	"item_dagon_3",

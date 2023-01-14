@@ -3,9 +3,9 @@
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
-local utility = require(GetScriptDirectory().."/utility")
-require(GetScriptDirectory().."/ability_item_usage_generic")
-local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local utility = require(GetScriptDirectory() .. "/utility")
+require(GetScriptDirectory() .. "/ability_item_usage_generic")
+local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local debugmode = false
 local npcBot = GetBot()
 if npcBot:IsIllusion() then
@@ -60,6 +60,7 @@ utility.CheckAbilityBuild(AbilityToLevelUp)
 function AbilityLevelUpThink()
     ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
 end
+
 local attackRange
 local healthPercent
 local mana
@@ -88,9 +89,11 @@ local CanCast = {
 function GetComboDamage()
     return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
 end
+
 function GetComboMana()
     return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
+
 Consider[1] = function()
     local abilityNumber = 1
     local ability = AbilitiesReal[abilityNumber]
@@ -106,14 +109,17 @@ Consider[1] = function()
     local creeps = fun1:GetNearbyCreeps(npcBot, CastRange + 300, true)
     local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     local enemys2 = fun1:GetNearbyCreeps(npcBot, 400, true)
-    if (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) or #enemys2 > 0 then
+    if (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) or
+        #enemys2 > 0 then
         for _, npcEnemy in pairs(enemys) do
-            if (npcBot:WasRecentlyDamagedByHero(npcEnemy, 2.0) and CanCast[abilityNumber](npcEnemy)) or GetUnitToUnitDistance(npcBot, npcEnemy) < 400 then
+            if (npcBot:WasRecentlyDamagedByHero(npcEnemy, 2.0) and CanCast[abilityNumber](npcEnemy)) or
+                GetUnitToUnitDistance(npcBot, npcEnemy) < 400 then
                 return BOT_ACTION_DESIRE_HIGH, npcEnemy
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = npcBot:GetTarget()
         if npcEnemy ~= nil then
             if CanCast[abilityNumber](npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) < CastRange + 75 * #allys then
@@ -140,6 +146,7 @@ local function IsGoodNeutralCreeps(npcCreep)
     end
     return false
 end
+
 Consider[2] = function()
     local abilityNumber = 2
     local ability = AbilitiesReal[abilityNumber]
@@ -160,7 +167,10 @@ Consider[2] = function()
     local canEnchantAncientCreep = npcBot:GetLevel() <= 15
     if ManaPercentage >= 0.3 then
         for k, creep in pairs(creepsNeutral) do
-            if (IsGoodNeutralCreeps(creep) and holyPersuasionLevelLimit >= creep:GetLevel() or (creep:IsAncientCreep() and fun1:HasScepter(npcBot))) and CanCast[2](creep) and not creep:WasRecentlyDamagedByAnyHero(1.5) then
+            if (
+                IsGoodNeutralCreeps(creep) and holyPersuasionLevelLimit >= creep:GetLevel() or
+                    (creep:IsAncientCreep() and fun1:HasScepter(npcBot))) and CanCast[2](creep) and
+                not creep:WasRecentlyDamagedByAnyHero(1.5) then
                 return BOT_ACTION_DESIRE_HIGH, creep
             end
         end
@@ -185,6 +195,7 @@ function ConsiderRecall()
     local numPlayer = GetTeamPlayers(GetTeam())
     return BOT_ACTION_DESIRE_NONE, 0
 end
+
 local GetAllAllyHeroes = fun1:EveryManySeconds(2, function()
     return fun1:GetAllHeores(npcBot, false)
 end)
@@ -196,11 +207,16 @@ Consider[4] = function()
     end
     local healAmount = ability:GetSpecialValueInt("heal_amount")
     local function IsSeverelyDamaged(npc)
-        return (fun1:GetHealthPercent(npc) <= 0.3 or npc:GetHealth() <= 400) and fun1:IsSeverelyDisabled(npc) and npc:WasRecentlyDamagedByAnyHero(0.8)
+        return (fun1:GetHealthPercent(npc) <= 0.3 or npc:GetHealth() <= 400) and fun1:IsSeverelyDisabled(npc) and
+            npc:WasRecentlyDamagedByAnyHero(0.8)
     end
+
     local function IsDamaged(npc)
-        return npc:GetHealth() <= 400 or fun1:GetHealthDeficit(npc) >= healAmount * 1.3 and npc:GetUnitName() ~= "npc_dota_hero_huskar" and npc:WasRecentlyDamagedByAnyHero(1.2)
+        return npc:GetHealth() <= 400 or
+            fun1:GetHealthDeficit(npc) >= healAmount * 1.3 and npc:GetUnitName() ~= "npc_dota_hero_huskar" and
+            npc:WasRecentlyDamagedByAnyHero(1.2)
     end
+
     local castRange = 1599
     local enemies = fun1:GetNearbyNonIllusionHeroes(npcBot)
     local allys = GetAllAllyHeroes()
@@ -226,7 +242,8 @@ Consider[4] = function()
     end
     local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes(1000, false, BOT_MODE_ATTACK)
     if #tableNearbyAttackingAlliedHeroes >= 2 and #enemies > 0 then
-        if fun1:Contains(severelyDamagedAllies, npcBot) and #damagedAllies >= 3 or #damagedAllies >= 2 and #severelyDamagedAllies >= 1 then
+        if fun1:Contains(severelyDamagedAllies, npcBot) and #damagedAllies >= 3 or
+            #damagedAllies >= 2 and #severelyDamagedAllies >= 1 then
             return BOT_ACTION_DESIRE_HIGH
         end
     end
@@ -244,6 +261,7 @@ function AbilityUsageThink()
     cast = ability_item_usage_generic.ConsiderAbility(AbilitiesReal, Consider)
     ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
 end
+
 function CourierUsageThink()
     ability_item_usage_generic.CourierUsageThink()
 end

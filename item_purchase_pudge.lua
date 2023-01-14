@@ -11,7 +11,7 @@ local ItemsToBuy =
 	"item_clarity",
 	"item_boots",
 	"item_bracer",
-    "item_magic_wand",
+	"item_magic_wand",
 	"item_tranquil_boots",
 	"item_urn_of_shadows",
 	"item_blade_mail",

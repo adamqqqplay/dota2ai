@@ -3,11 +3,12 @@
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
-local role = require(GetScriptDirectory().."/util/RoleUtility")
-local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local role = require(GetScriptDirectory() .. "/util/RoleUtility")
+local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local function GetCarryRate(hero)
     return role.hero_roles[hero:GetUnitName()].carry
 end
+
 local function GetLane(nTeam, hHero)
     local vBot = GetLaneFrontLocation(nTeam, LANE_BOT, 0)
     local vTop = GetLaneFrontLocation(nTeam, LANE_TOP, 0)
@@ -24,6 +25,7 @@ local function GetLane(nTeam, hHero)
         end
     end)()
 end
+
 local function CreepRate(creep)
     local rate = 1
     rate = rate * (function()
@@ -46,6 +48,7 @@ local function CreepRate(creep)
     end)()
     return rate
 end
+
 local function CreepReward(creep)
     local rate = 1
     rate = rate * (function()
@@ -68,9 +71,11 @@ local function CreepReward(creep)
     end)()
     return rate
 end
+
 local function GetAllyTower(towerIndex)
     return GetTower(GetTeam(), towerIndex)
 end
+
 local allyTower1 = fun1:Map({
     TOWER_TOP_1,
     TOWER_MID_1,
@@ -111,6 +116,7 @@ local function TowerRate(tower)
         end
     end)()
 end
+
 local function CleanLaneDesire(npc, lane)
     local front = GetLaneFrontLocation(GetTeam(), lane, 0)
     local allyTower = GetNearestBuilding(GetTeam(), front)
@@ -121,7 +127,8 @@ local function CleanLaneDesire(npc, lane)
     local allyCreeps = fun1:Filter(GetUnitList(UNIT_LIST_FRIEND_CREEPS), function(t)
         return GetUnitToLocationDistance(t, front) <= 1500
     end)
-    local creepRateDiff = fun1:Aggregate(0, creeps:Map(CreepRate), function(opv_1, opv_2) return opv_1 + opv_2 end) - fun1:Aggregate(0, allyCreeps:Map(CreepRate), function(opv_1, opv_2) return opv_1 + opv_2 end)
+    local creepRateDiff = fun1:Aggregate(0, creeps:Map(CreepRate), function(opv_1, opv_2) return opv_1 + opv_2 end) -
+        fun1:Aggregate(0, allyCreeps:Map(CreepRate), function(opv_1, opv_2) return opv_1 + opv_2 end)
     local desire = 0
     local necessity = 0
     if distanceToFront <= 3000 then
@@ -136,6 +143,7 @@ local function CleanLaneDesire(npc, lane)
     desire = desire * TowerRate(allyTower)
     return desire
 end
+
 local function DefendLaneDesire()
     return 0
 end

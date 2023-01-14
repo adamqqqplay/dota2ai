@@ -9,12 +9,12 @@ local ItemsToBuy =
 	"item_tango",
 	"item_branches",
 	"item_branches",
-    
+
 	"item_tranquil_boots",
 	"item_magic_wand",
 	"item_aether_lens",
-    "item_cyclone", 
-    
+	"item_cyclone",
+
 	"item_blink",
 	"item_octarine_core",
 	"item_wind_waker",

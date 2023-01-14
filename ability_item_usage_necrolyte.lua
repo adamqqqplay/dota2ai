@@ -3,10 +3,10 @@
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
-local utility = require(GetScriptDirectory().."/utility")
-require(GetScriptDirectory().."/ability_item_usage_generic")
-local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
-local A = require(GetScriptDirectory().."/util/MiraDota")
+local utility = require(GetScriptDirectory() .. "/utility")
+require(GetScriptDirectory() .. "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
+local A = require(GetScriptDirectory() .. "/util/MiraDota")
 local debugmode = false
 local npcBot = GetBot()
 if npcBot:IsIllusion() then
@@ -61,6 +61,7 @@ utility.CheckAbilityBuild(AbilityToLevelUp)
 function AbilityLevelUpThink()
     ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
 end
+
 local cast = {}
 cast.Desire = {}
 cast.Target = {}
@@ -86,16 +87,19 @@ local CanCast = {
         end)()
     end,
     function(t)
-        return AbilityExtensions:NormalCanCast(t) and not AbilityExtensions:HasAnyModifier(t, AbilityExtensions.CannotKillModifiers)
+        return AbilityExtensions:NormalCanCast(t) and
+            not AbilityExtensions:HasAnyModifier(t, AbilityExtensions.CannotKillModifiers)
     end,
 }
 local enemyDisabled = utility.enemyDisabled
 function GetComboDamage()
     return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
 end
+
 function GetComboMana()
     return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
+
 Consider[1] = function()
     local abilityNumber = 1
     local ability = AbilitiesReal[abilityNumber]
@@ -115,7 +119,10 @@ Consider[1] = function()
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) then
-                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or (HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and npcBot:GetMana() > ComboMana) then
+                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or
+                    (
+                    HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and
+                        npcBot:GetMana() > ComboMana) then
                     return BOT_ACTION_DESIRE_HIGH
                 end
             end
@@ -130,7 +137,8 @@ Consider[1] = function()
             end
         end
     end
-    if ManaPercentage > 0.4 or npcBot:GetMana() > ComboMana or (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) then
+    if ManaPercentage > 0.4 or npcBot:GetMana() > ComboMana or
+        (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) then
         if (npcBot:WasRecentlyDamagedByAnyHero(2) and #enemys >= 1) or #enemys >= 2 or HealthPercentage <= 0.4 then
             for _, npcEnemy in pairs(enemys) do
                 if CanCast[abilityNumber](npcEnemy) then
@@ -139,7 +147,9 @@ Consider[1] = function()
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
+    if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+        npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
         if #enemys + #creeps >= 5 then
             if ManaPercentage > 0.6 or npcBot:GetMana() > ComboMana * 1.5 then
                 return BOT_ACTION_DESIRE_MODERATE, WeakestEnemy
@@ -162,7 +172,8 @@ Consider[1] = function()
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = npcBot:GetTarget()
         if npcEnemy ~= nil then
             if CanCast[abilityNumber](npcEnemy) and GetUnitToUnitDistance(npcBot, npcEnemy) <= Radius then
@@ -207,9 +218,11 @@ Consider[4] = function()
     end)
     if AbilityExtensions:IsAttackingEnemies(npcBot) then
         local target = AbilityExtensions:GetTargetIfGood(npcBot)
-        if target and AbilityExtensions:GetHealthPercent(target) <= 0.55 and AbilityExtensions:GetHealthPercent(target) >= 0.4 and target:GetHealth() > 600 and target:GetHealth() < (enemies:MaxV(function(t)
-            return t:GetHealth()
-        end) or npcBot:GetHealth()) / 4 and AbilityExtensions:NormalCanCast(target) then
+        if target and AbilityExtensions:GetHealthPercent(target) <= 0.55 and
+            AbilityExtensions:GetHealthPercent(target) >= 0.4 and target:GetHealth() > 600 and
+            target:GetHealth() < (enemies:MaxV(function(t)
+                return t:GetHealth()
+            end) or npcBot:GetHealth()) / 4 and AbilityExtensions:NormalCanCast(target) then
             return BOT_ACTION_DESIRE_HIGH, target
         end
         local fEnemy = enemies:Filter(CanCast[4]):First(function(t)
@@ -233,7 +246,10 @@ Consider[4] = function()
         end
         do
             local weakestAlly = allys:Filter(function(t)
-                return CanCast[4](t) and not AbilityExtensions:DontInterruptAlly(t) and (AbilityExtensions:GetHealthPercent(t) < 0.3 and t:WasRecentlyDamagedByAnyHero(1.2) or AbilityExtensions:IsSeverelyDisabled(t)) and AbilityExtensions:NotBlasted(t)
+                return CanCast[4](t) and not AbilityExtensions:DontInterruptAlly(t) and
+                    (
+                    AbilityExtensions:GetHealthPercent(t) < 0.3 and t:WasRecentlyDamagedByAnyHero(1.2) or
+                        AbilityExtensions:IsSeverelyDisabled(t)) and AbilityExtensions:NotBlasted(t)
             end):SortByMinFirst(function(t)
                 return AbilityExtensions:GetHealthPercent(t)
             end)
@@ -279,10 +295,15 @@ Consider[5] = function()
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         for i, npcEnemy in pairs(enemys) do
             if (CanCast[abilityNumber](npcEnemy)) and not npcEnemy:IsMagicImmune() then
-                local Damage = (npcEnemy:GetMaxHealth() - npcEnemy:GetHealth()) * DamagePercent * (1 + allyNumber * 0.06)
+                local Damage = (npcEnemy:GetMaxHealth() - npcEnemy:GetHealth()) * DamagePercent *
+                    (1 + allyNumber * 0.06
+                    )
                 local n1 = npcEnemy:GetHealth()
                 local n2 = npcEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL)
-                if npcEnemy:GetHealth() <= npcEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) and (npcEnemy:GetHealth() >= (ability:GetLevel() * 100 + 300) and npcEnemy:GetHealth() > maxHealth and AbilityExtensions:GetHealthPercent(npcEnemy) >= 0.25) then
+                if npcEnemy:GetHealth() <= npcEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) and
+                    (
+                    npcEnemy:GetHealth() >= (ability:GetLevel() * 100 + 300) and npcEnemy:GetHealth() > maxHealth and
+                        AbilityExtensions:GetHealthPercent(npcEnemy) >= 0.25) then
                     return BOT_ACTION_DESIRE_HIGH, npcEnemy
                 end
             end
@@ -305,6 +326,7 @@ function AbilityUsageThink()
     end
     ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
 end
+
 function CourierUsageThink()
     ability_item_usage_generic.CourierUsageThink()
 end

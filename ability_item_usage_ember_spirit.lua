@@ -3,9 +3,9 @@
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
-local utility = require(GetScriptDirectory().."/utility")
-require(GetScriptDirectory().."/ability_item_usage_generic")
-local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local utility = require(GetScriptDirectory() .. "/utility")
+require(GetScriptDirectory() .. "/ability_item_usage_generic")
+local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local npcBot = GetBot()
 if npcBot:IsIllusion() then
     return
@@ -59,6 +59,7 @@ utility.CheckAbilityBuild(AbilityToLevelUp)
 function AbilityLevelUpThink()
     ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
 end
+
 local cast = {
     Desire = {},
     Target = {},
@@ -96,9 +97,11 @@ local tower
 local function IsUsingSleightOfFist()
     return npcBot:HasModifier "modifier_ember_spirit_sleight_of_fist_in_progress"
 end
+
 local function IsUsingRemnant()
     return npcBot:HasModifier "modifier_ember_spirit_fire_remnant"
 end
+
 local fistCastLocation
 Consider[1] = function()
     local ability = Abilities[1]
@@ -122,7 +125,10 @@ Consider[1] = function()
         return t:GetHealth() < t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL)
     end)
     local forbiddenCreeps = fun1:Filter(enemyCreeps, function(t)
-        return t:GetHealth() > t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) and t:GetHealth() <= t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) + fun1:AttackOnceDamage(npcBot, t) * (0.9 + #enemyCreeps * 0.1)
+        return t:GetHealth() > t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) and
+            t:GetHealth() <=
+            t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) +
+            fun1:AttackOnceDamage(npcBot, t) * (0.9 + #enemyCreeps * 0.1)
     end)
     if #friendCreeps == 0 then
         forbiddenCreeps = forbiddenCreeps:Filter(function(it)
@@ -143,6 +149,7 @@ Consider[1] = function()
             return seed + fun1:Combination(t, target) * fun1:Combination(allUnits - t, t - target) * target
         end) / fun1:Combination(unitCount, allUnits)
     end
+
     if fun1:IsFarmingOrPushing(npcBot) then
         if mana >= maxMana * 0.6 + manaCost and #enemyCreeps >= 2 then
             return BOT_ACTION_DESIRE_LOW
@@ -189,7 +196,8 @@ Consider[1] = function()
 end
 Consider[2] = function()
     local ability = Abilities[2]
-    if not ability:IsFullyCastable() or IsUsingRemnant() or IsUsingSleightOfFist() or fun1:CannotMove(npcBot) or ability:GetCurrentCharges() == 0 then
+    if not ability:IsFullyCastable() or IsUsingRemnant() or IsUsingSleightOfFist() or fun1:CannotMove(npcBot) or
+        ability:GetCurrentCharges() == 0 then
         return 0
     end
     local abilityLevel = ability:GetLevel()
@@ -217,7 +225,10 @@ Consider[2] = function()
     end)
     local weakestCreep = utility.GetWeakestUnit(weakCreeps)
     local forbiddenCreeps = fun1:Filter(enemyCreeps, function(t)
-        return t:GetHealth() > t:GetActualIncomingDamage(creepDamage, DAMAGE_TYPE_MAGICAL) and t:GetHealth() <= t:GetActualIncomingDamage(creepDamage, DAMAGE_TYPE_MAGICAL) + fun1:AttackOnceDamage(npcBot, t) * (0.9 + #enemyCreeps * 0.1)
+        return t:GetHealth() > t:GetActualIncomingDamage(creepDamage, DAMAGE_TYPE_MAGICAL) and
+            t:GetHealth() <=
+            t:GetActualIncomingDamage(creepDamage, DAMAGE_TYPE_MAGICAL) +
+            fun1:AttackOnceDamage(npcBot, t) * (0.9 + #enemyCreeps * 0.1)
     end)
     if #friendCreeps == 0 then
         forbiddenCreeps = {}
@@ -241,15 +252,22 @@ Consider[2] = function()
     end
     if fun1:IsFarmingOrPushing(npcBot) then
         local locationAoE = npcBot:FindAoELocation(true, false, npcBot:GetLocation(), castRange + 150, radius, 0, 0)
-        if hasBattleFury and (locationAoE.count >= 4 and manaPercent >= 0.3 + manaCost or locationAoE.count >= 3 and manaPercent >= 0.6 + manaCost) then
+        if hasBattleFury and
+            (
+            locationAoE.count >= 4 and manaPercent >= 0.3 + manaCost or
+                locationAoE.count >= 3 and manaPercent >= 0.6 + manaCost) then
             return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
         end
     elseif fun1:IsLaning(npcBot) then
-        if manaPercent >= 0.6 + manaCost and #enemies == 1 and enemies[1]:CanBeSeen() and healthPercent >= 0.8 and abilityLevel >= 3 then
-            return BOT_ACTION_DESIRE_HIGH, fun1:FindAOELocationAtSingleTarget(npcBot, enemies[1], radius, castRange, castPoint)
+        if manaPercent >= 0.6 + manaCost and #enemies == 1 and enemies[1]:CanBeSeen() and healthPercent >= 0.8 and
+            abilityLevel >= 3 then
+            return BOT_ACTION_DESIRE_HIGH,
+                fun1:FindAOELocationAtSingleTarget(npcBot, enemies[1], radius, castRange, castPoint)
         end
-        if manaPercent >= 0.3 and #enemies == 1 and enemies[1]:CanBeSeen() and healthPercent >= 0.75 and abilityLevel >= 4 then
-            return BOT_ACTION_DESIRE_HIGH, fun1:FindAOELocationAtSingleTarget(npcBot, enemies[1], radius, castRange, castPoint)
+        if manaPercent >= 0.3 and #enemies == 1 and enemies[1]:CanBeSeen() and healthPercent >= 0.75 and
+            abilityLevel >= 4 then
+            return BOT_ACTION_DESIRE_HIGH,
+                fun1:FindAOELocationAtSingleTarget(npcBot, enemies[1], radius, castRange, castPoint)
         end
     end
     if fun1:NotRetreating(npcBot) then
@@ -266,20 +284,28 @@ Consider[2] = function()
         if weakestEnemy ~= nil and enemyHealth ~= -1 then
             local damageTaken = weakestEnemy:GetActualIncomingDamage(damage, DAMAGE_TYPE_PHYSICAL)
             if enemyHealth <= damageTaken or enemyHealth <= damageTaken * 1.5 and mana > 200 + manaCost then
-                local targetLocation = fun1:FindAOELocationAtSingleTarget(npcBot, weakestEnemy, radius, castRange, castPoint)
+                local targetLocation = fun1:FindAOELocationAtSingleTarget(npcBot, weakestEnemy, radius, castRange,
+                    castPoint)
                 return BOT_ACTION_DESIRE_HIGH, targetLocation
             end
         end
         local target = npcBot:GetTarget()
-        if target ~= nil and target:CanBeSeen() and fun1:NormalCanCast(target, true, DAMAGE_TYPE_PHYSICAL) and not fun1:CannotBeAttacked(target) and (mana >= 200 and target:GetHealth() < target:GetActualIncomingDamage(damage, DAMAGE_TYPE_PHYSICAL) * (0.9 + friendCount * 0.1)) then
-            return BOT_ACTION_DESIRE_HIGH, fun1:FindAOELocationAtSingleTarget(npcBot, target, radius, castRange, castPoint)
+        if target ~= nil and target:CanBeSeen() and fun1:NormalCanCast(target, true, DAMAGE_TYPE_PHYSICAL) and
+            not fun1:CannotBeAttacked(target) and
+            (
+            mana >= 200 and
+                target:GetHealth() <
+                target:GetActualIncomingDamage(damage, DAMAGE_TYPE_PHYSICAL) * (0.9 + friendCount * 0.1)) then
+            return BOT_ACTION_DESIRE_HIGH,
+                fun1:FindAOELocationAtSingleTarget(npcBot, target, radius, castRange, castPoint)
         end
     end
     return 0
 end
 Consider[3] = function()
     local ability = Abilities[3]
-    if not ability:IsFullyCastable() or npcBot:HasModifier "modifier_ember_spirit_flame_guard" or npcBot:HasModifier "modifier_shadow_demon_purge_slow" then
+    if not ability:IsFullyCastable() or npcBot:HasModifier "modifier_ember_spirit_flame_guard" or
+        npcBot:HasModifier "modifier_shadow_demon_purge_slow" then
         return 0
     end
     local abilityLevel = ability:GetLevel()
@@ -312,7 +338,8 @@ Consider[3] = function()
     elseif fun1:IsLaning(npcBot) then
         if #enemyCreeps >= 3 and mana >= npcBot:GetMaxMana() * 0.3 + manaCost then
             local laneEnemyHero = enemies[1]
-            if laneEnemyHero ~= nil and GetUnitToUnitDistance(npcBot, laneEnemyHero) <= radius and fun1:GetHealthPercent(laneEnemyHero) <= 0.4 then
+            if laneEnemyHero ~= nil and GetUnitToUnitDistance(npcBot, laneEnemyHero) <= radius and
+                fun1:GetHealthPercent(laneEnemyHero) <= 0.4 then
                 return BOT_ACTION_DESIRE_MODERATE
             end
             if #friendCreeps == 0 and abilityLevel >= 2 then
@@ -340,7 +367,8 @@ Consider[3] = function()
                     return BOT_ACTION_DESIRE_MODERATE
                 end
             end
-            if #enemies >= 1 and DotaTime() < 10 * 60 or #realEnemies >= 2 and npcBot:GetNetWorth() / DotaTime() * 60 <= 350 or #realEnemies >= 3 then
+            if #enemies >= 1 and DotaTime() < 10 * 60 or
+                #realEnemies >= 2 and npcBot:GetNetWorth() / DotaTime() * 60 <= 350 or #realEnemies >= 3 then
                 return BOT_ACTION_DESIRE_HIGH
             end
         end
@@ -370,6 +398,7 @@ local function RefreshActiveRemnants()
         return t:GetUnitName() == "npc_dota_ember_spirit_remnant"
     end)
 end
+
 local DetectRemnant = fun1:EveryManySeconds(2, RefreshActiveRemnants)
 RefreshActiveRemnants()
 Consider[4] = function()
@@ -394,7 +423,10 @@ Consider[4] = function()
     end)
     local weakestCreep = utility.GetWeakestUnit(weakCreeps)
     local forbiddenCreeps = fun1:Filter(enemyCreeps, function(t)
-        return t:GetHealth() > t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) and t:GetHealth() <= t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) + fun1:AttackOnceDamage(npcBot, t) * (0.9 + #enemyCreeps * 0.1)
+        return t:GetHealth() > t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) and
+            t:GetHealth() <=
+            t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) +
+            fun1:AttackOnceDamage(npcBot, t) * (0.9 + #enemyCreeps * 0.1)
     end)
     if #friendCreeps == 0 then
         forbiddenCreeps = {}
@@ -406,7 +438,8 @@ Consider[4] = function()
             end
         end
     end
-    if healthPercent >= 0.75 and manaPercent >= 0.9 and fun1:GetDistanceFromAncient(npcBot) <= 1000 and DotaTime() <= 15 * 60 then
+    if healthPercent >= 0.75 and manaPercent >= 0.9 and fun1:GetDistanceFromAncient(npcBot) <= 1000 and
+        DotaTime() <= 15 * 60 then
         if fun1:IsLaning(npcBot) then
             local laneFront = GetLaneFrontLocation(GetTeam(), npcBot:GetAssignedLane(), 0)
             local remnantUnderTower = fun1:Filter(activeRemnants, function(t)
@@ -439,7 +472,8 @@ Consider[4] = function()
     if fun1:IsRetreating(npcBot) then
         local distanceToFountain = fun1:Filter(activeRemnants, function(t)
             local distance = GetUnitToUnitDistance(t, npcBot)
-            return distance >= npcBot:GetCurrentMovementSpeed() * 2.5 and distance >= 700 and distance > fun1:GetDistanceFromAncient(t) + 600
+            return distance >= npcBot:GetCurrentMovementSpeed() * 2.5 and distance >= 700 and
+                distance > fun1:GetDistanceFromAncient(t) + 600
         end)
         distanceToFountain = fun1:Map(distanceToFountain, function(t)
             return {
@@ -457,11 +491,13 @@ Consider[4] = function()
     if fun1:NotRetreating(npcBot) then
         for _, activeRemnant in ipairs(activeRemnants) do
             local target = fun1:GetTargetIfGood(npcBot)
-            if target ~= nil and target:CanBeSeen() and fun1:NormalCanCast(target, false) and GetUnitToUnitDistance(activeRemnant, target) <= radius then
+            if target ~= nil and target:CanBeSeen() and fun1:NormalCanCast(target, false) and
+                GetUnitToUnitDistance(activeRemnant, target) <= radius then
                 if fun1:GetHealthPercent(target) <= 0.7 then
                     if fun1:Any(activeRemnants, function(t)
                         local d = GetUnitToUnitDistance(t, target)
-                        return d >= 0.7 * radius and d <= 800 and t:IsFacingLocation(target, 30) and t:GetCurrentMovementSpeed() ~= 0
+                        return d >= 0.7 * radius and d <= 800 and t:IsFacingLocation(target, 30) and
+                            t:GetCurrentMovementSpeed() ~= 0
                     end) then
                         return 0.1, activeRemnant:GetLocation()
                     end
@@ -477,8 +513,10 @@ Consider[4] = function()
     return 0
 end
 local function ShouldGoToFountainFromLane()
-    return healthPercent <= 0.25 and not fun1:HasAvailableItem "item_flask" or healthPercent <= 0.4 and manaPercent <= 0.1
+    return healthPercent <= 0.25 and not fun1:HasAvailableItem "item_flask" or
+        healthPercent <= 0.4 and manaPercent <= 0.1
 end
+
 Consider[5] = function()
     local ability = Abilities[5]
     if not ability:IsFullyCastable() or ability:GetCurrentCharges() == 0 then
@@ -501,7 +539,10 @@ Consider[5] = function()
     end)
     local weakestCreep = utility.GetWeakestUnit(weakCreeps)
     local forbiddenCreeps = fun1:Filter(enemyCreeps, function(t)
-        return t:GetHealth() > t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) and t:GetHealth() <= t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) + fun1:AttackOnceDamage(npcBot, t) * (0.9 + #enemyCreeps * 0.1)
+        return t:GetHealth() > t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) and
+            t:GetHealth() <=
+            t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) +
+            fun1:AttackOnceDamage(npcBot, t) * (0.9 + #enemyCreeps * 0.1)
     end)
     if #friendCreeps == 0 then
         forbiddenCreeps = {}
@@ -513,7 +554,8 @@ Consider[5] = function()
     local remnantSpeed = npcBot:GetCurrentMovementSpeed() * ability:GetSpecialValueInt "speed_multiplier" / 100
     if fun1:IsFarmingOrPushing(npcBot) and fun1:GetManaPercent(npcBot) >= 0.9 then
         local nearbyTowers = npcBot:GetNearbyTowers(1100, true)
-        if #nearbyTowers == 1 and (nearbyTowers[1] == GetTower(GetTeam(), TOWER_MID_1) or nearbyTowers[1] == GetTower(GetTeam(), TOWER_MID_2)) then
+        if #nearbyTowers == 1 and
+            (nearbyTowers[1] == GetTower(GetTeam(), TOWER_MID_1) or nearbyTowers[1] == GetTower(GetTeam(), TOWER_MID_2)) then
             if ShouldGoToFountainFromLane() then
                 if #activeRemnants == 0 then
                     return BOT_ACTION_DESIRE_HIGH, nearbyTowers[1]:GetLocation() + RandomVector(200)
@@ -544,11 +586,13 @@ Consider[5] = function()
             if nearestEnemy:IsFacingLocation(npcBot:GetLocation(), 20) then
                 strangeFacing = nearestEnemy:GetFacing() + 75
             end
-            local extraLocation = npcBot:GetLocation() + Vector(useRange * math.cos(strangeFacing), useRange * math.sin(strangeFacing))
+            local extraLocation = npcBot:GetLocation() +
+                Vector(useRange * math.cos(strangeFacing), useRange * math.sin(strangeFacing))
             if npcBot:HasScepter() then
                 extraLocation = fun1:GetPointFromLineByDistance(npcBot:GetLocation(), fun1:GetAncient(npcBot), useRange)
             end
-            if npcBot:GetCurrentMovementSpeed() >= 285 or npcBot:GetCurrentMovementSpeed() >= 240 and IsUsingSleightOfFist() then
+            if npcBot:GetCurrentMovementSpeed() >= 285 or
+                npcBot:GetCurrentMovementSpeed() >= 240 and IsUsingSleightOfFist() then
                 return BOT_ACTION_DESIRE_HIGH, extraLocation
             end
         end
@@ -561,7 +605,9 @@ Consider[5] = function()
                 end)
                 local damageOnce = target:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL)
                 if target:GetHealth() <= (0.9 + 0.18 * friendCount) * damageOnce * remnantNumber + charge then
-                    return BOT_ACTION_DESIRE_HIGH, target:GetExtrapolatedLocation(GetUnitToUnitDistance(target, npcBot) / Clamp((remnantSpeed - target:GetCurrentMovementSpeed()), 100, 1000))
+                    return BOT_ACTION_DESIRE_HIGH,
+                        target:GetExtrapolatedLocation(GetUnitToUnitDistance(target, npcBot) /
+                            Clamp((remnantSpeed - target:GetCurrentMovementSpeed()), 100, 1000))
                 end
             end
         end
@@ -601,6 +647,7 @@ function AbilityUsageThink()
         refreshRemnantToken = true
     end
 end
+
 function CourierUsageThink()
     ability_item_usage_generic.CourierUsageThink()
 end

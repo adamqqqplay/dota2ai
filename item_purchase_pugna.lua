@@ -11,7 +11,7 @@ local ItemsToBuy =
 	"item_circlet",
 	"item_mantle",
 	"item_null_talisman",
-    "item_magic_wand",
+	"item_magic_wand",
 	"item_boots",
 	"item_null_talisman",
 	"item_arcane_boots",

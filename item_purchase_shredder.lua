@@ -8,8 +8,8 @@ local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSys
 local ItemsToBuy =
 {
 	"item_tango",
-    "item_flask",
-    "item_magic_wand",
+	"item_flask",
+	"item_magic_wand",
 	"item_arcane_boots", --秘法鞋
 	"item_aether_lens",
 	"item_hood_of_defiance",

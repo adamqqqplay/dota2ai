@@ -12,10 +12,10 @@ local ItemsToBuy =
 	"item_gauntlets",
 	"item_boots",
 	"item_arcane_boots",
-    "item_hand_of_midas",
+	"item_hand_of_midas",
 	"item_aether_lens", --以太之镜7.06
 	"item_ultimate_scepter", --蓝杖
-    "item_aghanims_shard",
+	"item_aghanims_shard",
 	"item_force_staff", --推推7.14
 	"item_ultimate_scepter_2",
 	"item_octarine_core",

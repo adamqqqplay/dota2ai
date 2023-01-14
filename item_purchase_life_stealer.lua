@@ -8,7 +8,7 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_tango",
-    "item_magic_stick",
+	"item_magic_stick",
 	"item_quelling_blade", --补刀斧
 	"item_orb_of_venom",
 	"item_phase_boots", --相位7.21

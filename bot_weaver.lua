@@ -1,6 +1,6 @@
-local minionutils = dofile( GetScriptDirectory().."/util/NewMinionUtil" )
+local minionutils = dofile(GetScriptDirectory() .. "/util/NewMinionUtil")
 
-function MinionThink(  hMinionUnit ) 
+function MinionThink(hMinionUnit)
 	local name = hMinionUnit:GetUnitName()
 	if string.match(name, "npc_dota_weaver_swarm") then
 		return
@@ -14,4 +14,4 @@ function MinionThink(  hMinionUnit )
 			return;
 		end
 	end
-end	
+end

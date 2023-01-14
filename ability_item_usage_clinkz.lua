@@ -3,9 +3,9 @@
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
-local utility = require(GetScriptDirectory().."/utility")
-require(GetScriptDirectory().."/ability_item_usage_generic")
-local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local utility = require(GetScriptDirectory() .. "/utility")
+require(GetScriptDirectory() .. "/ability_item_usage_generic")
+local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local debugmode = false
 local npcBot = GetBot()
 if npcBot:IsIllusion() then
@@ -60,6 +60,7 @@ utility.CheckAbilityBuild(AbilityToLevelUp)
 function AbilityLevelUpThink()
     ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
 end
+
 local ComboMana
 local AttackRange
 local ManaPercentage
@@ -72,7 +73,8 @@ local Consider = {}
 local CanCast = {
     utility.NCanCast,
     function(t)
-        return AbilityExtensions.PhysicalCanCastFunction(t) or t:IsTower() and not t:HasModifier "modifier_fountain_glyph"
+        return AbilityExtensions.PhysicalCanCastFunction(t) or
+            t:IsTower() and not t:HasModifier "modifier_fountain_glyph"
     end,
     utility.NCanCast,
     utility.UCanCast,
@@ -84,9 +86,11 @@ local enemyDisabled = utility.enemyDisabled
 function GetComboDamage()
     return ability_item_usage_generic.GetComboDamage(AbilitiesReal)
 end
+
 function GetComboMana()
     return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
+
 Consider[1] = function()
     local abilityNumber = 1
     local ability = AbilitiesReal[abilityNumber]
@@ -104,7 +108,10 @@ Consider[1] = function()
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) then
-                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or (HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and npcBot:GetMana() > ComboMana) then
+                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or
+                    (
+                    HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and
+                        npcBot:GetMana() > ComboMana) then
                     return BOT_ACTION_DESIRE_HIGH, WeakestEnemy:GetLocation(), "Location"
                 end
             end
@@ -118,7 +125,9 @@ Consider[1] = function()
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
+    if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
+        npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
         if ManaPercentage > 0.4 or npcBot:GetMana() > ComboMana then
             local locationAoE = npcBot:FindAoELocation(true, false, npcBot:GetLocation(), CastRange, Radius, 0, 0)
             if locationAoE.count >= 3 then
@@ -135,7 +144,8 @@ Consider[1] = function()
             end
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local locationAoE = npcBot:FindAoELocation(true, true, npcBot:GetLocation(), CastRange, Radius, 0, 0)
         if locationAoE.count >= 2 then
             return BOT_ACTION_DESIRE_MODERATE, locationAoE.targetloc, "Location"
@@ -169,7 +179,8 @@ Consider[2] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[2
             if GetUnitToUnitDistanceSqr(npcBot, target) <= 190000 then
                 return false
             elseif AbilityExtensions:MustBeIllusion(npcBot, target) then
-                return AbilityExtensions:GetManaPercent(npcBot) >= 0.8 or AbilityExtensions:GetHealthPercent(target) <= 0.4
+                return AbilityExtensions:GetManaPercent(npcBot) >= 0.8 or
+                    AbilityExtensions:GetHealthPercent(target) <= 0.4
             else
                 return true
             end
@@ -179,6 +190,7 @@ Consider[2] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[2
             return AbilityExtensions:GetManaPercent(npcBot) >= 0.8
         end
     end
+
     local attackRange = npcBot:GetAttackRange()
     if AbilityExtensions:NotRetreating(npcBot) then
         if npcBot:GetActiveMode() == BOT_MODE_LANING then
@@ -248,6 +260,7 @@ local function IsGoodNeutralCreeps(npcCreep)
     end
     return false
 end
+
 Consider[4] = function()
     local abilityNumber = 4
     local ability = AbilitiesReal[abilityNumber]
@@ -269,7 +282,8 @@ Consider[4] = function()
             return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc
         end
     end
-    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
+    if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
+        npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = npcBot:GetTarget()
         if ManaPercentage > 0.4 or npcBot:GetMana() > ComboMana then
             if npcEnemy ~= nil then
@@ -298,6 +312,7 @@ local function RateCreep(creep)
     end
     return rate
 end
+
 local standardCreepRate = 0
 local GetStandardCreepRate = AbilityExtensions:EveryManySeconds(2, function()
     standardCreepRate = AbilityExtensions:MaxV(GetUnitList(UNIT_LIST_ENEMY_CREEPS) or {}, RateCreep) or 0
@@ -311,7 +326,8 @@ Consider[5] = function()
     local CastRange = ability:GetCastRange()
     local enemys = npcBot:GetNearbyHeroes(CastRange + 300, true, BOT_MODE_NONE)
     GetStandardCreepRate()
-    local creeps = AbilityExtensions:Filter(AbilityExtensions:Concat(npcBot:GetNearbyCreeps(CastRange + 300, true), npcBot:GetNearbyNeutralCreeps(CastRange + 300)), CanCast[5])
+    local creeps = AbilityExtensions:Filter(AbilityExtensions:Concat(npcBot:GetNearbyCreeps(CastRange + 300, true),
+        npcBot:GetNearbyNeutralCreeps(CastRange + 300)), CanCast[5])
     do
         local creep = creeps:Max(RateCreep)
         if creep then
@@ -339,6 +355,7 @@ function AbilityUsageThink()
     end
     ability_item_usage_generic.UseAbility(AbilitiesReal, cast)
 end
+
 function CourierUsageThink()
     ability_item_usage_generic.CourierUsageThink()
 end

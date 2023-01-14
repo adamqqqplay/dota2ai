@@ -3,9 +3,9 @@
 -- Do not modify
 -- https://github.com/AaronSong321/Mirana
 ---------------------------------------------
-local utility = require(GetScriptDirectory().."/utility")
-local ability_item_usage_generic = require(GetScriptDirectory().."/ability_item_usage_generic")
-local fun1 = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local utility = require(GetScriptDirectory() .. "/utility")
+local ability_item_usage_generic = require(GetScriptDirectory() .. "/ability_item_usage_generic")
+local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local npcBot = GetBot()
 if npcBot:IsIllusion() then
     return
@@ -59,6 +59,7 @@ utility.CheckAbilityBuild(AbilityToLevelUp)
 function AbilityLevelUpThink()
     ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
 end
+
 local cast = {}
 cast.Desire = {}
 cast.Target = {}
@@ -101,6 +102,7 @@ local function GetIllusoryOrb()
         return t.ability and t.ability:GetName() == "puck_illusory_orb" and t.caster == npcBot
     end)
 end
+
 local illusoryOrb = GetIllusoryOrb()
 Consider[1] = function()
     local ability = Abilities[1]
@@ -114,7 +116,11 @@ Consider[1] = function()
     local duration = ability:GetDuration()
     local damage = ability:GetDamage()
     local forbiddenCreeps = fun1:Filter(enemyCreeps, function(t)
-        return t:GetHealth() > t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) and (t:GetHealth() <= t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) + fun1:AttackOnceDamage(npcBot, t) * (0.9 + #enemyCreeps * 0.1) or GetUnitToUnitDistance(tower, t) <= 700)
+        return t:GetHealth() > t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) and
+            (
+            t:GetHealth() <=
+                t:GetActualIncomingDamage(damage, DAMAGE_TYPE_MAGICAL) +
+                fun1:AttackOnceDamage(npcBot, t) * (0.9 + #enemyCreeps * 0.1) or GetUnitToUnitDistance(tower, t) <= 700)
     end)
     if #friendCreeps == 0 then
         forbiddenCreeps = {}
@@ -211,6 +217,7 @@ function AbilityUsageThink()
         phaseShiftRemainingTime = Abilities[3]:GetSpecialValueFloat "duration" - 0.08
     end
 end
+
 function CourierUsageThink()
     ability_item_usage_generic.CourierUsageThink()
 end

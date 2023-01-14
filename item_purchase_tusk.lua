@@ -11,7 +11,7 @@ local ItemsToBuy =
 	"item_tango",
 	"item_bracer",
 	"item_phase_boots",
-    "item_magic_stick",
+	"item_magic_stick",
 	"item_invis_sword", --隐刀
 	"item_solar_crest",
 	"item_aghanims_shard",

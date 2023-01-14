@@ -12,8 +12,8 @@ local ItemsToBuy =
 	"item_boots",
 	"item_tranquil_boots",
 	"item_blink",
-    "item_ghost",
-    "item_aether_lens",
+	"item_ghost",
+	"item_aether_lens",
 	"item_aghanims_shard",
 	"item_glimmer_cape", --微光
 	"item_force_staff",

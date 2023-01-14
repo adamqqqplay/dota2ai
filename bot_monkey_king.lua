@@ -11,15 +11,15 @@ end
 --print(tostring(trueMK))
 --print(tostring(GetBot())..tostring(GetBot():GetLocation())..tostring(GetBot():IsInvulnerable())..tostring(trueMK==GetBot()))
 if trueMK == nil or bot == trueMK then
-	print("Bot MK "..tostring(bot).." is true MK")
+	print("Bot MK " .. tostring(bot) .. " is true MK")
 	return;
 end
-print("Bot MK "..tostring(bot).." isn't true MK")
+print("Bot MK " .. tostring(bot) .. " isn't true MK")
 
-function  MinionThink(  hMinionUnit ) 
+function MinionThink(hMinionUnit)
 
 end
 
 function Think()
-	
+
 end

@@ -1,4 +1,4 @@
-local BotsInit = require( "game/botsinit" );
+local BotsInit = require("game/botsinit");
 local MyModule = BotsInit.CreateGeneric();
 
 --local utils = require(GetScriptDirectory() ..  "/util")
@@ -22,10 +22,10 @@ local castWDesire = 0;
 local castEDesire = 0;
 
 function IsFrozeSigil(unit_name)
-	return unit_name == "npc_dota_tusk_frozen_sigil1" 
-		or unit_name == "npc_dota_tusk_frozen_sigil2" 
-		or unit_name == "npc_dota_tusk_frozen_sigil3" 
-		or unit_name == "npc_dota_tusk_frozen_sigil4"; 
+	return unit_name == "npc_dota_tusk_frozen_sigil1"
+		or unit_name == "npc_dota_tusk_frozen_sigil2"
+		or unit_name == "npc_dota_tusk_frozen_sigil3"
+		or unit_name == "npc_dota_tusk_frozen_sigil4";
 end
 
 ------------BEASTMASTER'S HAWK
@@ -41,7 +41,7 @@ end
 
 function IsTornado(unit_name)
 	return unit_name == "npc_dota_enraged_wildkin_tornado";
-end 
+end
 
 function IsHealingWard(unit_name)
 	return unit_name == "npc_dota_juggernaut_healing_ward";
@@ -142,17 +142,17 @@ local independent = {
 }
 
 function IsValidUnit(unit)
-	return unit ~= nil 
-	   and unit:IsNull() == false 
-	   and unit:IsAlive();
+	return unit ~= nil
+		and unit:IsNull() == false
+		and unit:IsAlive();
 end
 
 function IsValidTarget(target)
-	return target ~= nil 
-	   and target:IsNull() == false 
-	   and target:CanBeSeen() 
-	   and target:IsInvulnerable() == false 
-	   and target:IsAlive();
+	return target ~= nil
+		and target:IsNull() == false
+		and target:CanBeSeen()
+		and target:IsInvulnerable() == false
+		and target:IsAlive();
 end
 
 function IsInRange(unit, target, range)
@@ -164,16 +164,16 @@ function CanCastOnTarget(target, ability)
 		return target:IsHero() and target:IsIllusion() == false;
 	else
 		return target:IsHero() and target:IsIllusion() == false and target:IsMagicImmune() == false;
-	end 
+	end
 end
 
-local globRadius = 1200; 
+local globRadius = 1200;
 
 function GetWeakest(units)
 	local target = nil;
 	local minHP = 10000;
 	if #units > 0 then
-		for i=1, #units do
+		for i = 1, #units do
 			if IsValidTarget(units[i]) then
 				local hp = units[i]:GetHealth();
 				if hp <= minHP then
@@ -214,20 +214,19 @@ function GetIllusionAttackTarget(minion)
 		if target == nil then target = GetWeakestTower(globRadius, minion); end
 		if target == nil then target = GetWeakestBarracks(globRadius, minion); end
 	end
-	return target;	
+	return target;
 end
-
 
 function IsBusy(unit)
 	return unit:IsUsingAbility() or unit:IsCastingAbility() or unit:IsChanneling();
 end
 
 function CantMove(unit)
-	return unit:IsStunned() or unit:IsRooted() or unit:IsNightmared() or unit:IsInvulnerable();	
+	return unit:IsStunned() or unit:IsRooted() or unit:IsNightmared() or unit:IsInvulnerable();
 end
 
 function CantAttack(unit)
-	return unit:IsStunned() or unit:IsRooted() or unit:IsNightmared() or unit:IsDisarmed() or unit:IsInvulnerable(); 	
+	return unit:IsStunned() or unit:IsRooted() or unit:IsNightmared() or unit:IsDisarmed() or unit:IsInvulnerable();
 end
 
 ------------ILLUSION ACT
@@ -235,7 +234,7 @@ function ConsiderIllusionAttack(minion)
 	if CantAttack(minion) then return BOT_MODE_DESIRE_NONE, nil; end
 	local target = GetIllusionAttackTarget(minion);
 	if target ~= nil then
-		return BOT_MODE_DESIRE_HIGH, target; 
+		return BOT_MODE_DESIRE_HIGH, target;
 	end
 	return BOT_MODE_DESIRE_NONE, nil;
 end
@@ -243,7 +242,7 @@ end
 function ConsiderIllusionMove(minion)
 	if CantMove(minion) then return BOT_MODE_DESIRE_NONE, nil; end
 	if bot:GetActiveMode() ~= BOT_MODE_RETREAT then
-		return BOT_MODE_DESIRE_HIGH, bot:GetXUnitsTowardsLocation(TeamAncientLoc, 300); 
+		return BOT_MODE_DESIRE_HIGH, bot:GetXUnitsTowardsLocation(TeamAncientLoc, 300);
 	end
 	return BOT_MODE_DESIRE_NONE, nil;
 end
@@ -288,7 +287,7 @@ end
 function ConsiderWardAttack(minion)
 	local target = GetWardAttackTarget(minion);
 	if target ~= nil then
-		return BOT_MODE_DESIRE_HIGH, target; 
+		return BOT_MODE_DESIRE_HIGH, target;
 	end
 	return BOT_MODE_DESIRE_NONE, nil;
 end
@@ -360,25 +359,25 @@ end
 
 function InitiateAbility(minion)
 	minion.abilities = {};
-	for i=0, 3 do
-		minion.abilities [i+1] = minion:GetAbilityInSlot(i);
+	for i = 0, 3 do
+		minion.abilities[i + 1] = minion:GetAbilityInSlot(i);
 	end
 end
 
 function CheckFlag(bitfield, flag)
-    return ((bitfield/flag) % 2) >= 1
-end 
+	return ((bitfield / flag) % 2) >= 1
+end
 
 function CanCastAbility(ability)
 	return ability ~= nil and ability:IsFullyCastable() and ability:IsPassive() == false;
 end
 
 function ConsiderUnitTarget(minion, ability)
-	local castRange = ability:GetCastRange()+200;
+	local castRange = ability:GetCastRange() + 200;
 	if bot:GetActiveMode() == BOT_MODE_RETREAT and bot:WasRecentlyDamagedByAnyHero(2.0) then
 		local enemies = minion:GetNearbyHeroes(castRange, true, BOT_MODE_NONE);
 		if #enemies > 0 then
-			for i=1, #enemies do
+			for i = 1, #enemies do
 				if IsValidTarget(enemies[i]) and CanCastOnTarget(enemies[i], ability) then
 					return BOT_ACTION_DESIRE_HIGH, enemies[i];
 				end
@@ -394,11 +393,11 @@ function ConsiderUnitTarget(minion, ability)
 end
 
 function ConsiderPointTarget(minion, ability)
-	local castRange = ability:GetCastRange()+200;
+	local castRange = ability:GetCastRange() + 200;
 	if bot:GetActiveMode() == BOT_MODE_RETREAT and bot:WasRecentlyDamagedByAnyHero(2.0) then
 		local enemies = minion:GetNearbyHeroes(castRange, true, BOT_MODE_NONE);
 		if #enemies > 0 then
-			for i=1, #enemies do
+			for i = 1, #enemies do
 				if IsValidTarget(enemies[i]) and CanCastOnTarget(enemies[i], ability) then
 					return BOT_ACTION_DESIRE_HIGH, enemies[i]:GetLocation();
 				end
@@ -413,13 +412,12 @@ function ConsiderPointTarget(minion, ability)
 	return BOT_ACTION_DESIRE_NONE, nil;
 end
 
-
 function ConsiderNoTarget(minion, ability)
 	local nRadius = ability:GetSpecialValueInt("radius");
 	if bot:GetActiveMode() == BOT_MODE_RETREAT and bot:WasRecentlyDamagedByAnyHero(2.0) then
 		local enemies = minion:GetNearbyHeroes(nRadius, true, BOT_MODE_NONE);
 		if #enemies > 0 then
-			for i=1, #enemies do
+			for i = 1, #enemies do
 				if IsValidTarget(enemies[i]) and CanCastOnTarget(enemies[i], ability) then
 					return BOT_ACTION_DESIRE_HIGH;
 				end
@@ -439,11 +437,11 @@ function CastThink(minion, ability)
 	if CheckFlag(ability:GetBehavior(), ABILITY_BEHAVIOR_UNIT_TARGET) then
 		if ability:GetName() == "ogre_magi_frost_armor" then
 			local castRange = ability:GetCastRange();
-			local allies = minion:GetNearbyHeroes(castRange+200, false, BOT_MODE_NONE);
+			local allies = minion:GetNearbyHeroes(castRange + 200, false, BOT_MODE_NONE);
 			if #allies > 0 then
-				for i=1, #allies do
-					if IsValidTarget(allies[i]) and CanCastOnTarget(allies[i], ability) 
-					   and allies[i]:HasModifier("ogre_magi_frost_armor") == false
+				for i = 1, #allies do
+					if IsValidTarget(allies[i]) and CanCastOnTarget(allies[i], ability)
+						and allies[i]:HasModifier("ogre_magi_frost_armor") == false
 					then
 						minion:Action_UseAbilityOnEntity(ability, allies[i]);
 						return
@@ -456,22 +454,22 @@ function CastThink(minion, ability)
 				--print(minion:GetUnitName()..tostring(minion.castDesire).." Use Ability "..ability:GetName())
 				minion:Action_UseAbilityOnEntity(ability, target);
 				return
-			end	
-		end	
-	elseif CheckFlag(ability:GetBehavior(), ABILITY_BEHAVIOR_POINT) then	
+			end
+		end
+	elseif CheckFlag(ability:GetBehavior(), ABILITY_BEHAVIOR_POINT) then
 		minion.castDesire, loc = ConsiderPointTarget(minion, ability);
 		if minion.castDesire > 0 then
 			--print(minion:GetUnitName()..tostring(minion.castDesire).." Use Ability "..ability:GetName())
 			minion:Action_UseAbilityOnLocation(ability, loc);
 			return
-		end	
+		end
 	elseif CheckFlag(ability:GetBehavior(), ABILITY_BEHAVIOR_NO_TARGET) then
 		minion.castDesire = ConsiderNoTarget(minion, ability);
 		if minion.castDesire > 0 then
 			--print(minion:GetUnitName()..tostring(minion.castDesire).." Use Ability "..ability:GetName())
 			minion:Action_UseAbility(ability);
 			return
-		end	
+		end
 	end
 end
 
@@ -488,7 +486,7 @@ function CastAbilityThink(minion)
 	if CanCastAbility(minion.abilities[4]) then
 		CastThink(minion, minion.abilities[4]);
 	end
-end	
+end
 
 function MinionWithSkillThink(minion)
 	if IsBusy(minion) then return; end
@@ -506,7 +504,7 @@ function MinionWithSkillThink(minion)
 	end
 end
 
-function MinionThink(  hMinionUnit ) 
+function MinionThink(hMinionUnit)
 	if bot == nil then bot = GetBot(); end
 	if IsValidUnit(hMinionUnit) then
 		if hMinionUnit:IsIllusion() then
@@ -518,7 +516,6 @@ function MinionThink(  hMinionUnit )
 			CantBeControlledThink(hMinionUnit);
 		end
 	end
-end	
-
+end
 
 return MyModule;

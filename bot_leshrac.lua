@@ -1,6 +1,6 @@
-local minionutils = dofile( GetScriptDirectory().."/util/NewMinionUtil" )
+local minionutils = dofile(GetScriptDirectory() .. "/util/NewMinionUtil")
 
-function MinionThink(  hMinionUnit ) 
+function MinionThink(hMinionUnit)
 	if minionutils.IsValidUnit(hMinionUnit) then
 		if hMinionUnit:IsIllusion() then
 			minionutils.IllusionThink(hMinionUnit)
@@ -10,4 +10,4 @@ function MinionThink(  hMinionUnit )
 			return
 		end
 	end
-end	
+end

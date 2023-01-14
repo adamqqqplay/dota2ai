@@ -20,9 +20,9 @@ local ItemsToBuy =
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
- --检查装备列表
+--检查装备列表
 
 function ItemPurchaseThink()
 	ItemPurchaseSystem:ItemPurchaseExtend()
- --购买装备
+	--购买装备
 end

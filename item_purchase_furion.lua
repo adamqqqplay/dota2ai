@@ -4,7 +4,7 @@
 --  Contributor: zmcmcc Email:mengzhang@utexas.edu
 ----------------------------------------------------------------------------
 local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
-local AbilityExtensions = require(GetScriptDirectory().."/util/AbilityAbstraction")
+local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 
 
 local p = {

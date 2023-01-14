@@ -1,6 +1,6 @@
-local minionutils = dofile( GetScriptDirectory().."/util/NewMinionUtil" )
+local minionutils = dofile(GetScriptDirectory() .. "/util/NewMinionUtil")
 
-function MinionThink(  hMinionUnit ) 
+function MinionThink(hMinionUnit)
 	if hMinionUnit:IsHero() and hMinionUnit:GetUnitName() ~= "npc_dota_hero_terrorblade" then
 		-- reflection illusions only have modifier_illusion
 		minionutils.CantBeControlledThink(hMinionUnit)
@@ -13,4 +13,4 @@ function MinionThink(  hMinionUnit )
 			minionutils.IllusionThink(hMinionUnit)
 		end
 	end
-end	
+end

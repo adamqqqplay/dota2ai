@@ -1,5 +1,5 @@
-local MinionUtility = dofile( GetScriptDirectory().."/util/MinionUtility" )
+local MinionUtility = dofile(GetScriptDirectory() .. "/util/MinionUtility")
 
-function  MinionThink(  hMinionUnit ) 
+function MinionThink(hMinionUnit)
 	MinionUtility.MinionThink(hMinionUnit)
-end	
+end
