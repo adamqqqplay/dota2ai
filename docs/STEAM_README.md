@@ -5,25 +5,16 @@ More update infomation at workshop page.
 Unimplemented heroes: invoker, lone druid, meepo, morphling, phoenix, puck, clockwerk, rubick, storm spirit, techies, tinker, visage, wisp, dark willow, pangolier.
 
 [h1]Features[/h1]
+1. Support 100+ heroes.
+2. Better ability and item usage.
+3. More reasonable team hero selection plan.
+4. More advanced abilities, talents, and item build lists.
+5. Improved strategy system, including farming system, pushing system, warding system etc.
 
-
-[h1]WARNING[/h1]
-I am sorry I did not have much time to update this script recently.
-But you should know that this script is based on the Valve's default script, and on this basis made some improvements. Any update in main client will change the script's behavior. No programmer will intentionally make a program hard to use. But Valve has not paid attention to the AI script for about half a year. We cannot get any technical support from valve. This is why the vast majority of AI scripts stop being updated. We can only make some minor changes. The project repository is located on github. Any interested person is welcome to participate in the update of this project. https://github.com/adamqqqplay/dota2ai
-
-[h1]Words of author[/h1]
-Hello, everyone, I am adamqqq.Welcome to play with our ai, the script aims to achieve a high level of man-machine confrontation. Our ultimate goal is to simulate the Ranked Matchmaking gaming experience (ha ha ha). The script partly take over bot hero, the rest implement by the default program. Players can be in any position, the default support 5v5 game.
-
-You are free to use all of the codes for any non-commercial purposes you choose, with a reference to the original Author. Do not use any of the files here for any program which is not open source and free to use.
-
-Recommended game mode:
-Let the script control the entire team, and then players on the other side, so you can experience the strongest strength of this script.
-
-After the script is updated, you may need to re-subscribe this script to update. If you find any bug in the game, or have any suggestions, just leave a maeesage here.
-
-http://steamcommunity.com/sharedfiles/filedetails/discussions/855965029
-
-Thanks to PLATINUM ,FURIOUSPUPPY and GXC, their code helped me a lot.Finally, wish you a happy game!
+[h1]Contributing[/h1]
+The best way to help this project grow is to participate in updates.
+It is warmly welcomed if you have the interest to improve our project! This project is mainly developed using Lua language.
+Github Link: https://github.com/adamqqqplay/dota2ai
 
 [h1]Credit[/h1]
 Thanks to all the authors of the cited code, their code gave me a lot of inspiration.
@@ -53,14 +44,9 @@ A lot of answers for the player community
 Please visit this page: https://steamcommunity.com/sharedfiles/filedetails/changelog/855965029
 
 [h1]How to use it[/h1]
-Open Dota 2, open "CREAT LOBBY", open "EDIT", in the "ADVANCED LOBBY SETTINGS"
-check "FILL EMPTY SLOTS WITH BOTS".Then subscribe and use workshop bot script.
-
-[h1]Development plan[/h1]
-1. Support all heroes.
-2. Improve ability usage.
-3. Improve team fight positioning. (Done)
-4. Improve pushing and defending.
+1. Open Dota2 and click PLAY VS BOTS.
+2. Select Ranked Matchmaking AI in BOT SCRIPT.
+3. Click FIND MATCH to start game.
 
 [h1]FAQ[/h1]
 Q:How can I play it offline?
@@ -105,11 +91,14 @@ A:I understand and agree with what you say, but completely overwrited the defaul
 After TI7 Open AI's show, everyone's expectations are greatly improved, hoping that the bot script in workshop can be the same as Open AI. Unfortunately, we do not have their money and technical support. Even if they are, it is difficult to make such as 5v5 AI.
 So, please do not complain that AI is not strong enough, this is just a practice AI, and can not give such a high gaming experience.
 
-This product is licensed under GPLv3.
-Copyright 2017 [adamqqq]. This product is not authorized to be released on Steam unless it is under the Steam account adamqqqplay or the target product is licensed under the GPL protocol.
+This project is licensed under GPLv3.
+Copyright 2023 [adamqqq]. This project is not authorized to be released on Steam unless it is under the Steam account adamqqqplay or the target project is licensed under the GPL protocol.
 
-[h1]Donate:[/h1]
-If you like this project, you can support the development team through Paypal or Alipay.
-Payment address: adamqqq@163.com
+[h1]Sponsor[/h1]
+If you like this project, you could support the development team through Paypal or Alipay. 
 
-More infomation at https://github.com/adamqqqplay/dota2ai/issues/72
+Paypal/Alipay payment email: adamqqq@163.com
+
+Any contribution will help our development, thanks a lot!
+
+Sponsor list will update at: https://github.com/adamqqqplay/dota2ai/issues/72
