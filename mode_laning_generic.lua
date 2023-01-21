@@ -8,12 +8,15 @@ if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot(
 	return
 end
 
+local X = {}
+local bot = GetBot()
 
 function GetDesire()
-	local bot = GetBot()
+
 	if bot.pushWhenNoEnemies then
 		return 0
 	end
+
 	local currentTime = DotaTime()
 	local botLV = bot:GetLevel()
 

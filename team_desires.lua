@@ -96,7 +96,7 @@ function GetCommonPushLaneDesires()
 		common = common + 210 * itemtable["item_necronomicon3"].count / time
 	end
 
-	return Min(common, 0.75)
+	return Min(common, 0.66)
 end
 
 function GetItemCount()
@@ -174,8 +174,8 @@ function UpdatePushLaneDesires()
 			if NotNilOrDead(enemy) then
 				local location = enemy:GetExtrapolatedLocation(1)
 				local dist = GetAmountAlongLane(lane_number, location).distance
-				local tp = HasItem(enemy, "item_tpscroll")
-				local travel = HasItem(enemy, "item_travel_boots")
+				local tp = HeroHasItem(enemy, "item_tpscroll")
+				local travel = HeroHasItem(enemy, "item_travel_boots")
 				local plus = 0.2 * GetWealth(enemy) / ((time + 1) * 50)
 				if dist < 1000 then
 					lane = lane - 0.5 * plus
@@ -477,7 +477,7 @@ function GetLaneTower(team, lane, i)
 	return nil;
 end
 
-function HasItem(hero, item_name)
+function HeroHasItem(hero, item_name)
 	for i = 0, 5, 1 do
 		local item = hero:GetItemInSlot(i);
 		if (item ~= nil) then

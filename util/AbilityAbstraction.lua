@@ -12,7 +12,7 @@ end
 
 local function NewTable()
     local a = {}
-    GiveLinqFunctions(a, magicTable)
+    GiveLinqFunctions(a)
     return a
 end
 
@@ -2667,11 +2667,14 @@ function M:StunCanCast(target, ability, pierceMagicImmune, targetCast, dispellab
     return true
 end
 
-function M:AllyCanCast(target, pierceMagicImmune)
+function M:AllyCanCast(target, pierceMagicImmune, targetMustBeSeen)
     if pierceMagicImmune == nil then
         pierceMagicImmune = true
     end
     if not pierceMagicImmune and target:IsMagicImmune() then
+        return false
+    end
+    if targetMustBeSeen and not target:CanBeSeen() then
         return false
     end
     return not target:IsInvulnerable() and not self:CannotBeTargetted(target)

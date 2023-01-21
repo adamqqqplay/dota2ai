@@ -39,6 +39,7 @@ end
 local runeLocation = nil
 local nStopWaitTime = X.GetRuneActionTime()
 
+local bMidHumanHere = false
 
 local nRuneList = {
 	RUNE_BOUNTY_1, --天辉野区
@@ -76,28 +77,34 @@ function GetDesire()
 	minute = math.floor(DotaTime() / 60)
 	sec = DotaTime() % 60
 
-	--[[	
-	if  not X.IsPowerRuneKnown()
-		and ( GetRuneStatus( RUNE_POWERUP_1 ) == RUNE_STATUS_AVAILABLE 
-		      or GetRuneStatus( RUNE_POWERUP_1 ) == RUNE_STATUS_AVAILABLE )
-	then
-		X["lastPowerRuneTime"] = DotaTime()
-	end	
---]]
-
 
 	if not X.IsSuitableToPickRune() then
 		return BOT_MODE_DESIRE_NONE
 	end
 
 
-	if DotaTime() < 0 --and DotaTime() > -56
+	if DotaTime() < 0
 		and not bot:WasRecentlyDamagedByAnyHero(12.0)
 	then
 		local enemyHeroList = bot:GetNearbyHeroes(1400, true, BOT_MODE_NONE)
 		if #enemyHeroList <= 1
 		then
 			return BOT_MODE_DESIRE_MODERATE
+		end
+	end
+
+
+	if DotaTime() < 5 * 60 and DotaTime() > 30
+		and not bMidHumanHere
+		and bot:GetAssignedLane() == LANE_MID
+	then
+		local enemyHeroList = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE)
+		for i = 1, #enemyHeroList do
+			if enemyHeroList[i] ~= nil
+				and not enemyHeroList[i]:IsBot()
+			then
+				bMidHumanHere = true
+			end
 		end
 	end
 
@@ -144,6 +151,14 @@ function GetDesire()
 				return X.CountDesire(BOT_MODE_DESIRE_MODERATE, closestDist, 5000)
 			end
 		else
+
+			if bMidHumanHere
+				and bot:GetAssignedLane() == LANE_MID
+				and DotaTime() < 7 * 60
+			then
+				return BOT_MODE_DESIRE_NONE
+			end
+
 
 			runeStatus = GetRuneStatus(closestRune)
 
@@ -212,20 +227,20 @@ function Think()
 			if bot:GetAssignedLane() == LANE_BOT
 			then
 				-- bot:Action_MoveToLocation( GetTower( TEAM_RADIANT, TOWER_BOT_2 ):GetLocation() + RandomVector( 20 ) )
-				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_POWERUP_2) + RandomVector(50))
+				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_2) + RandomVector(50)) --B2
 				return
 			else
-				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_1) + RandomVector(50))
+				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_POWERUP_1) + RandomVector(50)) --P1
 				return
 			end
 		else
 			if bot:GetAssignedLane() == LANE_TOP
 			then
 				-- bot:Action_MoveToLocation( GetTower( TEAM_DIRE, TOWER_TOP_2 ):GetLocation() + RandomVector( 20 ))
-				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_POWERUP_1) + RandomVector(50))
+				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_1) + RandomVector(50)) --B1
 				return
 			else
-				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_2) + RandomVector(50))
+				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_POWERUP_2) + RandomVector(50)) --P2
 				return
 			end
 		end
@@ -397,15 +412,15 @@ end
 function X.IsTeamMustSaveRune(rune)
 	if GetTeam() == TEAM_DIRE
 	then
+		return rune == RUNE_BOUNTY_1
+			or rune == RUNE_POWERUP_2
+			or (DotaTime() > 1 * 60 + 45 and rune == RUNE_POWERUP_1)
+			or (DotaTime() > 10 * 60 + 45 and rune == RUNE_BOUNTY_2)
+	else
 		return rune == RUNE_BOUNTY_2
 			or rune == RUNE_POWERUP_1
-			or rune == RUNE_POWERUP_2
+			or (DotaTime() > 1 * 60 + 45 and rune == RUNE_POWERUP_2)
 			or (DotaTime() > 10 * 60 + 45 and rune == RUNE_BOUNTY_1)
-	else
-		return rune == RUNE_BOUNTY_1
-			or rune == RUNE_POWERUP_1
-			or rune == RUNE_POWERUP_2
-			or (DotaTime() > 10 * 60 + 45 and rune == RUNE_BOUNTY_2)
 	end
 end
 
