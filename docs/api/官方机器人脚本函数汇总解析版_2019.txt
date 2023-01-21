@@ -1,0 +1,2868 @@
+@Author: GXC
+@Bot Script: steamcommunity.com/sharedfiles/filedetails/?id=836671793
+@Version: schinese&en 1.0
+----------------------------------------------------------------------------------------------------
+Valve开发论坛创意工坊官方机器人脚本API详解（中英对照版） 
+links:
+https://developer.valvesoftware.com/wiki/Dota_Bot_Scripting
+http://docs.moddota.com/lua_bots/
+https://dev.dota2.com/forumdisplay.php?f=497
+由于前两个开发网站的机器人API互相之间都有错漏不全，本文件全面结合了前两者及第三个开发者论坛的更新记录，
+并附有一部分的实际测试和实战详解，可以理解为修订后的完整版。
+
+----------------------------------------------------------------------------------------------------
+-- CATALOG 目录
+-- （用于快捷搜索定位）
+----------------------------------------------------------------------------------------------------
+
+Functions - Global
+Functions - Unit-Scoped
+Functions - Ability-Scoped
+
+Constants - Bot Modes
+Constants - Action Desires
+Constants - Mode Desires
+Constants - Damage Types
+Constants - Unit Types
+Constants - Difficulties
+Constants - Attribute Types
+Constants - Item Purchase Results
+Constants - Game Modes
+Constants - Teams
+Constants - Lanes
+Constants - Game States
+Constants - Hero Pick States
+Constants - Rune Types
+Constants - Rune Status
+Constants - Rune Locations
+Constants - Item Slot Types
+Constants - Action Types
+Constants - Courier Actions and States
+Constants - Towers
+Constants - Barracks
+Constants - Shrines
+Constants - Shops
+Constants - Ability Target Teams
+Constants - Ability Target Types
+Constants - Ability Target Flags
+Constants - Ability Behavior Bitfields
+Constants - Misc Constants
+Constants - Animation Activities
+
+----------------------------------------------------------------------------------------------------
+-- Functions - Global 函数-全局
+----------------------------------------------------------------------------------------------------
+
+hUnit GetBot()
+	Returns a handle to the bot on which the script is currently being run (if applicable).
+	返回当前脚本运行时的机器人的句柄（如可能）。
+	通常用来获取当前脚本对应机器人的控制权，是后续一系列开发函数的常用调用者。
+
+int GetTeam()
+	Returns the team for which the script is currently being run. If it's being run on a bot, returns the team of that bot.
+	返回当前脚本运行时的所在团队。如果运行的是机器人，返回此机器人所在团队。
+	【返回结果搜索链接：Constants - Teams】
+
+{int, ...} GetTeamPlayers( nTeam )
+	Returns a table of the Player IDs on the specified team
+	返回指定团队的所有玩家的ID表集合。
+	【参数nTeam搜索链接：Constants - Teams】
+	比如1人类+9机器人，人类玩家默认ID就是0，其余机器人分别为1-9；1人类观战+10机器人，人类玩家默认ID就是2，其余机器人分别为2-11。多人类的情况复杂，很难以此类推。
+	【示例】
+	function Test()
+		-- 0:one player  2:broadcast
+		local i = 2;
+		if ( GetTeam() == TEAM_RADIANT ) then
+			SelectHero( i + 0, "npc_dota_hero_ogre_magi" );
+			SelectHero( i + 1, "npc_dota_hero_ogre_magi" );
+			SelectHero( i + 2, "npc_dota_hero_ogre_magi" );
+			SelectHero( i + 3, "npc_dota_hero_ogre_magi" );
+			SelectHero( i + 4, "npc_dota_hero_ogre_magi" );
+		elseif ( GetTeam() == TEAM_DIRE ) then
+			SelectHero( i + 5, "npc_dota_hero_ogre_magi" );
+			SelectHero( i + 6, "npc_dota_hero_ogre_magi" );
+			SelectHero( i + 7, "npc_dota_hero_ogre_magi" );
+			SelectHero( i + 8, "npc_dota_hero_ogre_magi" );
+			SelectHero( i + 9, "npc_dota_hero_ogre_magi" );
+		end
+	end
+
+hUnit GetTeamMember( nPlayerNumberOnTeam )
+	Returns a handle to the Nth player on the team.
+	返回友方队伍第N名玩家的句柄。
+	参数是队伍中槽位的第几位，并非playerID。
+
+bool IsTeamPlayer( nPlayerID )
+	Returns whether the player is on Radiant or Dire.
+	返回该玩家是否是友方队伍的。
+
+bool IsPlayerBot( nPlayerID )
+	Returns whether the specified playerID is a bot.
+	返回该玩家是否是机器人。
+
+int GetTeamForPlayer( nPlayerID )
+	Returns the team for the specified playerID.
+	返回该玩家是属于哪个团队阵营的。
+
+{ hUnit, ... } GetUnitList( nUnitType )
+	Returns a list of units matching the specified unit type. Please keep in mind performance considerations when using GetUnitList().
+	The function itself is reasonably fast because it will build the lists on-demand and no more than once per frame, but the lists can be long and performing logic on all units (or even all creeps) can easily get pretty slow.
+	返回所有可见指定特殊类型单位的集合。请注意使用这个函数的时候程序运行的性能消耗问题。
+	函数本身相当快，因为它将按需构建列表，且每帧不超过一次，但是列表可能很长，并且所有单位（甚至所有小兵生物）上的逻辑都执行可能很容易变得相当慢。
+	【参数nUnitType搜索链接：Constants - Unit Types】
+
+hAbility GetBotAbilityByHandle( iHandle )
+	Get the bot ability specified by their supplied [CMsgBotWorldState] handle id.
+	通过提供的[CMsgBotWorldState]文件句柄id获得机器人某个技能。
+	此函数属于 bot state dump 范畴，通常情况下使用不到。
+
+hUnit GetBotByHandle( iHandle )
+	Get the bot specified by their supplied [CMsgBotWorldState] handle id.
+	通过提供的[CMsgBotWorldState]文件句柄id获得某个机器人。
+	此函数属于 bot state dump 范畴，通常情况下使用不到。
+
+float DotaTime()
+	Returns the game time. Matches game clock. Pauses with game pause.
+	返回游戏内的时间。一进入比赛游戏就开始计时了，随着游戏暂停而暂停。
+	返回结果是秒数。出小兵之前返回结果是秒的负数值。
+
+float GameTime()
+	Returns the time since the hero picking phase started. Pauses with game pause.
+	返回的时间是选择英雄时就开始计时了，随着游戏暂停而暂停。
+	返回结果是秒数。
+
+float RealTime()
+	Returns the real-world time since the app has started. Does not pause with game pause.
+	返回真实世界的时间，一旦程序运行就开始计时。不会随着游戏暂停而暂停。
+	返回结果是秒数。
+
+float GetUnitToUnitDistance( hUnit1, hUnit2 )
+	Returns the distance between two units.
+	返回两个单位之间的距离。
+
+float GetUnitToUnitDistanceSqr( hUnit1, hUnit2 )
+	Returns the squared distance between two units.
+	返回两个单位之间的距离的平方根。
+
+float GetUnitToLocationDistance( hUnit, vLocation )
+	Returns the distance between a unit and a location.
+	返回一个单位和一个地点之间的距离。
+
+float GetUnitToLocationDistanceSqr( hUnit, vLocation )
+	Returns the squared distance between a unit and a location.
+	返回一个单位和一个地点之间的距离平方根。
+
+{ distance, closest_point, within } PointToLineDistance( vStart, vEnd, vPoint )
+	Returns a table containing the distance to the line segment, the closest point on the line segment, and whether the point is "within" the line segment (that is, the closest point is not one of the endpoints).
+	返回一个表，该表包含点到线段的距离、线段上的最近点以及该点是否“在”线段内（即最近点不是端点之一）。
+
+{ float, float, float, float } GetWorldBounds()
+	Returns a table containing the min X, min Y, max X, and max Y bounds of the world.
+	返回一个表，该表包含世界地图的最小X，最小Y，最大X和最大Y的边界尺寸。
+
+InstallDamageCallback( nPlayerID, func )
+	Install a callback for whenever a unit controlled by the specified playerID is damaged.
+	If you specify -1 as the nPlayerID it will be called for all players.
+	The func supplied should have a single parameter which is a table that includes { player_id, unit, damage } for the callback.
+	当一个被指定玩家ID控制的单位受到伤害时回调函数。
+	如果你设置nPlayerID参数为-1，那么它将会为所有玩家回调此函数func。
+	回调函数func里包含一个参数，该参数是一个表，该表包含 { 玩家id，单位句柄，所受伤害量 } 这些元素用以回调。
+
+InstallCastCallback( nPlayerID, func )
+	Install a callback for whenever a unit controlled by the specified playerID uses an ability or item.
+	If you specify -1 as the playerID it will be called for all players.
+	The func supplied should have a single parameter which is a table that includes { player_id, unit, ability, location } for the callback.
+	当一个被指定玩家ID控制的单位使用技能或物品时回调函数。
+	如果你设置nPlayerID参数为-1，那么它将会为所有玩家回调此函数func。
+	回调函数func里包含一个参数，该参数是一个表，该表包含 { 玩家id，单位句柄，技能或物品句柄，位置 } 这些元素用以回调。
+
+InstallCourierDeathCallback( func )
+	Install a callback for whenever a courier is killed.
+	The func supplied should have a single parameter which is a table that includes unit(handle to the courier unit) and team(the team number of the courier).
+	当信使被杀死时回调函数。
+	回调函数func里包含一个参数，该参数是一个表，该表包含 { 信使句柄，信使所在团队 } 这些元素用以回调。
+
+InstallRoshanDeathCallback( func )
+	Install a callback for whenever Roshan is killed.
+	The func supplied should have no parameters.
+	当肉山被杀死时回调函数。
+	回调函数func里无参数。
+
+InstallChatCallback( func )
+	Install a callback for whenever a player chats.
+	The func supplied should have a single parameter which is a table that includes { player_id, team_only, string } for the callback.
+	当一个玩家在打字聊天时回调函数。
+	回调函数func里包含一个参数，该参数是一个表，该表包含 { 玩家id，是否只发给队友，打字聊天内容 } 这些元素用以回调。
+
+bool IsLocationPassable( vLocation )
+	Returns whether the specified location is passable.
+	返回指定地点是否可通行。
+	经实测，无法移动的高台地形返回true，而大片树林里无论是否可移动都返回false。
+
+bool IsRadiusVisible( vLocation, fRadius )
+	Returns whether a circle of the specified radius at the specified location is visible.
+	返回指定地点一个半径范围内的圆形区域地形是否可见。
+
+bool IsLocationVisible( vLocation )
+	Returns whether the specified location is visible.
+	返回指定地点是否可见。
+
+int GetHeightLevel( vLocation )
+	Returns the height value (1 through 5) of the specified location.
+	返回指定地点的地形高度（从1到5，5是海拔最高地形）。
+
+{ { team, type, speed, location, min, max }, ... } GetNeutralSpawners()
+	Get the location of all neutral spawners, and what side of the river they’re on.
+	获取所有中立野怪的营地位置和他们所在的河流分布区域。
+	team是野怪位于天辉还是夜魇地图这边；type是野怪类型，有small小野、medium中野、large大野、ancient远古野这4种；
+	speed是野怪的移动速度抽象特征，有fast、normal、slow这3种；location是野怪的营地中心的坐标位置；
+	min和max分别是野怪封野区域（即游戏中按住ALT键可以显示封野范围）离中心点最近和最远的4个顶点之一的坐标位置。
+
+{ { playerid, location, time_remaining }, ... } GetIncomingTeleports()
+	Gets a table of all the teleports that are visibly happening.
+	获得一个表，包含所有可见的正在使用回城卷轴传送的信息。
+	playerid是该回城卷轴使用者的玩家ID，location是回城卷轴的使用位置，time_remaining是回城卷轴离传送完毕的剩余时间。
+
+{ { string, ... }, ... } GetItemComponents( sItemName )
+	Returns a table of items required to make the specified item.
+	返回一个表，该表包含的是某个物品的合成配方名称。
+	返回的表内部结构是层层镶套的，比如散夜对剑，返回表里面包含2个表，1个是夜叉的表配方，1个是散华的表配方，而不是仅仅一个所有基础配方全部摊开的表。
+
+int GetItemCost( sItemName )
+	Returns the cost of the specified item.
+	返回指定物品的商店售价。
+
+bool IsItemPurchasedFromSecretShop( sItemName )
+	Returns if the specified item is purchased from the secret shops.
+	返回指定物品是否可以从神秘商店购买。
+
+bool IsItemPurchasedFromSideShop( sItemName )
+	Returns if the specified item can be purchased from the side shops.
+	返回指定物品是否可以从边路商店购买。
+
+int GetItemStockCount( sItemName )
+	Returns the current stock count of the specified item.
+	返回指定物品在商店的当前库存量。
+
+{ { hItem, hOwner, playerid, vLocation }, ...} GetDroppedItemList()
+	Returns a table of tables that list the item, owner, and location of items that have been dropped on the ground.
+	返回一个表，该表包含掉落物品的相关信息。
+	hItem是掉落物品的句柄，hOwner是该物品所属单位的句柄，playerid是该物品所属单位的所属玩家ID，vLocation是该物品掉落所在位置。
+
+float GetPushLaneDesire( nLane )
+	Returns the team's current desire to push the specified lane.
+	返回队伍推进某条兵线的当前欲望值。
+
+float GetDefendLaneDesire( nLane )
+	Returns the team's current desire to defend the specified lane.
+	返回队伍防守某条兵线的当前欲望值。
+
+float GetFarmLaneDesire( nLane )
+	Returns the team's current desire to farm the specified lane.
+	返回队伍在某条兵线打钱的当前欲望值。
+
+float GetRoamDesire()
+	Returns the team's current desire to roam to a target.
+	返回队伍游走某个目标的当前欲望值。
+
+hUnit GetRoamTarget()
+	Returns the team's current roam target.
+	返回队伍当前游走目标单位的句柄。
+
+float GetRoshanDesire()
+	Returns the team's current desire to kill Roshan.
+	返回队伍打肉山的当前欲望值。
+
+int GetGameState()
+	Returns the current game state.
+	返回当前游戏状态。
+	【返回结果搜索链接：Constants - Game States】
+
+float GetGameStateTimeRemaining()
+	Returns how much time is remaining in the current game state, if applicable.
+	返回当前游戏状态还剩多少时间结束，如可能。
+
+int GetGameMode()
+	Returns the current game mode.
+	返回当前游戏模式。
+	【返回结果搜索链接：Constants - Game Modes】
+
+int GetHeroPickState()
+	Returns the current hero pick state.
+	返回当前英雄选择状态。
+	【返回结果搜索链接：Constants - Hero Pick States】
+
+bool IsPlayerInHeroSelectionControl( nPlayerID )
+	Returns whether the specified player is in selection control when picking a hero.
+	返回指定玩家ID在选择英雄时是否在选择控制中。
+
+SelectHero( nPlayerID, sHeroName )
+	Selects a hero for the specified player.
+	为指定玩家ID选择一个英雄。
+
+string GetSelectedHeroName( nPlayerID )
+	Returns the name of the hero the specified player has selected.
+	返回指定玩家ID选择的英雄名。
+
+bool IsInCMBanPhase()
+	Returns whether we're in a Captains Mode ban phase.
+	返回是否是队长模式的ban英雄阶段。
+
+bool IsInCMPickPhase()
+	Returns whether we're in a Captains Mode pick phase.
+	返回是否是队长模式的选英雄阶段。
+
+float GetCMPhaseTimeRemaining()
+	Gets the time remaining in the current Captains Mode phase.
+	返回当前队长模式的剩余时间。
+
+int GetCMCaptain()
+	Gets the Player ID of the Captains Mode Captain.
+	返回队长模式的队长所属玩家ID。
+
+SetCMCaptain( nPlayerID )
+	Sets the Captains Mode Captain to the specified Player ID.
+	将指定玩家ID设置为队长模式的队长。
+
+bool IsCMBannedHero( sHeroName )
+	Returns whether the specified hero has been banned in a Captains Mode game.
+	返回指定英雄是否在队长模式中被ban掉了。
+
+bool IsCMPickedHero( nTeam, sHeroName )
+	Returns whether the specified hero has been picked in a Captains Mode game.
+	返回指定英雄是否在队长模式中被某一边团队选择了。
+
+CMBanHero( sHeroName )
+	Bans the specified hero in a Captains Mode game.
+	在队长模式中ban掉指定英雄。
+
+CMPickHero( sHeroName )
+	Picks the specified hero in a Captains Mode game.
+	在队长模式中选择指定英雄。
+
+int RandomInt( nMin, nMax )
+	Returns a random integer between nMin and nMax, inclusive.
+	返回一个从 nMin 到 nMax 之间的随机整数，包含边界。
+
+float RandomFloat( fMin, fMax )
+	Returns a random float between nMin and nMax, inclusive.
+	返回一个从 fMin 到 fMax 之间的随机符点数，包含边界。
+
+vector RandomVector( fLength )
+	Returns a vector of fLength pointing in a random direction in the X/Y axis.
+	返回在X/Y轴上的随机方向上的指向长度向量。
+
+bool RollPercentage( nChance )
+	Rolls a number from 1 to 100 and returns whether it is less than or equal to the specified number.
+	从1到100之间骰一个数字，并返回它是否小于或等于指定的数字。
+
+float Min( fOption1, fOption2 )
+	Returns the smaller of fOption1 and fOption2.
+	返回两者之间较小值。
+
+float Max( fOption1, fOption2 )
+	Returns the larger of fOption1 and fOption2.
+	返回两者之间较大值。
+
+float Clamp( fValue, fMin, fMax )
+	Returns fValue clamped within the bounds of fMin and fMax.
+	返回 fValue 在 fMin 和 fMax 范围内的值。
+	如果fValue小于最小值fMin，则返回fMin；如果fValue大于最大值fMax，则返回fMax；否则返回fValue本身。
+
+float RemapVal( fValue, fFromMin, fFromMax, fToMin, fToMax )
+	Returns fValue linearly remapped onto fFrom to fTo.
+	返回 fValue 在 fFromMin 和 fFromMax 范围内根据线性（比例）重映射到 fFrom 到 fTo 上的值。
+	fValue 在 fFromMin 到 fFromMax 范围根据缩放比例映射到 fToMin 和 fToMax 上的值，
+	要注意的是，最终返回值不一定在 fToMin 和 fToMax 之间，仅仅是线性缩放而已。
+
+float RemapValClamped( fValue, fFromMin, fFromMax, fToMin, fToMax )
+	Returns fValue linearly remapped onto fFrom to fTo, while also clamping within their bounds.
+	返回 fValue 在 fFromMin 和 fFromMax 范围内根据线性（比例）和缩放（比例）重映射到 fFrom 到 fTo 上的值。
+	如果 fValue 小于最小值 fFromMin ，则返回 fToMin ；如果 fValue 大于最大值 fFromMax ，则返回 fToMax ；
+	否则 fValue 在 fFromMin 和 fFromMax 范围内根据线性比例缩放返回 fToMin 和 fToMax 边界范围内的值。
+
+int GetUnitPotentialValue( hUnit, vLocation, fRadius )
+	Gets the 0-255 potential location value of a hero at the specified location and radius.
+	获取指定单位在指定地点和半径范围内的预估潜在位置。
+
+bool IsCourierAvailable()
+	Returns if the courier is available to use.
+	返回信使是否可用。
+
+bool IsFlyingCourier( hCourier )
+	Gets whether a courier is a flying courier.
+	返回该单位是否是飞行信使。
+
+int GetNumCouriers()
+	Returns the number of team couriers.
+	返回队伍中信使的数量。
+
+hCourier GetCourier( nCourier )
+	Returns a handle to the specified courier (zero based index).
+	返回指定信使的句柄（索引从0开始）。
+
+int GetCourierState( hCourier )
+	Returns the current state of the specified courier.
+	获取指定信使的当前状态。
+	【返回结果搜索链接：Constants - Courier Actions and States】
+
+vector GetTreeLocation( nTree )
+	Returns the specified tree location.
+	返回指定树木的位置。
+
+vector GetRuneSpawnLocation( nRuneLoc )
+	Returns the location of the specified rune spawner.
+	返回指定神符的重生位置。
+	【参数搜索链接：Constants - Rune Locations】
+
+vector GetShopLocation( nTeam, nShop )
+	Returns the location of the specified shop.
+	返回指定商店的位置。
+
+float GetTimeOfDay()
+	Returns the time of day -- 0.0 is midnight, 0.5 is noon.
+	返回一天的时间 -- 0.0是午夜，0.5是正午。
+
+hUnit GetTower( nTeam, nTower )
+	Returns the specified tower.
+	返回指定塔的句柄。
+	【参数 nTower 搜索链接：Constants - Towers】
+
+hUnit GetTowerAttackTarget( nTeam, nTower )
+	Gets the attack target of the specified tower on the specified team.
+	返回指定塔的攻击目标的句柄。
+
+hUnit GetBarracks( nTeam, nBarracks )
+	Returns the specified barracks.
+	返回指定兵营的句柄。
+	【参数 nBarracks 搜索链接：Constants - Barracks】
+
+hUnit GetShrine( nTeam, nShrine )
+	Returns the specified shrine.
+	返回指定圣坛的句柄。
+	【参数 nShrine 搜索链接：Constants - Shrines】
+
+hUnit GetAncient( nTeam )
+	Returns the specified ancient.
+	返回指定的基地大本营的句柄。
+
+{ hUnit, ... } GetAllTrees()
+	Returns a table with all tree locations.
+	返回所有树木句柄的集合表。
+
+float GetGlyphCooldown()
+	Get the current Glyph cooldown in seconds. Will return 0 if it is off cooldown.
+	返回当前塔防的冷却时间。如果冷却好了，返回0。
+
+float GetRoshanKillTime()
+	Get the last time that Roshan was killed.
+	返回上次肉山被杀死的时间。
+
+float GetLaneFrontAmount( nTeam, nLane, bIgnoreTowers )
+	Return the lane front amount (0.0 - 1.0) of the specified team's creeps along the specified lane. Optionally can ignore towers.
+	返回指定队伍在指定分路下的前方兵线所在位置的系数参考值。bIgnoreTowers指的是是否忽略塔。
+	对于任何一条分路来说，友方基地的amount值为0.0，敌方大本营的amount值为1.0，兵线处于哪个位置根据官方设定的小兵行进总路线按比例缩放获得的amount参考值。
+	通常来说指的是某条分路最前线的一波兵，而参数bIgnoreTowers指的是当有几波兵的时候，是否忽略掉进入敌方最外层塔范围内的那波兵。
+
+vector GetLaneFrontLocation( nTeam, nLane, fDeltaFromFront )
+	Returns the location of the lane front for the specified team and lane. Always ignores towers. Has a third parameter for a distance delta from the front.
+	返回指定队伍在指定分路下的前方兵线的位置。总是忽略进敌方最外层塔的兵线。第三个参数是这个位置的偏移距离。
+	偏移距离fDeltaFromFront向前为正、向后为负，偏移仍然是沿着兵线偏移的，所以偏移后位置仍然在兵线上。
+
+vector GetLocationAlongLane( nLane, fAmount )
+	Returns the location the specified amount (0.0 - 1.0) along the specified lane.
+	返回指定分路下的指定系数参考值对应的坐标位置。
+
+{ amount, distance } GetAmountAlongLane( nLane, vLocation )
+	Returns the amount (0.0 - 1.0) along a lane, and distance from the lane of the specified location.
+	返回指定位置对应的指定分路下的信息。
+	amount是这个坐标位置对应的分路的系数参考值，distance是离该分路的距离。
+	通常来说，就是这个指定坐标向指定分路做一条垂直线，垂足对应的分路系数参考值就是返回amount，而该位置和垂足这条线段的长度就是返回distance。
+
+int GetOpposingTeam()
+	Returns the opposing Team ID.
+	返回敌方队伍ID。
+
+bool IsHeroAlive( nPlayerID )
+	Returns whether the specified PlayerID's hero is alive.
+	返回指定玩家ID的英雄是否存活。
+
+int GetHeroLevel( nPlayerID )
+	Returns the specified PlayerID's hero's level.
+	返回指定玩家ID的英雄当前等级。
+
+int GetHeroKills( nPlayerID )
+	Returns the specified PlayerID's hero's kill count.
+	返回指定玩家ID的英雄击杀数。
+
+int GetHeroDeaths( nPlayerID )
+	Returns the specified PlayerID's hero's death count.
+	返回指定玩家ID的英雄死亡数。
+
+int GetHeroAssists( nPlayerID )
+	Returns the specified PlayerID's hero's assists count.
+	返回指定玩家ID的英雄助攻数。
+
+{ {location, time_since_seen}, ...} GetHeroLastSeenInfo( nPlayerID )
+	Returns a table containing a list of locations and time_since_seen members, each representing the last seen location of a hero that player controls.
+	返回一个表，该表包含指定玩家ID控制的英雄上次被看到的信息。
+	location是上次看到的位置，time_since_seen是看到时距离现在的时间。
+
+{ {location, caster, playerid, ability, velocity, radius, handle }, ... } GetLinearProjectiles()
+	Returns a table containing info about all visible linear projectiles.
+	返回行进轨迹为线性的可见弹道的集合。
+	location - 弹道行进过程中的实时位置
+	caster - 弹道来源单位的句柄
+	playerid - 弹道来源单位所属玩家的ID
+	ability - 弹道所属技能的句柄
+	velocity - 速度向量，用一个坐标代替弹道前进方向
+	radius - 弹道宽度，变径弹道就通常会随着弹道行进发生变化
+	handle - 技能句柄的entry值，通常用来识别相同的技能弹道隶属不同的来源，比如清莲宝珠或者水人拉比克复制造成的多个相同技能弹道。可供 GetLinearProjectileByHandle 函数作为参数调用
+	经实测，特别注意的是，此函数指的是技能弹道的行进轨迹是线性的，并非他的轮廓是线性的，即使他的轮廓是圆的或者方的也没任何影响。
+	【示例】冰魂大招、蝙蝠的烈焰破击、死亡先知的波、小黑的沉默、土猫的巨石冲击和巨石翻滚、上古巨神的大招、火猫释放残焰、卡尔的吹风陨石超声波、
+		双头龙的冰火交加、光法的冲击波、昆卡的幽灵船、火女的龙破斩、莱恩小强沙王的穿刺、猛犸的波、白虎的箭、变体精灵的波浪形态、
+		影魔的“有魂”大招、滚滚的声东击西、凤凰的烈焰精灵、仙女龙的波、屠夫的钩子、女王的大招、发条的导弹和钩子、毒狗的漂毒、
+		伐木机的钩子和轮盘释放、幽鬼的镖、蓝猫的大招飞、潮汐的大招毁灭、修补匠的进击的机械、小小的山崩、巨魔的远程飞斧、巨牙海民的冰片、
+		剧毒的瘴气、蚂蚁的蝗虫、风行者的强力击共大约42项。
+
+{ location, caster, playerid, ability, velocity, radius } GetLinearProjectileByHandle( nProjectileHandle )
+	Returns a table containing info about the specified linear projectile.
+	根据指定技能句柄的entry值获取该线性弹道的相关信息。
+	返回值请参考 GetLinearProjectiles 函数。
+	参数 nProjectileHandle 就是函数 GetLinearProjectiles 中的返回值 handle。
+
+{ {location, playerid, ability, caster, radius }, ... } GetAvoidanceZones()
+	Returns a table containing info about all visible avoidance zones.
+	返回可见区域范围弹道的集合。
+	返回值请参考 GetLinearProjectiles 函数。
+	经实测，技能有“持续性"的范围效果且"明显"的粒子特效才能获取。比如毒龙的的幽冥剧毒可以读取，但是炼金的酸雾却无法获取。暂不清楚内部判定机制。
+	【示例】血魔的血之祭祀、黑贤的复制之墙、邪影芳龄的荆棘迷宫、萨尔的动能力场和静态风暴、谜团的午夜凋零和黑洞、虚空的时间结界、
+		卡尔的磁暴、双头龙的冰封路径和烈焰焚身、隐刺的烟幕、火枪的榴霰弹、毒龙的幽冥剧毒共大约14项。
+
+int GetRuneType( nRuneLoc )
+	Returns the rune type of the rune at the specified location, if known.
+	返回指定神符位置的神符类型，如果知道的话。
+
+int GetRuneStatus( nRuneLoc )
+	Returns the status of the rune at the specified location.
+	返回指定神符位置的神符状态。
+
+float GetRuneTimeSinceSeen( nRuneLoc )
+	Returns how long it's been since we've seen the rune at the specified location.
+	返回指定神符位置的神符被看到后离现在的时间。
+
+float GetShrineCooldown( hShrine )
+	Returns the current cooldown of the specified Shrine.
+	返回指定圣坛的当前冷却时间。
+
+bool IsShrineHealing( hShrine )
+	Returns whether the specified shrine is currently healing.
+	返回指定圣坛是否正在开启治疗效果。
+
+int AddAvoidanceZone( vLocationAndRadius, fDuration )
+	Adds an avoidance zone for use with GeneratePath(). Takes a Vector with x and y as a 2D location, and z as as radius. fDuration is its duration. Returns a handle to the avoidance zone.
+	？
+
+int AddConditionalAvoidanceZone( vLocationAndRadius, funcEval )
+	Adds a global avoidance zone for use with GeneratePath, with a conditional function which takes one parameter(the avoidance zone index returned by AddConditionalAvoidanceZone) for whether it’s active or not.
+	When it returns false, the avoidance zone is disabled.
+	？
+
+RemoveAvoidanceZone( hAvoidanceZone )
+	Removes the specified avoidance zone.
+	？
+
+GeneratePath( vStart, vEnd, tAvoidanceZones, funcCompletion )
+	Pathfinds from vStar to vEnd, avoiding all the specified avoidance zones and the ones specified with AddAvoidanceZone.
+	Will call funcCompltion when done, which is a function that has three parameters: a distance of the path, the index of the path request returned from GeneratePath and a table that contains all the waypoints of the path.
+	If the pathfind fails, it will call that function with a distance of 0 and an empty waypoint table.
+	？
+
+DebugDrawLine( vStart, vEnd, nRed, nGreen, nBlue )
+	Draws a line from vStar to vEnd in the specified color for one frame.
+	根据红、绿、蓝三色调配方案每帧画一条线，用于调试。
+	vStart和vEnd是线段的起始和终点坐标。
+	nRed、nGreen、nBlue是三色调配，具体取值请参考相关资料。
+
+DebugDrawCircle( vCenter, fRadius, nRed, nGreen, nBlue )
+	Draws a circle at vCenter with radius fRadius in the specified color for one frame.
+	根据红、绿、蓝三色调配方案每帧画一个圆，用于调试。
+	vCenter和fRadius是圆的中心坐标和半径。
+	nRed、nGreen、nBlue是三色调配，具体取值请参考相关资料。
+
+DebugDrawText( fScreenX, fScreenY, sText, nRed, nGreen, nBlue )
+	Draws the specified text at fScreenX, fScreenY on the screen in the specified color for one frame.
+	根据红、绿、蓝三色调配方案每帧写一段文字，用于调试。
+	fScreenX和fScreenY是文本框最左上角在地图上对应的X和Y坐标，sText是文本内容。
+	nRed、nGreen、nBlue是三色调配，具体取值请参考相关资料。
+
+DebugPause()
+	Pauses the game.
+	暂停游戏，用于调试。
+
+handle CreateHTTPRequest( string )
+	Create a localhost HTTP request.
+	创建一个本地HTTP请求。
+
+handle CreateRemoteHTTPRequest( string )
+	Create a remote HTTP request.
+	创建一个远程HTTP请求。
+
+----------------------------------------------------------------------------------------------------
+-- Functions - Unit-Scoped 函数-单位范围
+----------------------------------------------------------------------------------------------------
+
+Action_ClearActions( bStop )
+	Clear action queue and return to idle and optionally stop in place with bStop true.
+	清空动作队列并返回空动作类型，参数 bStop 如果是 true 则立即停止当前动作，如果是 false 相当于做完当前这个动作再停止。
+
+Action_MoveToLocation( vLocation )
+ActionPush_MoveToLocation( vLocation )
+ActionQueue_MoveToLocation( vLocation )
+	Command a bot to move to the specified location, this is not a precision move.
+	命令机器人移动到指定位置，这并非精确的移动。
+	并非精确移动的意思是你无法获得机器人的移动行进路线，通常来说就是采用机器人寻路系统。
+
+	--------------------------------------------------------------------
+
+	【下列所有该形式的Action都适用并参考这条规则】这些形式允许您与操作队列交互。
+		ActionPush_形式的函数都会将指定的操作设置为当前活动操作，但现有操作在完成时将恢复。
+		ActionQueue_形式的函数允许您按顺序排列多个操作。
+		Action_形式的函数将完全清除队列，并将指定的操作设置为活动操作。
+	【示例】
+	So for example, if you did this:
+
+	Action_MoveTo( X )
+	ActionPush_UseAbility( A )
+	ActionPush_UseAbility( B )
+	ActionQueue_UseAbility( C )
+
+	Your bot will UseAbility B, UseAbility A, MoveTo X, and UseAbility C.
+
+	After each function, the queue will look like this:
+	X
+	A X
+	B A X
+	B A X C
+
+	On the other hand, if you did this:
+
+	Action_MoveTo( X )
+	ActionPush_UseAbility( A )
+	Action_MoveTo( Y )
+
+	Your bot will simply MoveTo Y, because it clears the queue when executed.
+
+	另外，一些Action_形式的函数根本不与队列交互，并且简单地立即执行。它们已重命名为具有ActionImmedate_前缀，具体如下：
+		ActionImmediate_Buyback
+		ActionImmediate_Chat
+		ActionImmediate_Courier
+		ActionImmediate_DisassembleItem
+		ActionImmediate_Glyph
+		ActionImmediate_LevelAbility
+		ActionImmediate_Ping
+		ActionImmediate_PurchaseItem
+		ActionImmediate_SellItem
+		ActionImmediate_SetItemCombineLock
+		ActionImmediate_SwapItems
+
+	--------------------------------------------------------------------
+
+Action_MoveDirectly( vLocation )
+ActionPush_MoveDirectly( vLocation )
+ActionQueue_MoveDirectly( vLocation )
+	Command a bot to move to the specified location, bypassing the bot pathfinder. Identical to a user's right-click.
+	命令机器人移动到指定位置，不采用机器人寻路系统。相当于鼠标点击右键到某个位置。
+
+Action_MovePath( tWaypoints )
+ActionPush_MovePath( tWaypoints )
+ActionQueue_MovePath( tWaypoints )
+	Command a bot to move along the specified path.
+	命令机器人沿着指定路径移动。
+	tWaypoints 是一系列坐标点的集合表。
+
+Action_MoveToUnit( hUnit )
+ActionPush_MoveToUnit( hUnit )
+ActionQueue_MoveToUnit( hUnit )
+	Command a bot to move to the specified unit, this will continue to follow the unit.
+	命令机器人移动到指定单位的位置，这会让机器人持续跟踪那个单位。
+
+Action_AttackUnit( hUnit, bOnce )
+ActionPush_AttackUnit( hUnit, bOnce )
+ActionQueue_AttackUnit( hUnit, bOnce )
+	Tell a unit to attack a unit with an option bool to stop after one attack if true.
+	让机器人攻击一个单位。
+	bOnce 是如果攻击一次后是否停止继续攻击这个相同目标。这个参数设计出来的意义在于正反补。
+
+Action_AttackMove( vLocation )
+ActionPush_AttackMove( vLocation )
+ActionQueue_AttackMove( vLocation )
+	Tell a unit to attack-move a location.
+	让机器人移动并攻击到指定位置。
+
+Action_UseAbility( hAbility )
+ActionPush_UseAbility( hAbility )
+ActionQueue_UseAbility( hAbility )
+	Command a bot to use a non-targeted ability or item.
+	命令机器人使用一个没有指定目标的技能或物品。
+
+Action_UseAbilityOnEntity( hAbility, hTarget )
+ActionPush_UseAbilityOnEntity( hAbility, hTarget )
+ActionQueue_UseAbilityOnEntity( hAbility, hTarget )
+	Command a bot to use a unit targeted ability or item on the specified target unit.
+	命令机器人使用一个指定目标单位的技能或物品。
+
+Action_UseAbilityOnLocation( hAbility, vLocation )
+ActionPush_UseAbilityOnLocation( hAbility, vLocation )
+ActionQueue_UseAbilityOnLocation( hAbility, vLocation )
+	Command a bot to use a ground targeted ability or item on the specified location.
+	命令机器人使用一个指定目标位置的技能或物品。
+
+Action_UseAbilityOnTree( hAbility, iTree )
+ActionPush_UseAbilityOnTree( hAbility, iTree )
+ActionQueue_UseAbilityOnTree( hAbility, iTree )
+	Command a bot to use a tree targeted ability or item on the specified tree.
+	命令机器人使用一个指定目标树木的技能或物品。
+
+Action_PickUpRune( nRune )
+ActionPush_PickUpRune( nRune )
+ActionQueue_PickUpRune( nRune )
+	Command a hero to pick up the rune at the specified rune location.
+	命令机器人去吃指定的神符。
+
+Action_PickUpItem( hItem )
+ActionPush_PickUpItem( hItem )
+ActionQueue_PickUpItem( hItem )
+	Command a bot to pick up the specified item.
+	命令机器人去拾取指定物品。
+
+Action_DropItem( hItem, vLocation )
+ActionPush_DropItem( hItem, vLocation )
+ActionQueue_DropItem( hItem, vLocation )
+	Command a bot to drop the specified item and the provided location.
+	命令机器人扔掉指定物品到指定位置。
+
+Action_UseShrine( hShrine )
+ActionPush_UseShrine( hShrine )
+ActionQueue_UseShrine( hShrine )
+	Command a bot to use the specified shrine.
+	命令机器人使用指定的圣坛。
+
+Action_Delay( fDelay )
+ActionPush_Delay( fDelay )
+ActionQueue_Delay( fDelay )
+	Command a bot to delay for the specified amount of time.
+	命令机器人延迟指定的时间。
+
+
+int ActionImmediate_PurchaseItem ( sItemName )
+	Command a bot to purchase the specified item. Item names can be found here.
+	命令机器人购买指定物品。物品的程序内开发英文名称请自行搜索相关资料。
+
+ActionImmediate_SellItem( hItem )
+	Command a bot to sell the specified item.
+	命令机器人出售指定物品。
+
+ActionImmediate_DisassembleItem( hItem )
+	Command a bot to disassemble the specified item.
+	命令机器人拆分指定物品。
+
+ActionImmediate_SetItemCombineLock( hItem, bLocked )
+	Command a bot to lock or unlock combining of the specified item.
+	命令机器人锁住或解锁指定物品。
+
+ActionImmediate_SwapItems( index1, index2 )
+	Command a bot to swap the items in index1 and index2 in their inventory. Indices are zero based with 0-5 corresponding to inventory, 6-8 are backpack and 9-14 are stash.
+	命令机器人交换物品栏的两件物品所在槽位。索引从0开始，0-5是物品栏，6-8是背包，9-14是储藏室。
+
+ActionImmediate_Courier( hCourier, nAction )
+	Command the courier specified by hCourier to perform one of the courier Actions.
+	命令信使执行一个信使动作。
+	【参数 nAction 搜索链接：Constants - Courier Actions and States】
+
+ActionImmediate_Buyback()
+	Tell a hero to buy back from death.
+	让机器人买活。
+
+ActionImmediate_Glyph()
+	Tell a hero to use Glyph.
+	让机器人使用塔防。
+
+ActionImmediate_LevelAbility ( sAbilityName )
+	Command a bot to level an ability or a talent. Ability and talent names can be found here.
+	命令机器人升级技能或天赋。技能或天赋名的程序内开发英文名称请自行搜索相关资料。
+
+ActionImmediate_Chat( sMessage, bAllChat )
+	Have a bot say something in team chat, bAllChat true to say to all chat instead.
+	让机器人对团队打字说话，参数bAllChat如果为true代表是对敌我双方都讲话，如果为false则是只对队友讲。
+
+ActionImmediate_Ping( fXCoord, fYCoord, bNormalPing )
+	Command a bot to ping the specified coordinates with bNormalPing setting the ping type.
+	命令机器人ping一下地图提示，参数bNormalPing用来设置ping的类型，代表是否是常规的ping。
+
+int GetCurrentActionType ()
+	Get the type of the currently active Action.
+	获取当前激活的动作类型。
+
+int NumQueuedActions()
+	Get number of actions in the action queue.
+	获取动作队列中的动作总数量。
+
+int GetQueuedActionType( nAction )
+	Get the type of the specified queued action.
+	获取队列中指定动作的类型。
+
+
+bool IsBot()
+	Returns whether the unit is a bot (otherwise they are a human).
+	返回该单位是否是机器人（如果不是，那么他们是人类）。
+
+int GetDifficulty()
+	Gets the difficulty level of this bot.
+	返回该机器人的游戏难度等级。
+
+string GetUnitName()
+	Gets the name of the unit. Note that this is the under-the-hood name, not the normal (localized) name that you'd see for the unit.
+	返回该单位的名称。请注意获取的是内部程序开发的名称，而不是常规你所看到的单位名称。
+	【示例】
+		宙斯的全称 npc_dota_hero_zuus 中是 zuus ，而不是 zeus 。
+		影魔的全称 npc_dota_hero_nevermore 中是 nevermore，而不是 shadow_fiend。
+
+int GetPlayerID()
+	Gets the Player ID of the unit, used in functions that refer to a player rather than a specific unit.
+	获取该单位所属的玩家ID，用于指玩家而不是特定单位的函数。
+
+int GetTeam()
+	Gets team to which this unit belongs.
+	获取该单位所属的队伍。
+	天辉、夜魇、中立。
+
+bool IsHero()
+	Returns whether the unit is a hero.
+	返回该单位是否是一个英雄。
+
+bool IsIllusion()
+	Returns whether the unit is an illusion. Always returns false on enemies.
+	返回该单位是否是一个幻象。如果是敌方单位总是返回false。
+
+bool IsCourier()
+	Returns whether the unit is a courier?
+	返回该单位是否是一个信使。
+
+bool IsCreep()
+	Returns whether the unit is a creep.
+	返回该单位是否是一个小兵生物。
+
+bool IsAncientCreep()
+	Returns whether the unit is an ancient creep.
+	返回该单位是否是一个远古生物。
+
+bool IsBuilding()
+	Returns whether the unit is a building. This includes towers, barracks, filler buildings, and the ancient.
+	返回该单位是否是一个建筑。建筑包括防御塔、兵营、基地高地上的填充建筑、基地大本营。
+
+bool IsTower()
+	Returns whether the unit is a tower.
+	返回该单位是否是一个防御塔。
+
+bool IsFort()
+	Returns whether the unit is the ancient.
+	返回该单位是否是基地大本营。
+
+
+bool CanBeSeen()
+	Check if a unit can currently be seen by your team. 
+	检测该单位是否可以被友方队伍可见。
+
+
+int GetActiveMode()
+	Get the bots currently active mode. This may not track modes in complete takeover bots.
+	获取机器人当前激活模式。此函数不适用于机器人完全接手开发模式。
+
+float GetActiveModeDesire()
+	Gets the desire of the currently active mode.
+	获取当前激活模式的欲望值。
+
+int GetHealth()
+	Gets the health of the unit.
+	获取该单位的当前生命值。
+
+int GetMaxHealth()
+	Gets the maximum health of the specified unit.
+	获取该单位的生命上限。
+
+float GetBaseHealthRegen()
+	Get a bot’s base health regen rate.
+	获取该单位的基础生命回复量。
+
+int GetHealthRegen()
+	Gets the current health regen per second of the unit.
+	获取该单位的当前每秒生命回复量。
+
+int GetHealthRegenPerStr()
+	Returns the health regen per second per point in strength.
+	返回每1点力量对应的每秒生命回复量。
+
+int GetMana()
+	Gets the current mana of the unit.
+	获取该单位的当前魔法值。
+
+int GetMaxMana()
+	Gets the maximum mana of the unit.
+	获取该单位的魔法上限。
+
+float GetBaseManaRegen()
+	Get a bot’s base mana regen rate.
+	获取该单位的基础魔法回复量。
+
+int GetManaRegen()
+	Gets the current mana regen of the unit.
+	获取该单位的当前每秒魔法回复量。
+
+int GetManaRegenPerInt()
+	Returns the mana regen per second per point in intellect.
+	返回每1点智力对应的每秒魔法回复量。
+
+int GetBaseMovementSpeed()
+	Gets the base movement speed of the unit.
+	获取该单位基础移动速度。
+
+int GetCurrentMovementSpeed()
+	Gets the current movement speed (base + modifiers) of the unit.
+	获取该单位当前移动速度（基础值+修正值）。
+
+
+bool IsAlive()
+	Returns true if the unit is alive.
+	返回该单位是否还存活。
+
+float GetRespawnTime()
+	Returns the number of seconds remaining for the unit to respawn. Returns -1.0 for non-heroes.
+	返回该单位离复活还剩多少秒。非英雄返回值为 -1.0。
+
+bool HasBuyback()
+	Returns true if the unit has buyback available. Will return false for enemies or non-heroes.
+	返回该单位是否可以有买活。敌方或非英雄单位返回值为 false。
+
+int GetBuybackCost()
+	Returns the current gold cost of buyback. Will return -1 for enemies or non-heroes.
+	返回该单位买活所需金钱。敌方或非英雄单位返回值为 -1。
+
+float GetBuybackCooldown()
+	Returns the current cooldown for buyback. Will return -1.0 for enemies or non-heroes.
+	返回该单位买活冷却时间。敌方或非英雄单位返回值为 -1.0。
+
+float GetRemainingLifespan()
+	Returns the remaining lifespan in seconds of units with limited lifespans.
+	返回一个拥有有限时间生命的该单位剩余的生命秒数。
+
+
+float GetBaseDamage()
+	Returns the average base damage of the unit.
+	返回该单位的基础攻击力平均值。
+
+float GetBaseDamageVariance()
+	Returns the +/- variance in the base damage of the unit.
+	返回该单位的基础攻击力 +/- 浮动上下限。
+
+float GetAttackDamage()
+	Returns actual attack damage (with bonuses) of the unit.
+	返回该单位实际攻击伤害（修正后）。
+
+int GetAttackRange()
+	Returns the range at which the unit can attack another unit.
+	返回该单位的普通攻击距离。
+
+int GetAttackSpeed()
+	Returns the attack speed value of the unit.
+	返回该单位的攻击速度。
+
+float GetSecondsPerAttack()
+	Returns the number of seconds per attack (including backswing) of the unit.
+	返回该单位每次攻击所需秒数（包括攻击后摇）。
+
+float GetAttackPoint()
+	Returns the point in the animation where a unit will execute the attack.
+	返回该单位的攻击前摇。
+
+float GetLastAttackTime()
+	Returns the time that the unit last executed an attack.
+	返回该单位上次做出攻击的时间点。
+
+hUnit GetAttackTarget()
+	Returns a the attack target of the unit.
+	返回该单位的攻击目标句柄。
+
+int GetAcquisitionRange()
+	Returns the range at which this unit will attack a target.
+	返回该单位的仇恨攻击范围。
+
+int GetAttackProjectileSpeed()
+	Returns the speed of the unit's attack projectile.
+	返回该单位的攻击弹道速度。
+
+
+float GetActualIncomingDamage( nDamage, nDamageType )
+	Gets the incoming damage value after reductions depending on damage type.
+	获取实际受到的指定伤害类型的伤害量。
+
+float GetAttackCombatProficiency( hTarget )
+	Gets the damage multiplier when attacking the specified target.
+	获取该单位攻击指定目标的伤害折扣率。
+
+float GetDefendCombatProficiency( hAttacker )
+	Gets the damage multiplier when being attacked by the specified attacker.
+	获取该单位被目标攻击的伤害折扣率。
+
+
+float GetSpellAmp()
+	Gets the spell amplification debuff percentage of this unit.
+	获取该单位的法术增强率。
+
+float GetArmor()
+	Gets the armor of this unit.
+	获取该单位的护甲。
+
+float GetMagicResist()
+	Gets the magic resist value of this unit.
+	获取该单位的魔法抗性。
+
+float GetEvasion()
+	Gets the evasion percentage of this unit.
+	获取该单位的闪避率。
+
+int GetPrimaryAttribute()
+	Gets the primary stat of this unit.
+	获取该单位的主属性。
+	【返回结果搜索链接：Constants - Attribute Types】
+
+int GetAttributeValue( nAttrib )
+	Gets the value of the specified stat. Returns -1 for non-heroes.
+	获取该单位指定属性值。非英雄返回值为 -1。
+
+
+int GetBountyXP()
+	Gets the XP bounty value for killing this unit.
+	获取该单位被杀死的经验奖励。
+
+int GetBountyGoldMin()
+	Gets the minimum gold bounty value for killing this unit.
+	获取该单位被杀死的最小金钱奖励。
+
+int GetBountyGoldMax()
+	Gets the maximum gold bounty value for killing this unit.
+	获取该单位被杀死的最大金钱奖励。
+
+int GetXPNeededToLevel()
+	Gets the amount of XP needed for this unit to gain a level. Returns -1 for non-heroes.
+	获取该单位升级所需要的经验值。非英雄返回值为 -1。
+
+int GetAbilityPoints()
+	Get the number of ability points available to this bot.
+	获取机器人升级技能的可用点数。
+
+hUnit GetAbilityTarget()
+	Get the unit being targeted by an ability.
+	获取该单位被目标技能指定的该技能句柄。
+
+int GetLevel()
+	Gets the level of this unit.
+	获取该单位的等级。
+
+
+int GetGold()
+	Gets the current gold amount for this unit.
+	获取该单位当前金钱。
+
+int GetNetWorth()
+	Gets the current total net worth for this unit.
+	获取该单位当前总财产。
+
+int GetStashValue()
+	Gets the current value of all items in this unit's stash.
+	获取该单位当前储藏室的所有物品总价值。
+
+int GetCourierValue()
+	Gets the current value of all items on couriers that this unit owns.
+	获取该单位当前所在信使的所有物品总价值。
+
+
+int GetLastHits()
+	Gets the current last hit count for this unit.
+	获取该单位当前正补数。
+
+int GetDenies()
+	Gets the current deny count for this unit.
+	获取该单位当前反补数。
+
+
+float GetBoundingRadius()
+	Gets the bounding radius of this unit. Used for attack ranges and collision.
+	获取该单位模型尺寸半径。用于攻击范围和碰撞的判定。
+
+vector GetLocation()
+	Gets the location of this unit.
+	获取该单位所在坐标位置。
+
+int GetFacing()
+	Gets the facing of this unit on a 360 degree rotation. (0 - 359). Facing East is 0, North is 90, West is 180, South is 270.
+	获取该单位的面部朝向（0-359度，朝东是0，朝北是90，朝西是180，朝南是270）。
+
+bool IsFacingLocation( vLocation, nDegrees )
+	Returns if the unit is facing the specified location, within an nDegrees cone.
+	返回该单位是否朝向指定位置的指定角度。
+
+float GetGroundHeight()
+	Gets ground height of the location of this unit. Note: This call can be very expensive! Use sparingly.
+	获取该单位所在位置的地面高度。注意：此函数性能消耗较大！谨慎使用。
+
+vector GetVelocity()
+	Gets the unit's current velocity.
+	获取该单位当前速度向量。
+
+int GetDayTimeVisionRange()
+	Gets the unit's vision range during the day.
+	获取该单位白天视野范围。
+
+int GetNightTimeVisionRange()
+	Gets the unit's vision range during the night.
+	获取该单位夜晚视野范围。
+
+int GetCurrentVisionRange()
+	Gets the unit's current vision range.
+	获取该单位当前视野范围。
+
+
+int GetAnimActivity()
+	Returns the current animation activity the unit is playing.
+	返回当前单位正在执行的动画常量值。
+	经实测，此处要注意的是，有些英雄的部分动画值无法捕获，如斧王的狂战士之吼无法捕获，但是大招却可以。
+	【返回结果搜索链接：Constants - Animation Activities】
+
+float GetAnimCycle()
+	Returns the amount through the current animation (0.0 - 1.0)
+	返回当前单位正在执行的动画的实时过程行为值（取值范围是0.0 ~ 1.0）。
+	此函数较为复杂，由于是在描述整个动画的全过程，所以比如释放技能，就要分是否有前后摇。
+	1）如果技能前后摇都有，描述返回值全过程的表达式为 0-1|0-1（-代表渐变，|代表瞬变），其中前摇过程为0-1的渐变，再瞬间直接变回0，然后经历后摇升回1；
+	2）如果技能只有前摇，描述返回值全过程的表达式为 0-n|0-1（n为0~1的某个值，具体取值看目标英雄的前摇时间比）；
+	3）如果技能只有后摇，描述返回值全过程的表达式为 0-1（实际上这个完整表达式为 0-0|0-1）。
+	【示例】
+	--[[
+		此处以puck的相位转移完美躲lion大招为例，让puck完美不受伤害，且lion大招释放并进入冷却时间。
+		GetAnimCycle函数返回的符点值是0到1，根据躲避不同英雄的技能所取的区间值不一样，这里以lion大招为例，
+		由于lion大招既有前摇又有后摇，所以大招分为两段，都是起始于0终止于1，经实测puck完美躲避lion大招的区间取值为0.33~0.69。
+		0 ~ 0.33是lion大招已抬手但弹道还未成型puck就相位转移了，而lion大招未进入冷却状态，出现puck紧张秀自己的尴尬局面；
+		0.69 ~ 1是lion大招抬手后且弹道完全成型puck中了大没躲开，且lion大招已进入冷却状态，出现puck手残秀自己的尴尬局面。
+
+		特别注意：由于不同英雄的不同技能施法前摇和技能弹道都不一样，所以GetAnimCycle区间值不太容易取，实战开发未必简便，
+		通常还是以GetIncomingTrackingProjectiles、GetLinearProjectiles、GetAvoidanceZones这些判定技能弹道的函数为主。
+	]]
+	-- 此处截取部分代码以供参考
+	if ( fDistance <= nAbilityRange and hEnemy:GetAnimActivity() == ACTIVITY_CAST_ABILITY_4
+		and hEnemy:GetAnimCycle() > 0.33 and hEnemy:GetAnimCycle() < 0.69 ) then
+		npcBot:Action_UseAbility( ability );
+	end
+
+
+hAbility GetAbilityByName( sAbilityName )
+	Gets a handle to the named ability. Ability names can be found in here.
+	获取指定名称的技能的句柄。技能或天赋名的程序内开发英文名称请自行搜索相关资料。
+
+hAbility GetAbilityInSlot( nAbilitySlot )
+	Gets a handle to ability in the specified slot. Slots range from 0 to 23.
+	获取指定技能槽位对应的技能句柄。槽位范围取值是 0 - 23。
+
+hItem GetItemInSlot( nIventorySlot )
+	Gets a handle to item in the specified inventory slot. Slots range from 0 to 16.
+	获取指定物品槽位对应的物品句柄。槽位范围取值是 0 - 16。
+	主物品栏槽位范围取值是 0 - 5，背包槽位范围取值是 6 - 8，储藏室槽位范围取值是 9 - 14。
+
+int FindItemSlot( sItemName )
+	Gets the inventory slot the named item is in. Item names can be found here.
+	获取指定物品名称对应的槽位。物品的程序内开发英文名称请自行搜索相关资料。
+
+int GetItemSlotType( nIventorySlot )
+	Gets the type of the specified inventory slot.
+	获取指定槽位的类型。
+
+
+bool IsChanneling()
+	Returns whether the unit is currently channeling an ability or item.
+	返回该单位是否在持续施法或持续使用物品。
+
+bool IsUsingAbility()
+	Returns whether the unit's active ability is a UseAbility action. Note that this will be true while a is currently using an ability or item.
+	返回该单位是否在用 UseAbility 相关函数执行目前激活的技能。当正在使用技能或物品时返回值为true。
+	相比于 IsCastingAbility 函数，本函数是只要判定当前激活的技能是 UseAbility 的类型即可，而与该单位的技能动作是否开始执行没关系。
+
+bool IsCastingAbility()
+	Returns whether the unit is actively casting an ability or item. Does not include movement or backswing.
+	返回该单位是否在释放技能或物品。不考虑移动或动作后摇。
+	相比于 IsUsingAbility 函数，本函数已经开始判定该单位的技能动作是否正在执行。
+
+hAbility GetCurrentActiveAbility()
+	Gets a handle to ability that's currently being used.
+	获取该单位当前正在使用的技能句柄。
+
+
+bool IsAttackImmune()
+	Returns whether the unit is immune to attacks.
+	返回该单位是否攻击免疫。
+
+bool IsBlind()
+	Returns whether the unit is blind and will miss all of its attacks.
+	返回该单位是否被致盲并所有攻击丢失。
+
+bool IsBlockDisabled()
+	Returns whether the unit is disabled from blocking attacks.
+	返回该单位是否无法阻挡攻击。
+
+bool IsDisarmed()
+	Returns whether the unit is disarmed and unable to attack.
+	返回该单位是否被缴械并不能攻击。
+
+bool IsDominated()
+	Returns whether the unit has been dominated.
+	返回该单位是否被支配控制的。
+
+bool IsEvadeDisabled()
+	Returns whether the unit is unable to evade attacks.
+	返回该单位是否不能闪避攻击。
+
+bool IsHexed()
+	Returns whether the unit is hexed into an adorable animal.
+	返回该单位是否被巫术变羊。
+
+bool IsInvisible()
+	Returns whether the unit has an invisibility effect. Note that this does NOT guarantee invisibility to the other team 
+	-- if they have detection, they can see you even if IsInvisible() returns true.
+	返回该单位是否拥有隐形效果。注意，这并不能保证对其他队伍不可见--如果被侦查到了，即便返回值是true，他们也可以看见你。
+
+bool IsInvulnerable()
+	Returns whether the unit is invulnerable to damage.
+	返回该单位是否是无敌不受伤害的。
+
+bool IsMagicImmune()
+	Returns whether the unit is magic immune.
+	返回该单位是否是魔法免疫的。
+
+bool IsMinion()
+	Returns whether the unit is a bot’s minion?
+	返回该单位是否是一个机器人控制的随从。
+
+bool IsMuted()
+	Returns whether the unit is item muted.
+	返回该单位是否是物品？？的。
+
+bool IsNightmared()
+	Returns whether the unit is having bad dreams.
+	返回该单位是否处于梦魇状态。
+
+bool IsRooted()
+	Returns whether the unit is rooted in place.
+	返回该单位是否被禁足。
+
+bool IsSilenced()
+	Returns whether the unit is silenced and unable to use abilities.
+	返回该单位是否被沉默并无法使用技能。
+
+bool IsSpeciallyDeniable()
+	Returns whether the unit is deniable by allies due to a debuff.
+	返回该单位由于负面状态是否可以被友方反补。
+
+bool IsStunned()
+	Returns whether the unit is stunned.
+	返回该单位是否被晕眩。
+
+bool IsUnableToMiss()
+	Returns whether the unit will not miss due to evasion or attacking uphill.
+	返回该单位是否会因为闪避或攻击高地而不会丢失。
+
+bool HasScepter()
+	Returns whether the unit has ultimate scepter upgrades.
+	返回该单位是否拥有神杖升级大招。
+
+
+bool WasRecentlyDamagedByAnyHero( fInterval )
+	Returns whether the unit has been damaged by a hero in the specified interval.
+	返回该单位是否在指定时间内被任何英雄所伤害。
+
+float TimeSinceDamagedByAnyHero()
+	Returns whether the amount of time passed the unit has been damaged by a hero.
+	返回该单位被任何英雄所伤害距离现在的时间。
+
+bool WasRecentlyDamagedByHero( hUnit, fInterval )
+	Returns whether the unit has been damaged by the specified hero in the specified interval.
+	返回该单位是否在指定时间内被指定的英雄所伤害。
+
+float TimeSinceDamagedByHero( hUnit )
+	Returns whether the amount of time passed the unit has been damaged by the specified hero.
+	返回该单位被指定英雄所伤害距离现在的时间。
+
+bool WasRecentlyDamagedByPlayer( nPlayerID, fInterval )
+	Returns whether the unit has been damaged by the specified player in the specified interval.
+	返回该单位是否在指定时间内被指定玩家ID所伤害。
+
+float TimeSinceDamagedByPlayer( nPlayerID )
+	Returns whether the amount of time passed the unit has been damaged by the specified hero.
+	返回该单位被指定的玩家ID所伤害距离现在的时间。
+
+bool WasRecentlyDamagedByCreep( fInterval )
+	Returns whether the unit has been damaged by a creep in the specified interval.
+	返回该单位是否在指定时间内被任何小兵生物所伤害。
+
+float TimeSinceDamagedByCreep()
+	Returns whether the amount of time passed the unit has been damaged by a creep.
+	返回该单位被任何小兵生物所伤害距离现在的时间。
+
+bool WasRecentlyDamagedByTower( fInterval )
+	Returns whether the unit has been damaged by a tower in the specified interval.
+	返回该单位是否在指定时间内被任何防御塔所伤害。
+
+float TimeSinceDamagedByTower()
+	Returns whether the amount of time passed the unit has been damaged by a tower.
+	返回该单位被任何防御塔所伤害距离现在的时间。
+
+
+int DistanceFromFountain()
+	Gets the unit’s straight-line distance from the team’s fountain (0 is in the fountain).
+	获取该单位和友方泉水的直线距离（0代表就在泉水范围内）。
+
+int DistanceFromSecretShop()
+	Gets the unit’s straight-line distance from the closest secret shop (0 is in a secret shop).
+	获取该单位和最近神秘商店的直线距离（0代表就在神秘商店范围内）。
+
+int DistanceFromSideShop()
+	Gets the unit’s straight-line distance from the closest side shop (0 is in a side shop).
+	获取该单位和最近边路商店的直线距离（0代表就在边路商店范围内）。
+
+
+hAbility GetTalent( nLevel, nSide )
+	Get one of the talents at the specified level.
+	获取该单位的指定等级和左右边的天赋技能句柄。
+
+SetTarget( hUnit )
+	Sets the target to be a specific unit. 
+	Doesn't actually execute anything, just potentially useful for communicating a target between modes and ability/item usage.
+	将指定单位设置为该单位的目标。实际上不执行任何操作，只是在 模式 和 技能/物品使用 之间传递目标可能有用。
+	该函数单独使用并无实际意义，目的仅仅是为了设置一个临时目标单位并配合 GetTarget 函数方便读取并解决相关功能。
+
+hUnit GetTarget()
+	Gets the target that's been set for a unit.
+	获取该单位的被预设好的目标单位。
+	该函数须配合 SetTarget 函数预先存入一个目标单位再调用，方便读取并解决相关功能，否则返回值为空。
+
+SetNextItemPurchaseValue( nGold )
+	Sets the value of the next item to purchase. 
+	Doesn't actually execute anything, just potentially useful for communicating a purchase target for modes like Farm.
+	设置该单位下一件购买物品的金钱。实际上不执行任何操作，只是在 打钱模式 之间传递购买目标可能有用。
+	该函数单独使用并无实际意义，目的仅仅是为了设置一个临时购买金钱数并配合 GetNextItemPurchaseValue 函数方便读取并解决相关功能。
+
+int GetNextItemPurchaseValue()
+	Gets the purchase value that's been set.
+	获取该单位预设好的物品的购买金钱。
+	该函数须配合 SetNextItemPurchaseValue 函数预先存入一个购买金钱数再调用，方便读取并解决相关功能，否则返回值为空。
+
+
+int GetAssignedLane()
+	Gets the assigned lane of this unit.
+	获取该单位所在分路。
+	【返回结果搜索链接：Constants - Lanes】
+
+
+float GetOffensivePower()
+	Gets an estimate of the current offensive power of a unit. Derived from the average amount of damage it can do to all enemy heroes.
+	获取该单位当前进攻能力的估值。采自它对所有敌人英雄的平均伤害量。
+
+float GetRawOffensivePower()
+	Gets an estimate of the current offensive power of a unit. Derived from the average amount of damage it can do to all enemy heroes, ignoring cooldown and mana status.
+	获取该单位当前进攻能力的估值。采自它对所有敌人英雄的平均伤害量，忽略冷却时间和魔法状态。
+
+float GetEstimatedDamageToTarget( bCurrentlyAvailable, hTarget, fDuration, nDamageTypes )
+	Gets an estimate of the amount of damage that this unit can do to the specified unit. If bCurrentlyAvailable is true, it takes into account mana and cooldown status.
+	获取该单位对指定单位造成伤害的估值。如果参数 bCurrentlyAvailable 是true，那么考虑冷却时间和魔法状态。
+	hTarget 是目标单位的句柄。
+	fDuration 是伤害持续时间。
+	nDamageTypes 是伤害类型。
+
+
+float GetStunDuration( bCurrentlyAvailable )
+	Gets an estimate of the duration of a stun that a unit can cast. If bCurrentlyAvailable is true, it takes into account mana and cooldown status.
+	获取该单位可以释放并造成的晕眩持续时间估值。如果参数 bCurrentlyAvailable 是true，那么考虑冷却时间和魔法状态。
+
+float GetSlowDuration( bCurrentlyAvailable )
+	Gets an estimate of the duration of a slow that a unit can cast. If bCurrentlyAvailable is true, it takes into account mana and cooldown status.
+	获取该单位可以释放并造成的减速持续时间估值。如果参数 bCurrentlyAvailable 是true，那么考虑冷却时间和魔法状态。
+
+
+bool HasBlink( bCurrentlyAvailable )
+	Returns whether the unit has a blink available to them.
+	返回该单位是否有闪烁可用。如果参数 bCurrentlyAvailable 是true，那么考虑冷却时间和魔法状态。
+
+bool HasMinistunOnAttack()
+	Returns whether the unit has a ministun when they attack.
+	返回该单位普通攻击时是否带短暂晕眩效果。
+
+bool HasSilence( bCurrentlyAvailable )
+	Returns whether the unit has a silence available to them.
+	返回该单位是否有沉默可用。如果参数 bCurrentlyAvailable 是true，那么考虑冷却时间和魔法状态。
+
+bool HasInvisibility( bCurrentlyAvailable )
+	Returns whether the unit has an invisibility-causing item or ability available to them.
+	返回该单位是否有造成隐形的物品或技能可用。如果参数 bCurrentlyAvailable 是true，那么考虑冷却时间和魔法状态。
+
+bool UsingItemBreaksInvisibility()
+	Returns whether using an item would break the unit's invisibility.
+	返回该单位的隐形效果是否可以被一个物品破坏。
+
+
+{ hUnit, ... } GetNearbyHeroes( nRadius, bEnemies, nMode)
+	Returns a table of heroes that we can see in a mode, sorted closest-to-furthest, that are in the specified mode.
+	If nMode is BOT_MODE_NONE, searches for all heroes. If bEnemies is true, nMode must be BOT_MODE_NONE. nRadius must be less than 1600.
+	返回一张我们能看见处于指定模式的英雄句柄的集合表，根据离该单位的距离由近到远排列。
+	如果 nMode 的值是 BOT_MODE_NONE ，那么作用于所有英雄。如果 bEnemies 的值是 true ， nMode 的值一定是 BOT_MODE_NONE。 nRadius 的值必须小于 1600。
+	nRadius可见范围半径，bEnemies是否是敌人，nMode处于什么模式。
+
+{ hUnit, ... } GetNearbyCreeps( nRadius, bEnemies )
+	Returns a table of creeps(lane or neutral) that we can see, sorted closest-to-furthest. nRadius must be less than 1600.
+	返回一张我们能看见的小兵生物句柄的集合表，根据离该单位的距离由近到远排列。 nRadius 的值必须小于 1600。
+	nRadius可见范围半径，bEnemies是否是敌人。
+
+{ hUnit, ... } GetNearbyLaneCreeps( nRadius, bEnemies )
+	Returns a table of lane creeps that we can see, sorted closest-to-furthest. nRadius must be less than 1600.
+	返回一张我们能看见的线上的小兵生物句柄的集合表，根据离该单位的距离由近到远排列。 nRadius 的值必须小于 1600。
+	nRadius可见范围半径，bEnemies是否是敌人。
+
+{ hUnit, ... } GetNearbyNeutralCreeps( nRadius )
+	Returns a table of neutral creeps that we can see, sorted closest-to-furthest. nRadius must be less than 1600.
+	返回一张我们能看见的中立生物句柄的集合表，根据离该单位的距离由近到远排列。 nRadius 的值必须小于 1600。
+	nRadius可见范围半径。
+
+{ hUnit, ... } GetNearbyTowers( nRadius, bEnemies )
+	Returns a table of towers, sorted closest-to-furthest. nRadius must be less than 1600.
+	返回一张我们能看见的防御塔句柄的集合表，根据离该单位的距离由近到远排列。 nRadius 的值必须小于 1600。
+	nRadius可见范围半径，bEnemies是否是敌人。
+
+{ hUnit, ... } GetNearbyBarracks( nRadius, bEnemies )
+	Returns a table of barracks, sorted closest-to-furthest. nRadius must be less than 1600.
+	返回一张我们能看见的兵营句柄的集合表，根据离该单位的距离由近到远排列。 nRadius 的值必须小于 1600。
+	nRadius可见范围半径，bEnemies是否是敌人。
+
+{ hUnit, ... } GetNearbyShrines( nRadius, bEnemies )
+	Returns a table of shrines, sorted closest-to-furthest. nRadius must be less than 1600.
+	返回一张我们能看见的圣坛句柄的集合表，根据离该单位的距离由近到远排列。 nRadius 的值必须小于 1600。
+	nRadius可见范围半径，bEnemies是否是敌人。
+
+{ hUnit, ... } GetNearbyFillers( nRadius, bEnemies )
+	Returns a table of filler buildings, sorted closest-to-furthest. nRadius must be less than 1600.
+	返回一张我们能看见的基地高地填充建筑的集合表，根据离该单位的距离由近到远排列。 nRadius 的值必须小于 1600。
+	nRadius可见范围半径，bEnemies是否是敌人。
+
+{ int, ... } GetNearbyTrees ( nRadius )
+	Returns a table of Tree IDs, sorted closest-to-furthest. nRadius must be less than 1600.
+	返回一张我们能看见的树木句柄的集合表，根据离该单位的距离由近到远排列。 nRadius 的值必须小于 1600。
+	nRadius可见范围半径。
+
+
+{ int count, vector targetloc } FindAoELocation( bEnemies, bHeroes, vBaseLocation, nMaxDistanceFromBase, nRadius, fTimeInFuture, nMaxHealth)
+	Gets the optimal location for AoE to hit the maximum number of units described by the parameters.
+	Returns a table containing the values targetloc that is a vector for the center of the AoE and count that will be equal to the number of units within the AoE that match the description.
+	获取AoE根据参数列表所描述信息能击中的最多单位数的最佳位置。
+	targetloc 是AoE的中心坐标位置。
+	count 是AoE根据描述信息能击中的单位数量。
+
+
+vector GetExtrapolatedLocation( fTime )
+	Returns the extrapolated location of the unit fTime seconds into the future, based on its current movement.
+	返回该单位基于其当前移动速度，推测它在未来 fTime 秒后的潜在坐标位置。
+
+float GetMovementDirectionStability()
+	Returns how stable the direction of the unit's movement is -- a value of 1.0 means they've been moving in a straight line for a while, where 0.0 is completely random movement.
+	返回该单位移动方向的稳定性。返回值是1.0代表它已沿着直线移动一段时间了，而返回值是0.0代表他是完全随机的移动。
+
+bool HasModifier( sModifierName )
+	Returns whether the unit has the specified modifer.
+	返回该单位是否有指定的buff状态。
+
+int GetModifierByName( sModifierName )
+	Returns the modifier index for the specified modifier.
+	返回该单位根据指定的buff状态名称获取其对应的状态（索引）。
+
+int NumModifiers()
+	Returns the number of modifiers on the unit.
+	返回该单位身上所有buff状态的总数量。
+
+{ sModifierName, ... } GetModifierList()
+	Gets a table of all the modifiers on this unit.
+	返回该单位身上所有buff状态的集合表。
+	表中返回值是buff状态的名称。
+
+hAbility GetModifierSourceAbility( nModifier )
+	Returns a handle to the ability responsible for the specified modifier.
+	返回该单位身上指定buff状态（索引）所属的技能句柄。
+
+int GetModifierName( nModifier )
+	Returns the name of the specified modifier.
+	返回该单位身上指定buff状态（索引）的名称。
+
+int GetModifierStackCount( nModifier )
+	Returns stack count of the specified modifier.
+	返回该单位身上指定buff状态（索引）的堆叠层数。
+
+int GetModifierRemainingDuration( nModifier )
+	Returns remaining duration of the specified modifier.
+	返回该单位身上指定buff状态（索引）的剩余时间。
+
+{ hUnit, ... } GetModifierAuxiliaryUnits( nModifier )
+	Returns a table containing handles to units that the modifier is responsible for, such as Ember Spirit remnants.
+	返回该单位身上指定buff状态（索引）对应的单位的句柄的集合表，如火猫的残焰。
+
+
+{ time, location, normal_ping } GetMostRecentPing()
+	Returns a table containing the time and location of the unit's most recent ping, and whether it was a normal or danger ping.
+	返回该单位最近ping信号地图时对应的信息，以及它是否是正常或危险的ping。
+	time 是ping信号的时间秒数。
+	location 是ping信号的坐标位置。
+	normal_ping 是否是正常ping。
+
+
+{ { location, caster, playerid, ability, is_dodgeable, is_attack }, ... } GetIncomingTrackingProjectiles()
+	Returns information about all projectiles incoming towards this unit.
+	返回该单位即将受到的所有弹道信息。该函数并非完全是指向性的，所以无法通过林肯格挡机制判断，同样不一定是既能点地又能点人的技能，但是效果会作用于这个单位。
+	location - 弹道行进过程中的实时位置
+	caster - 弹道来源单位的句柄
+	playerid - 弹道来源单位所属玩家的ID
+	ability - 弹道所属技能的句柄
+	is_dodgeable - 该弹道是否可以被闪避（机制可以参考克林克兹的扫射）
+	is_attack - 是否是普通攻击
+	【示例】亚巴顿的死亡残绕、陈的赎罪、瘟疫法师的死亡脉冲、神谕者的气运之末、骷髅王和复仇之魂的锤子等等诸多技能弹道，
+		当然也包括远程普攻。
+
+
+----------------------------------------------------------------------------------------------------
+-- Functions - Ability-Scoped 函数-技能（物品）范围
+----------------------------------------------------------------------------------------------------
+
+bool CanAbilityBeUpgraded()
+	Can this Ability be upgraded?
+	该技能能否升级。
+
+bool CanBeDisassembled()
+	Can this item be disassembled?
+	Item Used Functions.
+	该物品能否拆分。
+	仅物品函数使用。
+
+int GetAOERadius()
+	Gets the AoE radius of this Ability.
+	获取该技能的AOE范围半径。
+
+int GetAbilityDamage()
+	Get the basic damage value of this Ability.
+	获取该技能的基础伤害数值。
+
+bool GetAutoCastState()
+	Get the autocast state of this Ability.
+	获取该技能的自动施法状态。
+
+int GetBehavior()
+	Get the behavior type of this Ability.
+	获取该技能的行为类型。
+
+hUnit GetCaster()
+	Get the unit who owns this Ability.
+	获取该技能所属拥有者的句柄。
+
+float GetCastPoint()
+	Gets the cast point of this Ability.
+	获取该技能的施法前摇时间。
+
+int GetCastRange()
+	Gets the cast range of this Ability.
+	获取该技能的施法范围。
+
+float GetChannelTime()
+	How long does this Ability channel?
+	获取该技能的持续施法时间。
+
+int GetChannelledManaCostPerSecond()
+	Get the mana cost per second of this Ability while channeling it.
+	获取该技能的持续施法每秒需要消耗的魔法值。
+
+floatGetCooldownTimeRemaining()
+	Get the cooldown time remaning for this Ability.
+	Only works on yourself and allies.
+	获取该技能剩余冷却时间。
+	只能作用于你自己和友方。
+
+int GetCurrentCharges()
+	Get the current charges of this item.
+	获取该物品的当前充能点。
+
+int GetDamageType()
+	Get the damage type of this Ability.
+	获取该技能的的伤害类型。
+
+float GetDuration()
+	How long does this Ability persist once cast?
+	获取该技能一旦释放能持续多久。
+
+int GetEstimatedDamageToTarget( hTarget, fDuration, nDamageTypes )
+	How much damage would this ability do to the specified target over the specified duration?
+	获取该技能对指定目标造成的伤害估值。
+	hTarget 是指定目标。
+	fDuration 是指定的时间内。
+	nDamageTypes 是指定的伤害类型。
+
+int GetHeroLevelRequiredToUpgrade()
+	Get the Hero level required to upgrade this Ability.
+	获取该技能需要英雄升到多少级才能学习。
+
+int GetInitialCharges()
+	Get the initial charges of this item.
+	获取该物品的初始充能点。
+
+int GetLevel()
+	Get the current level of the Ability.
+	获取该技能的当前等级。
+
+int GetManaCost()
+	Get the mana cost of this Ability.
+	获取该技能的耗魔量。
+
+int GetMaxLevel()
+	Get the max level of this Ability.
+	获取该技能的最大等级。
+
+string GetName()
+	Get the name of this Ability.
+	获取该技能的名称。
+
+int GetPowerTreadsStat()
+	Get the stat these power treads are set to.
+	获取动力鞋当前对应的属性。
+
+int GetSecondaryCharges()
+	Get the secondary charges of this item.
+	获取该物品的第二充能点。
+	如合并的真假眼。
+
+float GetSpecialValueFloat( sKey )
+	Get an int internal data parameter of this Abilty.
+	获取该技能根据内部文件数据参数对应的 float 类型的值。
+	此函数须配合你的游戏路径\Steam\steamapps\common\dota 2 beta\game\dota\scripts\npc下的 npc_abilities.txt 文件使用。
+
+int GetSpecialValueInt( sKey )
+	Get an int internal data parameter of this Abilty.
+	获取该技能根据内部文件数据参数对应的 int 类型的值。
+	此函数须配合你的游戏路径\Steam\steamapps\common\dota 2 beta\game\dota\scripts\npc下的 npc_abilities.txt 文件使用。
+
+int GetTargetFlags()
+	Get the flags for this Ability.
+	获取该技能指定目标的特殊标识。
+	【返回结果搜索链接：Constants - Ability Target Flags】
+
+int GetTargetTeam()
+	Get the target team of this Ability.
+	获取该技能指定目标的所属队伍。
+	【返回结果搜索链接：Constants - Ability Target Teams】
+
+int GetTargetType()
+	Get the target type of this Ability.
+	获取该技能指定目标的单位类型。
+	【返回结果搜索链接：Constants - Ability Target Types】
+
+bool GetToggleState()
+	Get the toggle state of this Ability.
+	获取该技能的切换开关状态。
+
+bool IsActivated()
+	Is this Ability currently activated?
+	该技能当前是否被激活。
+
+bool IsAttributeBonus()
+	Does this Ability gets attribute bonus?
+	该技能是否有属性加成。
+
+bool IsChanneling()
+	Is this Ability being channelled?
+	该技能是否是持续施法。
+
+bool IsCombineLocked()
+	Is this item combine locked?
+	Item Used Functions.
+	该物品是否能够锁定。
+	仅物品函数使用。
+
+bool IsCooldownReady()
+	Is this Ability off cooldown?
+	Only works on yourself and allies.
+	该技能是否冷却好。
+	只能作用于你自己和友方。
+
+bool IsFullyCastable()
+	Does the caster have the mana to use this Ability, and is it off cooldown?
+	该技能的施法者是否有足够的魔法使用此技能，且此技能冷却也好了。
+
+bool IsHidden()
+	Is this Ability currently hidden?
+	该技能当前是否处于隐藏状态。
+	如卡尔有10个技能，但是每次只有最多2个技能是显示的，其他至少8个技能是隐藏状态；帕克没学幻象法球之前灵动之翼是隐藏的。
+
+bool IsInAbilityPhase()
+	Is this Ability being cast?
+	该技能是否正在被释放。
+
+bool IsItem()
+	Is this an Item?
+	是否是一个物品。
+
+bool IsOwnersManaEnough()
+	Does the caster have the mana to use this Ability?
+	该技能的施法者是否有足够的蓝使用它。
+
+bool IsPassive()
+	Is this a passive Ability?
+	是否是一个被动技能。
+
+bool IsStealable()
+	Can this Ability be stolen?
+	该技能是否能被窃取。
+
+bool IsStolen()
+	Is this the stolen version of an Ability?
+	该技能是否是已经被窃取的版本。
+
+bool IsTalent()
+	Is this a talent ability?
+	是否是一个天赋技能。
+
+bool IsToggle()
+	Is this a toggled Ability?
+	是否是一个可以切换的技能。
+
+bool IsTrained()
+	Is this Ability Trained at all?
+	该技能是否可以完全被训练？（不懂待测）
+
+bool IsUltimate()
+	Is this an ultimate ability?
+	是否是终极大招。
+
+bool ProcsMagicStick()
+	Does this Ability proc Magic Stick?
+	该技能是否能触发魔杖。
+
+void ToggleAutoCast()
+	Toggle the autocast state of this Ability.
+	切换该技能的自动施法状态。
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Bot Modes 常量-机器人模式
+----------------------------------------------------------------------------------------------------
+
+BOT_MODE_NONE
+	无模式状态
+
+BOT_MODE_LANING
+	对线模式
+
+BOT_MODE_ATTACK
+	攻击模式
+
+BOT_MODE_ROAM
+	游走模式
+
+BOT_MODE_RETREAT
+	撤退模式
+
+BOT_MODE_SECRET_SHOP
+	神秘商店购物模式
+
+BOT_MODE_SIDE_SHOP
+	边路商店购物模式
+
+BOT_MODE_PUSH_TOWER_TOP
+	推上路塔模式
+
+BOT_MODE_PUSH_TOWER_MID
+	推中路塔模式
+
+BOT_MODE_PUSH_TOWER_BOT
+	推下路塔模式
+
+BOT_MODE_DEFEND_TOWER_TOP
+	防守上路塔模式
+
+BOT_MODE_DEFEND_TOWER_MID
+	防守中路塔模式
+
+BOT_MODE_DEFEND_TOWER_BOT
+	防守下路塔模式
+
+BOT_MODE_ASSEMBLE
+	集合模式
+
+BOT_MODE_TEAM_ROAM
+	团队集体游走模式
+
+BOT_MODE_FARM
+	打钱发育模式
+
+BOT_MODE_DEFEND_ALLY
+	保护队友模式
+
+BOT_MODE_EVASIVE_MANEUVERS
+	闪避技能模式
+
+BOT_MODE_ROSHAN
+	打肉山模式
+
+BOT_MODE_ITEM
+	扔或捡物品模式
+
+BOT_MODE_WARD
+	插眼模式
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Action Desires 常量-行为欲望值
+----------------------------------------------------------------------------------------------------
+
+These can be useful for making sure all action desires are using a common language for talking about their desire.
+
+BOT_ACTION_DESIRE_NONE - 0.0
+BOT_ACTION_DESIRE_VERYLOW - 0.1
+BOT_ACTION_DESIRE_LOW - 0.25
+BOT_ACTION_DESIRE_MODERATE - 0.5
+BOT_ACTION_DESIRE_HIGH - 0.75
+BOT_ACTION_DESIRE_VERYHIGH - 0.9
+BOT_ACTION_DESIRE_ABSOLUTE - 1.0
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Mode Desires 常量-模式欲望值
+----------------------------------------------------------------------------------------------------
+
+These can be useful for making sure all mode desires as using a common language for talking about their desire.
+
+BOT_MODE_DESIRE_NONE - 0
+BOT_MODE_DESIRE_VERYLOW - 0.1
+BOT_MODE_DESIRE_LOW - 0.25
+BOT_MODE_DESIRE_MODERATE - 0.5
+BOT_MODE_DESIRE_HIGH - 0.75
+BOT_MODE_DESIRE_VERYHIGH - 0.9
+BOT_MODE_DESIRE_ABSOLUTE - 1.0
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Damage Types 常量-伤害类型
+----------------------------------------------------------------------------------------------------
+
+DAMAGE_TYPE_PHYSICAL
+	物理
+
+DAMAGE_TYPE_MAGICAL
+	魔法
+
+DAMAGE_TYPE_PURE
+	纯粹
+
+DAMAGE_TYPE_ALL
+	全伤害类型
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Unit Types 常量-单位类型
+----------------------------------------------------------------------------------------------------
+
+UNIT_LIST_ALL
+	所有单位
+
+UNIT_LIST_ALLIES
+	友方单位
+
+UNIT_LIST_ALLIED_HEROES
+	友方英雄单位
+
+UNIT_LIST_ALLIED_CREEPS
+	友方小兵生物单位
+
+UNIT_LIST_ALLIED_WARDS
+	友方守卫单位
+
+UNIT_LIST_ALLIED_BUILDINGS
+	友方建筑单位
+
+UNIT_LIST_ENEMIES
+	敌方单位
+
+UNIT_LIST_ENEMY_HEROES
+	敌方英雄单位
+
+UNIT_LIST_ENEMY_CREEPS
+	敌方小兵生物单位
+
+UNIT_LIST_ENEMY_WARDS
+	敌方守卫单位
+
+UNIT_LIST_NEUTRAL_CREEPS
+	中立野怪单位
+
+UNIT_LIST_ENEMY_BUILDINGS
+	敌方建筑单位
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Difficulties 常量-游戏难度
+----------------------------------------------------------------------------------------------------
+
+DIFFICULTY_INVALID
+	无
+
+DIFFICULTY_PASSIVE
+	消极
+
+DIFFICULTY_EASY
+	容易
+
+DIFFICULTY_MEDIUM
+	中等
+
+DIFFICULTY_HARD
+	困难
+
+DIFFICULTY_UNFAIR
+	疯狂
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Attribute Types 常量-英雄三维属性类型
+----------------------------------------------------------------------------------------------------
+
+ATTRIBUTE_INVALID
+	无效属性
+
+ATTRIBUTE_STRENGTH
+	力量属性
+
+ATTRIBUTE_AGILITY
+	敏捷属性
+
+ATTRIBUTE_INTELLECT
+	智力属性
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Item Purchase Results 常量-物品购买结果
+----------------------------------------------------------------------------------------------------
+
+PURCHASE_ITEM_SUCCESS
+	购买成功
+
+PURCHASE_ITEM_OUT_OF_STOCK
+	库存不够
+
+PURCHASE_ITEM_DISALLOWED_ITEM
+	失效的物品
+
+PURCHASE_ITEM_INSUFFICIENT_GOLD
+	金钱不够
+
+PURCHASE_ITEM_NOT_AT_HOME_SHOP
+	此物品不在主商店出售
+
+PURCHASE_ITEM_NOT_AT_SIDE_SHOP
+	此物品不在边路商店出售
+
+PURCHASE_ITEM_NOT_AT_SECRET_SHOP
+	此物品不在神秘商店出售
+
+PURCHASE_ITEM_INVALID_ITEM_NAME
+	无效的物品名
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Game Modes 常量-游戏模式
+----------------------------------------------------------------------------------------------------
+
+GAMEMODE_NONE
+	无游戏模式
+
+GAMEMODE_AP
+	全英雄选择
+
+GAMEMODE_CM
+	队长模式
+
+GAMEMODE_RD
+	随机征召
+
+GAMEMODE_SD
+	单一征召
+
+GAMEMODE_AR
+	全英雄随机
+
+GAMEMODE_REVERSE_CM
+	反队长模式
+
+GAMEMODE_MO
+	单中模式
+
+GAMEMODE_CD
+	队长征召
+
+GAMEMODE_ABILITY_DRAFT
+	技能征召
+
+GAMEMODE_ARDM
+	全英雄随机死亡竞赛
+
+GAMEMODE_1V1MID
+	中路单挑
+
+GAMEMODE_ALL_DRAFT (aka Ranked All Pick)
+	？
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Teams 常量-所在团队
+----------------------------------------------------------------------------------------------------
+
+TEAM_RADIANT
+	天辉
+
+TEAM_DIRE
+	夜魇
+
+TEAM_NEUTRAL
+	中立
+
+TEAM_NONE
+	无团队
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Lanes 常量-所在兵线（分路）
+----------------------------------------------------------------------------------------------------
+
+LANE_NONE
+	无分路
+
+LANE_TOP
+	上路（天辉劣势路或夜魇优势路）
+
+LANE_MID
+	中路
+
+LANE_BOT
+	下路（天辉优势路或夜魇劣势路）
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Game States 常量-游戏当前状态
+----------------------------------------------------------------------------------------------------
+
+GAME_STATE_INIT
+	游戏初始化
+
+GAME_STATE_WAIT_FOR_PLAYERS_TO_LOAD
+	等待玩家载入
+
+GAME_STATE_HERO_SELECTION
+	英雄选择
+
+GAME_STATE_STRATEGY_TIME
+	决策时间
+
+GAME_STATE_PRE_GAME
+	准备阶段
+
+GAME_STATE_GAME_IN_PROGRESS
+	正在游戏
+
+GAME_STATE_POST_GAME
+	赛后阶段
+
+GAME_STATE_DISCONNECT
+	失去连接
+
+GAME_STATE_TEAM_SHOWCASE
+	？
+
+GAME_STATE_CUSTOM_GAME_SETUP
+	？
+
+GAME_STATE_WAIT_FOR_MAP_TO_LOAD
+	等待地图载入
+
+GAME_STATE_LAST
+	？
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Hero Pick States 常量-英雄选择当前状态
+----------------------------------------------------------------------------------------------------
+
+HEROPICK_STATE_NONE
+	无
+
+HEROPICK_STATE_AP_SELECT
+	全英雄选择-英雄选择
+
+HEROPICK_STATE_SD_SELECT
+	单一征召-英雄选择
+
+HEROPICK_STATE_CM_INTRO
+	队长模式-？
+
+HEROPICK_STATE_CM_CAPTAINPICK
+	队长模式-成为队长
+
+HEROPICK_STATE_CM_BAN1
+	队长模式-1号BAN位
+
+HEROPICK_STATE_CM_BAN2
+	队长模式-2号BAN位
+
+HEROPICK_STATE_CM_BAN3
+	队长模式-3号BAN位
+
+HEROPICK_STATE_CM_BAN4
+	队长模式-4号BAN位
+
+HEROPICK_STATE_CM_BAN5
+	队长模式-5号BAN位
+
+HEROPICK_STATE_CM_BAN6
+	队长模式-6号BAN位
+
+HEROPICK_STATE_CM_BAN7
+	队长模式-7号BAN位
+
+HEROPICK_STATE_CM_BAN8
+	队长模式-8号BAN位
+
+HEROPICK_STATE_CM_BAN9
+	队长模式-9号BAN位
+
+HEROPICK_STATE_CM_BAN10
+	队长模式-10号BAN位
+
+HEROPICK_STATE_CM_SELECT1
+	队长模式-1号选位
+
+HEROPICK_STATE_CM_SELECT2
+	队长模式-2号选位
+
+HEROPICK_STATE_CM_SELECT3
+	队长模式-3号选位
+
+HEROPICK_STATE_CM_SELECT4
+	队长模式-4号选位
+
+HEROPICK_STATE_CM_SELECT5
+	队长模式-5号选位
+
+HEROPICK_STATE_CM_SELECT6
+	队长模式-6号选位
+
+HEROPICK_STATE_CM_SELECT7
+	队长模式-7号选位
+
+HEROPICK_STATE_CM_SELECT8
+	队长模式-8号选位
+
+HEROPICK_STATE_CM_SELECT9
+	队长模式-9号选位
+
+HEROPICK_STATE_CM_SELECT10
+	队长模式-10号选位
+
+HEROPICK_STATE_CM_PICK
+	队长模式-英雄选择
+
+HEROPICK_STATE_AR_SELECT
+	随机征召-英雄选择
+
+HEROPICK_STATE_MO_SELECT
+	单中模式-英雄选择
+
+HEROPICK_STATE_FH_SELECT
+	？-英雄选择
+
+HEROPICK_STATE_CD_INTRO
+	队长征召-？
+
+HEROPICK_STATE_CD_CAPTAINPICK
+	队长征召-成为队长
+
+HEROPICK_STATE_CD_BAN1
+	队长征召-1号BAN位
+
+HEROPICK_STATE_CD_BAN2
+	队长征召-2号BAN位
+
+HEROPICK_STATE_CD_BAN3
+	队长征召-3号BAN位
+
+HEROPICK_STATE_CD_BAN4
+	队长征召-4号BAN位
+
+HEROPICK_STATE_CD_BAN5
+	队长征召-5号BAN位
+
+HEROPICK_STATE_CD_BAN6
+	队长征召-6号BAN位
+
+HEROPICK_STATE_CD_SELECT1
+	队长征召-1号选位
+
+HEROPICK_STATE_CD_SELECT2
+	队长征召-2号选位
+
+HEROPICK_STATE_CD_SELECT3
+	队长征召-3号选位
+
+HEROPICK_STATE_CD_SELECT4
+	队长征召-4号选位
+
+HEROPICK_STATE_CD_SELECT5
+	队长征召-5号选位
+
+HEROPICK_STATE_CD_SELECT6
+	队长征召-6号选位
+
+HEROPICK_STATE_CD_SELECT7
+	队长征召-7号选位
+
+HEROPICK_STATE_CD_SELECT8
+	队长征召-8号选位
+
+HEROPICK_STATE_CD_SELECT9
+	队长征召-9号选位
+
+HEROPICK_STATE_CD_SELECT10
+	队长征召-10号选位
+
+HEROPICK_STATE_CD_PICK
+	队长征召-英雄选择
+
+HEROPICK_STATE_BD_SELECT
+	队长征召-？
+
+HERO_PICK_STATE_ABILITY_DRAFT_SELECT
+	技能征召-技能选择
+
+HERO_PICK_STATE_ARDM_SELECT
+	死亡随机-英雄选择
+
+HEROPICK_STATE_ALL_DRAFT_SELECT
+	？-英雄选择
+
+HERO_PICK_STATE_CUSTOMGAME_SELECT
+	自定义游戏-英雄选择
+
+HEROPICK_STATE_SELECT_PENALTY
+	英雄选择-惩罚时间
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Rune Types 常量-神符类型
+----------------------------------------------------------------------------------------------------
+
+RUNE_INVALID (used as return value)
+	无效神符（默认返回值）
+
+RUNE_DOUBLEDAMAGE
+	双倍伤害
+
+RUNE_HASTE
+	极速神符
+
+RUNE_ILLUSION
+	幻象神符
+
+RUNE_INVISIBILITY
+	隐身神符
+
+RUNE_REGENERATION
+	回复神符
+
+RUNE_BOUNTY
+	赏金神符
+
+RUNE_ARCANE
+	奥术神符
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Rune Status 常量-神符状态
+----------------------------------------------------------------------------------------------------
+   
+RUNE_STATUS_UNKNOWN
+	未知状态
+
+RUNE_STATUS_AVAILABLE
+	神符可获取
+
+RUNE_STATUS_MISSING
+	神符消失
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Rune Locations 常量-神符分布位置
+----------------------------------------------------------------------------------------------------
+
+RUNE_POWERUP_1
+	上路强化神符
+
+RUNE_POWERUP_2
+	下路强化神符
+
+RUNE_BOUNTY_1
+	天辉下路赏金神符
+
+RUNE_BOUNTY_2
+	天辉上路赏金神符
+
+RUNE_BOUNTY_3
+	夜魇上路赏金神符
+
+RUNE_BOUNTY_4
+	夜魇下路赏金神符
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Item Slot Types 常量-物品槽位类型
+----------------------------------------------------------------------------------------------------
+
+ITEM_SLOT_TYPE_INVALID
+	无效槽位
+
+ITEM_SLOT_TYPE_MAIN
+	主物品栏
+
+ITEM_SLOT_TYPE_BACKPACK
+	背包
+
+ITEM_SLOT_TYPE_STASH
+	储藏室
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Action Types 常量-单位动作类型
+----------------------------------------------------------------------------------------------------
+
+BOT_ACTION_TYPE_NONE
+	无
+
+BOT_ACTION_TYPE_IDLE
+	空闲
+
+BOT_ACTION_TYPE_MOVE_TO
+	移动
+
+BOT_ACTION_TYPE_MOVE_TO_DIRECTLY
+	直接移动
+
+BOT_ACTION_TYPE_ATTACK
+	攻击
+
+BOT_ACTION_TYPE_ATTACKMOVE
+	移动并攻击
+
+BOT_ACTION_TYPE_USE_ABILITY
+	使用技能
+
+BOT_ACTION_TYPE_PICK_UP_RUNE
+	拾取神符
+
+BOT_ACTION_TYPE_PICK_UP_ITEM
+	拾取物品
+
+BOT_ACTION_TYPE_DROP_ITEM
+	丢弃物品
+
+BOT_ACTION_TYPE_SHRINE
+	使用圣坛
+
+BOT_ACTION_TYPE_DELAY
+	延迟
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Courier Actions and States 常量-信使动作和状态
+----------------------------------------------------------------------------------------------------
+
+COURIER_ACTION_BURST
+	动作-冲刺
+
+COURIER_ACTION_ENEMY_SECRET_SHOP
+	动作-前往敌方神秘商店
+
+COURIER_ACTION_RETURN
+	动作-返回泉水
+
+COURIER_ACTION_SECRET_SHOP
+	动作-前往神秘商店
+
+COURIER_ACTION_SIDE_SHOP
+	动作-前往边路商店1
+
+COURIER_ACTION_SIDE_SHOP2
+	动作-前往边路商店2
+
+COURIER_ACTION_TAKE_STASH_ITEMS
+	动作-拿取储藏室物品
+
+COURIER_ACTION_TAKE_AND_TRANSFER_ITEMS
+	动作-拿取并运送物品
+
+COURIER_ACTION_TRANSFER_ITEMS
+	动作-运送物品
+
+COURIER_STATE_IDLE - 0
+	状态-空闲
+
+COURIER_STATE_AT_BASE - 1
+	状态-待在泉水
+
+COURIER_STATE_MOVING - 2
+	状态-移动
+
+COURIER_STATE_DELIVERING_ITEMS - 3
+	状态-运送物品
+
+COURIER_STATE_RETURNING_TO_BASE - 4
+	状态-返回泉水
+
+COURIER_STATE_DEAD
+	状态-死亡
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Towers 常量-防御塔
+----------------------------------------------------------------------------------------------------
+
+TOWER_TOP_1
+	上路一塔
+
+TOWER_TOP_2
+	上路二塔
+
+TOWER_TOP_3
+	上路三塔
+
+TOWER_MID_1
+	中路一塔
+
+TOWER_MID_2
+	中路二塔
+
+TOWER_MID_3
+	中路三塔
+
+TOWER_BOT_1
+	下路一塔
+
+TOWER_BOT_2
+	下路二塔
+
+TOWER_BOT_3
+	下路三塔
+
+TOWER_BASE_1
+	基地左边炮塔
+
+TOWER_BASE_2
+	基地右边炮塔
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Barracks 常量-兵营
+----------------------------------------------------------------------------------------------------
+
+BARRACKS_TOP_MELEE
+	上路近战兵营
+
+BARRACKS_TOP_RANGED
+	上路远程兵营
+
+BARRACKS_MID_MELEE
+	中路近战兵营
+
+BARRACKS_MID_RANGED
+	中路远程兵营
+
+BARRACKS_BOT_MELEE
+	下路近战兵营
+
+BARRACKS_BOT_RANGED
+	下路远程兵营
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Shrines 常量-圣坛
+----------------------------------------------------------------------------------------------------
+
+SHRINE_JUNGLE_1
+	上路圣坛
+
+SHRINE_JUNGLE_2
+	下路圣坛
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Shops 常量-商店
+----------------------------------------------------------------------------------------------------
+
+SHOP_HOME
+	家里主商店
+
+SHOP_SIDE
+	天辉（下路）边路商店
+
+SHOP_SECRET
+	天辉（上路）神秘商店
+
+SHOP_SIDE2
+	夜魇（上路）边路商店
+
+SHOP_SECRET2
+	夜魇（下路）神秘商店
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Ability Target Teams 常量-技能指定目标的所在团队
+----------------------------------------------------------------------------------------------------
+
+ABILITY_TARGET_TEAM_NONE
+	无团队（所有团队？）
+
+ABILITY_TARGET_TEAM_FRIENDLY
+	我方团队
+
+ABILITY_TARGET_TEAM_ENEMY
+	敌方团队（包括中立团队？）
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Ability Target Types 常量-技能指定目标的所属类型
+----------------------------------------------------------------------------------------------------
+
+ABILITY_TARGET_TYPE_NONE
+	无类型
+
+ABILITY_TARGET_TYPE_HERO
+	英雄
+
+ABILITY_TARGET_TYPE_CREEP
+	小兵生物
+
+ABILITY_TARGET_TYPE_BUILDING
+	建筑
+
+ABILITY_TARGET_TYPE_COURIER
+	信使
+
+ABILITY_TARGET_TYPE_OTHER
+	其它
+
+ABILITY_TARGET_TYPE_TREE
+	树木
+
+ABILITY_TARGET_TYPE_BASIC
+	基本类型
+
+ABILITY_TARGET_TYPE_ALL
+	全部类型
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Ability Target Flags 常量-技能指定目标的特殊标识
+----------------------------------------------------------------------------------------------------
+
+ABILITY_TARGET_FLAG_NONE
+	无目标单位
+
+ABILITY_TARGET_FLAG_RANGED_ONLY
+	仅对远程单位有效
+
+ABILITY_TARGET_FLAG_MELEE_ONLY
+	仅对近战单位有效
+
+ABILITY_TARGET_FLAG_DEAD
+	对死亡单位有效
+
+ABILITY_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES
+	对魔法免疫敌方单位有效
+
+ABILITY_TARGET_FLAG_NOT_MAGIC_IMMUNE_ALLIES
+	对非魔法免疫友方单位有效
+
+ABILITY_TARGET_FLAG_INVULNERABLE
+	对无敌单位有效
+
+ABILITY_TARGET_FLAG_FOW_VISIBLE
+	对可见单位有效
+
+ABILITY_TARGET_FLAG_NO_INVIS
+	对隐身单位有效
+
+ABILITY_TARGET_FLAG_NOT_ANCIENTS
+	对远古单位无效
+
+ABILITY_TARGET_FLAG_PLAYER_CONTROLLED
+	对玩家控制的单位有效
+
+ABILITY_TARGET_FLAG_NOT_DOMINATED
+	对支配单位无效
+
+ABILITY_TARGET_FLAG_NOT_SUMMONED
+	对召唤单位无效
+
+ABILITY_TARGET_FLAG_NOT_ILLUSIONS
+	对幻象单位无效
+
+ABILITY_TARGET_FLAG_NOT_ATTACK_IMMUNE
+	对攻击免疫单位无效
+
+ABILITY_TARGET_FLAG_MANA_ONLY
+	仅对有魔法值的单位有效
+
+ABILITY_TARGET_FLAG_CHECK_DISABLE_HELP
+	？
+
+ABILITY_TARGET_FLAG_NOT_CREEP_HERO
+	对英雄控制的非英雄单位无效
+
+ABILITY_TARGET_FLAG_OUT_OF_WORLD
+	对地图外的单位有效
+
+ABILITY_TARGET_FLAG_NOT_NIGHTMARED
+	对梦魇单位无效
+
+ABILITY_TARGET_FLAG_PREFER_ENEMIES
+	？
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Ability Behavior Bitfields 常量-技能的表现特征
+----------------------------------------------------------------------------------------------------
+
+ABILITY_BEHAVIOR_NONE
+	无特征
+
+ABILITY_BEHAVIOR_HIDDEN
+	隐藏技能
+	【示例】祸乱之源的噩梦终止、昆卡标记后的返回、水人变形后的变回原形
+
+ABILITY_BEHAVIOR_PASSIVE
+	被动技能
+
+ABILITY_BEHAVIOR_NO_TARGET
+	无目标技能
+
+ABILITY_BEHAVIOR_UNIT_TARGET
+	指向性技能
+
+ABILITY_BEHAVIOR_POINT
+	点技能
+
+ABILITY_BEHAVIOR_AOE
+	范围技能
+
+ABILITY_BEHAVIOR_NOT_LEARNABLE
+	不可升级的技能
+	【示例】幽鬼大招后的空降、末日吃野怪后获得的技能、卡尔切出的10个技能
+
+ABILITY_BEHAVIOR_CHANNELLED
+	持续施法技能
+	【示例】帕克的相位转移、屠夫的大招肢解
+
+ABILITY_BEHAVIOR_ITEM
+	物品技能
+
+ABILITY_BEHAVIOR_TOGGLE
+	切换施法开关技能
+	【示例】巫医的巫毒疗法、拉席克的脉冲新星
+
+ABILITY_BEHAVIOR_DIRECTIONAL
+	直线行径型技能
+	【示例】昆卡的幽灵船、米拉娜的月神之箭、痛苦女王的超声冲击波、虚空的时间漫游
+
+ABILITY_BEHAVIOR_IMMEDIATE
+	无施法前摇的技能
+
+ABILITY_BEHAVIOR_AUTOCAST
+	自动施法开关技能
+	【示例】昆卡的潮汐使者、黑鸟的奥术天球、小黑的霜冻之箭
+
+ABILITY_BEHAVIOR_OPTIONAL_UNIT_TARGET
+	可选目标单位的技能
+
+ABILITY_BEHAVIOR_OPTIONAL_POINT
+	可选施法点的技能
+
+ABILITY_BEHAVIOR_OPTIONAL_NO_TARGET
+	可选无（或有）目标的技能
+
+ABILITY_BEHAVIOR_AURA
+	光环技能
+
+ABILITY_BEHAVIOR_ATTACK
+	自带普通攻击的技能
+	【示例】毒龙的毒性攻击、小黑的霜冻之箭
+
+ABILITY_BEHAVIOR_DONT_RESUME_MOVEMENT
+	不能恢复移动的技能？
+	【示例】编织者的时光倒流、齐天大圣的七十二变及变回本体、滚滚的虚张声势、斧王的狂战士之吼
+
+ABILITY_BEHAVIOR_ROOT_DISABLES
+	不能被禁足的技能
+	【示例】米拉娜的跳跃、变体精灵的波浪形态
+
+ABILITY_BEHAVIOR_UNRESTRICTED
+	不可限制的技能
+	【示例】噬魂鬼使用大招后的控制和消化、工程师的集中引爆
+
+ABILITY_BEHAVIOR_IGNORE_PSEUDO_QUEUE
+	忽略伪队列的技能？
+	【示例】瘟疫法师的幽冥护罩、维萨吉的石像形态、巨牙海民的雪球滚滚、亚巴顿的回光返照、
+		祸乱之源的噩梦终止
+
+ABILITY_BEHAVIOR_IGNORE_CHANNEL
+	无须持续施法动作的技能
+	【示例】巫医的巫毒疗法、拉席克的脉冲新星
+
+ABILITY_BEHAVIOR_DONT_CANCEL_MOVEMENT
+	不能取消移动的技能
+	【示例】信使（被取消）的加速、信使（自动）升级飞行信使
+
+ABILITY_BEHAVIOR_DONT_ALERT_TARGET
+	不能提醒目标的技能
+	【示例】（只有）裂魂人的暗影冲刺
+
+ABILITY_BEHAVIOR_DONT_RESUME_ATTACK
+	本体不能攻击的技能
+	【示例】噬魂鬼的大招感染、黑鸟的星体禁锢、毒狗的崩裂禁锢
+
+ABILITY_BEHAVIOR_NORMAL_WHEN_STOLEN
+	被复制窃取后维持原状态效果的技能
+	【示例】米波的忽悠（水人复制米波只能忽悠本体）、影魔的魂之挽歌（拉比克窃取后释放是无魂状态）、
+		火枪的暗杀、先知的传送等一系列不会获取天赋加成的技能
+
+ABILITY_BEHAVIOR_IGNORE_BACKSWING
+	无施法后摇的技能
+
+ABILITY_BEHAVIOR_RUNE_TARGET
+	能够以神符为（指向）目标的技能
+	【实例】（只有）小小的投掷（注意这里是指向目标，所以屠夫的钩子不算）
+
+ABILITY_BEHAVIOR_DONT_CANCEL_CHANNEL
+	不能取消持续施法的技能
+	【实例】（只有）神谕者的气运之末？？
+
+ABILITY_BEHAVIOR_VECTOR_TARGETING
+	？
+
+ABILITY_BEHAVIOR_LAST_RESORT_POINT
+	？
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Misc Constants 常量-MISC常数
+----------------------------------------------------------------------------------------------------
+
+GLYPH_COOLDOWN
+	塔防激活冷却时间
+
+----------------------------------------------------------------------------------------------------
+-- Constants - Animation Activities 常量-动画类型
+----------------------------------------------------------------------------------------------------
+
+ACTIVITY_IDLE - 1500
+	空闲
+
+ACTIVITY_IDLE_RARE - 1501
+	空闲10秒
+
+ACTIVITY_RUN - 1502
+	移动
+
+ACTIVITY_ATTACK - 1503
+	攻击
+
+ACTIVITY_ATTACK2 - 1504
+	第二形态攻击
+
+ACTIVITY_ATTACK_EVENT - 1505
+	攻击事件
+
+ACTIVITY_DIE - 1506
+	死亡
+
+ACTIVITY_FLINCH - 1507
+	？
+
+ACTIVITY_FLAIL - 1508
+	？
+
+ACTIVITY_DISABLED - 1509
+	？
+
+ACTIVITY_CAST_ABILITY_1 - 1510
+	使用技能1
+
+ACTIVITY_CAST_ABILITY_2 - 1511
+	使用技能2
+
+ACTIVITY_CAST_ABILITY_3 - 1512
+	使用技能3
+
+ACTIVITY_CAST_ABILITY_4 - 1513
+	使用技能4（通常为大招）
+
+ACTIVITY_CAST_ABILITY_5 - 1514
+	使用技能5
+
+ACTIVITY_CAST_ABILITY_6 - 1515
+	使用技能6
+
+ACTIVITY_OVERRIDE_ABILITY_1 - 1516
+	？
+
+ACTIVITY_OVERRIDE_ABILITY_2 - 1517
+	？
+
+ACTIVITY_OVERRIDE_ABILITY_3 - 1518
+	？
+
+ACTIVITY_OVERRIDE_ABILITY_4 - 1519
+	？
+
+ACTIVITY_CHANNEL_ABILITY_1 - 1520
+	？
+
+ACTIVITY_CHANNEL_ABILITY_2 - 1521
+	？
+
+ACTIVITY_CHANNEL_ABILITY_3 - 1522
+	？
+
+ACTIVITY_CHANNEL_ABILITY_4 - 1523
+	？
+
+ACTIVITY_CHANNEL_ABILITY_5 - 1524
+	？
+
+ACTIVITY_CHANNEL_ABILITY_6 - 1525
+	？
+
+ACTIVITY_CHANNEL_END_ABILITY_1 - 1526
+	？
+
+ACTIVITY_CHANNEL_END_ABILITY_2 - 1527
+	？
+
+ACTIVITY_CHANNEL_END_ABILITY_3 - 1528
+	？
+
+ACTIVITY_CHANNEL_END_ABILITY_4 - 1529
+	？
+
+ACTIVITY_CHANNEL_END_ABILITY_5 - 1530
+	？
+
+ACTIVITY_CHANNEL_END_ABILITY_6 - 1531
+	？
+
+ACTIVITY_CONSTANT_LAYER - 1532
+	？
+
+ACTIVITY_CAPTURE - 1533
+	？
+
+ACTIVITY_SPAWN - 1534
+	重生
+
+ACTIVITY_KILLTAUNT - 1535
+	？
+
+ACTIVITY_TAUNT - 1536
+	嘲讽
