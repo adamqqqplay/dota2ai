@@ -11,6 +11,7 @@ local ItemsToBuy =
 	"item_wraith_band", --系带
 	"item_phase_boots",
 	"item_magic_wand", --大魔棒7.14
+	"item_orb_of_corrosion",
 	"item_maelstrom",
 	"item_echo_sabre", --连击刀
 	"item_black_king_bar", --bkb

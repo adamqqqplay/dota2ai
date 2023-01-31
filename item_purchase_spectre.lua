@@ -12,7 +12,8 @@ local ItemsToBuy =
 	"item_wraith_band", --系带
 	"item_flask",
 	"item_phase_boots",
-	"item_orb_of_corrosion",
+	"item_bfury",
+	-- "item_orb_of_corrosion",
 	"item_diffusal_blade", --散失刀
 	"item_manta", --分身
 	"item_heart", --龙心7.20

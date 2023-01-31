@@ -10,7 +10,8 @@ local ItemsToBuy =
 	"item_wraith_band", --系带
 	"item_tango",
 	"item_flask",
-	"item_phase_boots", --相位7.21
+	-- "item_phase_boots", --相位7.21
+	"item_power_treads",
 	"item_maelstrom",
 	"item_desolator",
 	"item_hurricane_pike",
@@ -18,6 +19,7 @@ local ItemsToBuy =
 	"item_hyperstone",
 	"item_recipe_mjollnir", --大雷锤
 	"item_greater_crit",
+	"item_ultimate_scepter_2"
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

@@ -18,6 +18,7 @@ local ItemsToBuy =
 	"item_aghanims_shard",
 	"item_ultimate_scepter_2",
 	"item_lotus_orb",
+	"item_assault",
 	"item_overwhelming_blink",
 }
 

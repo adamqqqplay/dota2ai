@@ -9,10 +9,11 @@ local ItemsToBuy =
 	"item_tango",
 	"item_flask",
 	"item_enchanted_mango",
-	"item_bracer",
-	"item_phase_boots",
 	"item_magic_wand",
-	"item_bracer",
+	-- "item_bracer",
+	"item_vanguard", 
+	"item_phase_boots",
+	-- "item_bracer",
 	"item_blink", --跳刀
 	"item_crimson_guard", --赤红甲
 	"item_aghanims_shard",
