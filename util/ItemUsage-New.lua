@@ -451,14 +451,30 @@ function M.ItemUsageThink()
             end
         end
     end
+
     local bst = GetItemIfNotImplemented("item_bloodstone")
     if bst ~= nil and bst:IsFullyCastable() and notBlasted then
-        if npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH and
-            healthPercent < 0.3 then
-            M.UseItemOnLocation(npcBot, bst, npcBot:GetLocation())
+        if (npcBot:GetActiveMode() == BOT_MODE_RETREAT or npcBot:GetActiveMode() == BOT_MODE_ATTACK) and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH and healthPercent < 0.5 then
+            -- M.UseItemOnLocation(npcBot, bst, npcBot:GetLocation())
+            M.UseItemNoTarget(npcBot, bst)
             return
         end
     end
+
+    local eshrd = GetItemIfNotImplemented("item_eternal_shroud")
+    -- if eshrd ~= nil and eshrd:IsFullyCastable() and notBlasted then
+    --     if (npcBot:GetActiveMode() == BOT_MODE_RETREAT or npcBot:GetActiveMode() == BOT_MODE_ATTACK) and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH and healthPercent < 0.5 then
+    --         M.UseItemNoTarget(npcBot, eshrd)
+    --         return
+    --     end
+    -- end
+    if eshrd ~= nil and eshrd:IsFullyCastable() and healthPercent < 0.5 then
+        if tableNearbyEnemyHeroes ~= nil and #tableNearbyEnemyHeroes > 0 then
+            M.UseItemNoTarget(npcBot, eshrd)
+            return
+        end
+    end
+
     local pb = GetItemIfNotImplemented("item_phase_boots")
     if pb ~= nil and pb:IsFullyCastable() then
         if (

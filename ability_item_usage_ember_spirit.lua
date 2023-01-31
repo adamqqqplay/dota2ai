@@ -17,20 +17,20 @@ local AbilityNames, Abilities, Talents = fun1:InitAbility(npcBot)
 local AbilityToLevelUp = {
     AbilityNames[2],
     AbilityNames[3],
+    AbilityNames[2],
     AbilityNames[3],
-    AbilityNames[1],
-    AbilityNames[3],
+    AbilityNames[2],
     AbilityNames[5],
+    AbilityNames[2],
     AbilityNames[3],
-    AbilityNames[2],
-    AbilityNames[2],
+    AbilityNames[3],
     "talent",
-    AbilityNames[2],
     AbilityNames[1],
-    AbilityNames[1],
-    AbilityNames[1],
-    "talent",
     AbilityNames[5],
+    AbilityNames[1],
+    AbilityNames[1],
+    "talent",
+    AbilityNames[1],
     "nil",
     AbilityNames[5],
     "nil",
@@ -52,7 +52,7 @@ local TalentTree = {
         return Talents[5]
     end,
     function()
-        return Talents[8]
+        return Talents[7]
     end,
 }
 utility.CheckAbilityBuild(AbilityToLevelUp)

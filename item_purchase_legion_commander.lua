@@ -8,9 +8,10 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_flask",
-	"item_bracer",
+	-- "item_bracer",
 	"item_magic_wand",
 	"item_phase_boots", --相位7.21
+	"item_falcon_blade",
 	"item_blink",
 	"item_blade_mail", --刃甲
 	"item_invis_sword", --隐刀

@@ -21,19 +21,19 @@ ability_item_usage_generic.InitAbility(Abilities, AbilitiesReal, Talents)
 
 local AbilityToLevelUp =
 {
-	Abilities[1],
-	Abilities[2],
-	Abilities[1],
 	Abilities[3],
 	Abilities[1],
+	Abilities[3],
+	Abilities[2],
+	Abilities[2],
 	Abilities[4],
-	Abilities[1],
 	Abilities[2],
-	Abilities[3],
+	Abilities[2],
+	Abilities[1],
 	"talent",
-	Abilities[2],
+	Abilities[1],
 	Abilities[4],
-	Abilities[2],
+	Abilities[1],
 	Abilities[3],
 	"talent",
 	Abilities[3],
@@ -58,7 +58,7 @@ local TalentTree = {
 		return Talents[5]
 	end,
 	function()
-		return Talents[7]
+		return Talents[8]
 	end
 }
 -- check skill build vs current level

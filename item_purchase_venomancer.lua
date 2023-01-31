@@ -9,8 +9,9 @@ local ItemsToBuy =
 	"item_wraith_band", --系带
 	"item_tango",
 	"item_tango",
-	"item_magic_stick",
-	"item_wraith_band", --系带
+	"item_wind_lace",
+    "item_magic_stick",
+	-- "item_wraith_band", --系带
 	"item_boots",
 	"item_magic_wand",
 	"item_arcane_boots",

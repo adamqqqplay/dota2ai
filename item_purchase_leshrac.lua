@@ -13,7 +13,8 @@ local ItemsToBuy =
 	"item_boots",
 	"item_null_talisman",
 	"item_arcane_boots",
-	"item_veil_of_discord", --纷争7.20
+	-- "item_veil_of_discord", --纷争7.20
+	"item_bloodstone",
 	"item_cyclone", --风杖
 	"item_aghanims_shard",
 	"item_octarine_core",
@@ -21,6 +22,7 @@ local ItemsToBuy =
 	"item_ultimate_scepter_2",
 	"item_shivas_guard", --希瓦
 	"item_wind_waker",
+	"item_sheepstick"
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)

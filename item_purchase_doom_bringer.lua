@@ -8,10 +8,11 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_flask",
-	"item_bracer",
+	-- "item_bracer",
 	"item_boots",
 	"item_magic_wand",
 	"item_phase_boots",
+	"item_hand_of_midas",
 	"item_ancient_janggo", --战鼓7.20
 	"item_invis_sword", --隐刀
 	"item_shivas_guard", --希瓦
