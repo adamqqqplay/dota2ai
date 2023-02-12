@@ -376,7 +376,7 @@ local allBotHeroes = {
 	"npc_dota_hero_magnataur",
 	"npc_dota_hero_medusa",
 	"npc_dota_hero_mirana",
-	--"npc_dota_hero_monkey_king",
+	"npc_dota_hero_monkey_king",
 
 	"npc_dota_hero_nevermore",
 	"npc_dota_hero_night_stalker",
@@ -451,7 +451,7 @@ local hero_pool_position_1 = {
 	"npc_dota_hero_antimage",
 	"npc_dota_hero_gyrocopter",
 	"npc_dota_hero_lycan",
-	--"npc_dota_hero_monkey_king",
+	"npc_dota_hero_monkey_king",
 	"npc_dota_hero_terrorblade",
 	"npc_dota_hero_phantom_lancer",
 	"npc_dota_hero_troll_warlord",

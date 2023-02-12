@@ -23,7 +23,7 @@ function M.SendVersionAnnouncement()
 							true
 						)
 						npcBot:ActionImmediate_Chat(
-							"Please use hard or unfair mode and do not play as Monkey king.",
+							"Please use hard or unfair mode",
 							true
 						)
 					end
