@@ -1000,7 +1000,7 @@ function M.UnImplementedItemUsage()
         then
             if npcTarget ~= nil and npcTarget:IsHero() and CanCastOnTarget(npcTarget) and
                 GetUnitToUnitDistance(npcBot, npcTarget) < 800 and
-                IsDisabled(true, npcTarget) == true
+                IsDisabled(npcTarget) == true
             then
                 npcBot:Action_UseAbilityOnLocation(metham, npcTarget:GetLocation())
                 return

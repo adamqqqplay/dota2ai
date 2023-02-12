@@ -16,10 +16,3 @@ local function PrintCarriedItems(bot)
         end
     end
 end
-
-function OnStart()
-    bot = GetBot()
-end
-
-function OnEnd()
-end

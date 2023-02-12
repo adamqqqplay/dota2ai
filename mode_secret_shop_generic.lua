@@ -79,8 +79,6 @@ function Think()
 		return
 	end
 
-	preferedShop = X.GetPreferedSecretShop();
-
 	if bot:DistanceFromSecretShop() == 0
 	then
 		bot:Action_MoveToLocation(preferedShop + RandomVector(200))
@@ -102,7 +100,7 @@ function X.HaveItemToSell()
 		"item_faerie_fire",
 		"item_tango",
 		"item_flask",
-		"item_orb_of_venom",
+		--		 "item_orb_of_venom",
 		"item_bracer",
 		"item_wraith_band",
 		"item_null_talisman",

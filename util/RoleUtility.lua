@@ -1505,7 +1505,6 @@ X["phase_boots"] = {
 	["npc_dota_hero_spectre"] = 1,
 	["npc_dota_hero_tiny"] = 1,
 	["npc_dota_hero_troll_warlord"] = 1,
-	["npc_dota_hero_alchemist"] = 1,
 	["npc_dota_hero_life_stealer"] = 1,
 	["npc_dota_hero_monkey_king"] = 1,
 	["npc_dota_hero_ember_spirit"] = 1,
