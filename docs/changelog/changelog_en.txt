@@ -432,45 +432,10 @@ Update to 7.31c
 23. Fix enchantress_enchant neutral creep level limit to 7.31c;
 24. Fix terrorblade uses reflection or sunder at creep heroes;
 25. Fix abyssal errors;
-7.32d changelog
-1. bots now can correctly use bloodstone and eternal shroud. 
-2. updated the ability/talent levelup and the item choice for the following heros:
-   1. razor
-   2. viper
-   3. sniper
-   4. juggernaut
-   5. zeus
-   6. huskar
-   7. phantom assassin
-   8. crystal maiden
-   9. ember spirit
-   10. centaur warrunner
-   11. venomancer
-   12. doom bringer
-   13. slardar
-   14. silencer
-   15. legion commander
-   16. riki
-   17. clinkz
-   18. leshrac
-   19. drow ranger
-   20. dragon knight
-   21. shadow fiend
-   22. axe
-   23. bloodseeker
-   24. bristleback
-   25. spectre
-   26. anti-mage
-   27. facelss void
-   28. bounty hunter
-   29. pudge
-   30. witch docter
-   31. bounty hunter
-   32. disrupter
-   33. enchantress
-   34. magnus
-   35. monkey king
-   36. weaver
-   37. phantom lancer
-   38. timbersaw
-   39. tusk
+v1.7.12(2023.02.12)
+Update to 7.32d
+1. Update item building lists.
+2. Update ability and talent building lists.
+3. AI now correctly use bloodstone and eternal shroud. 
+4. Fix several mode issues.
+5. Fix many small issues.
