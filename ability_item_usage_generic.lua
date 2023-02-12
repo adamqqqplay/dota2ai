@@ -2,9 +2,9 @@
 --	Ranked Matchmaking AI v1.3 New Structure
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
--------
-_G._savedEnv = getfenv()
-module("ability_item_usage_generic", package.seeall)
+local BotsInit = require("game/botsinit");
+local MyModule = BotsInit.CreateGeneric();
+
 local utility = require(GetScriptDirectory() .. "/utility")
 local Courier = dofile(GetScriptDirectory() .. "/util/CourierSystem")
 local ItemUsageSystem = dofile(GetScriptDirectory() .. "/util/ItemUsageSystem")
@@ -455,6 +455,4 @@ function UseAbility(AbilitiesReal, cast)
 	end
 end
 
-for k, v in pairs(ability_item_usage_generic) do
-	_G._savedEnv[k] = v
-end
+return MyModule;
