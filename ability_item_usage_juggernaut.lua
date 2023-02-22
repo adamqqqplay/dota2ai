@@ -49,10 +49,10 @@ local AbilityToLevelUp =
 
 local TalentTree = {
 	function()
-		return Talents[1]
+		return Talents[2]
 	end,
 	function()
-		return Talents[3]
+		return Talents[4]
 	end,
 	function()
 		return Talents[5]

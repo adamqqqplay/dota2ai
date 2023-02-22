@@ -58,7 +58,7 @@ local TalentTree = {
 		return Talents[5]
 	end,
 	function()
-		return Talents[8]
+		return Talents[7]
 	end
 }
 -- check skill build vs current level

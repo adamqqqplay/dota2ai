@@ -57,7 +57,7 @@ local TalentTree = {
 		return Talents[3]
 	end,
 	function()
-		return Talents[6]
+		return Talents[5]
 	end,
 	function()
 		return Talents[8]
