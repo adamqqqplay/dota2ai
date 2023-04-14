@@ -11,17 +11,19 @@ local ItemsToBuy =
 	"item_branches",
 	"item_branches",
 	"item_boots",
-	"item_flask",
+	-- "item_flask",
 	"item_magic_wand",
 	"item_arcane_boots",
 	"item_glimmer_cape", --微光
 	"item_ghost",
+	-- "item_cyclone", --风杖
 	"item_ultimate_scepter", --蓝杖
-	"item_cyclone", --风杖
+    "item_hurricane_pike",
+	"item_moon_shard",
 	"item_sheepstick", --羊刀
+	-- "item_lotus_orb", --清莲宝珠
+	-- "item_wind_waker",
 	"item_ultimate_scepter_2",
-	"item_lotus_orb", --清莲宝珠
-	"item_wind_waker",
 }
 
 ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
