@@ -218,6 +218,56 @@ local dota2team = {
 		};
 		['sponsorship'] = '';
 	},
+	-- Ti 10
+	[19] = {
+		['name'] = "Team Spirit TI10";
+		['alias'] = "TS";
+		['players'] = {
+			'Yatoro',
+			'TORONTOTOKYO',
+			'Collapse',
+			'Mira',
+			'Miposhka'
+		};
+		['sponsorship'] = '';
+	},
+	[20] = {
+		['name'] = "PSG.LGD TI10";
+		['alias'] = "LGD";
+		['players'] = {
+			'Ame',
+			'NothingToSay',
+			'Faith_bian',
+			'XinQ',
+			'y`'
+		};
+		['sponsorship'] = '';
+    },
+	-- Ti 11
+	[21] = {
+		['name'] = "Tundra Esports TI11";
+		['alias'] = "Tundra";
+		['players'] = {
+			'skiter',
+			'Nine',
+			'33',
+			'Saksa',
+			'Sneyking'
+		};
+		['sponsorship'] = '';
+	},
+	[22] = {
+		['name'] = "Team Secret TI11";
+		['alias'] = "Secret";
+		['players'] = {
+			'Crystallis',
+			'Nisha',
+			'Resolut1on',
+			'W_Zayac',
+			'Puppey'
+		};
+		['sponsorship'] = '';
+	},
 }
 
 local sponsorship = { "RMMAI" };
