@@ -439,3 +439,9 @@ Update to 7.32d
 3. AI now correctly use bloodstone and eternal shroud. 
 4. Fix several mode issues.
 5. Fix many small issues.
+v1.7.13(2023.04.19)
+Update to 7.32e
+1. Update item building lists.
+2. Update ability and talent building lists.
+3. Include Ti10 and Ti11 finalists in the bot naming pool. 
+4. Fix talent building lists for some heroes. 
