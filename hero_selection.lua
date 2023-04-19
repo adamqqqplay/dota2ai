@@ -455,6 +455,7 @@ local hero_pool_position_1 = {
 	"npc_dota_hero_terrorblade",
 	"npc_dota_hero_phantom_lancer",
 	"npc_dota_hero_troll_warlord",
+	"npc_dota_hero_abaddon"
 }
 local hero_pool_position_2 = {
 	"npc_dota_hero_leshrac",
@@ -479,9 +480,8 @@ local hero_pool_position_2 = {
 	"npc_dota_hero_obsidian_destroyer",
 	"npc_dota_hero_templar_assassin",
 	"npc_dota_hero_kunkka",
-
-	--"npc_dota_hero_tiny",
 }
+
 local hero_pool_position_3 = {
 	"npc_dota_hero_centaur",
 	"npc_dota_hero_doom_bringer",
@@ -508,7 +508,7 @@ local hero_pool_position_4 = {
 	--"npc_dota_hero_hoodwink",
 	"npc_dota_hero_skywrath_mage",
 	"npc_dota_hero_shadow_shaman",
-	"npc_dota_hero_abaddon",
+	-- "npc_dota_hero_abaddon",
 	"npc_dota_hero_venomancer",
 	"npc_dota_hero_slardar",
 	"npc_dota_hero_undying",
@@ -550,8 +550,8 @@ local hero_pool_position_5 = {
 }
 -- This is the pool of heros from which to choose bots for each position
 local hero_pool_position = {
-	[1] = hero_pool_position_1,
-	[2] = hero_pool_position_2,
+	[1] = hero_pool_position_2,
+	[2] = hero_pool_position_1,
 	[3] = hero_pool_position_3,
 	[4] = hero_pool_position_4,
 	[5] = hero_pool_position_5
@@ -766,7 +766,7 @@ function AllPickLogic()
 					(GetSelectedHeroName(id) == "" or GetSelectedHeroName(id) == nil))
 			then
 				if (randomTime == 0) then
-					randomTime = RandomInt(10, 12);
+					randomTime = RandomInt(1, 2);
 				end
 				while (GameTime() - pickTime) < randomTime do
 					return;

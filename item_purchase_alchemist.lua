@@ -8,8 +8,8 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_quelling_blade",
-	"item_bracer",
-	"item_soul_ring", --灵魂之戒7.07
+	-- "item_bracer",
+	-- "item_soul_ring", --灵魂之戒7.07
 	"item_power_treads", --假腿7.21
 	"item_radiance",
 	"item_blink",
