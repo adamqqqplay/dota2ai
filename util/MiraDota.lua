@@ -2141,7 +2141,7 @@ function Push_impl.PushLaneDesire(npc, lane)
     end)()
     local factor = 0.2 + levelFactor + roleFactor + 0.4 * distanceFactor + 0.2 * stateFactor
     if stateFactor < 1.2 then
-        factor = factor * RemapVal(stateFactor, 0.6, 1.2, 0, 0.7)
+        factor = factor * RemapValClamped(stateFactor, 0.6, 1.2, 0, 0.7)
     end
     return Clamp(factor, 0, 0.8)
 end

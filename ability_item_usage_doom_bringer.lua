@@ -114,11 +114,11 @@ local function GetComboMana()
     local dotaTime = DotaTime() / 60
     local estimatedFightTime = (function()
         if dotaTime <= 20 then
-            return RemapVal(dotaTime, 10, 20, 10, 15)
+            return RemapValClamped(dotaTime, 10, 20, 10, 15)
         elseif dotaTime <= 30 then
-            return RemapVal(dotaTime, 20, 30, 15, 30)
+            return RemapValClamped(dotaTime, 20, 30, 15, 30)
         elseif dotaTime <= 45 then
-            return RemapVal(dotaTime, 30, 45, 30, 50)
+            return RemapValClamped(dotaTime, 30, 45, 30, 50)
         else
             return 50
         end

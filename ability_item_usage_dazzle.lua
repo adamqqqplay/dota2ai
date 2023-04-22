@@ -125,7 +125,7 @@ Consider[1] = function()
 	local endRadius = ability:GetSpecialValueInt("end_radius")
 
 	local function FindPoisonTouchAlternativeNear(target)
-		local radius = RemapVal(GetUnitToUnitDistance(npcBot, target), 0, endDistance, startRadius, endRadius)
+		local radius = RemapValClamped(GetUnitToUnitDistance(npcBot, target), 0, endDistance, startRadius, endRadius)
 		local enemies = AbilityExtensions:GetNearbyEnemyUnits(target, radius)
 		enemies = AbilityExtensions:First(enemies,
 			function(t) return CanCast[1](t) and t:HasModifier("modifier_antimage_counterspell") end)
