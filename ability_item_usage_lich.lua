@@ -12,7 +12,10 @@ local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstract
 
 local enableDebug = true
 local npcBot = GetBot()
-if npcBot:IsIllusion() then return end
+if npcBot == nil or npcBot:IsIllusion() then
+	return
+end
+
 local talents = {}
 local abilityNames = {}
 local abilities = {}

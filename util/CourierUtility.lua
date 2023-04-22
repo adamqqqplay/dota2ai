@@ -5,7 +5,10 @@ local team = GetTeam();
 local pIDs = GetTeamPlayers(team);
 
 local npcBot = GetBot()
-if npcBot:IsIllusion() then return end
+if npcBot == nil or npcBot:IsIllusion() then
+	return
+end
+
 
 npcBot.courierID = 0;
 local calibrateTime = DotaTime();

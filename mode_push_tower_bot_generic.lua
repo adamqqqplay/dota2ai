@@ -1,7 +1,10 @@
 require(GetScriptDirectory() .. "/util/PushUtility");
 
 local npcBot = GetBot()
-if npcBot:IsIllusion() then return end
+if npcBot == nil or npcBot:IsIllusion() then
+	return
+end
+
 local lane = LANE_BOT
 
 function GetDesire()

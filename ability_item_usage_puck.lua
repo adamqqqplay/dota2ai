@@ -7,9 +7,10 @@ local utility = require(GetScriptDirectory() .. "/utility")
 local ability_item_usage_generic = require(GetScriptDirectory() .. "/ability_item_usage_generic")
 local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local npcBot = GetBot()
-if npcBot:IsIllusion() then
-    return
+if npcBot == nil or npcBot:IsIllusion() then
+	return
 end
+
 if npcBot:IsIllusion() then
     return
 end

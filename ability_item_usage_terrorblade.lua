@@ -14,7 +14,10 @@ local A = require(GetScriptDirectory() .. "/util/MiraDota")
 
 local debugmode = false
 local npcBot = GetBot()
-if npcBot:IsIllusion() then return end
+if npcBot == nil or npcBot:IsIllusion() then
+	return
+end
+
 local Talents = {}
 local Abilities = {}
 local AbilitiesReal = {}

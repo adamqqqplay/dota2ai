@@ -9,9 +9,10 @@ local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local ItemUsage = require(GetScriptDirectory() .. "/util/ItemUsage-New")
 local debugmode = false
 local npcBot = GetBot()
-if npcBot:IsIllusion() then
-    return
+if npcBot == nil or npcBot:IsIllusion() then
+	return
 end
+
 local Talents = {}
 local Abilities = {}
 local AbilitiesReal = {}

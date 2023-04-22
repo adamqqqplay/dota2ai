@@ -1,5 +1,8 @@
 local npcBot = GetBot()
-if npcBot:IsIllusion() then return end
+if npcBot == nil or npcBot:IsIllusion() then
+	return
+end
+
 local MoveDesire = 0;
 local AttackDesire = 0;
 local npcBotAR = 200;

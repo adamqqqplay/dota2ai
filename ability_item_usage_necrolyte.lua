@@ -9,9 +9,10 @@ local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstract
 local A = require(GetScriptDirectory() .. "/util/MiraDota")
 local debugmode = false
 local npcBot = GetBot()
-if npcBot:IsIllusion() then
-    return
+if npcBot == nil or npcBot:IsIllusion() then
+	return
 end
+
 local Talents = {}
 local Abilities = {}
 local AbilitiesReal = {}
