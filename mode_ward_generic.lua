@@ -18,6 +18,7 @@ local nWardCastRange = 500;
 local wt = nil;
 local itemWard = nil;
 local targetLoc = nil;
+local targetDist = 0;
 local smoke = nil;
 local wardCastTime = -90;
 local swapTime = -90;
@@ -103,8 +104,11 @@ function GetDesire()
 	end]] --
 
 
-	if bot:IsChanneling() or bot:IsIllusion() or bot:IsInvulnerable() or not bot:IsHero() or not IsSuitableToWard()
-		or bot:GetCurrentActionType() == BOT_ACTION_TYPE_IDLE
+	if bot:IsChanneling() 
+	   or bot:IsIllusion() 
+	   or bot:IsInvulnerable() 
+	   or not IsSuitableToWard()
+	   or not bot:IsAlive()
 	then
 		return BOT_MODE_DESIRE_NONE;
 	end
@@ -354,7 +358,6 @@ function IsSuitableToWard()
 	local mode = bot:GetActiveMode();
 	if ((mode == BOT_MODE_RETREAT and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
 		or mode == BOT_MODE_ATTACK
-		or mode == BOT_MODE_RUNE
 		or mode == BOT_MODE_DEFEND_ALLY
 		or mode == BOT_MODE_DEFEND_TOWER_TOP
 		or mode == BOT_MODE_DEFEND_TOWER_MID

@@ -3,7 +3,8 @@
 ----------------------------------------------------------------------------------------------------
 local X = {}
 
-local visionRad = 2000;
+local visionRad = 2000 --假眼查重范围
+local trueSightRad = 1000 --真眼查重范围
 
 ---RADIANT WARDING SPOT
 local RADIANT_RUNE_WARD = Vector(2606, -1547, 0)
@@ -95,18 +96,54 @@ function X.GetDistance(s, t)
 	return math.sqrt((s[1] - t[1]) * (s[1] - t[1]) + (s[2] - t[2]) * (s[2] - t[2]));
 end
 
+--固定强制眼位
 function X.GetMandatorySpot()
 	local MandatorySpotRadiant = {
 		RADIANT_MANDATE1,
-		RADIANT_MANDATE2
+		RADIANT_MANDATE2,
 	}
 
 	local MandatorySpotDire = {
 		DIRE_MANDATE1,
-		DIRE_MANDATE2
+		DIRE_MANDATE2,
 	}
-	if GetTeam() == TEAM_RADIANT then
-		return MandatorySpotRadiant;
+
+	--2分钟前只插中路线眼
+	if DotaTime() < 1 * 60
+	then
+		MandatorySpotRadiant = {
+			RADIANT_MANDATE1,
+		}
+
+		MandatorySpotDire = {
+			DIRE_MANDATE2,
+		}
+	end
+
+	--12分钟后加入一塔眼
+	if DotaTime() > 12 * 60
+	then
+		MandatorySpotRadiant = {
+			RADIANT_MANDATE1,
+			RADIANT_MANDATE2,
+			RADIANT_T1TOPFALL,
+			RADIANT_T1MIDFALL,
+			RADIANT_T1BOTFALL,
+		}
+
+		MandatorySpotDire = {
+			DIRE_MANDATE1,
+			DIRE_MANDATE2,
+			DIRE_T1TOPFALL,
+			DIRE_T1MIDFALL,
+			DIRE_T1BOTFALL,
+		}
+	end
+
+
+	if GetTeam() == TEAM_RADIANT
+	then
+		return MandatorySpotRadiant
 	else
 		return MandatorySpotDire
 	end
@@ -180,9 +217,11 @@ end
 
 function X.GetAvailableSpot(bot)
 	local temp = {};
-	for _, s in pairs(X.GetMandatorySpot()) do
-		if not X.CloseToAvailableWard(s) then
-			table.insert(temp, s);
+	if DotaTime() < 38 * 60 then
+		for _, s in pairs(X.GetMandatorySpot()) do
+			if not X.CloseToAvailableWard(s) then
+				table.insert(temp, s);
+			end
 		end
 	end
 	for _, s in pairs(X.GetWardSpotWhenTowerFall()) do
@@ -190,7 +229,7 @@ function X.GetAvailableSpot(bot)
 			table.insert(temp, s);
 		end
 	end
-	if DotaTime() > 5 * 60 then
+	if DotaTime() > 10 * 60 then
 		for _, s in pairs(X.GetAggressiveSpot()) do
 			if GetUnitToLocationDistance(bot, s) <= 1200 and not X.CloseToAvailableWard(s) then
 				table.insert(temp, s);
@@ -215,6 +254,20 @@ function X.GetClosestSpot(bot, spots)
 	local cTarget = nil;
 	for _, spot in pairs(spots) do
 		local dist = GetUnitToLocationDistance(bot, spot);
+		if dist < cDist then
+			cDist = dist;
+			cTarget = spot;
+		end
+	end
+	return cTarget, cDist;
+end
+
+function X.GetClosestToLaneSpot(bot, spots)
+	local cDist = 100000;
+	local cTarget = nil;
+	for _, spot in pairs(spots) do
+		local amount = GetAmountAlongLane(bot:GetAssignedLane(), spot)
+		local dist = amount.distance
 		if dist < cDist then
 			cDist = dist;
 			cTarget = spot;

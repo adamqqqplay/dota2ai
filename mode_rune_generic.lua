@@ -17,11 +17,16 @@ local bot         = GetBot()
 local minute      = 0
 local sec         = 0
 local closestRune = -1
+local closestDist = nil
 local runeStatus  = -1
 local ProxDist    = 1600
 local teamPlayers = nil
 local pingTimeGap = 20
 local bottle      = nil
+
+if bot == nil then
+	return
+end
 
 local vRadiantDropLocation = Vector(-6843, -6618, 384)
 local vDireDropLocation = Vector(7062, 6200, 384)
@@ -62,12 +67,16 @@ local vWaitRuneLocList = {
 
 function GetDesire()
 
+	-- if(bot:GetPlayerID()==1) then
+	-- 	print(bot:GetUnitName().."GetDesire in mode rune" .. tostring(DotaTime()))
+	-- end
+
 	--	if 7.29 then return 0 end
 
 	if GetGameMode() == GAMEMODE_1V1MID
 		or (GetGameMode() == GAMEMODE_MO and DotaTime() <= 0)
 		or (bot:HasModifier("modifier_arc_warden_tempest_double"))
-		or (DotaTime() > -10 and bot:GetCurrentActionType() == BOT_ACTION_TYPE_IDLE)
+		or (DotaTime() > 10 and bot:GetCurrentActionType() == BOT_ACTION_TYPE_IDLE)
 	then
 		return BOT_MODE_DESIRE_NONE
 	end
@@ -186,6 +195,9 @@ function OnStart()
 	if bot:GetItemSlotType(bottle_slot) == ITEM_SLOT_TYPE_MAIN then
 		bottle = bot:GetItemInSlot(bottle_slot)
 	end
+
+	bot.targetRuneLocation = nil
+	bot.targetRuneTimer = nil
 end
 
 function OnEnd()
@@ -193,6 +205,10 @@ function OnEnd()
 end
 
 function Think()
+
+	-- if(bot:GetPlayerID()==1) then
+	-- 	print(bot:GetUnitName().."Think in mode rune" .. tostring(DotaTime()))
+	-- end
 
 	if bot:IsChanneling()
 		or bot:NumQueuedActions() > 0
@@ -208,7 +224,7 @@ function Think()
 	if DotaTime() < 0
 	then
 
-		if DotaTime() < -35
+		if DotaTime() < -82
 		then
 			local vGoOutLocation = X.GetGoOutLocation()
 
@@ -221,32 +237,59 @@ function Think()
 			bot:Action_ClearActions(false)
 			return
 		end
-
-		if GetTeam() == TEAM_RADIANT
-		then
-			if bot:GetAssignedLane() == LANE_BOT
-			then
-				-- bot:Action_MoveToLocation( GetTower( TEAM_RADIANT, TOWER_BOT_2 ):GetLocation() + RandomVector( 20 ) )
-				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_2) + RandomVector(50)) --B2
-				return
-			else
-				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_POWERUP_1) + RandomVector(50)) --P1
-				return
-			end
-		else
-			if bot:GetAssignedLane() == LANE_TOP
-			then
-				-- bot:Action_MoveToLocation( GetTower( TEAM_DIRE, TOWER_TOP_2 ):GetLocation() + RandomVector( 20 ))
-				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_BOUNTY_1) + RandomVector(50)) --B1
-				return
-			else
-				bot:Action_MoveToLocation(GetRuneSpawnLocation(RUNE_POWERUP_2) + RandomVector(50)) --P2
-				return
+		
+		if bot.targetRuneLocation ~= nil then
+			local distance = GetUnitToLocationDistance(bot, bot.targetRuneLocation)
+			if (distance <= 50 or distance >= 1600 or DotaTime() >= bot.targetRuneTimer + 2) then
+				bot.targetRuneLocation = nil
 			end
 		end
+		if bot.targetRuneLocation == nil then
+			local runeLocation
+			if GetTeam() == TEAM_RADIANT
+			then
+				if bot:GetAssignedLane() == LANE_BOT
+				then
+					-- bot:Action_MoveToLocation( GetTower( TEAM_RADIANT, TOWER_BOT_2 ):GetLocation() + RandomVector( 20 ) )
+					runeLocation = GetRuneSpawnLocation(RUNE_BOUNTY_2) --B2
+				else
+					runeLocation = GetRuneSpawnLocation(RUNE_POWERUP_1) --P1
+				end
+			else
+				if bot:GetAssignedLane() == LANE_TOP
+				then
+					-- bot:Action_MoveToLocation( GetTower( TEAM_DIRE, TOWER_TOP_2 ):GetLocation() + RandomVector( 20 ))
+					runeLocation = GetRuneSpawnLocation(RUNE_BOUNTY_1) --B1
+				else
+					runeLocation = GetRuneSpawnLocation(RUNE_POWERUP_2) --P2
+				end
+			end
+
+			local target
+			repeat
+				local vec
+				if(DotaTime()<=-5) then
+					vec = RandomVector(Min(bot:GetAttackRange(),300))
+				else
+					vec = RandomVector(Min(bot:GetAttackRange(),100))
+				end
+
+				target = runeLocation + vec
+			until IsLocationPassable(target)
+
+			bot.targetRuneLocation = target
+			bot.targetRuneTimer = DotaTime()
+			bot:Action_MoveToLocation(target)
+			if (bot:GetPlayerID()==1) then
+				bot: ActionImmediate_Chat(tostring(target),true)
+			end
+			return
+		else
+			bot:Action_MoveToLocation(bot.targetRuneLocation)
+			return
+		end
+
 	end
-
-
 
 	if runeStatus == RUNE_STATUS_AVAILABLE
 	then
@@ -694,5 +737,3 @@ function X.GetGoOutLocation()
 	return vLocation
 
 end
-
--- dota2jmz@163.com QQ:2462331592..

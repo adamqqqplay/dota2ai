@@ -8,19 +8,20 @@ if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot(
 	return
 end
 
-local X = {}
-local bot = GetBot()
+local npcBot = GetBot()
+if npcBot == nil then
+	return
+end
 
 function GetDesire()
-
-	if bot.pushWhenNoEnemies then
+	if npcBot.pushWhenNoEnemies then
 		return 0
 	end
 
 	local currentTime = DotaTime()
-	local botLV = bot:GetLevel()
+	local botLV = npcBot:GetLevel()
 
-	if currentTime <= 10
+	if currentTime <= 5
 	then
 		return 0.268
 	end
@@ -43,7 +44,6 @@ function GetDesire()
 	end
 
 	return 0
-
 end
 
 ----------------------------------------------------------------------------------------------------
