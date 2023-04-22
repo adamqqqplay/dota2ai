@@ -59,8 +59,8 @@ function GetUnitPushLaneDesire(npcBot, lane)
 	local team = GetTeam()
 	local teamPush = GetPushLaneDesire(lane);
 
-	local levelFactor = 1
-	if npcBot:GetLevel() < 6 then
+	local levelFactor = npcBot:GetLevel()/25
+	if npcBot:GetLevel() < 7 then
 		levelFactor = 0
 	end
 
@@ -84,7 +84,12 @@ function GetUnitPushLaneDesire(npcBot, lane)
 	elseif role.IsSupport(npcBot:GetUnitName()) == true then
 		roleFactor = roleFactor + 0.1;
 	elseif role.IsCarry(npcBot:GetUnitName()) == true then
-		roleFactor = roleFactor;
+		if DotaTime() < 20 * 60 then
+			roleFactor = roleFactor - 0.1;
+		end
+		if npcBot:GetLevel() < 12 then
+			roleFactor = roleFactor - 0.1;
+		end
 	end
 
 	local front = GetLaneFrontLocation(GetTeam(), lane, 0)
@@ -457,7 +462,7 @@ function UnitPushLaneThink(npcBot, lane)
 		goodSituation = false
 	end
 
-	local MinDelta = 200
+	local MinDelta = 300
 
 	if IsEnemyTooMany() then
 		AssembleWithAlly(npcBot)
@@ -482,13 +487,6 @@ function UnitPushLaneThink(npcBot, lane)
 	elseif GetUnitToLocationDistance(npcBot, TargetLocation) >= MinDelta then
 		-- print(npcBot:GetUnitName().." way from target location, moving")
 		npcBot:Action_MoveToLocation(TargetLocation)
-		-- if GetUnitToLocationDistanceSqr(npcBot, TargetLocation) <= 90000 then
-		-- 	if not npcBot:GetAttackTarget() then
-		-- 		npcBot:Action_AttackMove(TargetLocation)
-		-- 	end
-		-- else
-		-- 	npcBot:Action_MoveToLocation(TargetLocation)
-		-- end
 	elseif target then
 		-- print(npcBot:GetUnitName().." has target "..target:GetUnitName())
 		npcBot:Action_AttackUnit(target, true)
@@ -501,14 +499,12 @@ function UnitPushLaneThink(npcBot, lane)
 		end
 	else
 		-- print(npcBot:GetUnitName().." idle move: "..AbilityExtensions:ToStringVector(TargetLocation))
-		npcBot:Action_MoveToLocation(TargetLocation)
-		-- if GetUnitToLocationDistanceSqr(npcBot, TargetLocation) <= 90000 then
-		-- 	if not npcBot:GetAttackTarget() then
-		-- 		npcBot:Action_AttackMove(TargetLocation)
-		-- 	end
-		-- else
-		-- 	npcBot:Action_MoveToLocation(TargetLocation)
-		-- end
+		-- npcBot:Action_MoveToLocation(TargetLocation)
+		if GetUnitToLocationDistanceSqr(npcBot, TargetLocation) <= 90000 then
+				npcBot:Action_AttackMove(TargetLocation)
+		else
+			npcBot:Action_MoveToLocation(TargetLocation)
+		end
 	end
 	return true
 end
