@@ -161,18 +161,6 @@ function AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
 	return
 end
 
-local function CanBuybackUpperRespawnTime(respawnTime)
-	local npcBot = GetBot()
-	if (not npcBot:IsAlive() and respawnTime ~= nil and npcBot:GetRespawnTime() >= respawnTime and
-		npcBot:GetBuybackCooldown() == 0 and
-		npcBot:GetGold() > npcBot:GetBuybackCost())
-	then
-		return true
-	end
-
-	return false
-end
-
 function IsMeepoClone()
 	local npcBot = GetBot()
 	if npcBot:GetUnitName() == "npc_dota_hero_meepo" and npcBot:GetLevel() > 1
@@ -189,62 +177,10 @@ function IsMeepoClone()
 	return false;
 end
 
---GXC BUYBACK LOGIC
+local Buyback = require(GetScriptDirectory() .. "./util/lib/Buyback")
+
 function BuybackUsageThink()
-	local npcBot = GetBot()
-	if npcBot:IsInvulnerable() or not npcBot:IsHero() or not string.find(npcBot:GetUnitName(), "hero") or
-		npcBot:IsIllusion() or IsMeepoClone() then
-		return
-	end
-
-	if not npcBot:HasBuyback() then
-		return;
-	end
-
-	-- no buyback, no need to use GetUnitList() for performance considerations
-	if (not CanBuybackUpperRespawnTime(20)) then
-		return
-	end
-
-	local tower_top_3 = GetTower(GetTeam(), TOWER_TOP_3)
-	local tower_mid_3 = GetTower(GetTeam(), TOWER_MID_3)
-	local tower_bot_3 = GetTower(GetTeam(), TOWER_BOT_3)
-	local tower_base_1 = GetTower(GetTeam(), TOWER_BASE_1)
-	local tower_base_2 = GetTower(GetTeam(), TOWER_BASE_2)
-
-	local barracks_top_melee = GetBarracks(GetTeam(), BARRACKS_TOP_MELEE)
-	local barracks_mid_melee = GetBarracks(GetTeam(), BARRACKS_MID_MELEE)
-	local barracks_bot_melee = GetBarracks(GetTeam(), BARRACKS_BOT_MELEE)
-
-	local ancient = GetAncient(GetTeam())
-
-	local buildList = {
-		tower_top_3,
-		tower_mid_3,
-		tower_bot_3,
-		tower_base_1,
-		tower_base_2,
-		barracks_top_melee,
-		barracks_mid_melee,
-		barracks_bot_melee,
-		ancient
-	}
-
-	for _, build in pairs(buildList) do
-		local tableNearbyEnemyHeroes = build:GetNearbyHeroes(1000, true, BOT_MODE_NONE)
-		if DotaTime() > 25 * 60 and CanBuybackUpperRespawnTime(20) then
-			if (tableNearbyEnemyHeroes ~= nil and #tableNearbyEnemyHeroes > 1) then
-				if (build:WasRecentlyDamagedByAnyHero(2.0) and CanBuybackUpperRespawnTime(20)) then
-					npcBot:ActionImmediate_Buyback()
-					return
-				end
-			end
-		end
-	end
-
-	if (DotaTime() > 35 * 60 and CanBuybackUpperRespawnTime(30)) then
-		npcBot:ActionImmediate_Buyback()
-	end
+	Buyback.BuybackUsageComplement()
 end
 
 function InitAbility(Abilities, AbilitiesReal, Talents)

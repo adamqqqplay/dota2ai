@@ -1924,12 +1924,6 @@ function X.UpdateSupportStatus(bot)
 	return false;
 end
 
-X['lastbbtime'] = -90;
-
-function X.ShouldBuyBack()
-	return DotaTime() > X['lastbbtime'] + 2.0;
-end
-
 function X.GetHighestValueRoles(bot)
 	local maxVal = -1;
 	local role = "";
