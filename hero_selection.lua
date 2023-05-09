@@ -6,6 +6,7 @@
 --DblTap: http://steamcommunity.com/profiles/76561197967823929/ Github Link：https://github.com/adamqqqplay/dota2ai/pull/3
 local role = require(GetScriptDirectory() .. "/util/RoleUtility")
 local bnUtil = require(GetScriptDirectory() .. "/util/BotNameUtility")
+local GAMEMODE_TM = 23
 
 --recording all dota2 heroes
 local hero_pool = {
