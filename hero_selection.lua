@@ -631,7 +631,8 @@ function Think()
 			InstallChatCallback(function(attr) SelectHeroChatCallback(attr.player_id, attr.string, attr.team_only); end);
 		end
 		SingleDraftLogic();
-	elseif GetGameMode() == GAMEMODE_TM then
+	-- elseif GetGameMode() == GAMEMODE_TM then
+	elseif GetGameMode() == 23 then
 		if GetGameState() == GAME_STATE_HERO_SELECTION then
 			InstallChatCallback(function(attr) SelectHeroChatCallback(attr.player_id, attr.string, attr.team_only); end);
 		end
@@ -1224,7 +1225,8 @@ function SelectLaneChatCallback(PlayerID, ChatText, bTeamOnly)
 end
 
 function UpdateLaneAssignments()
-	if GetGameMode() == GAMEMODE_AP or GetGameMode() == GAMEMODE_TM or GetGameMode() == GAMEMODE_SD then
+	-- if GetGameMode() == GAMEMODE_AP or GetGameMode() == GAMEMODE_TM or GetGameMode() == GAMEMODE_SD then
+	if GetGameMode() == GAMEMODE_AP or GetGameMode() == 23 or GetGameMode() == GAMEMODE_SD then
 		--print("AP Lane Assignment")
 		if GetGameState() == GAME_STATE_STRATEGY_TIME or GetGameState() == GAME_STATE_PRE_GAME then
 			InstallChatCallback(function(attr) SelectLaneChatCallback(attr.player_id, attr.string, attr.team_only); end);
