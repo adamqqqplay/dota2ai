@@ -6,6 +6,7 @@
 --DblTap: http://steamcommunity.com/profiles/76561197967823929/ Github Link：https://github.com/adamqqqplay/dota2ai/pull/3
 local role = require(GetScriptDirectory() .. "/util/RoleUtility")
 local bnUtil = require(GetScriptDirectory() .. "/util/BotNameUtility")
+local GAMEMODE_TM = 23
 
 --recording all dota2 heroes
 local hero_pool = {
@@ -631,8 +632,7 @@ function Think()
 			InstallChatCallback(function(attr) SelectHeroChatCallback(attr.player_id, attr.string, attr.team_only); end);
 		end
 		SingleDraftLogic();
-	-- elseif GetGameMode() == GAMEMODE_TM then
-	elseif GetGameMode() == 23 then
+	elseif GetGameMode() == GAMEMODE_TM then
 		if GetGameState() == GAME_STATE_HERO_SELECTION then
 			InstallChatCallback(function(attr) SelectHeroChatCallback(attr.player_id, attr.string, attr.team_only); end);
 		end
@@ -1225,8 +1225,7 @@ function SelectLaneChatCallback(PlayerID, ChatText, bTeamOnly)
 end
 
 function UpdateLaneAssignments()
-	-- if GetGameMode() == GAMEMODE_AP or GetGameMode() == GAMEMODE_TM or GetGameMode() == GAMEMODE_SD then
-	if GetGameMode() == GAMEMODE_AP or GetGameMode() == 23 or GetGameMode() == GAMEMODE_SD then
+	if GetGameMode() == GAMEMODE_AP or GetGameMode() == GAMEMODE_TM or GetGameMode() == GAMEMODE_SD then
 		--print("AP Lane Assignment")
 		if GetGameState() == GAME_STATE_STRATEGY_TIME or GetGameState() == GAME_STATE_PRE_GAME then
 			InstallChatCallback(function(attr) SelectLaneChatCallback(attr.player_id, attr.string, attr.team_only); end);
