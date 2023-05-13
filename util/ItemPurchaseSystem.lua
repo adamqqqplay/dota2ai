@@ -136,7 +136,7 @@ function M.SellSpecifiedItem(item_name)
     end
     if item ~= nil and itemCount > 5 and
         (
-        npcBot:DistanceFromFountain() <= 600 or npcBot:DistanceFromSideShop() <= 200 or
+        npcBot:DistanceFromFountain() <= 600 or
             npcBot:DistanceFromSecretShop() <= 200) then
         npcBot:ActionImmediate_SellItem(item)
     end
