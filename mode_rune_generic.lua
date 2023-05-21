@@ -280,9 +280,6 @@ function Think()
 			bot.targetRuneLocation = target
 			bot.targetRuneTimer = DotaTime()
 			bot:Action_MoveToLocation(target)
-			if (bot:GetPlayerID()==1) then
-				bot: ActionImmediate_Chat(tostring(target),true)
-			end
 			return
 		else
 			bot:Action_MoveToLocation(bot.targetRuneLocation)
