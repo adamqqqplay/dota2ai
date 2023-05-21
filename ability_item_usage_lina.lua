@@ -28,19 +28,19 @@ local AbilityToLevelUp =
 	Abilities[1],
 	Abilities[2],
 	Abilities[1],
-	Abilities[4],
+	Abilities[5],
 	Abilities[1],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
-	Abilities[4],
+	Abilities[5],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
 	"nil",
-	Abilities[4],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -367,7 +367,7 @@ end
 
 
 local function NormalLagnuaBladeConsider()
-	local ability = AbilitiesReal[4];
+	local ability = AbilitiesReal[5];
 
 	if not ability:IsFullyCastable() then
 		return BOT_ACTION_DESIRE_NONE, 0;
@@ -484,7 +484,7 @@ local ShardLagunaBlade = function()
 	return 0
 end
 
-Consider[4] = function()
+Consider[5] = function()
 	-- if AbilityExtensions:HasShard(npcBot) then
 	return NormalLagnuaBladeConsider()
 	-- else

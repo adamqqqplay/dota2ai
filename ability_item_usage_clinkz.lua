@@ -22,19 +22,19 @@ local AbilityToLevelUp = {
     Abilities[2],
     Abilities[3],
     Abilities[2],
-    Abilities[5],
+    Abilities[6],
     Abilities[2],
     Abilities[3],
     Abilities[1],
     "talent",
     Abilities[1],
-    Abilities[5],
+    Abilities[6],
     Abilities[1],
     Abilities[3],
     "talent",
     Abilities[3],
     "nil",
-    Abilities[5],
+    Abilities[6],
     "nil",
     "talent",
     "nil",
@@ -217,8 +217,9 @@ Consider[2] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[2
     end
     return false
 end)
-Consider[3] = function()
-    local abilityNumber = 3
+
+Consider[6] = function()
+    local abilityNumber = 6
     local ability = AbilitiesReal[abilityNumber]
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE, 0

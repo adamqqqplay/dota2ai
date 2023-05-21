@@ -30,17 +30,17 @@ local AbilityToLevelUp =
 	Abilities[3],
 	Abilities[3],
 	Abilities[3],
-	Abilities[4],
+	Abilities[6],
 	Abilities[2],
 	"talent",
 	Abilities[2],
-	Abilities[4],
+	Abilities[6],
 	Abilities[1],
 	Abilities[1],
 	"talent",
 	Abilities[1],
 	"nil",
-	Abilities[4],
+	Abilities[6],
 	"nil",
 	"talent",
 	"nil",
@@ -330,8 +330,8 @@ Consider[3] = function() --Location AOE Example
 
 end
 
-Consider[4] = function()
-	local abilityNumber = 4
+Consider[6] = function()
+	local abilityNumber = 6
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
