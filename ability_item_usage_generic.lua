@@ -11,6 +11,7 @@ local ItemUsageSystem = dofile(GetScriptDirectory() .. "/util/ItemUsageSystem")
 local ChatSystem = dofile(GetScriptDirectory() .. "/util/ChatSystem")
 local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local TeamItemThink = require(GetScriptDirectory() .. "/util/TeamItemThink")
+local Buyback = require(GetScriptDirectory() .. "/util/lib/Buyback")
 
 local towerId = {
 	TOWER_TOP_1,
@@ -176,8 +177,6 @@ function IsMeepoClone()
 	end
 	return false;
 end
-
-local Buyback = require(GetScriptDirectory() .. "./util/lib/Buyback")
 
 function BuybackUsageThink()
 	Buyback.BuybackUsageComplement()

@@ -62,7 +62,7 @@ function GetDesire()
 end
 
 function OnStart()
-
+	preferedShop = X.GetPreferedSecretShop();
 end
 
 function OnEnd()

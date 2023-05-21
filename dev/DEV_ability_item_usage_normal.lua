@@ -66,6 +66,14 @@ local talentTree = {
 -- check skill build vs current level
 AbilityHelper.checkAbilityBuild(abilityTree)
 
+function BuybackUsageThink()
+	ability_item_usage_generic.BuybackUsageThink();
+end
+
+function CourierUsageThink()
+	ability_item_usage_generic.CourierUsageThink();
+end
+
 function AbilityLevelUpThink()
 	ability_item_usage_generic.AbilityLevelUpThink2(abilityTree, talentTree)
 end
