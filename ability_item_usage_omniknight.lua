@@ -22,19 +22,19 @@ local AbilityToLevelUp = {
     Abilities[1],
     Abilities[3],
     Abilities[1],
-    Abilities[5],
+    Abilities[4],
     Abilities[1],
     Abilities[2],
     Abilities[2],
     "talent",
     Abilities[2],
-    Abilities[5],
+    Abilities[4],
     Abilities[3],
     Abilities[3],
     "talent",
     Abilities[3],
     "nil",
-    Abilities[5],
+    Abilities[4],
     "nil",
     "talent",
     "nil",
@@ -58,6 +58,14 @@ local TalentTree = {
     end,
 }
 utility.CheckAbilityBuild(AbilityToLevelUp)
+function BuybackUsageThink()
+	ability_item_usage_generic.BuybackUsageThink();
+end
+
+function CourierUsageThink()
+	ability_item_usage_generic.CourierUsageThink();
+end
+
 function AbilityLevelUpThink()
     ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
 end
@@ -331,8 +339,8 @@ Consider[3] = function()
     return false
 end
 Consider[3] = AbilityExtensions:ToggleFunctionToAutoCast(npcBot, AbilitiesReal[3], Consider[3])
-Consider[5] = function()
-    local abilityNumber = 5
+Consider[4] = function()
+    local abilityNumber = 4
     local ability = AbilitiesReal[abilityNumber]
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE, 0

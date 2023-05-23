@@ -8,7 +8,7 @@ local ItemsToBuy =
 {
 	"item_tango",
 	"item_flask",
-	"item_power_treads", --假腿7.21
+	"item_phase_boots",
 	"item_orb_of_corrosion",
 	"item_helm_of_the_dominator",
 	"item_vladmir", --祭品7.21

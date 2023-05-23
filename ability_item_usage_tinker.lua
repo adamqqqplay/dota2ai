@@ -25,16 +25,16 @@ local AbilityToLevelUp = {
     Abilities[2],
     Abilities[1],
     Abilities[2],
-    Abilities[5],
+    Abilities[6],
     "talent",
     Abilities[3],
-    Abilities[5],
+    Abilities[6],
     Abilities[3],
     Abilities[3],
     "talent",
     Abilities[3],
     "nil",
-    Abilities[5],
+    Abilities[6],
     "nil",
     "talent",
     "nil",
@@ -110,6 +110,14 @@ Consider[1] = function()
     end
 
     return 0
+end
+
+function BuybackUsageThink()
+	ability_item_usage_generic.BuybackUsageThink();
+end
+
+function CourierUsageThink()
+	ability_item_usage_generic.CourierUsageThink();
 end
 
 function AbilityLevelUpThink()

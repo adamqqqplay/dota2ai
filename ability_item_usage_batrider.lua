@@ -28,19 +28,19 @@ local AbilityToLevelUp =
 	Abilities[1],
 	Abilities[3],
 	Abilities[1],
-	Abilities[4],
+	Abilities[5],
 	Abilities[1],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[2],
-	Abilities[4],
+	Abilities[5],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
 	"nil",
-	Abilities[4],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -67,6 +67,14 @@ local TalentTree = {
 
 -- check skill build vs current level
 utility.CheckAbilityBuild(AbilityToLevelUp)
+
+function BuybackUsageThink()
+	ability_item_usage_generic.BuybackUsageThink();
+end
+
+function CourierUsageThink()
+	ability_item_usage_generic.CourierUsageThink();
+end
 
 function AbilityLevelUpThink()
 	ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
@@ -503,8 +511,8 @@ Consider[3] = function()
 
 end
 
-Consider[4] = function()
-	local abilityNumber = 4
+Consider[5] = function()
+	local abilityNumber = 5
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
