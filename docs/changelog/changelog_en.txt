@@ -445,3 +445,12 @@ Update to 7.32e
 2. Update ability and talent building lists.
 3. Include Ti10 and Ti11 finalists in the bot naming pool. 
 4. Fix talent building lists for some heroes. 
+v1.7.14(2023.05.27)
+Update to 7.33c
+1. Improve the behavior of hero Buyback.
+2. Improve the mechanism and desire calculation of push mode.
+3. Improve the behavior of ward mode and rune mode at the beginning of the game.
+4. Fix lane assignment in turbo mode, and now you can play the turbo mode.
+5. Fix power treads switching issue temporary.
+6. Fix the problem that many heroes could not use ultimate skills.
+7. Fix the problem that heroes sometimes get stuck in the secret shop.
