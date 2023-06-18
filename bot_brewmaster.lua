@@ -10,36 +10,29 @@ local CastHBDesire = 0
 local AttackDesire = 0
 local MoveDesire = 0
 local RetreatDesire = 0
-local castSCDesire = 0;
-local castCHDesire = 0;
-local castDBDesire = 0;
-local radius = 1000;
-local abilityCH
+local castAPDesire = 0
+local castAPTarget
+local castAPLocation
 local abilityCY
-local abilityDB
 local abilityDM
 local abilityHB
-local abilitySC
 local abilityWW
+local abilityAP
 
 function MinionThink(hMinionUnit)
 
 	if not hMinionUnit:IsNull() and hMinionUnit ~= nil then
 
-		if string.find(hMinionUnit:GetUnitName(), "npc_dota_brewmaster_storm") then
+		if (hMinionUnit:IsUsingAbility()) then return end
 
-			if (hMinionUnit:IsUsingAbility()) then return end
+		if string.find(hMinionUnit:GetUnitName(), "npc_dota_brewmaster_storm") then
 
 			abilityDM = hMinionUnit:GetAbilityByName("brewmaster_storm_dispel_magic");
 			abilityCY = hMinionUnit:GetAbilityByName("brewmaster_storm_cyclone");
 			abilityWW = hMinionUnit:GetAbilityByName("brewmaster_storm_wind_walk");
-			abilityCH = hMinionUnit:GetAbilityByName("brewmaster_cinder_brew");
 			CastDMDesire, DMLocation = ConsiderDM(hMinionUnit);
 			CastCYDesire, CYTarget = ConsiderCY(hMinionUnit);
-			castCHDesire, castCHTarget = ConsiderCorrosiveHaze(hMinionUnit);
 			CastWWDesire = ConsiderWW(hMinionUnit);
-			AttackDesire, AttackTarget = ConsiderAttacking(hMinionUnit);
-			MoveDesire, Location = ConsiderMove(hMinionUnit);
 
 			if (CastDMDesire > 0)
 			then
@@ -53,52 +46,24 @@ function MinionThink(hMinionUnit)
 				return;
 			end
 
-			if (castCHDesire > 0)
-			then
-				hMinionUnit:Action_UseAbilityOnLocation(abilityCH, castCHTarget:GetLocation());
-				return;
-			end
-
 			if (CastWWDesire > 0)
 			then
 				hMinionUnit:Action_UseAbility(abilityWW);
 				return;
 			end
 
-			if (AttackDesire > 0)
-			then
-				hMinionUnit:Action_AttackUnit(AttackTarget, true);
-				return
-			end
-
-			if (MoveDesire > 0)
-			then
-				hMinionUnit:Action_MoveToLocation(Location);
-				return
-			end
-
 		end
 
 		if string.find(hMinionUnit:GetUnitName(), "npc_dota_brewmaster_earth") then
 
-			if (hMinionUnit:IsUsingAbility()) then return end
-
 			abilityHB = hMinionUnit:GetAbilityByName("brewmaster_earth_hurl_boulder");
-			abilitySC = hMinionUnit:GetAbilityByName("brewmaster_thunder_clap");
-			castSCDesire = ConsiderSlithereenCrush(hMinionUnit);
 			CastHBDesire, HBTarget = ConsiderHB(hMinionUnit);
-			AttackDesire, AttackTarget = ConsiderAttacking(hMinionUnit);
-			MoveDesire, Location = ConsiderMove(hMinionUnit);
 			RetreatDesire, RetreatLocation = ConsiderRetreat(hMinionUnit);
 
+			-- Earth spirit will retreat alone
 			if (RetreatDesire > 0)
 			then
 				hMinionUnit:Action_MoveToLocation(RetreatLocation);
-				return;
-			end
-			if (castSCDesire > 0)
-			then
-				hMinionUnit:Action_UseAbility(abilitySC);
 				return;
 			end
 			if (CastHBDesire > 0)
@@ -106,69 +71,59 @@ function MinionThink(hMinionUnit)
 				hMinionUnit:Action_UseAbilityOnEntity(abilityHB, HBTarget);
 				return;
 			end
-			if (AttackDesire > 0)
-			then
-				hMinionUnit:Action_AttackUnit(AttackTarget, true);
-				return
-			end
-			if (MoveDesire > 0)
-			then
-				hMinionUnit:Action_MoveToLocation(Location);
-				return
-			end
 
 		end
 
-		if string.find(hMinionUnit:GetUnitName(), "npc_dota_brewmaster_fire") then
+		--if string.find(hMinionUnit:GetUnitName(), "npc_dota_brewmaster_fire") then
+			-- Fire spirit has only passives
+		--end
 
-			abilityDB = hMinionUnit:GetAbilityByName("brewmaster_drunken_brawler");
-			AttackDesire, AttackTarget = ConsiderAttacking(hMinionUnit);
-			MoveDesire, Location = ConsiderMove(hMinionUnit);
-			castDBDesire = ConsiderDrunkenBrawler(hMinionUnit);
+		if string.find(hMinionUnit:GetUnitName(), "npc_dota_brewmaster_void") then
+			abilityAP = hMinionUnit:GetAbilityByName("brewmaster_void_astral_pull")
+			castAPDesire, castAPTarget = ConsiderAstralPull(hMinionUnit)
 
-			if (castDBDesire > 0)
-			then
-				hMinionUnit:Action_UseAbility(abilityDB);
-				return;
+			if (castAPDesire > 0) then
+				-- No way to use an ability that takes an Entity and a Vector
+				--hMinionUnit:Action_UseAbilityOnEntity(abilityAP, castAPTarget)
 			end
-			if (AttackDesire > 0)
-			then
-				hMinionUnit:Action_AttackUnit(AttackTarget, true);
-				return
-			end
-			if (MoveDesire > 0)
-			then
-				hMinionUnit:Action_MoveToLocation(Location);
-				return
-			end
-
 		end
+
+		-- Common behaviors (including illusions and other minions)
+		AttackDesire, AttackTarget = ConsiderAttacking(hMinionUnit);
+		MoveDesire, Location = ConsiderMove(hMinionUnit);
 
 		if hMinionUnit:IsIllusion() then
-			AttackDesire, AttackTarget = ConsiderAttacking(hMinionUnit);
-			MoveDesire, Location = ConsiderMove(hMinionUnit);
-
-			if (AttackDesire > 0)
-			then
-				hMinionUnit:Action_AttackUnit(AttackTarget, true);
-				return
-			end
-			if (MoveDesire > 0)
-			then
-				hMinionUnit:Action_MoveToLocation(bot:GetLocation() + RandomVector(100));
-				return
-			end
-
+			Location = Location + RandomVector(100)
 		end
+
+		if (AttackDesire > 0)
+		then
+			hMinionUnit:Action_AttackUnit(AttackTarget, true);
+			return
+		end
+		if (MoveDesire > 0)
+		then
+			hMinionUnit:Action_MoveToLocation(Location);
+			return
+		end
+
 	end
 
 end
 
-function CanCastCYOnTarget(npcTarget)
-	return npcTarget:CanBeSeen() and not npcTarget:IsMagicImmune() and not npcTarget:IsInvulnerable();
+function ConsiderAstralPull(hMinionUnit)
+	-- Currently only finds an enemy hero; will also need to return a direction to pull
+
+	local tableNearbyEnemyHeroes = hMinionUnit:GetNearbyHeroes(600, true, BOT_MODE_NONE);
+	if #tableNearbyEnemyHeroes > 0 then
+		return BOT_ACTION_DESIRE_HIGH, tableNearbyEnemyHeroes[1]
+	end
+
+	return 0, nil
 end
 
-function CanCastSlithereenCrushOnTarget(npcTarget)
+
+function CanCastCYOnTarget(npcTarget)
 	return npcTarget:CanBeSeen() and not npcTarget:IsMagicImmune() and not npcTarget:IsInvulnerable();
 end
 
@@ -347,53 +302,6 @@ function ConsiderCY(hMinionUnit)
 
 end
 
-function ConsiderCorrosiveHaze(hMinionUnit)
-
-	if abilityCH == nil or not abilityCH:IsFullyCastable() or abilityCH:IsHidden() or not bot:HasScepter() then
-		return BOT_ACTION_DESIRE_NONE, 0;
-	end
-
-	local nCastRange = abilityCH:GetCastRange();
-
-	-- If we're in a teamfight, use it on the scariest enemy
-	local tableNearbyAttackingAlliedHeroes = hMinionUnit:GetNearbyHeroes(1000, false, BOT_MODE_ATTACK);
-	if (#tableNearbyAttackingAlliedHeroes >= 1)
-	then
-
-		local npcMostDangerousEnemy = nil;
-		local nMostDangerousDamage = 0;
-
-		local EnemyHeroes = hMinionUnit:GetNearbyHeroes(1000, true, BOT_MODE_NONE);
-		for _, npcEnemy in pairs(EnemyHeroes) do
-			if (CanCastCYOnTarget(npcEnemy))
-			then
-				local nDamage = npcEnemy:GetEstimatedDamageToTarget(false, hMinionUnit, 3.0, DAMAGE_TYPE_ALL);
-				if (nDamage > nMostDangerousDamage)
-				then
-					nMostDangerousDamage = nDamage;
-					npcMostDangerousEnemy = npcEnemy;
-				end
-			end
-		end
-
-		if (npcMostDangerousEnemy ~= nil)
-		then
-			return BOT_ACTION_DESIRE_LOW, npcMostDangerousEnemy;
-		end
-	end
-
-	local tableNearbyEnemyHeroes = hMinionUnit:GetNearbyHeroes(nCastRange + 200, true, BOT_MODE_NONE);
-
-	for _, npcEnemy in pairs(tableNearbyEnemyHeroes) do
-		if (CanCastCYOnTarget(npcEnemy) and npcEnemy:GetActiveMode() == BOT_MODE_RETREAT)
-		then
-			return BOT_ACTION_DESIRE_LOW, npcEnemy;
-		end
-	end
-
-	return BOT_ACTION_DESIRE_NONE, 0;
-
-end
 
 function ConsiderWW(hMinionUnit)
 
@@ -405,28 +313,6 @@ function ConsiderWW(hMinionUnit)
 	local tableNearbyEnemyHeroes = hMinionUnit:GetNearbyHeroes(700, true, BOT_MODE_NONE);
 
 	if (#tableNearbyEnemyHeroes == 0 and #tableNearbyEnemyCreeps == 0) then
-		return BOT_ACTION_DESIRE_HIGH;
-	end
-
-	return BOT_ACTION_DESIRE_NONE;
-
-end
-
-function ConsiderSlithereenCrush(hMinionUnit)
-
-	-- Make sure it's castable
-	if abilitySC == nil or (not abilitySC:IsFullyCastable() or abilitySC:IsHidden() or not bot:HasScepter()) then
-		return BOT_ACTION_DESIRE_NONE;
-	end
-
-	-- Get some of its values
-	local nRadius = abilitySC:GetSpecialValueInt("radius");
-	local nCastRange = 0;
-	local nDamage = abilitySC:GetSpecialValueInt("damage");
-
-	local tableNearbyEnemyHeroes = hMinionUnit:GetNearbyHeroes(nRadius - 150, true, BOT_MODE_NONE);
-
-	if (tableNearbyEnemyHeroes ~= nil and #tableNearbyEnemyHeroes >= 1) then
 		return BOT_ACTION_DESIRE_HIGH;
 	end
 
@@ -454,22 +340,3 @@ function ConsiderHB(hMinionUnit)
 
 end
 
-function ConsiderDrunkenBrawler(hMinionUnit)
-
-	-- Make sure it's castable
-	if abilityDB == nil or (not abilityDB:IsFullyCastable() or abilityDB:IsHidden() or not bot:HasScepter()) then
-		return BOT_ACTION_DESIRE_NONE;
-	end
-
-	-- Get some of its values
-	local nRange = hMinionUnit:GetAttackRange();
-
-	local tableNearbyEnemyHeroes = hMinionUnit:GetNearbyHeroes(nRange + 200, true, BOT_MODE_NONE);
-
-	if (tableNearbyEnemyHeroes ~= nil and #tableNearbyEnemyHeroes >= 1) then
-		return BOT_ACTION_DESIRE_HIGH;
-	end
-
-	return BOT_ACTION_DESIRE_NONE;
-
-end
