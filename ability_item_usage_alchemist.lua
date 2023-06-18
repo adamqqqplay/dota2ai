@@ -91,7 +91,7 @@ cast.Target = {}
 cast.Type = {}
 local Consider = {}
 local CanCast = { utility.NCanCast, utility.NCanCast, utility.NCanCast, utility.UCanCast, utility.CanCastNoTarget,
-	utility.NCanCast }
+	utility.NCanCast, utility.NCanCast }
 local enemyDisabled = utility.enemyDisabled
 
 function GetComboDamage()
@@ -119,6 +119,7 @@ end
 -- end
 -- end
 
+-- alchemist_acid_spray
 Consider[1] = function()
 
 	local abilityNumber = 1
@@ -237,6 +238,7 @@ Consider[1] = function()
 
 end
 
+-- alchemist_unstable_concoction
 Consider[2] = function()
 
 	local desire = Consider2()
@@ -338,8 +340,9 @@ function Consider2()
 
 end
 
-Consider[5] = function()
-	local abilityNumber = 5
+-- alchemist_chemical_rage
+Consider[6] = function()
+	local abilityNumber = 6
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -361,6 +364,7 @@ Consider[5] = function()
 	--------------------------------------
 	-- Global high-priorty usage
 	--------------------------------------
+	-- As our health gets low, good time to rage
 	if HealthPercentage <= 0.2 then
 		return BOT_ACTION_DESIRE_HIGH
 	end
@@ -369,7 +373,7 @@ Consider[5] = function()
 		return BOT_ACTION_DESIRE_LOW
 	end
 
-	-- If we're in a teamfight, use it on the scariest enemy
+	-- If we're in a teamfight, good time to rage
 	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes(1000, false, BOT_MODE_ATTACK);
 	if (#tableNearbyAttackingAlliedHeroes >= 2)
 	then
@@ -378,7 +382,7 @@ Consider[5] = function()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	-- If we're seriously retreating, good time to rage
 	if (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
 	then
 		if (npcBot:WasRecentlyDamagedByAnyHero(2.0) and HealthPercentage <= 0.70 + #enemys * 0.05)
@@ -387,7 +391,7 @@ Consider[5] = function()
 		end
 	end
 
-	-- If we're going after someone
+	-- If we're going after someone, good time to rage
 	if (npcBot:GetActiveMode() == BOT_MODE_ROAM or
 		npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
 		npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
@@ -424,7 +428,7 @@ Consider[4] = function()
 	local useTable = {}
 	if not npcBot:HasModifier("modifier_alchemist_chemical_rage") and
 		not npcBot:HasModifier("modifier_alchemist_berserk_potion") then
-		local useChemicalRageDesire = Consider[5]()
+		local useChemicalRageDesire = Consider[6]()
 		if useChemicalRageDesire ~= 0 then
 			table.insert(useTable, { useChemicalRageDesire, npcBot })
 		end
@@ -495,8 +499,9 @@ Consider[4] = function()
 	end
 end
 
-Consider[6] = function()
-	local abilityNumber = 6
+-- alchemist_unstable_concoction_throw
+Consider[7] = function()
+	local abilityNumber = 7
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
