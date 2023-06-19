@@ -158,6 +158,8 @@ function M.WeNeedTpscroll()
     local item_travel_boots = M.NoNeedTpscrollForTravelBoots()
     local item_travel_boots_1 = item_travel_boots[1]
     local item_travel_boots_2 = item_travel_boots[2]
+
+	-- Count current number of TP scrolls
     local iScrollCount = 0
     for i = 9, 16 do
         local sCurItem = npcBot:GetItemInSlot(i)
@@ -168,6 +170,7 @@ function M.WeNeedTpscroll()
     if DotaTime() <= 3 * 60 then
         return
     end
+    -- If we are at the sideshop or fountain with no TPs, then buy one or two
     if ((iScrollCount <= 2 and DotaTime() >= 5 * 60) or iScrollCount == 0) and item_travel_boots_1 == nil and
         item_travel_boots_2 == nil then
         if npcBot:DistanceFromFountain() <= 200 then
@@ -300,6 +303,7 @@ local hasInvisibleEnemy = false
 local BuySupportItem_Timer = DotaTime()
 function M.BuySupportItem()
     local npcBot = GetBot()
+    -- decide if there were several invisible enemy heroes.
     if DotaTime() - BuySupportItem_Timer >= 10 then
         BuySupportItem_Timer = DotaTime()
         hasInvisibleEnemy = M.CheckInvisibleEnemy()
@@ -401,9 +405,12 @@ M.Consumables = {
     "bottle",
     "tpscroll",
 }
+
 M.IsConsumableItem = function(self, item)
     return AbilityExtensions:Contains(self.Consumables, string.sub(item, 6))
 end
+
+-- create item info table functions
 local function ExpandFirstLevel(item)
     if isLeaf(item) then
         return {
@@ -497,9 +504,11 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
         if not dontExpand then
             local itemInformation = ExpandFirstLevel(item)
             if itemInformation.isSingleItem then
+                 -- intentionally do nothing
             else
                 ::expandSuccess::
                 local recipe = itemInformation.recipe
+                -- remove components from built items
                 for _, builtItem in ipairs(g) do
                     if not builtItem.usedAsRecipeOf then
                         for componentIndex, componentName in ipairs(recipe) do
@@ -511,6 +520,8 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
                         end
                     end
                 end
+
+                -- remove already bought items (used when reloading)
                 ::removeBoughtItems::
                 local boughtItemIndex = 1
                 while boughtItemIndex <= #boughtItems do
@@ -548,7 +559,9 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
         RemoveTeamItems(g)
         TeamItemThink.TeamItemThink(npcBot)
     end
+    -- PrintItemInfoTableOf(npcBot)
 end
+
 local sNextItem
 local UseCourier = function()
     local npcBot = GetBot()
@@ -564,6 +577,7 @@ local UseCourier = function()
         return
     end
     local courierItemNumber = #AbilityExtensions:GetCourierItems(courier)
+
     if not npcBot:IsAlive() then
         if courierState ~= COURIER_STATE_RETURNING_TO_BASE and courierState ~= COURIER_STATE_AT_BASE then
             npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_RETURN)
