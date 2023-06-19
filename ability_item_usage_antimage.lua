@@ -95,7 +95,7 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
-local function GetBlinkAttackLocation(enemy)
+local function GetBlinkAttackLocation(enemy, blinkRadius)
 	local attackDistance = enemy:GetBoundingRadius() + npcBot:GetBoundingRadius()
 	if AbilityExtensions:HasPhasedMovement(enemy) or AbilityExtensions:HasUnobstructedMovement(enemy) then
 		attackDistance = npcBot:GetAttackRange()
@@ -103,7 +103,6 @@ local function GetBlinkAttackLocation(enemy)
 	local enemyNextStep = enemy:GetLocation() +
 		Vector(math.cos(enemy:GetFacing()), math.sin(enemy:GetFacing())) * attackDistance
 	local distanceFromNextStep = GetUnitToLocationDistance(npcBot, enemyNextStep)
-	local blinkRadius = AbilitiesReal[2]:GetSpecialValueInt("blink_range")
 	if AbilityExtensions:HasPhasedMovement(enemy) or AbilityExtensions:HasUnobstructedMovement(enemy) then
 
 	end
@@ -130,6 +129,7 @@ local function TooDangerousToBlinkNear(npc)
 	return false
 end
 
+-- antimage_blink
 Consider[2] = function()
 	local abilityNumber = 2
 	--------------------------------------
@@ -141,9 +141,11 @@ Consider[2] = function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 
-	local CastRange = ability:GetSpecialValueInt("blink_range")
+	local CastRange = ability:GetSpecialValueInt("AbilityCastRange")
+	local searchRange = math.min(CastRange, 1600)
+
 	local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE);
-	local enemys = npcBot:GetNearbyHeroes(CastRange + 300, true, BOT_MODE_NONE)
+	local enemys = npcBot:GetNearbyHeroes(searchRange, true, BOT_MODE_NONE)
 	local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
 	local trees = npcBot:GetNearbyTrees(300)
 
@@ -162,7 +164,7 @@ Consider[2] = function()
 					if TooDangerousToBlinkNear(WeakestEnemy) then
 						return 0
 					end
-					return BOT_ACTION_DESIRE_HIGH, GetBlinkAttackLocation(WeakestEnemy)
+					return BOT_ACTION_DESIRE_HIGH, GetBlinkAttackLocation(WeakestEnemy, CastRange)
 				end
 			end
 		end
@@ -177,7 +179,7 @@ Consider[2] = function()
 		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot, loc, CastRange);
 	end
 
-	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	-- If we're seriously retreating, blink away
 	if (
 		AbilityExtensions:IsRetreating(npcBot) and npcBot:DistanceFromFountain() >= 2000 and
 			(ManaPercentage >= 0.6 or npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH or HealthPercentage <= 0.6))
@@ -207,7 +209,7 @@ Consider[2] = function()
 						if TooDangerousToBlinkNear(npcEnemy) then
 							return 0
 						end
-						return BOT_ACTION_DESIRE_MODERATE, GetBlinkAttackLocation(npcEnemy)
+						return BOT_ACTION_DESIRE_MODERATE, GetBlinkAttackLocation(npcEnemy, CastRange)
 					end
 				end
 			end
@@ -232,6 +234,7 @@ Consider[2] = function()
 
 end
 
+-- antimage_counterspell
 Consider[3] = function()
 	local abilityNumber = 3
 	--------------------------------------
@@ -286,6 +289,7 @@ Consider[3] = function()
 
 end
 
+-- antimage_mana_void
 Consider[4] = function()
 	local abilityNumber = 4
 	local ability = AbilitiesReal[abilityNumber]
@@ -304,6 +308,7 @@ Consider[4] = function()
 	end
 end
 
+-- antimage_mana_overload (Blink Fragment)
 Consider[5] = function()
 
 	local abilityNumber = 5
