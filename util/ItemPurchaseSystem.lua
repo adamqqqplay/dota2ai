@@ -1,43 +1,79 @@
----------------------------------------------
--- Generated from Mirana Compiler version 1.6.2
--- Do not modify
--- https://github.com/AaronSong321/Mirana
----------------------------------------------
 local BotsInit = require("game/botsinit")
 local M = BotsInit.CreateGeneric()
 local utility = require(GetScriptDirectory() .. "/utility")
 local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local TeamItemThink = require(GetScriptDirectory() .. "/util/TeamItemThink")
 local A = require(GetScriptDirectory() .. "/util/MiraDota")
+local fullInvCheck = -90
+local MAX_INVENTORY_SLOT = 8
+
 function M.SellExtraItem(ItemsToBuy)
     local npcBot = GetBot()
     local level = npcBot:GetLevel()
+    local delayNextCheck = true
+
+    -- List of items to sell when full,
+    -- Items will be sold one at a time, in order
+    local itemsToSell = {
+        "item_enchanted_mango",
+        "item_tango",
+        "item_branches",
+        "item_quelling_blade",
+        "item_flask",
+        "item_clarity",
+        "item_infused_raindrop",
+        "item_orb_of_venom",
+        "item_magic_stick",
+        "item_magic_wand",
+        "item_bottle",
+        "item_ring_of_protection",
+        "item_slippers",
+        "item_mantle",
+        "item_gauntlets",
+        "item_circlet",
+        "item_sobi_mask",
+        "item_ring_of_basilius",
+        "item_soul_ring",
+        "item_buckler",
+        "item_headdress",
+        "item_bracer",
+        "item_null_talisman",
+        "item_wraith_band",
+        "item_wind_lace",
+        "item_urn_of_shadows",
+        "item_ancient_janggo",
+        "item_drums_of_endurance",
+        "item_witch_blade",
+    }
     if M.IsItemSlotsFull() then
-        if GameTime() > 25 * 60 or level >= 10 then
-            M.SellSpecifiedItem("item_orb_of_venom")
-            M.SellSpecifiedItem("item_enchanted_mango")
+        -- Selling the least "valuable" item,
+        local curItem = nil
+        for _, item_name in pairs(itemsToSell) do
+            local slot = npcBot:FindItemSlot(item_name)
+            if slot >= 0 and slot <= MAX_INVENTORY_SLOT then
+                if(#npcBot.itemInformationTable > 0 and
+                    M.IsItemPartOfRecipe(item_name, npcBot.itemInformationTable[1].name)) then
+                        -- skip this item; it is part of the current recipe
+                else
+                    curItem = item_name
+                    break
+                end
+            end
         end
-        if GameTime() > 35 * 60 or level >= 15 then
-            M.SellSpecifiedItem("item_branches")
-            M.SellSpecifiedItem("item_bottle")
-            M.SellSpecifiedItem("item_magic_wand")
-            M.SellSpecifiedItem("item_flask")
-            M.SellSpecifiedItem("item_ancient_janggo")
-            M.SellSpecifiedItem("item_ring_of_basilius")
-            M.SellSpecifiedItem("item_quelling_blade")
-            M.SellSpecifiedItem("item_soul_ring")
-            M.SellSpecifiedItem("item_buckler")
-            M.SellSpecifiedItem("item_headdress")
-            M.SellSpecifiedItem("item_bracer")
-            M.SellSpecifiedItem("item_null_talisman")
-            M.SellSpecifiedItem("item_wraith_band")
+
+        if curItem ~= nil then
+            M.SellSpecifiedItem(curItem)
+            -- if we sell an item, do not delay before next check
+            -- items may be added in the next tick
+            delayNextCheck = false
         end
-        if GameTime() > 40 * 60 or level >= 20 then
-            M.SellSpecifiedItem("item_urn_of_shadows")
-            M.SellSpecifiedItem("item_drums_of_endurance")
-            M.SellSpecifiedItem("item_witch_blade")
-        end
+
     end
+
+    if delayNextCheck then
+        fullInvCheck = DotaTime()
+    end
+
 end
 
 local function isLeaf(Node)
@@ -65,6 +101,31 @@ M.ExpandItemRecipe = function(self, itemTable)
     end
     return output
 end
+
+-- Check if an item builds into another item
+function M.IsItemPartOfRecipe(component_item_name, built_item_name)
+    if component_item_name == nil or built_item_name == nil then
+        return false
+    end
+    local components = GetItemComponents(built_item_name)
+    return M.IsItemInNestedList(component_item_name, components)
+end
+
+function M.IsItemInNestedList(item_name, item_list)
+    if type(item_list) == "string" then
+        return item_name == item_list
+    elseif type(item_list) == "table" then
+        for _, sub_item in ipairs(item_list) do
+            if M.IsItemInNestedList(item_name, sub_item) then
+                return true
+            end
+        end
+        return false
+    else
+        return false -- unsupported input type
+    end
+end
+
 function M.NoNeedTpscrollForTravelBoots()
     local npcBot = GetBot()
     local item_travel_boots = {}
@@ -97,6 +158,8 @@ function M.WeNeedTpscroll()
     local item_travel_boots = M.NoNeedTpscrollForTravelBoots()
     local item_travel_boots_1 = item_travel_boots[1]
     local item_travel_boots_2 = item_travel_boots[2]
+
+	-- Count current number of TP scrolls
     local iScrollCount = 0
     for i = 9, 16 do
         local sCurItem = npcBot:GetItemInSlot(i)
@@ -107,6 +170,7 @@ function M.WeNeedTpscroll()
     if DotaTime() <= 3 * 60 then
         return
     end
+    -- If we are at the sideshop or fountain with no TPs, then buy one or two
     if ((iScrollCount <= 2 and DotaTime() >= 5 * 60) or iScrollCount == 0) and item_travel_boots_1 == nil and
         item_travel_boots_2 == nil then
         if npcBot:DistanceFromFountain() <= 200 then
@@ -134,17 +198,20 @@ function M.SellSpecifiedItem(item_name)
             end
         end
     end
-    if item ~= nil and itemCount > 5 and
-        (
-        npcBot:DistanceFromFountain() <= 600 or
-            npcBot:DistanceFromSecretShop() <= 200) then
+    if item ~= nil and itemCount > 5 and M.CanSell(npcBot) then
         npcBot:ActionImmediate_SellItem(item)
     end
 end
 
+function M.CanSell(npcBot)
+    return (npcBot:DistanceFromFountain() <= 450 or
+        npcBot:DistanceFromSecretShop() <= 200 or
+        GetGameMode() == 23)
+end
+
 function M.GetItemSlotsCount2(npcBot)
     local itemCount = 0
-    for i = 0, 8 do
+    for i = 0, MAX_INVENTORY_SLOT do
         local sCurItem = npcBot:GetItemInSlot(i)
         if sCurItem ~= nil then
             itemCount = itemCount + 1
@@ -156,7 +223,7 @@ end
 function M.GetItemSlotsCount()
     local npcBot = GetBot()
     local itemCount = 0
-    for i = 0, 8 do
+    for i = 0, MAX_INVENTORY_SLOT do
         local sCurItem = npcBot:GetItemInSlot(i)
         if sCurItem ~= nil then
             itemCount = itemCount + 1
@@ -166,7 +233,7 @@ function M.GetItemSlotsCount()
 end
 
 function M.IsItemSlotsFull()
-    return M.GetItemSlotsCount() >= 8
+    return M.GetItemSlotsCount() >= 9
 end
 
 function M.checkItemBuild(ItemsToBuy)
@@ -236,6 +303,7 @@ local hasInvisibleEnemy = false
 local BuySupportItem_Timer = DotaTime()
 function M.BuySupportItem()
     local npcBot = GetBot()
+    -- decide if there were several invisible enemy heroes.
     if DotaTime() - BuySupportItem_Timer >= 10 then
         BuySupportItem_Timer = DotaTime()
         hasInvisibleEnemy = M.CheckInvisibleEnemy()
@@ -337,9 +405,12 @@ M.Consumables = {
     "bottle",
     "tpscroll",
 }
+
 M.IsConsumableItem = function(self, item)
     return AbilityExtensions:Contains(self.Consumables, string.sub(item, 6))
 end
+
+-- create item info table functions
 local function ExpandFirstLevel(item)
     if isLeaf(item) then
         return {
@@ -433,9 +504,11 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
         if not dontExpand then
             local itemInformation = ExpandFirstLevel(item)
             if itemInformation.isSingleItem then
+                 -- intentionally do nothing
             else
                 ::expandSuccess::
                 local recipe = itemInformation.recipe
+                -- remove components from built items
                 for _, builtItem in ipairs(g) do
                     if not builtItem.usedAsRecipeOf then
                         for componentIndex, componentName in ipairs(recipe) do
@@ -447,6 +520,8 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
                         end
                     end
                 end
+
+                -- remove already bought items (used when reloading)
                 ::removeBoughtItems::
                 local boughtItemIndex = 1
                 while boughtItemIndex <= #boughtItems do
@@ -484,7 +559,9 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
         RemoveTeamItems(g)
         TeamItemThink.TeamItemThink(npcBot)
     end
+    -- PrintItemInfoTableOf(npcBot)
 end
+
 local sNextItem
 local UseCourier = function()
     local npcBot = GetBot()
@@ -500,6 +577,7 @@ local UseCourier = function()
         return
     end
     local courierItemNumber = #AbilityExtensions:GetCourierItems(courier)
+
     if not npcBot:IsAlive() then
         if courierState ~= COURIER_STATE_RETURNING_TO_BASE and courierState ~= COURIER_STATE_AT_BASE then
             npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_RETURN)
@@ -604,13 +682,18 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
     if npcBot.secretShopMode ~= true or npcBot:GetGold() >= 100 then
         M.WeNeedTpscroll()
     end
+
+    if DotaTime() > fullInvCheck + 1.0 and M.CanSell(npcBot) then
+        M.SellExtraItem(ItemsToBuy)
+    end
+
     if #GetBot().itemInformationTable == 0 then
         npcBot:SetNextItemPurchaseValue(0)
         return
     end
     sNextItem = GetTopItemToBuy()
     npcBot:SetNextItemPurchaseValue(GetItemCost(sNextItem))
-    M.SellExtraItem(ItemsToBuy)
+
     if npcBot:DistanceFromFountain() <= 2500 or npcBot:GetHealth() / npcBot:GetMaxHealth() <= 0.35 then
         npcBot.secretShopMode = false
     end
