@@ -87,6 +87,8 @@ local CanCast = {
             not AbilityExtensions:HasAbilityRetargetModifier(t)
     end,
 }
+
+-- pudge_meat_hook
 Consider[1] = function()
     local ability = AbilitiesReal[1]
     if not ability:IsFullyCastable() or npcBot:IsChanneling() then
@@ -179,6 +181,8 @@ Consider[1] = function()
     end
     return 0
 end
+
+-- pudge_rot
 Consider[2] = function()
     local ability = AbilitiesReal[2]
     local radius = ability:GetAOERadius()
@@ -210,6 +214,8 @@ end
 Consider[2] = AbilityExtensions:ToggleFunctionToAction(npcBot, Consider[2], AbilitiesReal[2])
 local swallowingSomething
 local swallowTimer
+
+-- pudge_eject
 Consider[4] = function()
     local ability = AbilitiesReal[4]
     if not ability:IsFullyCastable() or npcBot:IsChanneling() then
@@ -228,6 +234,8 @@ Consider[4] = function()
     end
     return 0
 end
+
+-- pudge_dismember
 Consider[5] = function()
     local ability = AbilitiesReal[5]
     if not ability:IsFullyCastable() or npcBot:IsChanneling() then
