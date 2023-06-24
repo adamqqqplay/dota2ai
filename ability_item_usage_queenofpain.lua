@@ -99,6 +99,7 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
+-- queenofpain_shadow_strike
 Consider[1] = function()
 	local abilityNumber = 1
 	--------------------------------------
@@ -219,6 +220,7 @@ Consider[1] = function()
 
 end
 
+-- queenofpain_blink
 Consider[2] = function()
 	local abilityNumber = 2
 	--------------------------------------
@@ -230,7 +232,7 @@ Consider[2] = function()
 		return BOT_ACTION_DESIRE_NONE, 0;
 	end
 
-	local CastRange = ability:GetSpecialValueInt("blink_range");
+	local CastRange = ability:GetSpecialValueInt("AbilityCastRange")
 
 
 	local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE);
@@ -264,7 +266,7 @@ Consider[2] = function()
 		return BOT_ACTION_DESIRE_HIGH, utility.GetUnitsTowardsLocation(npcBot, GetAncient(GetTeam()), CastRange)
 	end
 
-	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	-- If we're seriously retreating, blink towards fountain
 	if (
 		AbilityExtensions:IsRetreating(npcBot) and npcBot:DistanceFromFountain() >= 2000 and
 			(ManaPercentage >= 0.6 or HealthPercentage <= 0.5 or npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH))
@@ -311,6 +313,7 @@ Consider[2] = function()
 
 end
 
+-- queenofpain_scream_of_pain
 Consider[3] = function()
 	local abilityNumber = 3
 	--------------------------------------
@@ -440,6 +443,7 @@ Consider[3] = function()
 
 end
 
+-- queenofpain_sonic_wave
 Consider[4] = function()
 	local abilityNumber = 4
 	--------------------------------------
