@@ -19,7 +19,7 @@ end
 local Talents = {}
 local Abilities = {}
 local AbilitiesReal = {}
-npcBot.ult = {}
+npcBot.ult = {}  -- Track possible ult targets across frames (see GetDelayedUltDesire())
 local delayedUltDesire = 0
 
 ability_item_usage_generic.InitAbility(Abilities, AbilitiesReal, Talents)
