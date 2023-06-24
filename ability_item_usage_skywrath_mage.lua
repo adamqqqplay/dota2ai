@@ -101,6 +101,27 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
+function GetMostDangerousEnemy(range, funNpcFilter)
+	local npcMostDangerousEnemy = nil;
+	local nMostDangerousDamage = 0;
+
+	local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes(range, true, BOT_MODE_NONE);
+	for _, npcEnemy in pairs(tableNearbyEnemyHeroes) do
+		if (funNpcFilter(npcEnemy) and not npcEnemy:IsSilenced())
+		then
+			local Damage = npcEnemy:GetEstimatedDamageToTarget(false, npcBot, 3.0, DAMAGE_TYPE_ALL);
+			if (Damage > nMostDangerousDamage)
+			then
+				nMostDangerousDamage = Damage;
+				npcMostDangerousEnemy = npcEnemy;
+			end
+		end
+	end
+
+	return npcMostDangerousEnemy
+end
+
+-- skywrath_mage_arcane_bolt
 Consider[1] = function()
 
 	local ability = AbilitiesReal[1];
@@ -202,6 +223,7 @@ Consider[1] = function()
 	return BOT_ACTION_DESIRE_NONE, 0
 end
 
+-- skywrath_mage_concussive_shot
 Consider[2] = function()
 
 	local ability = AbilitiesReal[2];
@@ -279,6 +301,9 @@ Consider[2] = function()
 
 end
 
+
+
+-- skywrath_mage_ancient_seal
 Consider[3] = function()
 
 	local ability = AbilitiesReal[3];
@@ -321,12 +346,14 @@ Consider[3] = function()
 		end
 	end
 
+	-- If running, try to silence an attacker
 	if (npcBot:WasRecentlyDamagedByAnyHero(2.5) and A.Unit.IsRetreating(npcBot))
 	then
-		local enemy = A.Dota.GetNearbyHeroes(npcBot, CastRange - CastRange * npcBot:GetCurrentMovementSpeed()):Filter(CanCast[
-			3])
-		if enemy then
-			return BOT_ACTION_DESIRE_HIGH, enemy
+		-- lower cast range a bit to make sure we don't chase
+		local adjustedRange = CastRange - 100
+		local npcMostDangerousEnemy = GetMostDangerousEnemy(adjustedRange, CanCast[3])
+		if npcMostDangerousEnemy ~= nil then
+			return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy
 		end
 	end
 
@@ -343,23 +370,7 @@ Consider[3] = function()
 	local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes(1000, false, BOT_MODE_ATTACK);
 	if (#tableNearbyAttackingAlliedHeroes >= 1)
 	then
-
-		local npcMostDangerousEnemy = nil;
-		local nMostDangerousDamage = 0;
-
-		local tableNearbyEnemyHeroes = npcBot:GetNearbyHeroes(CastRange, true, BOT_MODE_NONE);
-		for _, npcEnemy in pairs(tableNearbyEnemyHeroes) do
-			if (CanCast[3](npcEnemy) and not npcEnemy:IsSilenced())
-			then
-				local Damage = npcEnemy:GetEstimatedDamageToTarget(false, npcBot, 3.0, DAMAGE_TYPE_ALL);
-				if (Damage > nMostDangerousDamage)
-				then
-					nMostDangerousDamage = Damage;
-					npcMostDangerousEnemy = npcEnemy;
-				end
-			end
-		end
-
+		local npcMostDangerousEnemy = GetMostDangerousEnemy(CastRange, CanCast[3])
 		if (npcMostDangerousEnemy ~= nil)
 		then
 			return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy;
@@ -372,7 +383,7 @@ end
 
 -- 7.30 new ability shield of the scion (passive)
 
--- mystic flare
+-- skywrath_mage_mystic_flare
 Consider[5] = function()
 
 	local ability = AbilitiesReal[5]
