@@ -118,6 +118,7 @@ local function infestInvulnerable()
 	return invulnerableTime
 end
 
+-- life_stealer_rage
 Consider[1] = function()
 	local abilityNumber = 1
 	--------------------------------------
@@ -189,7 +190,7 @@ Consider[1] = function()
 
 end
 
--- open wounds
+-- life_stealer_open_wounds
 Consider[4] = function()
 
 	local abilityNumber = 4
@@ -297,7 +298,7 @@ Consider[4] = function()
 
 end
 
--- infest
+-- life_stealer_infest
 local infestThink = function()
 	local abilityNumber = 6
 	--------------------------------------
@@ -369,7 +370,7 @@ local infestThink = function()
 	--------------------------------------
 	-- Mode based usage
 	--------------------------------------
-	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
+	-- If we're seriously retreating
 	if (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
 	then
 		if (StrongestAlly ~= nil)
@@ -415,64 +416,10 @@ local infestThink = function()
 	return BOT_ACTION_DESIRE_NONE
 end
 
--- obsolete since dota 2 7.30
--- Consider[7]=function()
--- 	local abilityNumber=7
--- 	--------------------------------------
--- 	-- Generic Variable Setting
--- 	--------------------------------------
--- 	local ability=AbilitiesReal[abilityNumber];
-
--- 	if not ability:IsFullyCastable() or ability:IsHidden() or infestInvulnerable() then
--- 		return BOT_ACTION_DESIRE_NONE
--- 	end
-
--- 	local CastRange = ability:GetCastRange();
--- 	local Damage = ability:GetAbilityDamage();
--- 	local CastPoint = ability:GetCastPoint();
--- 	local Radius = 600
-
-
--- 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
--- 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
--- 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
--- 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
--- 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
-
--- 	--------------------------------------
--- 	-- Mode based usage
--- 	--------------------------------------
-
--- 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
--- 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT )
--- 	then
--- 		if ( #enemys == 0 or AbilitiesReal[1]:IsFullyCastable() and npcBot:DistanceFromFountain()>=1000)
--- 		then
--- 			return BOT_ACTION_DESIRE_HIGH;
--- 		end
--- 	end
-
--- 	-- If we're going after someone
--- 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
--- 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
--- 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK or
--- 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY )
--- 	then
--- 		local npcTarget = npcBot:GetTarget();
--- 		if ( npcTarget~= nil and GetUnitToUnitDistance( npcTarget, npcBot ) < Radius )
--- 		then
--- 			return BOT_ACTION_DESIRE_VERYHIGH
--- 		end
--- 	end
-
--- 	return BOT_ACTION_DESIRE_NONE
--- end
-
 local lastInfestTime
 local lastInfestTarget
 
-
--- consume
+-- life_stealer_consume
 local consumeThink = function()
 	local ability = AbilitiesReal[5]
 	if not ability:IsFullyCastable() or ability:IsHidden() then
