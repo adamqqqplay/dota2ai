@@ -299,8 +299,7 @@ Consider[4] = function()
 end
 
 -- life_stealer_infest
-local infestThink = function()
-	local abilityNumber = 6
+local infestThink = function(abilityNumber)
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -420,8 +419,8 @@ local lastInfestTime
 local lastInfestTarget
 
 -- life_stealer_consume
-local consumeThink = function()
-	local ability = AbilitiesReal[5]
+local consumeThink = function(abilityNumber)
+	local ability = AbilitiesReal[abilityNumber]
 	if not ability:IsFullyCastable() or ability:IsHidden() then
 		return 0
 	end
@@ -457,23 +456,23 @@ local consumeThink = function()
 	return 0
 end
 
+-- Some previous code seems to hint these can switch places.
+-- This might actually be unnecessary
+function InfestOrConsume(abilityNumber)
+	local abilityName = AbilitiesReal[abilityNumber]:GetName()
+	if abilityName == "life_stealer_consume" then
+		return consumeThink(abilityNumber)
+	elseif abilityName == "life_stealer_infest" then
+		return infestThink(abilityNumber)
+	end
+	print("Unexpected ability: " .. abilityName)
+end
+
 Consider[5] = function()
-	if AbilitiesReal[5]:GetName() == "life_stealer_consume" then
-		return consumeThink()
-	end
-	if AbilitiesReal[5]:GetName() == "life_stealer_infest" then
-		return infestThink()
-	end
-	return 0
+	return InfestOrConsume(5)
 end
 Consider[6] = function()
-	if AbilitiesReal[6]:GetName() == "life_stealer_consume" then
-		return consumeThink()
-	end
-	if AbilitiesReal[6]:GetName() == "life_stealer_infest" then
-		return infestThink()
-	end
-	return 0
+	return InfestOrConsume(6)
 end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
