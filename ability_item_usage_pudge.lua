@@ -102,7 +102,7 @@ Consider[1] = function()
     local function NotBlockedByAnyUnit(line, target, distance)
         return AbilityExtensions:Remove(allNearbyUnits, target):All(function(t)
             local closeEnough = AbilityExtensions:GetPointToLineDistance(t:GetLocation(), line) <=
-                searchRadius + target:GetBoundingRadius()
+                searchRadius + math.min(0, t:GetBoundingRadius())
             local mayHook = closeEnough and distance > GetUnitToUnitDistance(npcBot, t)
             return not mayHook or t:IsInvulnerable()
         end)
@@ -130,10 +130,10 @@ Consider[1] = function()
                 enemies[1]:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemies[1]) / hookSpeed)
         end
         do
-            local ally = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, false, BOT_MODE_NONE):Filter(allies
-                , function(t)
+            local ally = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, false, BOT_MODE_NONE):
+                Filter(function(t)
                 return t:IsStunned() or t:IsRooted()
-            end):First(allies, T)
+                end):First(T)
             if ally then
                 return BOT_MODE_DESIRE_HIGH,
                     ally:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemies[1]) / hookSpeed)
