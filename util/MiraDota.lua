@@ -521,15 +521,6 @@ function Linq.Range(min, max, step)
     return g
 end
 
-function Linq.Remove(a, b)
-    local g = Linq.ShallowCopy(a)
-    for k, v in pairs(a) do
-        if v == b then
-            g[k] = nil
-        end
-    end
-    return g
-end
 
 function Linq.RemoveAll(a, b)
     local g = Linq.NewTable()

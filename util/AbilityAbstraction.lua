@@ -214,11 +214,12 @@ M.Concat = function(self, a, ...)
     rec(a, ...)
     return g
 end
+-- Remove items matching b from array a
 M.Remove = function(self, a, b)
-    local g = self:ShallowCopy(a)
-    for k, v in pairs(a) do
-        if v == b then
-            g[k] = nil
+    local g = NewTable()
+    for _, v in ipairs(a) do
+        if v ~= b then
+            table.insert(g, v)
         end
     end
     return g
