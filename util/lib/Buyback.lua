@@ -62,8 +62,8 @@ function X.BuybackUsageComplement()
 	local ancient = GetAncient( GetTeam() )
 	if ancient ~= nil
 	then
-		local nEnemyCount = X.GetNumEnemyNearby( ancient )
-		local nAllyCount =X.GetNumOfAliveHeroes( false )
+		local nEnemyCount = BattleSituation.GetNumEnemyNearby( ancient )
+		local nAllyCount = BattleSituation.GetNumOfAliveHeroes( false )
 		if nEnemyCount > 0 and nEnemyCount >= nAllyCount
 		then
 			X['LastTeamBuybackTime'] = DotaTime()
