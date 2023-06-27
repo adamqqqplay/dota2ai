@@ -169,7 +169,7 @@ function X.GetEnemyCount( bot, nRadius )
 
 end
 
-function X.GetTeamFightLocation( bot )
+function X.GetTeamFightLocation()
 
 	local targetLocation = nil
 	local numPlayer = GetTeamPlayers( GetTeam() )

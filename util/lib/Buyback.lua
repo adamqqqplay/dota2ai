@@ -50,7 +50,7 @@ function X.BuybackUsageComplement()
 
 	if npcBot:GetLevel() > 24 and npcBot:GetRespawnTime() >= 75
 	then
-		local nTeamFightLocation =BattleSituation.GetTeamFightLocation( npcBot )
+		local nTeamFightLocation =BattleSituation.GetTeamFightLocation()
 		if nTeamFightLocation ~= nil
 		then
 			X['LastTeamBuybackTime'] = DotaTime()
