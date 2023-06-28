@@ -468,7 +468,7 @@ Consider[5] = function()
 	end
 	-- If we haven't had an enemy in freezing field range in 1.5 seconds and we do
 	-- have an ally close to being in range, then cast stop freezing field
-	if DotaTime() - freezingFieldHitSomeoneTimer >= 1.5 and
+	if freezingFieldHitSomeoneTimer ~= nil and DotaTime() - freezingFieldHitSomeoneTimer >= 1.5 and
 		#npcBot:GetNearbyHeroes(AbilitiesReal[4]:GetAOERadius() + 280, false, BOT_MODE_NONE) > 0 then
 		return BOT_ACTION_DESIRE_HIGH
 	end
@@ -482,7 +482,7 @@ function AbilityUsageThink()
 	if (npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced())
 	then
 		if npcBot:IsCastingAbility() and npcBot:GetCurrentActiveAbility() == AbilitiesReal[2] then
-			if iceFreezingEnemy ~= nil and
+			if iceFreezingEnemy ~= nil and not iceFreezingEnemy:IsNull() and
 				(not iceFreezingEnemy:IsAlive() or AbilityExtensions:HasAbilityRetargetModifier(iceFreezingEnemy)) then
 				npcBot:Action_ClearActions(true)
 			end
