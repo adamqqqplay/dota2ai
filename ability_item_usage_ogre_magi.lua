@@ -406,7 +406,7 @@ end
 
 Consider[4] = function()
 
-	local ability = AbilitiesReal[5];
+	local ability = AbilitiesReal[4];
 
 	if not ability:IsFullyCastable() or AbilitiesReal[1]:IsFullyCastable() or
 		ability:GetManaCost() / npcBot:GetMaxMana() > 0.3 then
