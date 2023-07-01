@@ -87,6 +87,8 @@ local CanCast = {
             not AbilityExtensions:HasAbilityRetargetModifier(t)
     end,
 }
+
+-- pudge_meat_hook
 Consider[1] = function()
     local ability = AbilitiesReal[1]
     if not ability:IsFullyCastable() or npcBot:IsChanneling() then
@@ -100,7 +102,7 @@ Consider[1] = function()
     local function NotBlockedByAnyUnit(line, target, distance)
         return AbilityExtensions:Remove(allNearbyUnits, target):All(function(t)
             local closeEnough = AbilityExtensions:GetPointToLineDistance(t:GetLocation(), line) <=
-                searchRadius + target:GetBoundingRadius()
+                searchRadius + math.min(0, t:GetBoundingRadius())
             local mayHook = closeEnough and distance > GetUnitToUnitDistance(npcBot, t)
             return not mayHook or t:IsInvulnerable()
         end)
@@ -128,10 +130,10 @@ Consider[1] = function()
                 enemies[1]:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemies[1]) / hookSpeed)
         end
         do
-            local ally = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, false, BOT_MODE_NONE):Filter(allies
-                , function(t)
-                return t:IsStunned() or t:IsRooted()
-            end):First(allies, T)
+            local ally = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, false, BOT_MODE_NONE):
+                Filter(function(t)
+                    return t:IsStunned() or t:IsRooted()
+                end):First(T)
             if ally then
                 return BOT_MODE_DESIRE_HIGH,
                     ally:GetExtrapolatedLocation(GetUnitToUnitDistance(npcBot, enemies[1]) / hookSpeed)
@@ -179,6 +181,8 @@ Consider[1] = function()
     end
     return 0
 end
+
+-- pudge_rot
 Consider[2] = function()
     local ability = AbilitiesReal[2]
     local radius = ability:GetAOERadius()
@@ -210,6 +214,8 @@ end
 Consider[2] = AbilityExtensions:ToggleFunctionToAction(npcBot, Consider[2], AbilitiesReal[2])
 local swallowingSomething
 local swallowTimer
+
+-- pudge_eject
 Consider[4] = function()
     local ability = AbilitiesReal[4]
     if not ability:IsFullyCastable() or npcBot:IsChanneling() then
@@ -228,6 +234,8 @@ Consider[4] = function()
     end
     return 0
 end
+
+-- pudge_dismember
 Consider[5] = function()
     local ability = AbilitiesReal[5]
     if not ability:IsFullyCastable() or npcBot:IsChanneling() then
