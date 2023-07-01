@@ -92,7 +92,11 @@ local Consider = {}
 local CanCast = { AbilityExtensions.NormalCanCastFunction, utility.UCanCast, AbilityExtensions.NormalCanCastFunction,
 	function(t)
 		return AbilityExtensions:StunCanCast(t, AbilitiesReal[4], false, false, true, true)
-	end }
+	end,
+	function(t)
+		return AbilityExtensions:StunCanCast(t, AbilitiesReal[5], false, false, true, true)
+	end
+ }
 local enemyDisabled = utility.enemyDisabled
 
 function GetComboDamage()
