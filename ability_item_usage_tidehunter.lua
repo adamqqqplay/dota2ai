@@ -103,6 +103,7 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
+-- tidehunter_gush
 Consider[1] = function()
 
 	local abilityNumber = 1
@@ -319,6 +320,7 @@ function Consider1New()
 
 end
 
+-- tidehunter_anchor_smash
 Consider[3] = function()
 	local abilityNumber = 3
 	--------------------------------------
@@ -445,6 +447,7 @@ Consider[3] = function()
 
 end
 
+-- tidehunter_ravage
 Consider[5] = function()
 	local abilityNumber = 5
 	--------------------------------------
