@@ -132,7 +132,7 @@ Consider[1] = function()
         do
             local ally = AbilityExtensions:GetNearbyNonIllusionHeroes(npcBot, range, false, BOT_MODE_NONE):
                 Filter(function(t)
-                return t:IsStunned() or t:IsRooted()
+                    return t:IsStunned() or t:IsRooted()
                 end):First(T)
             if ally then
                 return BOT_MODE_DESIRE_HIGH,
