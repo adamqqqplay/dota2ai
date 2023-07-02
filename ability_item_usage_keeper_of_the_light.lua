@@ -242,74 +242,6 @@ Consider[1] = function()
 	return ConsiderIlluminate(1)
 end
 
--- Consider[2]=function()
-
--- 	local abilityNumber=2
--- 	--------------------------------------
--- 	-- Generic Variable Setting
--- 	--------------------------------------
--- 	local ability=AbilitiesReal[abilityNumber];
-
--- 	if ( not ability:IsFullyCastable() )
--- 	then
--- 		return BOT_ACTION_DESIRE_NONE
--- 	end
-
--- 	local CastRange = ability:GetCastRange();
--- 	local Damage = ability:GetAbilityDamage();
--- 	local Radius = ability:GetAOERadius()
--- 	local CastPoint = ability:GetCastPoint();
-
--- 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
--- 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
--- 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
--- 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
--- 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
--- 	--------------------------------------
--- 	-- Mode based usage
--- 	--------------------------------------
--- 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
--- 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH )
--- 	then
--- 		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) )
--- 		then
--- 			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius );
--- 			if ( locationAoE.count >= 2 ) then
--- 				return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
--- 			end
-
--- 			return BOT_ACTION_DESIRE_HIGH, npcBot
--- 		end
--- 	end
-
--- 	-- If we're going after someone
--- 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
--- 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
--- 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
--- 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK)
--- 	then
--- 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius );
--- 		if ( locationAoE.count >= 2 ) then
--- 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
--- 		end
-
--- 		local npcEnemy = npcBot:GetTarget();
-
--- 		if ( npcEnemy ~= nil )
--- 		then
--- 			if ( CanCast[abilityNumber]( npcEnemy ) )
--- 			then
--- 				return BOT_ACTION_DESIRE_LOW, npcEnemy:GetExtrapolatedLocation(CastPoint);
--- 			end
--- 		end
--- 	end
-
--- 	return BOT_ACTION_DESIRE_NONE
-
--- end
-
--- copied from sven_storm_hammer
-
 Consider[2] = function()
 	local abilityNumber = 2
 	--------------------------------------
@@ -746,9 +678,6 @@ Consider[8] = function()
 	return ConsiderIlluminate(8)
 end
 
--- local ConsiderEndIlluminate = function()
-
--- end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
