@@ -238,10 +238,12 @@ local ConsiderIlluminate = function(abilityNumber)
 
 end
 
+-- keeper_of_the_light_illuminate
 Consider[1] = function()
 	return ConsiderIlluminate(1)
 end
 
+-- keeper_of_the_light_radiant_bind
 Consider[2] = function()
 	local abilityNumber = 2
 	--------------------------------------
@@ -405,6 +407,7 @@ Consider[2] = function()
 
 end
 
+-- keeper_of_the_light_chakra_magic
 Consider[3] = function()
 	local abilityNumber = 3
 	--------------------------------------
@@ -546,6 +549,7 @@ Consider[abilityIndex.keeper_of_the_light_blind_light] = function()
 
 end
 
+-- keeper_of_the_light_will_o_wisp
 Consider[5] = function()
 	local abilityNumber = 5
 	local ability = AbilitiesReal[abilityNumber]
@@ -628,6 +632,7 @@ Consider[5] = function()
 end
 
 -- copied from sven_strength_of_god
+-- keeper_of_the_light_spirit_form
 Consider[6] = function()
 	local abilityNumber = 6
 	--------------------------------------
@@ -674,6 +679,7 @@ Consider[6] = function()
 	return BOT_ACTION_DESIRE_NONE
 end
 
+-- keeper_of_the_light_spirit_form_illuminate
 Consider[8] = function()
 	return ConsiderIlluminate(8)
 end
