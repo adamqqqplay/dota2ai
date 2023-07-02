@@ -24,14 +24,14 @@ ability_item_usage_generic.InitAbility(Abilities, AbilitiesReal, Talents)
 -- utility.PrintAbilityName(Abilities)
 local abilityName = {
 	"keeper_of_the_light_illuminate",
-	"keeper_of_the_light_radiant_blind",
+	"keeper_of_the_light_blinding_light",
 	"keeper_of_the_light_chakra_magic",
-	"keeper_of_the_light_blind_light",
+	"keeper_of_the_light_radiant_bind",
 	"keeper_of_the_light_will_o_wisp",
 	"keeper_of_the_light_spirit_form",
 	"keeper_of_the_light_illuminate_end",
 	"keeper_of_the_light_spirit_form_illuminate",
-	"keeper_of_the_light_spirit_form_illiminate_end",
+	"keeper_of_the_light_spirit_form_illuminate_end",
 	"keeper_of_the_light_recall",
 }
 local abilityIndex = utility.ReverseTable(abilityName)
@@ -244,8 +244,8 @@ Consider[1] = function()
 end
 
 -- keeper_of_the_light_radiant_bind
-Consider[2] = function()
-	local abilityNumber = 2
+Consider[4] = function()
+	local abilityNumber = 4
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -444,10 +444,10 @@ Consider[3] = function()
 	return BOT_ACTION_DESIRE_NONE
 end
 
-Consider[abilityIndex.keeper_of_the_light_blind_light] = function()
+Consider[abilityIndex.keeper_of_the_light_blinding_light] = function()
 	--Location AOE Example
 
-	local abilityNumber = abilityIndex.keeper_of_the_light_blind_light
+	local abilityNumber = abilityIndex.keeper_of_the_light_blinding_light
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
