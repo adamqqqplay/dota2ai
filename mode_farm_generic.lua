@@ -1,4 +1,5 @@
 local campUtils = require(GetScriptDirectory() .. "/util/CampUtility")
+local A = require(GetScriptDirectory() .. "/util/MiraDota")
 local bot = GetBot()
 local sec = 0;
 local preferedCamp = nil;
@@ -26,10 +27,6 @@ function GetDesire()
 		AvailableCamp, numCamp = campUtils.RefreshCamp(bot);
 	end
 
-	if IsUnitAroundLocation(GetAncient(GetTeam()):GetLocation(), 3000) then
-		return BOT_MODE_DESIRE_NONE;
-	end
-
 	if teamPlayers == nil then teamPlayers = GetTeamPlayers(GetTeam()) end
 
 	local EnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE);
@@ -39,44 +36,52 @@ function GetDesire()
 		return heroDesire
 	end
 
-	if #EnemyHeroes > 0 then
-		return BOT_MODE_DESIRE_NONE;
-	end
+	-- Requirements to allow farming mode:
+	-- * Be alive
+	-- * Be a hero that farms
+	-- * Between level 6 and 30
+	-- * No humans on team
+	-- * Game is not mid only
+	-- * Have something to buy
+	-- * No enemies nearby, and none have damaged us recently
+	-- * No enemy heroes near our base
+	-- * We aren't trying to retreat or go to secret shop
 
-	if not bot:IsAlive() or bot:IsChanneling() or bot:GetCurrentActionType() == 1 or bot:GetNextItemPurchaseValue() == 0
-		or bot:WasRecentlyDamagedByAnyHero(3.0) or #EnemyHeroes >= 1
+	if not (bot:IsAlive()
+			and campUtils.IsStrongJungler(bot)
+			and bot:GetLevel() >=6 and bot:GetLevel() < 30)
+		or IsHumanPlayerInTeam()
+		or GetGameMode() == GAMEMODE_MO
+		or bot:GetNextItemPurchaseValue() == 0
+		or A.Unit.WasRecentlyDamagedByEnemy(bot, 3.0) or #EnemyHeroes >= 1
+		or IsUnitAroundLocation(GetAncient(GetTeam()):GetLocation(), 3000)
 		or (bot:GetActiveMode() == BOT_MODE_RETREAT and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
 		or bot.SecretShop
 	then
 		return BOT_MODE_DESIRE_NONE;
 	end
 
-
-	if campUtils.IsStrongJungler(bot) and bot:GetLevel() >= 6 and bot:GetLevel() < 30 and not IsHumanPlayerInTeam() and
-		GetGameMode() ~= GAMEMODE_MO
-	then
-		LaneCreeps = bot:GetNearbyLaneCreeps(1600, true);
-		if LaneCreeps ~= nil and #LaneCreeps > 0 then
-			return BOT_MODE_DESIRE_HIGH;
-		else
-			if preferedCamp == nil then preferedCamp = campUtils.GetClosestNeutralSpwan(bot, AvailableCamp) end
-			if preferedCamp ~= nil then
-				if bot:GetHealth() / bot:GetMaxHealth() <= 0.15 then
-					preferedCamp = nil;
-					return BOT_MODE_DESIRE_LOW;
-				elseif farmState == 1 then
-					return BOT_MODE_DESIRE_ABSOLUTE;
-				elseif not campUtils.IsSuitableToFarm(bot) then
-					preferedCamp = nil;
-					return BOT_MODE_DESIRE_NONE;
-				else
-					return BOT_MODE_DESIRE_HIGH;
-				end
+	LaneCreeps = bot:GetNearbyLaneCreeps(1600, true);
+	if LaneCreeps ~= nil and #LaneCreeps > 0 then
+		return BOT_MODE_DESIRE_HIGH;
+	else
+		if preferedCamp == nil then preferedCamp = campUtils.GetClosestNeutralSpwan(bot, AvailableCamp) end
+		if preferedCamp ~= nil then
+			if bot:GetHealth() / bot:GetMaxHealth() <= 0.15 then
+				return BOT_MODE_DESIRE_LOW;
+			elseif farmState == 1 then
+				return BOT_MODE_DESIRE_ABSOLUTE;
+			elseif not campUtils.IsSuitableToFarm(bot) then
+				return BOT_MODE_DESIRE_NONE;
+			else
+				return BOT_MODE_DESIRE_HIGH;
 			end
 		end
-	end
 
-	return 0.0
+		-- No camps available to farm
+		return BOT_MODE_DESIRE_NONE
+
+	end
 
 end
 
