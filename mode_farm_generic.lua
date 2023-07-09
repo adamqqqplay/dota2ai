@@ -23,25 +23,6 @@ local testTime = 0;
 
 function GetDesire()
 
-	--campUtils.PrintCamps()
-
-	--[[if DotaTime() > testTime + 20.0 then
-		campUtils.PingCamp(1, 3, TEAM_RADIANT, bot);
-		testTime = DotaTime();
-	end]] --
-
-	if bot:GetUnitName() == "npc_dota_hero_faceless_voids" and bot:IsAlive() then
-		cLoc = GetSaveLocToFarmLane();
-		if cLoc ~= nil then
-			--bot:ActionImmediate_Ping(cLoc.x, cLoc.y, true);
-			--tPing = DotaTime();
-			farmLane = true;
-			return BOT_MODE_DESIRE_HIGH;
-		else
-			farmLane = false;
-		end
-	end
-
 	local num_cogs = 0;
 
 	if IsUnitAroundLocation(GetAncient(GetTeam()):GetLocation(), 3000) then
@@ -59,7 +40,6 @@ function GetDesire()
 		or (DotaTime() > 30 and sec > 0 and sec < 1))
 	then
 		AvailableCamp, numCamp = campUtils.RefreshCamp(bot);
-		--print(tostring(GetTeam())..tostring(#AvailableCamp))
 	end
 
 	if bot:GetUnitName() == "npc_dota_hero_rattletrap" then
@@ -118,18 +98,6 @@ function GetDesire()
 		return BOT_MODE_DESIRE_NONE;
 	end
 
-	if t3Destroyed == false then
-		t3Destroyed = IsThereT3Detroyed();
-		--else
-		--	if bot:DistanceFromFountain() > 10000 then
-		--		shrineTarget = GetTargetShrine();
-		--		local barracks = bot:GetNearbyBarracks(700, true);
-		--		if shrineTarget ~= nil and ( barracks == nil or #barracks == 0 ) and IsSuitableToDestroyShrine()  then
-		--			cause = "shrine";
-		--			return BOT_MODE_DESIRE_VERYHIGH;
-		--		end
-		--	end
-	end
 
 	if campUtils.IsStrongJungler(bot) and bot:GetLevel() >= 6 and bot:GetLevel() < 30 and not IsHumanPlayerInTeam() and
 		GetGameMode() ~= GAMEMODE_MO
@@ -251,50 +219,6 @@ function IsHumanPlayerInTeam()
 	return false;
 end
 
-function IsThereT3Detroyed()
-
-	local T3s = {
-		TOWER_TOP_3,
-		TOWER_MID_3,
-		TOWER_BOT_3
-	}
-
-	for _, t in pairs(T3s) do
-		local tower = GetTower(GetOpposingTeam(), t);
-		if tower == nil or not tower:IsAlive() then
-			return true;
-		end
-	end
-	return false;
-end
-
---function GetTargetShrine()
---	local shrines = {
---		 SHRINE_JUNGLE_1,
---		 SHRINE_JUNGLE_2
---	}
---	for _,s in pairs(shrines) do
---		local shrine = GetShrine(GetOpposingTeam(), s);
---		if  shrine ~= nil and shrine:IsAlive() then
---			return shrine;
---		end
---	end
---	return nil;
---end
---
---function IsSuitableToDestroyShrine()
---	local mode = bot:GetActiveMode();
---	if bot:WasRecentlyDamagedByTower(2.0) or bot:WasRecentlyDamagedByAnyHero(3.0)
---	   or mode == BOT_MODE_DEFEND_TOWER_TOP
---	   or mode == BOT_MODE_DEFEND_TOWER_MID
---	   or mode == BOT_MODE_DEFEND_TOWER_BOT
---	   or mode == BOT_MODE_ATTACK
---	   or mode == BOT_MODE_RETREAT and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH
---	then
---		return false;
---	end
---	return true;
---end
 
 function GetDistance(s, t)
 	return math.sqrt((s[1] - t[1]) * (s[1] - t[1]) + (s[2] - t[2]) * (s[2] - t[2]));
