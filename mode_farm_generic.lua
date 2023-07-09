@@ -1,27 +1,30 @@
 local campUtils = require(GetScriptDirectory() .. "/util/CampUtility")
 local bot = GetBot()
-local minute = 0;
 local sec = 0;
 local preferedCamp = nil;
 local AvailableCamp = {};
 local LaneCreeps = {};
-local numCamp = 18;
+local numCamp = 1; -- will update when camps are loaded
 local farmState = 0;
 local teamPlayers = nil;
 local lanes = { LANE_TOP, LANE_MID, LANE_BOT };
 local cause = "";
 local cogsTarget = nil;
-local t3Destroyed = false;
---local shrineTarget = nil;
 local cLoc = nil;
 local farmLane = false;
 
-local tPing = 0;
-local tChat = 0;
-
-local testTime = 0;
 
 function GetDesire()
+
+	sec = DotaTime() % 60
+
+	-- If there are any missing camps,
+	-- refresh at 0:30, and upon each minute
+	if #AvailableCamp < numCamp and ((DotaTime() > 30 and DotaTime() < 31)
+		or (DotaTime() > 30 and sec > 0 and sec < 1))
+	then
+		AvailableCamp, numCamp = campUtils.RefreshCamp(bot);
+	end
 
 	if IsUnitAroundLocation(GetAncient(GetTeam()):GetLocation(), 3000) then
 		return BOT_MODE_DESIRE_NONE;
@@ -30,15 +33,6 @@ function GetDesire()
 	if teamPlayers == nil then teamPlayers = GetTeamPlayers(GetTeam()) end
 
 	local EnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE);
-
-	minute = math.floor(DotaTime() / 60)
-	sec = DotaTime() % 60
-
-	if #AvailableCamp < numCamp and ((DotaTime() > 30 and DotaTime() < 60 and sec > 30 and sec < 31)
-		or (DotaTime() > 30 and sec > 0 and sec < 1))
-	then
-		AvailableCamp, numCamp = campUtils.RefreshCamp(bot);
-	end
 
 	local heroDesire = HeroSpecificDesire()
 	if heroDesire ~= nil then
