@@ -6,7 +6,11 @@ local preferedCamp = nil;
 local AvailableCamp = {};
 local LaneCreeps = {};
 local numCamp = 1; -- will update when camps are loaded
-local farmState = 0;
+local FARM_STATE_TRAVELLING = 0
+local FARM_STATE_NEAR = 1
+local FARM_STATE_FARMING = 2
+local FARM_STATE_STACKING = 3
+local farmState = FARM_STATE_TRAVELLING;
 local teamPlayers = nil;
 local lanes = { LANE_TOP, LANE_MID, LANE_BOT };
 local cause = "";
@@ -69,7 +73,7 @@ function GetDesire()
 		if preferedCamp ~= nil then
 			if bot:GetHealth() / bot:GetMaxHealth() <= 0.15 then
 				return BOT_MODE_DESIRE_LOW;
-			elseif farmState == 1 then
+			elseif farmState >= FARM_STATE_FARMING then
 				return BOT_MODE_DESIRE_ABSOLUTE;
 			elseif not campUtils.IsSuitableToFarm(bot) then
 				return BOT_MODE_DESIRE_NONE;
@@ -139,7 +143,7 @@ end
 
 function OnEnd()
 	preferedCamp = nil;
-	farmState = 0;
+	farmState = FARM_STATE_TRAVELLING;
 	cogsTarget = nil;
 	cogs = "";
 	cause = "";
@@ -195,24 +199,42 @@ function Think()
 		local cDist = GetUnitToLocationDistance(bot, preferedCamp.cattr.location);
 		local stackMove = campUtils.GetCampMoveToStack(bot, preferedCamp)
 		local stackTime = campUtils.GetCampStackTime(preferedCamp);
-		if (cDist > 300 or IsLocationVisible(preferedCamp.cattr.location) == false) and farmState == 0 then
+		local neutralCreeps = bot:GetNearbyNeutralCreeps(800)
+		local isCampVisible = IsLocationVisible(preferedCamp.cattr.location)
+
+
+		if cDist > 800 and farmState == FARM_STATE_TRAVELLING then
+			-- Travelling to the camp
 			bot:Action_MoveToLocation(preferedCamp.cattr.location);
 			return
+		elseif cDist <= 200 and isCampVisible and #neutralCreeps == 0 then
+			-- If we are close enough to the camp to tell it is clear, mark it and move on
+			farmState = FARM_STATE_TRAVELLING
+			AvailableCamp, preferedCamp = campUtils.UpdateAvailableCamp(bot, preferedCamp, AvailableCamp);
+		elseif not (cDist <= 400 and isCampVisible) and farmState < FARM_STATE_FARMING then
+			farmState = FARM_STATE_NEAR
+			-- Close to the camp, attack move in case creeps are out of place
+			bot:Action_AttackMove(preferedCamp.cattr.location);
+			return
 		else
-			local neutralCreeps = bot:GetNearbyNeutralCreeps(800);
+			-- We are now in farming range. Attack creeps until clear
 			local farmTarget = campUtils.FindFarmedTarget(neutralCreeps)
 			if farmTarget ~= nil then
-				farmState = 1;
-				if sec >= stackTime then
+				local lastAttack = GameTime() - bot:GetLastAttackTime()
+				if sec >= stackTime and (lastAttack < 1.0 or farmState == FARM_STATE_STACKING) then
+					-- Try to stack at stackTime
+					farmState = FARM_STATE_STACKING
 					bot:Action_MoveToLocation(stackMove);
 					return
 				else
+					farmState = FARM_STATE_FARMING;
 					bot:Action_AttackUnit(farmTarget, true);
 					return
 				end
 			else
-				farmState = 0;
-				AvailableCamp, preferedCamp = campUtils.UpdateAvailableCamp(bot, preferedCamp, AvailableCamp);
+				-- No target but camp not cleared; get closer
+				bot:Action_AttackMove(preferedCamp.cattr.location);
+				return
 			end
 		end
 	end
