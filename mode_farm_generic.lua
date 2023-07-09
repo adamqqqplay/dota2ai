@@ -40,6 +40,11 @@ function GetDesire()
 		AvailableCamp, numCamp = campUtils.RefreshCamp(bot);
 	end
 
+	local heroDesire = HeroSpecificDesire()
+	if heroDesire ~= nil then
+		return heroDesire
+	end
+
 	if #EnemyHeroes > 0 then
 		return BOT_MODE_DESIRE_NONE;
 	end
@@ -79,6 +84,58 @@ function GetDesire()
 
 	return 0.0
 
+end
+
+function HeroSpecificDesire()
+	local EnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE);
+
+	if bot:GetUnitName() == "npc_dota_hero_rattletrap" then
+		local num_cogs = 0;
+
+		if (bot:GetActiveMode() == BOT_MODE_RETREAT and bot:WasRecentlyDamagedByAnyHero(3.0)) or #EnemyHeroes == 0 or
+			cause == "cogs" then
+			local units = GetUnitList(UNIT_LIST_ALLIED_OTHER);
+			local minDist = 10000;
+			for _, u in pairs(units) do
+				if u:GetUnitName() == "npc_dota_rattletrap_cog" then
+					num_cogs = num_cogs + 1;
+					local cogDist = GetUnitToUnitDistance(u, GetAncient(GetTeam()));
+					if cogDist < minDist then
+						cogsTarget = u;
+						minDist = cogDist;
+					end
+				end
+			end
+			if num_cogs == 8 then
+				--print("attack cogs while retreat. Num cogs = "..tostring(num_cogs));
+				cause = "cogs";
+				return BOT_MODE_DESIRE_ABSOLUTE;
+			end
+		elseif bot:GetActiveMode() == BOT_MODE_ATTACK or cause == "cogs" then
+			local npcTarget = bot:GetTarget();
+			if npcTarget ~= nil and npcTarget:IsHero() and GetUnitToUnitDistance(bot, npcTarget) > 300 then
+				local units = GetUnitList(UNIT_LIST_ALLIED_OTHER);
+				local minDist = 10000;
+				for _, u in pairs(units) do
+					if u:GetUnitName() == "npc_dota_rattletrap_cog" then
+						num_cogs = num_cogs + 1;
+						local cogDist = GetUnitToUnitDistance(u, npcTarget);
+						if cogDist < minDist then
+							cogsTarget = u;
+							minDist = cogDist;
+						end
+					end
+				end
+				if num_cogs == 8 then
+					cause = "cogs";
+					return BOT_MODE_DESIRE_ABSOLUTE;
+				end
+			end
+		end
+
+	end
+
+	return nil
 end
 
 function OnEnd()
