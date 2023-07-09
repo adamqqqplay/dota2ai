@@ -1,27 +1,6 @@
+local utility = require(GetScriptDirectory() .. "/utility")
 local X = {}
-
-local team = GetTeam();
-local CStackTime = { 55, 55, 55, 55, 55, 54, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55, 55 }
-local CStackLoc = {
-	Vector(1854.000000, -4469.000000, 0.000000),
-	Vector(1249.000000, -2416.000000, 0.000000),
-	Vector(3471.000000, -5841.000000, 0.000000),
-	Vector(5153.000000, -3620.000000, 0.000000),
-	Vector(-1846.000000, -2996.000000, 0.000000),
-	Vector(-4961.000000, 559.000000, 0.000000),
-	Vector(-3873.000000, -833.000000, 0.000000),
-	Vector(-3146.000000, 702.000000, 0.000000),
-	Vector(1141.000000, -3111.000000, 0.000000),
-	Vector(660.000000, 2300.000000, 0.000000),
-	Vector(3666.000000, 1836.000000, 0.000000),
-	Vector(482.000000, 4723.000000, 0.000000),
-	Vector(3173.000000, -861.000000, 0.000000),
-	Vector(-3443.000000, 6098.000000, 0.000000),
-	Vector(-4353.000000, 4842.000000, 0.000000),
-	Vector(-1083.000000, 3385.000000, 0.000000),
-	Vector(-922.000000, 4299.000000, 0.000000),
-	Vector(4136.000000, -1753.000000, 0.000000)
-}
+local PULL_DISTANCE = 1200
 
 --test hero
 local jungler = {
@@ -33,8 +12,12 @@ local jungler = {
 	--'npc_dota_hero_ursa'
 }
 
-function X.GetCampMoveToStack(id)
-	return CStackLoc[id]
+-- Get the location that bot should move to in order to stack the camp.
+--
+-- Currently works by just going a fixed distance away from camp location 
+-- in the bot's current dirction.
+function X.GetCampMoveToStack(bot, camp)
+	return utility.GetUnitsTowardsLocationGeneric(camp.cattr.location, bot:GetLocation(), PULL_DISTANCE)
 end
 
 function X.GetCampStackTime(camp)

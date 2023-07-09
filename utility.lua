@@ -129,11 +129,13 @@ function CDOTA_Bot_Script:IsRoshan()
 end
 
 ----------------------------------------------------------------------------------------------------
+function utilityModule.GetUnitsTowardsLocationGeneric(locStart, locEnd, nUnits)
+	local tempvector = (locEnd - locStart) / utilityModule.PointToPointDistance(locStart, locEnd)
+	return locStart + nUnits * tempvector
+end
 
 function utilityModule.GetUnitsTowardsLocation(unit, target, nUnits)
-	local vMyLocation, vTargetLocation = unit:GetLocation(), target:GetLocation()
-	local tempvector = (vTargetLocation - vMyLocation) / utilityModule.PointToPointDistance(vMyLocation, vTargetLocation)
-	return vMyLocation + nUnits * tempvector
+	return utilityModule.GetUnitsTowardsLocationGeneric(unit:GetLocation(), target:GetLocation(), nUnits)
 end
 
 function utilityModule.RandomInCastRangePoint(unit, target, CastRange, distance)
