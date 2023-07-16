@@ -19,9 +19,13 @@ end
 local Talents = {}
 local Abilities = {}
 local AbilitiesReal = {}
+npcBot.ult = {}  -- Track possible ult targets across frames (see GetDelayedUltDesire())
+local delayedUltDesire = 0
 
 ability_item_usage_generic.InitAbility(Abilities, AbilitiesReal, Talents)
 
+local damageBuffer = 0.95  -- buffer ult damage for regen during cast time, etc.
+local patience = 1.6 -- number of seconds to try killing without ult
 
 local AbilityToLevelUp =
 {
@@ -105,6 +109,7 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
+-- zuus_arc_lightning
 Consider[1] = function()
 
 	local ability = AbilitiesReal[1];
@@ -251,6 +256,7 @@ Consider[1] = function()
 
 end
 
+-- zuus_lightning_bolt
 Consider[2] = function()
 
 	local ability = AbilitiesReal[2];
@@ -366,7 +372,7 @@ Consider[2] = function()
 	return BOT_ACTION_DESIRE_NONE, 0, "nil";
 end
 
--- 7.31 upgrade
+-- zuus_heavenly_jump
 Consider[3] = function()
 	local abilityNumber = 3
 	--------------------------------------
@@ -451,90 +457,132 @@ Consider[3] = function()
 	return BOT_ACTION_DESIRE_NONE
 end
 
+function DebugDrawUltTable()
+	if debugmode then
+
+		local drawY = 720
+		local drawStep = 18
+
+		for enemyName, enemyStats in pairs(npcBot.ult) do
+			local timeElapsed = DotaTime() - enemyStats[1]
+			local enemyBot = enemyStats[2]
+			local enemyHero = enemyStats[3]
+			local wasKillable = enemyStats[4]
+			local isNull = ""
+
+			if enemyBot:IsNull() then
+				isNull = "!null"
+			end
+
+			local sInfo = enemyName .. isNull .. " Hero " .. tostring(enemyHero)
+			sInfo = sInfo .. " Killable=" .. tostring(wasKillable) .. " " .. timeElapsed
+
+			DebugDrawText(100, drawY, sInfo, 255, 255, 255)
+			drawY = drawY + drawStep
+		end
+	end
+end
+
+-- Don't kill enemies that allies have just damaged but we haven't
 local function DontSteal(enemy)
-	return AbilityExtensions:GetUnitList(UNIT_LIST_ALLIED_HEROES):Remove(npcBot):Any(function(t) return enemy:
-			WasRecentlyDamagedByHero(t, 1.5)
-	end) and not enemy:WasRecentlyDamagedByHero(npcBot, 2.5)
+	return not enemy:WasRecentlyDamagedByAnyHero(1.5) or
+		enemy:WasRecentlyDamagedByHero(npcBot, 2.5)
 end
 
-local function ShouldUseUltimate(enemy)
-	return CanCast[6](enemy) and DontSteal(enemy)
-end
+-- Tracking enemies with low health that we are giving teammates a chance to kill
+local function GetDelayedUltDesire()
+	local ability = AbilitiesReal[6];
 
-Consider[6] = function()
+	if not ability:IsTrained() or ability:GetCooldownTimeRemaining() > 30 then
+		-- Skill is on cooldown, no point in tracking
+		if next(npcBot.ult) ~= nil then
+			npcBot.ult = {}
+		end
 
-	local ability = AbilitiesReal[6]
-	if not ability:IsFullyCastable()
-	then
 		return BOT_ACTION_DESIRE_NONE
 	end
 
-	local Damage = 125 + 100 * ability:GetLevel()
-	local WeakestEnemy = nil
-	local LowestHP = 10000.0
+	local Damage = ability:GetSpecialValueInt("damage") * damageBuffer
 
-	for _, Enemy in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES)) do
-		if Enemy ~= nil
+	-- Find good enemies to kill, put them in a list and wait a 
+	-- couple seconds to see if our team can kill them without the ult
+	for _, Enemy in ipairs(GetUnitList(UNIT_LIST_ENEMY_HEROES)) do
+		-- Include enemies if:
+		--  * They are alive and visible
+		--  * We won't kill steal
+		--  * We can't just hit them with lightning bolt
+		--  * Our ult would kill them
+		--  * TODO: They are the real hero
+		--  * TODO: When shield support added, add that to health (or do hard way with modifiers)
+		local isKillable = Enemy:GetHealth() <= Enemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL)
+		if Enemy:IsAlive() and Enemy:CanBeSeen() and DontSteal(Enemy) and
+			(GetUnitToUnitDistance(npcBot, Enemy) > AbilitiesReal[2]:GetCastRange() or
+				not AbilitiesReal[2]:IsFullyCastable()) and
+			isKillable
 		then
-			if (GetUnitToUnitDistance(npcBot, Enemy) > AbilitiesReal[2]:GetCastRange() or not AbilitiesReal[2]:IsFullyCastable())
-			then
-				if Enemy:IsAlive() and Enemy:CanBeSeen() and ShouldUseUltimate(Enemy)
-				then
-					if (LowestHP > Enemy:GetHealth())
-					then
-						WeakestEnemy = Enemy;
-						LowestHP = Enemy:GetHealth();
-					end
-				end
+			local enemyName = Enemy:GetUnitName()
+			if (npcBot.ult[enemyName] == nil) then
+				npcBot.ult[enemyName] = { DotaTime(), Enemy, Enemy:GetPlayerID(), isKillable }
 			end
 		end
 	end
 
-	if WeakestEnemy == nil or LowestHP < 1 then
-		return BOT_ACTION_DESIRE_NONE
-	end
+	DebugDrawUltTable()
 
-	if LowestHP <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL)
-	then
-		--return BOT_ACTION_DESIRE_VERYHIGH
-		local time_byname = WeakestEnemy:GetUnitName()
-		local allys = WeakestEnemy:GetNearbyHeroes(600, true, BOT_MODE_NONE)
-		if #allys == 0 or #allys == 1 and allys[1] == npcBot then
-			-- Don't rush to get the kill
-			return BOT_ACTION_DESIRE_MODERATE
-		else
-			if (npcBot.ult == nil)
-			then
-				npcBot.ult = {}
-			end
-			if (npcBot.ult.time_byname == nil)
-			then
-				npcBot.ult.time_byname = { DotaTime(), WeakestEnemy, WeakestEnemy:GetPlayerID() }
-			end
+	for enemyName, enemyStats in pairs(npcBot.ult) do
+		local timeElapsed = DotaTime() - enemyStats[1]
+		local enemyBot = enemyStats[2]
+		local enemyHero = enemyStats[3]
+		local wasKillable = enemyStats[4]
+
+		local isEnemyNull = (enemyBot == nil or enemyBot:IsNull())
+		local isKillable = not isEnemyNull and (IsHeroAlive(enemyHero) and
+			CanCast[6](enemyBot) and
+			enemyBot:GetHealth() <= enemyBot:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL))
+
+		-- update killable status in case they go out of vision
+		enemyStats[4] = isKillable
+
+		if timeElapsed >= 30 or not IsHeroAlive(enemyHero) or
+			(isEnemyNull and not wasKillable)
+		then
+			-- Enemy either got away or got killed
+			-- Forget about them; we can always add them again if they get low
+			npcBot.ult[enemyName] = nil
+
+		elseif isEnemyNull and IsHeroAlive(enemyHero) and wasKillable then
+			-- enemyBot should never be nil, but will become null when
+			-- we lose sight of them. Ult now!
+			-- Note: this may cast because they went invis
+			--       they won't take damage, but we will get true sight
+			return BOT_ACTION_DESIRE_VERYHIGH
+
+		elseif (timeElapsed >= patience and isKillable) then
+			-- Okay, we've been patient enough.  Time for some wrath.
+			return BOT_ACTION_DESIRE_VERYHIGH
+
 		end
 	end
-
-	if (npcBot.ult ~= nil)
-	then
-		for _, i in pairs(npcBot.ult) do
-			if (DotaTime() - i[1] >= 1.6)
-			then
-				if (
-					i[2] == nil or i[2]:IsNull() or
-						i[2]:GetHealth() <= i[2]:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) and IsHeroAlive(i[3])) and
-					CanCast[6](i[2])
-				then
-					npcBot.ult = nil
-					return BOT_ACTION_DESIRE_VERYHIGH
-				end
-			end
-		end
-	end
-
 
 	return BOT_ACTION_DESIRE_NONE
 end
 
+-- zuus_thundergods_wrath
+Consider[6] = function()
+	local ability = AbilitiesReal[6];
+
+	local Damage = ability:GetSpecialValueInt("damage") * damageBuffer
+
+	if not ability:IsFullyCastable() then
+		return BOT_ACTION_DESIRE_NONE
+	end
+
+	-- Results from GetDelayedUltDesire
+	return delayedUltDesire
+end
+
+
+-- zuus_cloud (Nimbus)
 Consider[4] = function()
 
 	local ability = AbilitiesReal[4]
@@ -580,6 +628,9 @@ end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
+
+	-- Run even if we can't cast, to keep track of targets
+	delayedUltDesire = GetDelayedUltDesire()
 
 	-- Check if we're already using an ability
 	if (npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced())
