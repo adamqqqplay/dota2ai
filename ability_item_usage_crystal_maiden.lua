@@ -101,6 +101,7 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
+-- crystal_maiden_crystal_nova
 Consider[1] = function()
 
 	local abilityNumber = 1
@@ -233,6 +234,7 @@ Consider[1] = function()
 
 end
 
+-- crystal_maiden_frostbite
 Consider[2] = function()
 	local abilityNumber = 2
 	--------------------------------------
@@ -392,7 +394,7 @@ Consider[2] = function()
 
 end
 
-
+-- crystal_maiden_freezing_field
 Consider[4] = function()
 	local abilityNumber = 4
 	--------------------------------------
@@ -458,13 +460,15 @@ end
 local iceFreezingEnemy
 local freezingFieldHitSomeoneTimer
 
--- stop freezing field
+-- crystal_maiden_freezing_field_stop
 Consider[5] = function()
 	local ability = AbilitiesReal[5]
 	if ability:IsHidden() or not ability:IsFullyCastable() then
 		return 0
 	end
-	if DotaTime() - freezingFieldHitSomeoneTimer >= 1.5 and
+	-- If we haven't had an enemy in freezing field range in 1.5 seconds and we do
+	-- have an ally close to being in range, then cast stop freezing field
+	if freezingFieldHitSomeoneTimer ~= nil and DotaTime() - freezingFieldHitSomeoneTimer >= 1.5 and
 		#npcBot:GetNearbyHeroes(AbilitiesReal[4]:GetAOERadius() + 280, false, BOT_MODE_NONE) > 0 then
 		return BOT_ACTION_DESIRE_HIGH
 	end
@@ -478,7 +482,7 @@ function AbilityUsageThink()
 	if (npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced())
 	then
 		if npcBot:IsCastingAbility() and npcBot:GetCurrentActiveAbility() == AbilitiesReal[2] then
-			if iceFreezingEnemy ~= nil and
+			if iceFreezingEnemy ~= nil and not iceFreezingEnemy:IsNull() and
 				(not iceFreezingEnemy:IsAlive() or AbilityExtensions:HasAbilityRetargetModifier(iceFreezingEnemy)) then
 				npcBot:Action_ClearActions(true)
 			end
@@ -493,11 +497,13 @@ function AbilityUsageThink()
 				if #enemies > 0 or freezingFieldHitSomeoneTimer == nil then
 					freezingFieldHitSomeoneTimer = DotaTime()
 				else
+					-- If we are channeling freezing field, haven't had an enemy in 
+					-- freezing field range in 1.5 seconds and we do have an ally close
+					-- to being in range, then interrupt casting
 					if DotaTime() - freezingFieldHitSomeoneTimer >= 1.5 and
 						#npcBot:GetNearbyHeroes(AbilitiesReal[4]:GetAOERadius() + 150, false, BOT_MODE_NONE) > 0 then
 						local location = npcBot:GetLocation() + RandomVector(50)
 						npcBot:Action_ClearActions(true)
-					else
 					end
 				end
 			else
