@@ -689,6 +689,7 @@ M.ItemPurchaseSelf = function(self, ItemsToBuy)
 
     if #GetBot().itemInformationTable == 0 then
         npcBot:SetNextItemPurchaseValue(0)
+        sNextItem="Out_of_items"
         return
     end
     sNextItem = GetTopItemToBuy()
