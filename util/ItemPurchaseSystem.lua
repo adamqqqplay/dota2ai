@@ -6,6 +6,7 @@ local TeamItemThink = require(GetScriptDirectory() .. "/util/TeamItemThink")
 local A = require(GetScriptDirectory() .. "/util/MiraDota")
 local fullInvCheck = -90
 local MAX_INVENTORY_SLOT = 8
+local STASH_SLOT_COUNT = 6
 
 function M.SellExtraItem(ItemsToBuy)
     local npcBot = GetBot()
@@ -718,7 +719,8 @@ M.ItemPurchaseSelf = function(self, ItemsToBuy)
             if courier:DistanceFromSecretShop() <= 250 and ItemCount < 9 then
                 PurchaseResult = courier:ActionImmediate_PurchaseItem(sNextItem)
             end
-        else
+        elseif #AbilityExtensions:GetStashItems(npcBot) < STASH_SLOT_COUNT then
+            -- Buying at fountain
             PurchaseResult = npcBot:ActionImmediate_PurchaseItem(sNextItem)
         end
         if PurchaseResult == PURCHASE_ITEM_SUCCESS then
