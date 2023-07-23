@@ -586,7 +586,8 @@ local UseCourier = function()
     end
     local nearSecretShop = courier:DistanceFromSecretShop() <= 180
     local function IsWaitingAtSecretShop()
-        return courierState == COURIER_STATE_IDLE and nearSecretShop and npcBot:GetGold() >= GetItemCost(sNextItem) * 0.9
+        return courierState == COURIER_STATE_IDLE and nearSecretShop and
+            npcBot:GetGold() >= GetItemCost(sNextItem) * 0.9 and IsItemPurchasedFromSecretShop(sNextItem)
     end
 
     if courier.returnWhenCarryingTooMany then
@@ -604,6 +605,7 @@ local UseCourier = function()
         npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_RETURN)
         return
     end
+
     if AbilityExtensions:GetEmptyItemSlots(npcBot) == 0 and courierItemNumber > 0 and
         GetUnitToUnitDistance(npcBot, courier) <= 400 then
         courier.returnCarryNumber = courierItemNumber
@@ -626,10 +628,6 @@ local UseCourier = function()
         courier.returnWhenCarryingTooMany = nil
         if courierState == COURIER_STATE_AT_BASE then
             npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_SECRET_SHOP)
-            return
-        end
-        if nearSecretShop and npcBot:GetGold() >= GetItemCost(sNextItem) then
-            npcBot:ActionImmediate_PurchaseItem(sNextItem)
             return
         end
     end
