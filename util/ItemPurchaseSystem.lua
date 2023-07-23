@@ -635,7 +635,8 @@ local UseCourier = function()
     end
 end
 UseCourier = AbilityExtensions:EveryManySeconds(0.5, UseCourier)
-M.ItemPurchaseExtend = function(self, ItemsToBuy)
+
+M.ItemPurchaseSelf = function(self, ItemsToBuy)
     local function GetTopItemToBuy()
         local itemInformationTable = GetBot().itemInformationTable
         if #itemInformationTable == 0 then
@@ -748,8 +749,13 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
     else
         npcBot.secretShopMode = false
     end
+end
+
+M.ItemPurchaseExtend = function(self, ItemsToBuy)
+    M.ItemPurchaseSelf(ItemsToBuy)
     UseCourier()
 end
+
 M.RemoveItemPurchase = function(self, itemTable, itemName)
     local num = #itemTable
     local i = 1
