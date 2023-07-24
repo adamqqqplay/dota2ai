@@ -24,14 +24,14 @@ ability_item_usage_generic.InitAbility(Abilities, AbilitiesReal, Talents)
 -- utility.PrintAbilityName(Abilities)
 local abilityName = {
 	"keeper_of_the_light_illuminate",
-	"keeper_of_the_light_radiant_blind",
+	"keeper_of_the_light_blinding_light",
 	"keeper_of_the_light_chakra_magic",
-	"keeper_of_the_light_blind_light",
+	"keeper_of_the_light_radiant_bind",
 	"keeper_of_the_light_will_o_wisp",
 	"keeper_of_the_light_spirit_form",
 	"keeper_of_the_light_illuminate_end",
 	"keeper_of_the_light_spirit_form_illuminate",
-	"keeper_of_the_light_spirit_form_illiminate_end",
+	"keeper_of_the_light_spirit_form_illuminate_end",
 	"keeper_of_the_light_recall",
 }
 local abilityIndex = utility.ReverseTable(abilityName)
@@ -238,80 +238,14 @@ local ConsiderIlluminate = function(abilityNumber)
 
 end
 
+-- keeper_of_the_light_illuminate
 Consider[1] = function()
 	return ConsiderIlluminate(1)
 end
 
--- Consider[2]=function()
-
--- 	local abilityNumber=2
--- 	--------------------------------------
--- 	-- Generic Variable Setting
--- 	--------------------------------------
--- 	local ability=AbilitiesReal[abilityNumber];
-
--- 	if ( not ability:IsFullyCastable() )
--- 	then
--- 		return BOT_ACTION_DESIRE_NONE
--- 	end
-
--- 	local CastRange = ability:GetCastRange();
--- 	local Damage = ability:GetAbilityDamage();
--- 	local Radius = ability:GetAOERadius()
--- 	local CastPoint = ability:GetCastPoint();
-
--- 	local allys = npcBot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE );
--- 	local enemys = npcBot:GetNearbyHeroes(CastRange+300,true,BOT_MODE_NONE)
--- 	local WeakestEnemy,HeroHealth=utility.GetWeakestUnit(enemys)
--- 	local creeps = npcBot:GetNearbyCreeps(CastRange+300,true)
--- 	local WeakestCreep,CreepHealth=utility.GetWeakestUnit(creeps)
--- 	--------------------------------------
--- 	-- Mode based usage
--- 	--------------------------------------
--- 	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
--- 	if ( npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH )
--- 	then
--- 		if ( npcBot:WasRecentlyDamagedByAnyHero( 2.0 ) )
--- 		then
--- 			local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius );
--- 			if ( locationAoE.count >= 2 ) then
--- 				return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
--- 			end
-
--- 			return BOT_ACTION_DESIRE_HIGH, npcBot
--- 		end
--- 	end
-
--- 	-- If we're going after someone
--- 	if ( npcBot:GetActiveMode() == BOT_MODE_ROAM or
--- 		 npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
--- 		 npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or
--- 		 npcBot:GetActiveMode() == BOT_MODE_ATTACK)
--- 	then
--- 		local locationAoE = npcBot:FindAoELocation( true, true, npcBot:GetLocation(), CastRange, Radius );
--- 		if ( locationAoE.count >= 2 ) then
--- 			return BOT_ACTION_DESIRE_LOW, locationAoE.targetloc;
--- 		end
-
--- 		local npcEnemy = npcBot:GetTarget();
-
--- 		if ( npcEnemy ~= nil )
--- 		then
--- 			if ( CanCast[abilityNumber]( npcEnemy ) )
--- 			then
--- 				return BOT_ACTION_DESIRE_LOW, npcEnemy:GetExtrapolatedLocation(CastPoint);
--- 			end
--- 		end
--- 	end
-
--- 	return BOT_ACTION_DESIRE_NONE
-
--- end
-
--- copied from sven_storm_hammer
-
-Consider[2] = function()
-	local abilityNumber = 2
+-- keeper_of_the_light_radiant_bind
+Consider[4] = function()
+	local abilityNumber = 4
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -473,6 +407,7 @@ Consider[2] = function()
 
 end
 
+-- keeper_of_the_light_chakra_magic
 Consider[3] = function()
 	local abilityNumber = 3
 	--------------------------------------
@@ -509,10 +444,10 @@ Consider[3] = function()
 	return BOT_ACTION_DESIRE_NONE
 end
 
-Consider[abilityIndex.keeper_of_the_light_blind_light] = function()
+Consider[abilityIndex.keeper_of_the_light_blinding_light] = function()
 	--Location AOE Example
 
-	local abilityNumber = abilityIndex.keeper_of_the_light_blind_light
+	local abilityNumber = abilityIndex.keeper_of_the_light_blinding_light
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -614,6 +549,7 @@ Consider[abilityIndex.keeper_of_the_light_blind_light] = function()
 
 end
 
+-- keeper_of_the_light_will_o_wisp
 Consider[5] = function()
 	local abilityNumber = 5
 	local ability = AbilitiesReal[abilityNumber]
@@ -696,6 +632,7 @@ Consider[5] = function()
 end
 
 -- copied from sven_strength_of_god
+-- keeper_of_the_light_spirit_form
 Consider[6] = function()
 	local abilityNumber = 6
 	--------------------------------------
@@ -742,13 +679,11 @@ Consider[6] = function()
 	return BOT_ACTION_DESIRE_NONE
 end
 
+-- keeper_of_the_light_spirit_form_illuminate
 Consider[8] = function()
 	return ConsiderIlluminate(8)
 end
 
--- local ConsiderEndIlluminate = function()
-
--- end
 
 AbilityExtensions:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
