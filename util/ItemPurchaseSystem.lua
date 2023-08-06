@@ -6,6 +6,7 @@ local TeamItemThink = require(GetScriptDirectory() .. "/util/TeamItemThink")
 local A = require(GetScriptDirectory() .. "/util/MiraDota")
 local fullInvCheck = -90
 local MAX_INVENTORY_SLOT = 8
+local STASH_SLOT_COUNT = 6
 
 function M.SellExtraItem(ItemsToBuy)
     local npcBot = GetBot()
@@ -586,7 +587,8 @@ local UseCourier = function()
     end
     local nearSecretShop = courier:DistanceFromSecretShop() <= 180
     local function IsWaitingAtSecretShop()
-        return courierState == COURIER_STATE_IDLE and nearSecretShop and npcBot:GetGold() >= GetItemCost(sNextItem) * 0.9
+        return courierState == COURIER_STATE_IDLE and nearSecretShop and
+            npcBot:GetGold() >= GetItemCost(sNextItem) * 0.9 and IsItemPurchasedFromSecretShop(sNextItem)
     end
 
     if courier.returnWhenCarryingTooMany then
@@ -604,6 +606,7 @@ local UseCourier = function()
         npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_RETURN)
         return
     end
+
     if AbilityExtensions:GetEmptyItemSlots(npcBot) == 0 and courierItemNumber > 0 and
         GetUnitToUnitDistance(npcBot, courier) <= 400 then
         courier.returnCarryNumber = courierItemNumber
@@ -628,14 +631,11 @@ local UseCourier = function()
             npcBot:ActionImmediate_Courier(courier, COURIER_ACTION_SECRET_SHOP)
             return
         end
-        if nearSecretShop and npcBot:GetGold() >= GetItemCost(sNextItem) then
-            npcBot:ActionImmediate_PurchaseItem(sNextItem)
-            return
-        end
     end
 end
 UseCourier = AbilityExtensions:EveryManySeconds(0.5, UseCourier)
-M.ItemPurchaseExtend = function(self, ItemsToBuy)
+
+M.ItemPurchaseSelf = function(self, ItemsToBuy)
     local function GetTopItemToBuy()
         local itemInformationTable = GetBot().itemInformationTable
         if #itemInformationTable == 0 then
@@ -689,6 +689,7 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
 
     if #GetBot().itemInformationTable == 0 then
         npcBot:SetNextItemPurchaseValue(0)
+        sNextItem="Out_of_items"
         return
     end
     sNextItem = GetTopItemToBuy()
@@ -719,7 +720,8 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
             if courier:DistanceFromSecretShop() <= 250 and ItemCount < 9 then
                 PurchaseResult = courier:ActionImmediate_PurchaseItem(sNextItem)
             end
-        else
+        elseif #AbilityExtensions:GetStashItems(npcBot) < STASH_SLOT_COUNT then
+            -- Buying at fountain
             PurchaseResult = npcBot:ActionImmediate_PurchaseItem(sNextItem)
         end
         if PurchaseResult == PURCHASE_ITEM_SUCCESS then
@@ -748,8 +750,13 @@ M.ItemPurchaseExtend = function(self, ItemsToBuy)
     else
         npcBot.secretShopMode = false
     end
+end
+
+M.ItemPurchaseExtend = function(self, ItemsToBuy)
+    M.ItemPurchaseSelf(ItemsToBuy)
     UseCourier()
 end
+
 M.RemoveItemPurchase = function(self, itemTable, itemName)
     local num = #itemTable
     local i = 1
