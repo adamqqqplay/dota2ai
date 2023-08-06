@@ -1,68 +1,100 @@
 local campUtils = require(GetScriptDirectory() .. "/util/CampUtility")
+local A = require(GetScriptDirectory() .. "/util/MiraDota")
 local bot = GetBot()
-local minute = 0;
 local sec = 0;
 local preferedCamp = nil;
 local AvailableCamp = {};
 local LaneCreeps = {};
-local numCamp = 18;
-local farmState = 0;
+local numCamp = 1; -- will update when camps are loaded
+local FARM_STATE_TRAVELLING = 0
+local FARM_STATE_NEAR = 1
+local FARM_STATE_FARMING = 2
+local FARM_STATE_STACKING = 3
+local farmState = FARM_STATE_TRAVELLING;
 local teamPlayers = nil;
 local lanes = { LANE_TOP, LANE_MID, LANE_BOT };
 local cause = "";
 local cogsTarget = nil;
-local t3Destroyed = false;
---local shrineTarget = nil;
 local cLoc = nil;
 local farmLane = false;
 
-local tPing = 0;
-local tChat = 0;
-
-local testTime = 0;
 
 function GetDesire()
 
-	--campUtils.PrintCamps()
+	sec = DotaTime() % 60
 
-	--[[if DotaTime() > testTime + 20.0 then
-		campUtils.PingCamp(1, 3, TEAM_RADIANT, bot);
-		testTime = DotaTime();
-	end]] --
-
-	if bot:GetUnitName() == "npc_dota_hero_faceless_voids" and bot:IsAlive() then
-		cLoc = GetSaveLocToFarmLane();
-		if cLoc ~= nil then
-			--bot:ActionImmediate_Ping(cLoc.x, cLoc.y, true);
-			--tPing = DotaTime();
-			farmLane = true;
-			return BOT_MODE_DESIRE_HIGH;
-		else
-			farmLane = false;
-		end
-	end
-
-	local num_cogs = 0;
-
-	if IsUnitAroundLocation(GetAncient(GetTeam()):GetLocation(), 3000) then
-		return BOT_MODE_DESIRE_NONE;
+	-- If there are any missing camps,
+	-- refresh at 0:30, and upon each minute
+	if #AvailableCamp < numCamp and ((DotaTime() > 30 and DotaTime() < 31)
+		or (DotaTime() > 30 and sec > 0 and sec < 1))
+	then
+		AvailableCamp, numCamp = campUtils.RefreshCamp(bot);
 	end
 
 	if teamPlayers == nil then teamPlayers = GetTeamPlayers(GetTeam()) end
 
 	local EnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE);
 
-	minute = math.floor(DotaTime() / 60)
-	sec = DotaTime() % 60
-
-	if #AvailableCamp < numCamp and ((DotaTime() > 30 and DotaTime() < 60 and sec > 30 and sec < 31)
-		or (DotaTime() > 30 and sec > 0 and sec < 1))
-	then
-		AvailableCamp, numCamp = campUtils.RefreshCamp(bot);
-		--print(tostring(GetTeam())..tostring(#AvailableCamp))
+	local heroDesire = HeroSpecificDesire()
+	if heroDesire ~= nil then
+		return heroDesire
 	end
 
+	-- Requirements to allow farming mode:
+	-- * Be alive
+	-- * Be a hero that farms
+	-- * Between level 6 and 30
+	-- * No humans on team
+	-- * Game is not mid only
+	-- * Have something to buy
+	-- * No enemies nearby, and none have damaged us recently
+	-- * No enemy heroes near our base
+	-- * We aren't trying to retreat or go to secret shop
+
+	if not (bot:IsAlive()
+			and campUtils.IsStrongJungler(bot)
+			and bot:GetLevel() >=6 and bot:GetLevel() < 30)
+		or IsHumanPlayerInTeam()
+		or GetGameMode() == GAMEMODE_MO
+		or bot:GetNextItemPurchaseValue() == 0
+		or A.Unit.WasRecentlyDamagedByEnemy(bot, 3.0) or #EnemyHeroes >= 1
+		or IsUnitAroundLocation(GetAncient(GetTeam()):GetLocation(), 3000)
+		or (bot:GetActiveMode() == BOT_MODE_RETREAT and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
+		or bot.SecretShop
+	then
+		return BOT_MODE_DESIRE_NONE;
+	end
+
+	LaneCreeps = bot:GetNearbyLaneCreeps(1600, true);
+	if LaneCreeps ~= nil and #LaneCreeps > 0 then
+		return BOT_MODE_DESIRE_HIGH;
+	else
+		if preferedCamp == nil then preferedCamp = campUtils.GetClosestNeutralSpwan(bot, AvailableCamp) end
+		if preferedCamp ~= nil then
+			if bot:GetHealth() / bot:GetMaxHealth() <= 0.15 then
+				return BOT_MODE_DESIRE_LOW;
+			elseif farmState >= FARM_STATE_FARMING then
+				return BOT_MODE_DESIRE_ABSOLUTE;
+			elseif not campUtils.IsSuitableToFarm(bot) then
+				return BOT_MODE_DESIRE_NONE;
+			else
+				return BOT_MODE_DESIRE_HIGH;
+			end
+		end
+
+		-- No camps available to farm
+		return BOT_MODE_DESIRE_NONE
+
+	end
+
+end
+
+function HeroSpecificDesire()
+	local EnemyHeroes = bot:GetNearbyHeroes(1600, true, BOT_MODE_NONE);
+
 	if bot:GetUnitName() == "npc_dota_hero_rattletrap" then
+		local num_cogs = 0;
+
 		if (bot:GetActiveMode() == BOT_MODE_RETREAT and bot:WasRecentlyDamagedByAnyHero(3.0)) or #EnemyHeroes == 0 or
 			cause == "cogs" then
 			local units = GetUnitList(UNIT_LIST_ALLIED_OTHER);
@@ -106,62 +138,12 @@ function GetDesire()
 
 	end
 
-	if #EnemyHeroes > 0 then
-		return BOT_MODE_DESIRE_NONE;
-	end
-
-	if not bot:IsAlive() or bot:IsChanneling() or bot:GetCurrentActionType() == 1 or bot:GetNextItemPurchaseValue() == 0
-		or bot:WasRecentlyDamagedByAnyHero(3.0) or #EnemyHeroes >= 1
-		or (bot:GetActiveMode() == BOT_MODE_RETREAT and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH)
-		or bot.SecretShop
-	then
-		return BOT_MODE_DESIRE_NONE;
-	end
-
-	if t3Destroyed == false then
-		t3Destroyed = IsThereT3Detroyed();
-		--else
-		--	if bot:DistanceFromFountain() > 10000 then
-		--		shrineTarget = GetTargetShrine();
-		--		local barracks = bot:GetNearbyBarracks(700, true);
-		--		if shrineTarget ~= nil and ( barracks == nil or #barracks == 0 ) and IsSuitableToDestroyShrine()  then
-		--			cause = "shrine";
-		--			return BOT_MODE_DESIRE_VERYHIGH;
-		--		end
-		--	end
-	end
-
-	if campUtils.IsStrongJungler(bot) and bot:GetLevel() >= 6 and bot:GetLevel() < 30 and not IsHumanPlayerInTeam() and
-		GetGameMode() ~= GAMEMODE_MO
-	then
-		LaneCreeps = bot:GetNearbyLaneCreeps(1600, true);
-		if LaneCreeps ~= nil and #LaneCreeps > 0 then
-			return BOT_MODE_DESIRE_HIGH;
-		else
-			if preferedCamp == nil then preferedCamp = campUtils.GetClosestNeutralSpwan(bot, AvailableCamp) end
-			if preferedCamp ~= nil then
-				if bot:GetHealth() / bot:GetMaxHealth() <= 0.15 then
-					preferedCamp = nil;
-					return BOT_MODE_DESIRE_LOW;
-				elseif farmState == 1 then
-					return BOT_MODE_DESIRE_ABSOLUTE;
-				elseif not campUtils.IsSuitableToFarm(bot) then
-					preferedCamp = nil;
-					return BOT_MODE_DESIRE_NONE;
-				else
-					return BOT_MODE_DESIRE_HIGH;
-				end
-			end
-		end
-	end
-
-	return 0.0
-
+	return nil
 end
 
 function OnEnd()
 	preferedCamp = nil;
-	farmState = 0;
+	farmState = FARM_STATE_TRAVELLING;
 	cogsTarget = nil;
 	cogs = "";
 	cause = "";
@@ -215,26 +197,44 @@ function Think()
 
 	if preferedCamp ~= nil then
 		local cDist = GetUnitToLocationDistance(bot, preferedCamp.cattr.location);
-		local stackMove = campUtils.GetCampMoveToStack(preferedCamp.idx);
+		local stackMove = campUtils.GetCampMoveToStack(bot, preferedCamp)
 		local stackTime = campUtils.GetCampStackTime(preferedCamp);
-		if (cDist > 300 or IsLocationVisible(preferedCamp.cattr.location) == false) and farmState == 0 then
+		local neutralCreeps = bot:GetNearbyNeutralCreeps(800)
+		local isCampVisible = IsLocationVisible(preferedCamp.cattr.location)
+
+
+		if cDist > 800 and farmState == FARM_STATE_TRAVELLING then
+			-- Travelling to the camp
 			bot:Action_MoveToLocation(preferedCamp.cattr.location);
 			return
+		elseif cDist <= 200 and isCampVisible and #neutralCreeps == 0 then
+			-- If we are close enough to the camp to tell it is clear, mark it and move on
+			farmState = FARM_STATE_TRAVELLING
+			AvailableCamp, preferedCamp = campUtils.UpdateAvailableCamp(bot, preferedCamp, AvailableCamp);
+		elseif not (cDist <= 400 and isCampVisible) and farmState < FARM_STATE_FARMING then
+			farmState = FARM_STATE_NEAR
+			-- Close to the camp, attack move in case creeps are out of place
+			bot:Action_AttackMove(preferedCamp.cattr.location);
+			return
 		else
-			local neutralCreeps = bot:GetNearbyNeutralCreeps(800);
+			-- We are now in farming range. Attack creeps until clear
 			local farmTarget = campUtils.FindFarmedTarget(neutralCreeps)
 			if farmTarget ~= nil then
-				farmState = 1;
-				if sec >= stackTime then
+				local lastAttack = GameTime() - bot:GetLastAttackTime()
+				if sec >= stackTime and (lastAttack < 1.0 or farmState == FARM_STATE_STACKING) then
+					-- Try to stack at stackTime
+					farmState = FARM_STATE_STACKING
 					bot:Action_MoveToLocation(stackMove);
 					return
 				else
+					farmState = FARM_STATE_FARMING;
 					bot:Action_AttackUnit(farmTarget, true);
 					return
 				end
 			else
-				farmState = 0;
-				AvailableCamp, preferedCamp = campUtils.UpdateAvailableCamp(bot, preferedCamp, AvailableCamp);
+				-- No target but camp not cleared; get closer
+				bot:Action_AttackMove(preferedCamp.cattr.location);
+				return
 			end
 		end
 	end
@@ -251,50 +251,6 @@ function IsHumanPlayerInTeam()
 	return false;
 end
 
-function IsThereT3Detroyed()
-
-	local T3s = {
-		TOWER_TOP_3,
-		TOWER_MID_3,
-		TOWER_BOT_3
-	}
-
-	for _, t in pairs(T3s) do
-		local tower = GetTower(GetOpposingTeam(), t);
-		if tower == nil or not tower:IsAlive() then
-			return true;
-		end
-	end
-	return false;
-end
-
---function GetTargetShrine()
---	local shrines = {
---		 SHRINE_JUNGLE_1,
---		 SHRINE_JUNGLE_2
---	}
---	for _,s in pairs(shrines) do
---		local shrine = GetShrine(GetOpposingTeam(), s);
---		if  shrine ~= nil and shrine:IsAlive() then
---			return shrine;
---		end
---	end
---	return nil;
---end
---
---function IsSuitableToDestroyShrine()
---	local mode = bot:GetActiveMode();
---	if bot:WasRecentlyDamagedByTower(2.0) or bot:WasRecentlyDamagedByAnyHero(3.0)
---	   or mode == BOT_MODE_DEFEND_TOWER_TOP
---	   or mode == BOT_MODE_DEFEND_TOWER_MID
---	   or mode == BOT_MODE_DEFEND_TOWER_BOT
---	   or mode == BOT_MODE_ATTACK
---	   or mode == BOT_MODE_RETREAT and bot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH
---	then
---		return false;
---	end
---	return true;
---end
 
 function GetDistance(s, t)
 	return math.sqrt((s[1] - t[1]) * (s[1] - t[1]) + (s[2] - t[2]) * (s[2] - t[2]));

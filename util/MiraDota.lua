@@ -1145,6 +1145,20 @@ function UnitFun.NotRetreating(npcBot)
     return not UnitFun.IsRetreating(npcBot)
 end
 
+-- Has unit *npc* been damaged by the enemy team within *interval* seconds.
+--
+-- Note that "enemy" is defined by the script context, not the unit.
+function UnitFun.WasRecentlyDamagedByEnemy(npc, interval)
+	if npc:WasRecentlyDamagedByAnyHero(interval) then
+		for _, playerId in ipairs(GetTeamPlayers(GetOpposingTeam())) do
+			if npc:WasRecentlyDamagedByPlayer(playerId, interval) then
+				return true
+			end
+		end
+	end
+	return false
+end
+
 local heroNamePrefixLen = #"npc_dota_hero_"
 function UnitFun.GetHeroShortName(name)
     return string.sub(name, heroNamePrefixLen + 1)
