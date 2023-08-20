@@ -454,3 +454,10 @@ Update to 7.33c
 5. Fix power treads switching issue temporary.
 6. Fix the problem that many heroes could not use ultimate skills.
 7. Fix the problem that heroes sometimes get stuck in the secret shop.
+v1.7.15(2023.08.20)
+Update to 7.33e
+1. Fix many heroes abilities.
+2. Improved item purchasing system to sell items when inventory is full.
+3. Fix runtime error in buyback.
+4. Fix minor issues in purchasing and courier.
+5. Improve the farming methods of some heroes.
