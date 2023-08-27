@@ -14,7 +14,4 @@ if bot:IsHero() then
 	ItemPurchaseSystem.CreateItemInformationTable(GetBot(), HeroInfoFile.ItemsToBuy)
 end
 
--- TODO: Call ItemPurchaseSystem directly
-function ItemPurchaseThink()
-	ItemPurchaseSystem.ItemPurchaseExtend()
-end
+ItemPurchaseThink = ItemPurchaseSystem.ItemPurchaseExtend
