@@ -4,9 +4,8 @@
 --  Contributor: zmcmcc Email:mengzhang@utexas.edu
 ----------------------------------------------------------------------------
 local X = {}
-local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
 
-local ItemsToBuy =
+X.ItemsToBuy =
 {
 	"item_tango",
 	"item_flask",
@@ -23,11 +22,5 @@ local ItemsToBuy =
 	"item_black_king_bar",
 	"item_wind_waker",
 }
-
-ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
-
-function X.ItemPurchaseThink()
-	ItemPurchaseSystem:ItemPurchaseExtend()
-end
 
 return X

@@ -4,11 +4,8 @@
 --  Contributor: zmcmcc Email:mengzhang@utexas.edu
 ----------------------------------------------------------------------------
 local X = {}
-local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
-local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 
-
-local ItemsToBuy = {
+X.ItemsToBuy = {
 	"item_tango",
 	"item_flask",
 	"item_blight_stone",
@@ -25,10 +22,5 @@ local ItemsToBuy = {
 	"item_ultimate_scepter_2",
 	"item_assault",
 }
-ItemPurchaseSystem:CreateItemInformationTable(GetBot(), p)
-
-function X.ItemPurchaseThink()
-	ItemPurchaseSystem:ItemPurchaseExtend()
-end
 
 return X

@@ -3,9 +3,8 @@
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
 local X = {}
-local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
 
-local ItemsToBuy =
+X.ItemsToBuy =
 {
 	"item_tango",
 	"item_tango",
@@ -23,11 +22,5 @@ local ItemsToBuy =
 	-- "item_hurricane_pike", --大推推7.20
 	"item_butterfly", --蝴蝶
 }
-
-ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
-
-function X.ItemPurchaseThink()
-	ItemPurchaseSystem:ItemPurchaseExtend()
-end
 
 return X

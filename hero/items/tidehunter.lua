@@ -3,9 +3,8 @@
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
 local X = {}
-local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
 
-local ItemsToBuy =
+X.ItemsToBuy =
 {
 	"item_tango",
 	"item_quelling_blade",
@@ -24,11 +23,5 @@ local ItemsToBuy =
 	"item_helm_of_the_overlord", --level 2 helm dominator 7.30
 	"item_shivas_guard",
 }
-
-ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
-
-function X.ItemPurchaseThink()
-	ItemPurchaseSystem:ItemPurchaseExtend()
-end
 
 return X

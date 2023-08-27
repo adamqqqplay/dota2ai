@@ -3,15 +3,8 @@
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
 local X = {}
-local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
-local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 
-local enemyTeamMemberNames = AbilityExtensions:GetEnemyTeamMemberNames(GetBot())
-AbilityExtensions:ForEach(enemyTeamMemberNames, function(t)
-	print("enemy team has " .. t:GetUnitName())
-end)
-
-local ItemsToBuy =
+X.ItemsToBuy =
 {
 	"item_tango",
 	"item_bracer",
@@ -27,17 +20,5 @@ local ItemsToBuy =
 	"item_ultimate_scepter_2",
 	"item_monkey_king_bar",
 }
-
---[[
-if AbilityExtensions:Contains(enemyTeamMemberNames, "antimage") then
-	AbilityExtensions:InsertAfter_Modify(ItemsToBuy, "item_radiance", "item_aghanims_shard")
-end
---]]
-
-ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
-
-function X.ItemPurchaseThink()
-	ItemPurchaseSystem:ItemPurchaseExtend()
-end
 
 return X

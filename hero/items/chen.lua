@@ -3,9 +3,8 @@
 --	Author: adamqqq		Email:adamqqq@163.com
 ----------------------------------------------------------------------------
 local X = {}
-local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem") --导入通用函数库
 
-local ItemsToBuy =
+X.ItemsToBuy =
 {
 	"item_tango",
 	"item_clarity",
@@ -23,12 +22,5 @@ local ItemsToBuy =
 	"item_ultimate_scepter_2",
 	"item_lotus_orb",
 }
-
-ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
-
-function X.ItemPurchaseThink()
-	ItemPurchaseSystem.BuySupportItem() --购买信使		对于5号位保留这一行
-	ItemPurchaseSystem:ItemPurchaseExtend()
-end
 
 return X

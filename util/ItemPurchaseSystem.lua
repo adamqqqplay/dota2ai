@@ -753,6 +753,7 @@ M.ItemPurchaseSelf = function(self, ItemsToBuy)
 end
 
 M.ItemPurchaseExtend = function(self, ItemsToBuy)
+    M.BuySupportItem()
     M.ItemPurchaseSelf(ItemsToBuy)
     UseCourier()
 end
