@@ -11,10 +11,10 @@ local HeroInfoFile = "NOT IMPLEMENTED"
 
 if bot:IsHero() then
 	HeroInfoFile = require(GetScriptDirectory() .. "/hero/items/" .. string.gsub(GetBot():GetUnitName(), "npc_dota_hero_", ""));
-	ItemPurchaseSystem:CreateItemInformationTable(GetBot(), HeroInfoFile.ItemsToBuy)
+	ItemPurchaseSystem.CreateItemInformationTable(GetBot(), HeroInfoFile.ItemsToBuy)
 end
 
 -- TODO: Call ItemPurchaseSystem directly
 function ItemPurchaseThink()
-	ItemPurchaseSystem:ItemPurchaseExtend()
+	ItemPurchaseSystem.ItemPurchaseExtend()
 end
