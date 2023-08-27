@@ -4,9 +4,8 @@
 ----------------------------------------------------------------------------
 --导入通用函数库
 local X = {}
-local ItemPurchaseSystem = dofile(GetScriptDirectory() .. "/util/ItemPurchaseSystem")
 
-local ItemsToBuy =
+X.ItemsToBuy =
 {
 	"item_tango",
 	"item_clarity",
@@ -46,15 +45,5 @@ local ItemsToBuy =
 	"item_recipe_cyclone", --风杖
 
 }
-
---检查装备列表
-ItemPurchaseSystem:CreateItemInformationTable(GetBot(), ItemsToBuy)
-
-function ItemPurchaseThink()
-	--购买辅助物品	对于辅助英雄保留这一行
-	ItemPurchaseSystem.BuySupportItem()
-	--购买装备
-	ItemPurchaseSystem.ItemPurchase(ItemsToBuy)
-end
 
 return X
