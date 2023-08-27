@@ -170,17 +170,17 @@ local hero_pool_default_bot = {
 }
 --recoding implemented bots, using in test.
 local hero_pool_test = {
-	-- "npc_dota_hero_zuus",
-	-- "npc_dota_hero_skywrath_mage",
-	-- "npc_dota_hero_ogre_magi",
-	-- "npc_dota_hero_chaos_knight",
-	-- "npc_dota_hero_viper",
+	"npc_dota_hero_zuus",
+	"npc_dota_hero_skywrath_mage",
+	"npc_dota_hero_ogre_magi",
+	"npc_dota_hero_chaos_knight",
+	"npc_dota_hero_viper",
 
-	-- "npc_dota_hero_lina",
-	-- "npc_dota_hero_abaddon",
-	-- "npc_dota_hero_huskar",
-	-- "npc_dota_hero_phantom_assassin",
-	-- "npc_dota_hero_crystal_maiden",
+	"npc_dota_hero_lina",
+	"npc_dota_hero_abaddon",
+	"npc_dota_hero_huskar",
+	"npc_dota_hero_phantom_assassin",
+	"npc_dota_hero_crystal_maiden",
 
 	-- "npc_dota_hero_ember_spirit",
 
@@ -567,7 +567,7 @@ local hero_pool_position_unimplemented = {
 	[5] = { "npc_dota_hero_rubick", "npc_dota_hero_visage", "npc_dota_hero_dark_willow" }
 }
 ----------------------------------------------------------------------------------------------------
-local debugMode = false
+local debugMode = true
 
 -----------------------------------------------------SELECT HERO FOR BOT WITH CHAT FEATURE------------------------------
 --function to get hero name that match the expression
