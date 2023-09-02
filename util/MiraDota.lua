@@ -930,7 +930,7 @@ local everySecondsCallRegistry = Linq.NewTable()
 function GameLoop.EveryManySeconds(second, registerName, oldFunction, ...)
     if everySecondsCallRegistry[registerName] == nil then
         local callTable = {}
-        callTable.lastCallTime = DotaTime() + RandomFloat(0, second) - second
+        callTable.lastCallTime = DotaTime() + RandomInt(0, second*1000)/1000 - second
         callTable.interval = second
         everySecondsCallRegistry[registerName] = callTable
     end
