@@ -3228,7 +3228,6 @@ function M:EveryManySeconds(second, oldFunction)
     local functionName = tostring(oldFunction)
     local callTable = {}
     everySecondsCallRegistry[functionName] = callTable
-    print(RandomInt(0, second*1000) / 1000)
     callTable.lastCallTime = DotaTime() + RandomInt(0, second*1000) / 1000
     callTable.interval = second
     callTable.startup = true
