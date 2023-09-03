@@ -1,8 +1,3 @@
----------------------------------------------
--- Generated from Mirana Compiler version 1.6.2
--- Do not modify
--- https://github.com/AaronSong321/Mirana
----------------------------------------------
 local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local A = require(GetScriptDirectory() .. "/util/MiraDota")
 local M = {}

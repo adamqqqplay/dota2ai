@@ -1,8 +1,10 @@
----------------------------------------------
--- Generated from Mirana Compiler version 1.6.2
--- Do not modify
--- https://github.com/AaronSong321/Mirana
----------------------------------------------
+----------------------------------------------------------------------------
+--	Ranked Matchmaking AI v1.3 New Structure
+--	Author: adamqqq		Email:adamqqq@163.com
+----------------------------------------------------------------------------
+--------------------------------------
+-- General Initialization
+--------------------------------------
 local utility = require(GetScriptDirectory() .. "/utility")
 local ability_item_usage_generic = require(GetScriptDirectory() .. "/ability_item_usage_generic")
 local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
@@ -105,6 +107,9 @@ end
 
 Consider[1] = function()
     local abilityNumber = 1
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
     local ability = AbilitiesReal[abilityNumber]
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE, 0
@@ -117,7 +122,13 @@ Consider[1] = function()
     local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = fun1:GetNearbyCreeps(npcBot, CastRange + 300, true)
     local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
+
+	--------------------------------------
+	-- Mode based usage
+	--------------------------------------
+	--protect myself
     local enemys2 = fun1:GetNearbyCreeps(npcBot, 400, true)
+	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
     if (npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH) or
         #enemys2 > 0 then
         for _, npcEnemy in pairs(enemys) do
@@ -127,6 +138,8 @@ Consider[1] = function()
             end
         end
     end
+
+	-- If we're going after someone
     if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
         npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = npcBot:GetTarget()
@@ -158,6 +171,9 @@ end
 
 Consider[2] = function()
     local abilityNumber = 2
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
     local ability = AbilitiesReal[abilityNumber]
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE, 0
@@ -172,6 +188,11 @@ Consider[2] = function()
     local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
     local creepsNeutral = npcBot:GetNearbyNeutralCreeps(1600)
     local StrongestCreep, CreepHealth2 = utility.GetStrongestUnit(creepsNeutral)
+	--------------------------------------
+	-- Mode based usage
+	--------------------------------------
+	-- Find neutral creeps
+
     local holyPersuasionLevelLimit = AbilitiesReal[2]:GetLevel() + 2
     local canEnchantAncientCreep = npcBot:GetLevel() <= 15
     if ManaPercentage >= 0.3 then
@@ -192,6 +213,9 @@ Consider[2] = function()
 end
 function ConsiderRecall()
     local abilityNumber = 3
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
     local ability = AbilitiesReal[abilityNumber]
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE, 0
@@ -210,6 +234,9 @@ local GetAllAllyHeroes = fun1:EveryManySeconds(2, function()
 end)
 Consider[4] = function()
     local abilityNumber = 4
+    --------------------------------------
+    -- Generic Variable Setting
+    --------------------------------------
     local ability = AbilitiesReal[abilityNumber]
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE, 0
@@ -249,6 +276,8 @@ Consider[4] = function()
             return BOT_ACTION_DESIRE_MODERATE
         end
     end
+	
+	-- If we're in a teamfight, use it on the scariest enemy
     local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes(1000, false, BOT_MODE_ATTACK)
     if #tableNearbyAttackingAlliedHeroes >= 2 and #enemies > 0 then
         if fun1:Contains(severelyDamagedAllies, npcBot) and #damagedAllies >= 3 or
@@ -260,6 +289,8 @@ Consider[4] = function()
 end
 fun1:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
+
+	-- Check if we're already using an ability
     if npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() then
         return
     end

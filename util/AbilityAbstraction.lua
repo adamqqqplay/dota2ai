@@ -5,6 +5,9 @@
 ---------------------------------------------
 local M = {}
 local binlib = require(GetScriptDirectory() .. "/util/BinDecHex")
+
+-- LINQ functions
+
 local magicTable = {}
 local function GiveLinqFunctions(t)
     setmetatable(t, magicTable)
@@ -617,6 +620,9 @@ local function AddLinqFunctionsToMetatable(mt)
 end
 
 AddLinqFunctionsToMetatable(magicTable)
+
+-- bot mode behaviour
+
 local Trim = function(v, left, right)
     if right >= left then
         if v > right then
@@ -675,6 +681,10 @@ M.HasEnoughManaToUseAttackAttachedAbility = function(self, npcBot, ability)
     return percent >= 0.4 and npcBot:GetMana() >= 300 and
         npcBot:GetManaRegen() >= npcBot:GetAttackSpeed() / 100 * ability:GetManaCost() * 0.75
 end
+
+-- function generator
+
+-- turn a function that returns true, false, nil to a function that decides whether to toggle the ability or not
 M.ToggleFunctionToAction = function(self, npcBot, oldConsider, ability)
     local name = ability:GetName()
     return function()
@@ -713,6 +723,9 @@ M.PreventAbilityAtIllusion = function(self, npcBot, oldConsiderFunction, ability
 end
 M.PreventEnemyTargetAbilityUsageAtAbilityBlock = function(self, npcBot, oldConsiderFunction, ability)
     local newConsider = function()
+        -- TODO: do we consider the base cooldown or the modified cooldown 
+        -- (arcane rune, octarine orb)? Will you crack a sphere's spell block 
+        -- with an ultimate ability when you're on arcane rune?
         local desire, target, targetTypeString = oldConsiderFunction()
         if desire == 0 or target == nil or target == 0 or self:IsVector(target) or targetTypeString == "Location" then
             return desire, target, targetTypeString
@@ -831,6 +844,8 @@ function M:InitAbility(npcBot)
     npcBot.abilityInited = true
     return abilityNames, abilities, talents
 end
+
+-- ability information
 
 local keysBeforeAbilityInformation = M:Keys(M)
 M.UndisjointableProjectiles = {
@@ -1090,6 +1105,8 @@ M.timeSensitivePositiveModifiers = {
     "modifier_medusa_stone_gaze",
     "modifier_monkey_king_fur_army_soldier_in_position",
 }
+-- sorted by importance, used by dispell abilities
+
 M.basicDispellablePositiveModifiers = {
     "modifier_omniknight_guardian_angle",
     "modifier_ember_spirit_flame_guard",
@@ -1144,6 +1161,8 @@ M.unbreakableChannelAbilities = {
     "item_trusty_shovel",
     "item_fallen_sky",
 }
+-- items cannot be break by silence
+
 M.lowPriorityChannelAbilities = {
     "windrunner_powershot",
     "ability_capture",
@@ -1188,7 +1207,7 @@ M.hexModifiers = {
     "modifier_shadow_shaman_voodoo",
     "modifier_sheepstick_debuff",
     "modifier_item_princes_knife_hex",
-    "modifier_hexxed",
+    "modifier_hexxed", -- dazzle_poison_touch aghanim's shard
     "modifier_item_unstable_wand_critter",
 }
 M.silenceModifiers = {
@@ -1270,9 +1289,10 @@ M.knockbackModifiers = {
     "modifier_force_boots_active",
 }
 M.blindModifiers = { "modifier_item_black_powder_bag_blind" }
+-- TODO: how to record the caster of these abilities
 M.noTrueSightRootAbilityAssociation = {
     dark_willow_branble_maze = "modifier_dark_willow_bramble_maze",
-    item_diffusal_blade = "modifier_rooted",
+    item_diffusal_blade = "modifier_rooted", -- most people don't know diffusal blade apply root on non-hero units
 }
 M.conditionalTrueSightRootAbilityAssociation = {
     dark_troll_warlord_ensnare = "modifier_dark_troll_warlord_ensnare",
@@ -1316,6 +1336,10 @@ abilityInformationKeys:ForEach(function(t)
     M[k .. "Abilities"] = a
     M[k .. "Modifiers"] = b
 end)
+
+
+-- enums 
+
 function M:ToIntItemPurchaseResult(i)
     return (function()
         if i == PURCHASE_ITEM_SUCCESS then
@@ -1371,6 +1395,8 @@ function M:ToIntBotMode(i)
     return "UNKNOWN_BOT_MODE_ENUM"
 end
 
+-- unit function
+
 function M:IsRoshan(npcTarget)
     return npcTarget ~= nil and npcTarget:IsAlive() and string.find(npcTarget:GetUnitName(), "roshan")
 end
@@ -1417,6 +1443,7 @@ M.GetIncomingDodgeWorthProjectiles = function(self, npc)
         if t.is_attack then
             return false
         end
+        -- caster can be nil
         if t.caster then
             if npc:GetTeam() == t.caster:GetTeam() then
                 return false
@@ -1549,6 +1576,8 @@ function M:GetLifeSteal(npc)
     if self:GetAvailableItem(npc, "item_paladin_sword") then
         amp = amp + 0.14
     end
+    
+    -- lifesteal amplifications
     for i = 1, npc:NumModifiers() do
         local modifierName = npc:GetModifierName(i)
         if modifierName == "modifier_item_spirit_vessel_damage" then
@@ -1963,6 +1992,8 @@ function M:HasUnobstructedMovement(npc)
     return #activeFlyingModifiers ~= 0
 end
 
+-- item function
+
 M.GetAvailableItem = function(self, npc, itemName)
     for _, i in ipairs(self:Range(0, 5):Concat({ 16 })) do
         local item = npc:GetItemInSlot(i)
@@ -2256,7 +2287,7 @@ function M:IsDuelCaster(npc)
             self:GetModifierRemainingDuration(_npc, "modifier_legion_commander_duel") + 1 >= ability:GetCooldown()
     end
 
-    if not npc then
+    if not npc then --dont know why _npc can be null
         return false
     end
     local npcBot = GetBot()
@@ -2525,6 +2556,8 @@ function M:GetLaningTower(npc)
     end
 end
 
+-- debug functions
+
 M.DebugTable = function(self, tb)
     local msg = "{ "
     local DebugRec
@@ -2579,6 +2612,8 @@ end
 function M:PrintMode(npc)
     print("bot " .. npc:GetUnitName() .. " in mode " .. npc:GetActiveMode() .. ", desire = " .. npc:GetActiveModeDesire())
 end
+
+-- ability function
 
 function M:NormalCanCast(target, isPureDamageWithoutDisable, damageType, pierceMagicImmune, targetMustBeSeen,
                          mustBeTargettable)
@@ -2793,6 +2828,9 @@ M.ExecuteAbilityLevelUp = function(self, npcBot)
     npcBot:ActionImmediate_LevelAbility(abilityName)
     abilityTable.justLevelUpAbility = true
 end
+
+-- geometry
+
 M.IsVector = function(self, object)
     return type(object) == "userdata" and type(object.x) == "number" and type(object.y) == "number" and
         type(object.z) == "number"
@@ -2825,6 +2863,8 @@ M.commonBoudingRadius = 100
 M.GetPointToPointDistance = function(self, a, b)
     return ((a.x - b.x) ^ 2 + (a.y - b.y) ^ 2) ^ 0.5
 end
+
+-- Get the location on the line determined by startPoint and endPoint, with distance from startPoint to the target location
 M.GetPointFromLineByDistance = function(self, startPoint, endPoint, distance)
     local distanceTo = self:GetPointToPointDistance(startPoint, endPoint)
     local divide = (endPoint - startPoint) / distanceTo * distance
@@ -2971,6 +3011,40 @@ M.PURCHASE_ITEM_INSUFFICIENT_GOLD = 63
 M.PURCHASE_ITEM_NOT_AT_SECRET_SHOP = 62
 M.PURCHASE_ITEM_NOT_AT_HOME_SHOP = 67
 M.PURCHASE_ITEM_SUCCESS = -1
+
+-- specified ability is not actually an ability (2)
+-- invalid order(3) unrecognised order name
+-- invalid order(40) order not allowed for illusions
+-- unit is dead (20)
+-- target tree is not active (43)
+-- ability is still in cooldown (15)
+-- cannot cast ability on tree (34)
+-- cannot cast ability on target
+-- target is unselectable
+-- order requires a physical item target, but specified target is not a physical item (9)
+-- item cannot be used from stash (37)
+-- does not have enough mana to cast ability (14)
+-- item is still in cooldown (61)
+-- can't cast attack ability on target, target is attack immune (32)
+-- order invalid for units with attack ability DOTA_UNIT_CAP_NO_ATTACK (41)
+-- can't cast on target, ability cannot target enemies (30)
+-- can't cast on target, ability cannot target creeps (56)
+-- unit can't perform command, unit has commands restricted (74)
+-- hero does not have enough ability points to upgrade ability (13)
+-- ability is hidden (60)
+-- can't cast on target, ability cannot target teammates (29)
+-- cannot attack or cast on target, target is unselectable (36)
+-- unit cannot cast, unit is silenced (24)
+-- cannot cast ability on NPC (19), unit is dead
+-- unit cannot manipulate items (39)
+-- target cannot be seen by the unit's team (26)
+-- unit does not have moevement capability and target is out of attack range (46)
+
+
+-- runtime errors: 
+---  Bad key for entity "npc_dota_creep_neutral": Out of range parsed value for field "teamnumber" (-1)!
+
+
 M.IgnoreDamageModifiers = {
     "modifier_abaddon_borrowed_time",
     "modifier_item_aeon_disk_buff",
@@ -3060,7 +3134,7 @@ M.GetIllusionBattlePower = function(self, npc)
     if self:Contains(inventory, "item_greater_crit") then
         t = t + 0.08
     end
-    if npc:HasModifier "modifier_special_bonus_mana_break" then
+    if npc:HasModifier "modifier_special_bonus_mana_break" then -- mirana talent[5]
         t = t + 0.04
     end
     return t
@@ -3144,6 +3218,7 @@ M.GetHeroGroupBattlePower = function(self, npcBot, heroes, isEnemy)
         local name = enemy:GetUnitName()
         if not self:Contains(readNames, name) then
             table.insert(readNames, name)
+            -- TODO: enemyNetWorthMap[name] should not be null
             if enemyNetWorthMap[name] then
                 netWorth = netWorth + enemyNetWorthMap[name]
             end
@@ -3169,6 +3244,9 @@ M.HasScepter = function(self, npc)
         npc:HasModifier "modifier_item_ultimate_scepter" or
         npc:HasModifier "modifier_item_ultimate_scepter_consumed_alchemist"
 end
+
+-- ability record
+
 local locationAOEAbilities = {
     cone = { "lina_dragon_slave" },
     circle = { "lina_light_strike_array" },
@@ -3208,6 +3286,8 @@ local deltaTime = 0
 local function FloatEqual(a, b)
     return math.abs(a - b) < 0.000001
 end
+
+-- tick
 
 function M:GetFrameNumber()
     return frameNumber
@@ -3356,6 +3436,8 @@ function M:GameNotReallyStarting()
     return false
 end
 
+-- coroutine
+
 function M:ResumeUntilReturn(func)
     local g = NewTable()
     local thread = coroutine.create(func)
@@ -3397,6 +3479,9 @@ function M:StopCoroutine(thread)
     end)
     self:Remove_Modify(coroutineRegistry, thread)
 end
+
+-- get data from ability
+-- for example, to get value aoe_radius, use ability.aoe_radius rather than ability:GetSpecialValueInt
 
 local function GetDataFromAbility(ability, valueName)
     local a = ability:GetSpecialValueInt(valueName)

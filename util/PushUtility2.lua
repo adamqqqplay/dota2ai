@@ -1,8 +1,3 @@
----------------------------------------------
--- Generated from Mirana Compiler version 1.6.2
--- Do not modify
--- https://github.com/AaronSong321/Mirana
----------------------------------------------
 local role = require(GetScriptDirectory() .. "/util/RoleUtility")
 local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local function GetCarryRate(hero)

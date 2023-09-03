@@ -1,8 +1,11 @@
----------------------------------------------
--- Generated from Mirana Compiler version 1.6.2
--- Do not modify
--- https://github.com/AaronSong321/Mirana
----------------------------------------------
+----------------------------------------------------------------------------
+--	Ranked Matchmaking AI v1.5d
+--	Author: adamqqq		Email:adamqqq@163.com
+--  Contributor: zmcmcc Email:mengzhang@utexas.edu
+----------------------------------------------------------------------------
+--------------------------------------
+-- General Initialization
+--------------------------------------
 local utility = require(GetScriptDirectory() .. "/utility")
 local ability_item_usage_generic = require(GetScriptDirectory() .. "/ability_item_usage_generic")
 local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
@@ -177,6 +180,9 @@ Consider[1] = function()
 end
 Consider[2] = function()
     local abilityNumber = 2
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
     local ability = AbilitiesReal[abilityNumber]
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE, 0
@@ -190,6 +196,10 @@ Consider[2] = function()
     local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(Radius, true)
     local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
+	--------------------------------------
+	-- Global high-priorty usage
+	--------------------------------------
+	--Try to kill enemy hero
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) then
@@ -200,6 +210,10 @@ Consider[2] = function()
             end
         end
     end
+	--------------------------------------
+	-- Mode based usage
+	--------------------------------------
+	--protect myself
     if (npcBot:WasRecentlyDamagedByAnyHero(2) and #enemys >= 1) or #enemys >= 2 then
         for _, npcEnemy in pairs(enemys) do
             if CanCast[abilityNumber](npcEnemy) then
@@ -207,6 +221,8 @@ Consider[2] = function()
             end
         end
     end
+	
+	-- If my mana is enough,use it at enemy
     if npcBot:GetActiveMode() == BOT_MODE_LANING then
         if (manaPercent > 0.65 or npcBot:GetMana() > ComboMana) then
             if WeakestEnemy ~= nil then
@@ -219,6 +235,8 @@ Consider[2] = function()
             end
         end
     end
+	
+	-- If we're farming and can hit 2+ creeps
     if npcBot:GetActiveMode() == BOT_MODE_FARM or npcBot:GetActiveMode() == BOT_MODE_LANING then
         if #creeps >= 2 then
             if WeakestCreep ~= nil then
@@ -229,6 +247,8 @@ Consider[2] = function()
             end
         end
     end
+
+	--Last hit
     if npcBot:GetActiveMode() == BOT_MODE_LANING then
         if WeakestCreep ~= nil then
             if (manaPercent > 0.5 or npcBot:GetMana() > ComboMana) and
@@ -239,6 +259,9 @@ Consider[2] = function()
             end
         end
     end
+
+	
+	-- If we're going after someone
     if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
         npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = npcBot:GetTarget()
@@ -250,6 +273,7 @@ Consider[2] = function()
     end
     return BOT_ACTION_DESIRE_NONE, 0
 end
+-- hairball
 Consider[4] = function()
     local ability = AbilitiesReal[4]
     if not ability:IsFullyCastable() or ability:IsHidden() then

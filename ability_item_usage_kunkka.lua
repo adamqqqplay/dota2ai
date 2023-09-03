@@ -1,8 +1,11 @@
----------------------------------------------
--- Generated from Mirana Compiler version 1.6.2
--- Do not modify
--- https://github.com/AaronSong321/Mirana
----------------------------------------------
+----------------------------------------------------------------------------
+--	Ranked Matchmaking AI v1.5e
+--	Author: adamqqq		Email:adamqqq@163.com
+--  Contributor: zmcmcc Email:mengzhang@utexas.edu
+----------------------------------------------------------------------------
+--------------------------------------
+-- General Initialization
+--------------------------------------
 local utility = require(GetScriptDirectory() .. "/utility")
 local ability_item_usage_generic = require(GetScriptDirectory() .. "/ability_item_usage_generic")
 local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
@@ -58,6 +61,8 @@ local TalentTree = {
         return Talents[7]
     end,
 }
+
+-- check skill build vs current level
 utility.CheckAbilityBuild(AbilityToLevelUp)
 function BuybackUsageThink()
 	ability_item_usage_generic.BuybackUsageThink();
@@ -71,6 +76,9 @@ function AbilityLevelUpThink()
     ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
 end
 
+--------------------------------------
+-- Ability Usage Thinking
+--------------------------------------
 local cast = {}
 cast.Desire = {}
 cast.Target = {}
@@ -110,6 +118,9 @@ end
 
 Consider[1] = function()
     local abilityNumber = 1
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
     local ability = AbilitiesReal[abilityNumber]
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE
@@ -123,6 +134,8 @@ Consider[1] = function()
     local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(CastRange, true)
     local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
+
+	-- Check for a channeling enemy
     for _, npcEnemy in pairs(enemys) do
         if npcEnemy:IsChanneling() then
             return BOT_ACTION_DESIRE_HIGH - 0.1, npcEnemy:GetLocation()
@@ -131,6 +144,8 @@ Consider[1] = function()
     if XMarksEnemy() and CanCast[1](xMarkTarget) and DotaTime() - xMarkTime <= 0.8 then
         return BOT_ACTION_DESIRE_VERYHIGH, xMarkLocation
     end
+
+	--try to kill enemy hero
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) and WeakestEnemy:HasModifier("modifier_kunkka_x_marks_the_spot") then
@@ -141,6 +156,10 @@ Consider[1] = function()
             end
         end
     end
+	--------------------------------------
+	-- Mode based usage
+	--------------------------------------		
+	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
     if npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH then
         for _, npcEnemy in pairs(enemys) do
             if npcBot:WasRecentlyDamagedByHero(npcEnemy, 2.0) then
@@ -150,6 +169,8 @@ Consider[1] = function()
             end
         end
     end
+	
+	-- If we're farming and can kill 3+ creeps
     if npcBot:GetActiveMode() == BOT_MODE_FARM then
         if (ManaPercentage > 0.4 or npcBot:GetMana() > ComboMana) then
             local locationAoE = npcBot:FindAoELocation(true, false, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0)
@@ -158,6 +179,8 @@ Consider[1] = function()
             end
         end
     end
+
+	-- If we're pushing or defending a lane and can hit 4+ creeps
     if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
         npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
         npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
@@ -168,6 +191,9 @@ Consider[1] = function()
             end
         end
     end
+	
+
+	-- If we're going after someone
     if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
         npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local locationAoE = npcBot:FindAoELocation(true, true, npcBot:GetLocation(), CastRange, Radius, CastPoint, 0)
@@ -196,11 +222,15 @@ Consider[3] = function()
     local allys = npcBot:GetNearbyHeroes(1200, false, BOT_MODE_NONE)
     local enemys = npcBot:GetNearbyHeroes(CastRange, true, BOT_MODE_NONE)
     local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
+	
+	-- Check for a channeling enemy
     for _, enemy in pairs(enemys) do
         if enemy:IsChanneling() and CanCast[3](enemy) and not enemy:IsSilenced() then
             return BOT_ACTION_DESIRE_HIGH, enemy
         end
     end
+	
+	--try to kill enemy hero
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[3](WeakestEnemy) and ManaPercentage > 0.5 then
@@ -212,6 +242,8 @@ Consider[3] = function()
             end
         end
     end
+
+	-- If a mode has set a target, and we can kill them, do it
     local npcTarget = npcBot:GetTarget()
     if npcTarget ~= nil then
         if CanCast[3](npcTarget) then
@@ -221,6 +253,8 @@ Consider[3] = function()
             end
         end
     end
+	
+	-- If we're in a teamfight, use it on the scariest enemy
     local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes(1000, false, BOT_MODE_ATTACK)
     if #tableNearbyAttackingAlliedHeroes >= 2 then
         local npcMostDangerousEnemy = nil
@@ -239,6 +273,8 @@ Consider[3] = function()
             return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy
         end
     end
+	
+	-- If we're going after someone
     if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
         npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcTarget = npcBot:GetTarget()
@@ -251,8 +287,13 @@ Consider[3] = function()
     end
     return BOT_ACTION_DESIRE_NONE, 0
 end
+
+-- ghost ship
 Consider[6] = function()
     local abilityNumber = 6
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
     local ability = AbilitiesReal[abilityNumber]
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE, 0
@@ -266,6 +307,10 @@ Consider[6] = function()
     local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(CastRange, true)
     local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
+	--------------------------------------
+	-- Global high-priorty usage
+	--------------------------------------
+	--try to kill enemy hero
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) then
@@ -280,6 +325,11 @@ Consider[6] = function()
             end
         end
     end
+	
+	--------------------------------------
+	-- Mode based usage
+	--------------------------------------
+	-- If we're in a teamfight, use it on the scariest enemy
     local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes(1000, false, BOT_MODE_ATTACK)
     if #tableNearbyAttackingAlliedHeroes >= 2 then
         local npcMostDangerousEnemy = nil
@@ -298,6 +348,8 @@ Consider[6] = function()
             return BOT_ACTION_DESIRE_LOW, npcMostDangerousEnemy:GetLocation()
         end
     end
+
+	-- If we're going after someone
     if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
         npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = fun1:GetTargetIfGood(npcBot)
@@ -313,6 +365,8 @@ Consider[6] = function()
     end
     return BOT_ACTION_DESIRE_NONE, 0
 end
+
+-- torrent storm
 Consider[4] = function()
     local ability = AbilitiesReal[4]
     if not ability:IsFullyCastable() or ability:IsHidden() then
@@ -338,6 +392,9 @@ Consider[4] = function()
     end
     return 0
 end
+
+-- tidal wave
+-- how to use a vector targeted ability?
 Consider[5] = function()
     local ability = AbilitiesReal[5]
     if not ability:IsFullyCastable() or ability:IsHidden() then
@@ -354,6 +411,10 @@ Consider[5] = function()
     local enmeyCount = fun1:GetEnemyHeroNumber(npcBot, enemies)
     return 0
 end
+
+
+-- x_marks_the_target recall
+-- name: kunkka_return
 Consider[7] = function()
     local abilityNumber = 7
     local ability = AbilitiesReal[abilityNumber]
@@ -400,6 +461,7 @@ function AbilityUsageThink()
     ManaPercentage = npcBot:GetMana() / npcBot:GetMaxMana()
     HealthPercentage = npcBot:GetHealth() / npcBot:GetMaxHealth()
     cast = ability_item_usage_generic.ConsiderAbility(AbilitiesReal, Consider)
+	---------------------------------debug--------------------------------------------
     if debugmode == true then
         ability_item_usage_generic.PrintDebugInfo(AbilitiesReal, cast)
     end
