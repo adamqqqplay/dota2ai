@@ -44,7 +44,6 @@ function GetDesire()
 	-- * Be alive
 	-- * Be a hero that farms
 	-- * Between level 6 and 30
-	-- * No humans on team
 	-- * Game is not mid only
 	-- * Have something to buy
 	-- * No enemies nearby, and none have damaged us recently
@@ -54,7 +53,6 @@ function GetDesire()
 	if not (bot:IsAlive()
 			and campUtils.IsStrongJungler(bot)
 			and bot:GetLevel() >=6 and bot:GetLevel() < 30)
-		or IsHumanPlayerInTeam()
 		or GetGameMode() == GAMEMODE_MO
 		or bot:GetNextItemPurchaseValue() == 0
 		or A.Unit.WasRecentlyDamagedByEnemy(bot, 3.0) or #EnemyHeroes >= 1
