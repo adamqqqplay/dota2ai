@@ -1,8 +1,3 @@
----------------------------------------------
--- Generated from Mirana Compiler version 1.6.2
--- Do not modify
--- https://github.com/AaronSong321/Mirana
----------------------------------------------
 local M = {}
 local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local BotsInit = require("game/botsinit")
@@ -82,6 +77,10 @@ local function IsStuck(npcBot)
     end
     return false
 end
+
+--
+-- TP usage
+--
 
 local myTeam = GetTeam()
 local opTeam = GetOpposingTeam()
@@ -223,20 +222,28 @@ local function ShouldTP()
     end
     return false, nil
 end
+-- old functions end 
+
+
+-- use functions to use items for debugging issues
 
 function M.UseItemNoTarget(npc, item)
+    -- print(npc:GetUnitName()..": use "..item:GetName())
     npc:Action_UseAbility(item)
 end
 
 function M.UseItemOnEntity(npc, item, entity)
+    -- print(npc:GetUnitName()..": use "..item:GetName().." on entity "..entity:GetUnitName())
     npc:Action_UseAbilityOnEntity(item, entity)
 end
 
 function M.UseItemOnLocation(npc, item, loc)
+    -- print(npc:GetUnitName()..": use "..item:GetName().." on location "..tostring(loc))
     npc:Action_UseAbilityOnLocation(item, loc)
 end
 
 function M.UseItemOnTree(npc, item, tree)
+    -- print(npc:GetUnitName()..": use "..item:GetName().." on tree "..tostring(tree))
     npc:Action_UseAbilityOnTree(item, tree)
 end
 

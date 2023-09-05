@@ -1,8 +1,3 @@
----------------------------------------------
--- Generated from Mirana Compiler version 1.6.2
--- Do not modify
--- https://github.com/AaronSong321/Mirana
----------------------------------------------
 local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local M = {}
 local Linq = {}
@@ -1280,7 +1275,7 @@ function ItemFun.GetAvailableItem(npc, itemName, isNeutral)
             return item
         end
     end
-    if isNeutral then
+    if isNeutral then -- although we can test if the item is neutral through ItemFun.IsNeutralItem, the parameter is passed explicitly for performance issue
         local item = npc:GetItemInSlot(16)
         if item and item:IsFullyCastable() then
             return item
@@ -1817,6 +1812,7 @@ local function ConsiderAvailableItem(item, bot, itemUsageAuxiliaryInfo)
     local itemFunc = bot.ItemUsage and bot.ItemUsage[name] or ItemUseDefaultImpl[name]
     if itemFunc == nil then
         GameLoop.EveryManySeconds(5, "NotifyUnimplementedItem " .. name, function()
+			-- print("Item not implemented: "..name)
         end)
         return 0
     else

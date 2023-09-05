@@ -1,8 +1,6 @@
----------------------------------------------
--- Generated from Mirana Compiler version 1.6.2
--- Do not modify
--- https://github.com/AaronSong321/Mirana
----------------------------------------------
+
+-- v1.7 template
+
 local utility = require(GetScriptDirectory() .. "/utility")
 local ability_item_usage_generic = require(GetScriptDirectory() .. "/ability_item_usage_generic")
 local AbilityExtensions = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
@@ -57,6 +55,8 @@ local TalentTree = {
         return Talents[8]
     end,
 }
+
+-- check skill build vs current level
 utility.CheckAbilityBuild(AbilityToLevelUp)
 function BuybackUsageThink()
 	ability_item_usage_generic.BuybackUsageThink();
@@ -70,6 +70,9 @@ function AbilityLevelUpThink()
     ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
 end
 
+--------------------------------------
+-- Ability Usage Thinking
+--------------------------------------
 local cast = {}
 cast.Desire = {}
 cast.Target = {}

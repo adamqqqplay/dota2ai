@@ -1,8 +1,3 @@
----------------------------------------------
--- Generated from Mirana Compiler version 1.6.2
--- Do not modify
--- https://github.com/AaronSong321/Mirana
----------------------------------------------
 local M = {}
 local ItemUsage = require(GetScriptDirectory() .. "/util/ItemUsage-New")
 local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
@@ -712,6 +707,7 @@ local function AddArcaneBoots()
         if bootsToReplaceIndex ~= -1 then
             local bootsToReplaceName = hero.itemInformationTable[bootsToReplaceIndex].name
             if bootsToReplaceName == "item_arcane_boots" then
+                -- do nothing
             else
                 local arcaneBoots = M.ExpandTeamThinkItem "item_arcane_boots"
                 RemoveItemsInNewItemTable(hero.itemInformationTable, arcaneBoots, bootsToReplaceIndex)

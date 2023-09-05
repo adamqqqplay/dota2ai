@@ -1,8 +1,10 @@
----------------------------------------------
--- Generated from Mirana Compiler version 1.6.2
--- Do not modify
--- https://github.com/AaronSong321/Mirana
----------------------------------------------
+----------------------------------------------------------------------------
+--	Ranked Matchmaking AI v1.3 New Structure
+--	Author: adamqqq		Email:adamqqq@163.com
+----------------------------------------------------------------------------
+--------------------------------------
+-- General Initialization
+--------------------------------------
 local utility = require(GetScriptDirectory() .. "/utility")
 local ability_item_usage_generic = require(GetScriptDirectory() .. "/ability_item_usage_generic")
 local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
@@ -57,6 +59,8 @@ local TalentTree = {
         return Talents[8]
     end,
 }
+
+-- check skill build vs current level
 utility.CheckAbilityBuild(AbilityToLevelUp)
 function BuybackUsageThink()
 	ability_item_usage_generic.BuybackUsageThink();
@@ -70,6 +74,9 @@ function AbilityLevelUpThink()
     ability_item_usage_generic.AbilityLevelUpThink2(AbilityToLevelUp, TalentTree)
 end
 
+--------------------------------------
+-- Ability Usage Thinking
+--------------------------------------
 local cast = {}
 cast.Desire = {}
 cast.Target = {}
@@ -95,6 +102,9 @@ end
 
 Consider[1] = function()
     local abilityNumber = 1
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
     local ability = AbilitiesReal[abilityNumber]
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE, 0
@@ -113,11 +123,17 @@ Consider[1] = function()
             wolves = wolves + 1
         end
     end
+	--------------------------------------
+	-- Mode based usage
+	--------------------------------------
+	-- If my mana is enough,use it at enemy
     if npcBot:GetActiveMode() == BOT_MODE_LANING then
         if ManaPercentage > 0.6 or npcBot:GetMana() > ComboMana and wolves < 1 then
             return BOT_ACTION_DESIRE_LOW
         end
     end
+	
+	-- If we're farming and can kill 3+ creeps with LSA
     if npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
         npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
         npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT then
@@ -126,6 +142,8 @@ Consider[1] = function()
             return BOT_ACTION_DESIRE_LOW
         end
     end
+
+	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
     if npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH then
         if npcBot:WasRecentlyDamagedByAnyHero(2.0) and wolves < 1 then
             return BOT_ACTION_DESIRE_HIGH
@@ -146,6 +164,8 @@ Consider[1] = function()
             end
         end
     end
+	
+	-- If we're going after someone
     if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
         npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = npcBot:GetTarget()
@@ -159,6 +179,9 @@ Consider[1] = function()
 end
 Consider[2] = function()
     local abilityNumber = 2
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
     local ability = AbilitiesReal[abilityNumber]
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE, 0
@@ -179,8 +202,13 @@ Consider[2] = function()
         end
     end
 end
+
+-- wolf bite
 Consider[4] = function()
     local abilityNumber = 4
+    --------------------------------------
+    -- Generic Variable Setting
+    --------------------------------------
     local ability = AbilitiesReal[abilityNumber]
     if not ability:IsFullyCastable() or ability:IsHidden() then
         return BOT_ACTION_DESIRE_NONE
@@ -251,6 +279,9 @@ Consider[4] = function()
 end
 Consider[5] = function()
     local abilityNumber = 5
+	--------------------------------------
+	-- Generic Variable Setting
+	--------------------------------------
     local ability = AbilitiesReal[abilityNumber]
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE, 0
@@ -262,11 +293,17 @@ Consider[5] = function()
     local WeakestEnemy, HeroHealth = utility.GetWeakestUnit(enemys)
     local creeps = npcBot:GetNearbyCreeps(CastRange + 300, true)
     local WeakestCreep, CreepHealth = utility.GetWeakestUnit(creeps)
+	--------------------------------------
+	-- Mode based usage
+	--------------------------------------
+	-- If we're seriously retreating, see if we can land a stun on someone who's damaged us recently
     if npcBot:GetActiveMode() == BOT_MODE_RETREAT and npcBot:GetActiveModeDesire() >= BOT_MODE_DESIRE_HIGH then
         if npcBot:WasRecentlyDamagedByAnyHero(2.0) then
             return BOT_ACTION_DESIRE_HIGH
         end
     end
+	
+	-- If we're going after someone
     if npcBot:GetActiveMode() == BOT_MODE_ROAM or npcBot:GetActiveMode() == BOT_MODE_TEAM_ROAM or
         npcBot:GetActiveMode() == BOT_MODE_DEFEND_ALLY or npcBot:GetActiveMode() == BOT_MODE_ATTACK then
         local npcEnemy = fun1:GetTargetIfGood(npcBot)
@@ -276,6 +313,8 @@ Consider[5] = function()
             end
         end
     end
+
+	-- If we're in a teamfight, use it 
     local tableNearbyAttackingAlliedHeroes = npcBot:GetNearbyHeroes(700, false, BOT_MODE_ATTACK)
     if #tableNearbyAttackingAlliedHeroes >= 2 then
         local npcEnemy = fun1:GetTargetIfGood(npcBot)
@@ -287,6 +326,8 @@ Consider[5] = function()
 end
 fun1:AutoModifyConsiderFunction(npcBot, Consider, AbilitiesReal)
 function AbilityUsageThink()
+
+	-- Check if we're already using an ability
     if npcBot:IsUsingAbility() or npcBot:IsChanneling() or npcBot:IsSilenced() then
         return
     end
@@ -295,6 +336,7 @@ function AbilityUsageThink()
     ManaPercentage = npcBot:GetMana() / npcBot:GetMaxMana()
     HealthPercentage = npcBot:GetHealth() / npcBot:GetMaxHealth()
     cast = ability_item_usage_generic.ConsiderAbility(AbilitiesReal, Consider)
+	---------------------------------debug--------------------------------------------
     if debugmode == true then
         ability_item_usage_generic.PrintDebugInfo(AbilitiesReal, cast)
     end
