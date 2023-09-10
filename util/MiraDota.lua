@@ -1659,9 +1659,6 @@ function ItemFun.GetItemShortName(t)
 end
 
 function Hero.MustBeIllusion(target)
-    if target:IsIllusion() then
-        return true
-    end
     if GetTeam() == target:GetTeam() then
         return target:IsIllusion()
     end

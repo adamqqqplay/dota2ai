@@ -25,7 +25,7 @@ end
 
 function utilityModule.UCanCast(npcEnemy) --magic immune
 	return npcEnemy:CanBeSeen() and not npcEnemy:IsInvulnerable() and not utilityModule.HasImmuneDebuff(npcEnemy) and
-		not npcEnemy:IsIllusion()
+		not AbilityExtension:MustBeIllusion(GetBot(), npcEnemy)
 end
 
 function utilityModule.CanCastNoTarget()
