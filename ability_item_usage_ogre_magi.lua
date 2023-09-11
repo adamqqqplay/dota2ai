@@ -100,6 +100,7 @@ function GetComboMana()
 	return ability_item_usage_generic.GetComboMana(AbilitiesReal)
 end
 
+-- ogre_magi_fireblast
 Consider[1] = function()
 
 	local ability = AbilitiesReal[1];
@@ -208,6 +209,7 @@ Consider[1] = function()
 	return BOT_ACTION_DESIRE_NONE, 0
 end
 
+-- ogre_magi_ignite
 Consider[2] = function()
 
 	local ability = AbilitiesReal[2];
@@ -333,7 +335,7 @@ Consider[2] = function()
 	return BOT_ACTION_DESIRE_NONE, 0;
 end
 
-
+-- ogre_magi_bloodlust
 Consider[3] = function()
 	local ability = AbilitiesReal[3]
 
@@ -356,10 +358,10 @@ Consider[3] = function()
 	-- If we're pushing or defending a lane
 	if (npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_TOP or
 		npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_MID or
-		npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOTTOM or
+		npcBot:GetActiveMode() == BOT_MODE_DEFEND_TOWER_BOT or
 		npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP or
 		npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID or
-		npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOTTOM)
+		npcBot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT)
 	then
 		if (ManaPercentage > 0.6 and npcBot:GetMana() > ComboMana)
 		then
@@ -404,6 +406,7 @@ Consider[3] = function()
 	return BOT_ACTION_DESIRE_NONE, 0
 end
 
+-- ogre_magi_unrefined_fireblast
 Consider[4] = function()
 
 	local ability = AbilitiesReal[4];
@@ -503,6 +506,7 @@ Consider[4] = function()
 	return BOT_ACTION_DESIRE_NONE, 0
 end
 
+-- ogre_magi_smash
 Consider[5] = function()
 	local ability = AbilitiesReal[5]
 	if ability:IsHidden() or not ability:IsFullyCastable() then
