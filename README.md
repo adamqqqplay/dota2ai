@@ -56,8 +56,6 @@ The steps to participate are as follows:
 5. Push the change to origin repository.  (git push origin new-feature)
 6. Then go to the github site and launch the pull request under the new-feature branch of the git remote repository.
 
-We use both normal **Lua** and **Mirana** to develop this project. The Mirana compiler can be found at [Mirana](https://github.com/AaronSong321/Mirana). Mirana is an extension to Lua, supporting lambda expressions and other features. It supports all the syntax of Lua and compiles to Lua. For files written in Mirana, DON'T modify the Lua directly since the modifications are discarded after recompilation.
-
 ### Reference
 Here are some helpful information for developers.
 

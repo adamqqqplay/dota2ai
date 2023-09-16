@@ -53,8 +53,6 @@ https://steamcommunity.com/workshop/filedetails/discussion/855965029/22173114443
 5. 将您的改动记录提交到远程 git 仓库 (git push origin new-feature)。
 6. 然后到 Github 网站的该 git 远程仓库的 new-feature 分支下发起 Pull Request。
 
-这个项目由**Lua**和**Mirana**共同写成。Mirana编译器可以在[Mirana](https://github.com/AaronSong321/Mirana)找到。Mirana是Lua的扩展，包含lambda表达式等功能。它支持所有Lua的语法且以Lua为目标语言。对于由Mirana写成的源码，直接修改Lua会导致修改在重新编译后丢失。
-
 ### 参考资料
 以下是一些对开发者有用的参考资料
 
