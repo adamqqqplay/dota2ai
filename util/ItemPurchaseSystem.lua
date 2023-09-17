@@ -8,7 +8,7 @@ local fullInvCheck = -90
 local MAX_INVENTORY_SLOT = 8
 local STASH_SLOT_COUNT = 6
 
-function M.SellExtraItem(ItemsToBuy)
+function M.SellExtraItem()
     local npcBot = GetBot()
     local level = npcBot:GetLevel()
     local delayNextCheck = true
@@ -85,7 +85,7 @@ local function nextNodes(Node)
     return GetItemComponents(Node)[1]
 end
 
-M.ExpandItemRecipe = function(self, itemTable)
+M.ExpandItemRecipe = function(itemTable)
     local output = {}
     local expandItem
     expandItem = function(item)
@@ -396,7 +396,7 @@ M.ItemName = {}
 setmetatable(M.ItemName, { __index = function(tb, f)
     return "item_" .. f
 end })
-M.Consumables = {
+local Consumables = {
     "clarity",
     "enchanted_mango",
     "faerie_fire",
@@ -407,8 +407,8 @@ M.Consumables = {
     "tpscroll",
 }
 
-M.IsConsumableItem = function(self, item)
-    return AbilityExtensions:Contains(self.Consumables, string.sub(item, 6))
+M.IsConsumableItem = function(item)
+    return AbilityExtensions:Contains(Consumables, string.sub(item, 6))
 end
 
 -- create item info table functions
@@ -462,7 +462,7 @@ local function PrintItemInfoTableOf(npcBot)
     end)
 end
 
-M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
+M.CreateItemInformationTable = function(npcBot, itemTable, noRemove)
     local g = A.Linq.NewTable()
     g.hero = npcBot
     if not A.Unit.CanBuyItem(npcBot) then
@@ -477,7 +477,7 @@ M.CreateItemInformationTable = function(self, npcBot, itemTable, noRemove)
     end)
     for _, item in pairs(itemTable) do
         local dontExpand
-        if DotaTime() > 0 and M:IsConsumableItem(item) then
+        if DotaTime() > 0 and M.IsConsumableItem(item) then
             dontExpand = true
         end
         for i, b in ipairs(boughtItems) do
@@ -635,7 +635,7 @@ local UseCourier = function()
 end
 UseCourier = AbilityExtensions:EveryManySeconds(0.5, UseCourier)
 
-M.ItemPurchaseSelf = function(self, ItemsToBuy)
+M.ItemPurchaseSelf = function()
     local function GetTopItemToBuy()
         local itemInformationTable = GetBot().itemInformationTable
         if #itemInformationTable == 0 then
@@ -672,7 +672,7 @@ M.ItemPurchaseSelf = function(self, ItemsToBuy)
                 t:GetUnitName() == AbilityExtensions:GetHeroFullName("slardar") or
                 t:GetUnitName() == AbilityExtensions:GetHeroFullName("rattletrap") and t:GetLevel() >= 12
         end) then
-            M:RemoveInvisibleItemPurchase(GetBot())
+            M.RemoveInvisibleItemPurchase(GetBot())
         end
     end
 
@@ -684,7 +684,7 @@ M.ItemPurchaseSelf = function(self, ItemsToBuy)
     end
 
     if DotaTime() > fullInvCheck + 1.0 and M.CanSell(npcBot) then
-        M.SellExtraItem(ItemsToBuy)
+        M.SellExtraItem()
     end
 
     if #GetBot().itemInformationTable == 0 then
@@ -752,12 +752,13 @@ M.ItemPurchaseSelf = function(self, ItemsToBuy)
     end
 end
 
-M.ItemPurchaseExtend = function(self, ItemsToBuy)
-    M.ItemPurchaseSelf(ItemsToBuy)
+M.ItemPurchaseExtend = function()
+    M.BuySupportItem()
+    M.ItemPurchaseSelf()
     UseCourier()
 end
 
-M.RemoveItemPurchase = function(self, itemTable, itemName)
+M.RemoveItemPurchase = function(itemTable, itemName)
     local num = #itemTable
     local i = 1
     while i <= num do
@@ -767,14 +768,14 @@ M.RemoveItemPurchase = function(self, itemTable, itemName)
         end
     end
 end
-M.InvisibleItemList = {
+local InvisibleItemList = {
     "item_invis_sword",
     "item_silver_edge",
     "item_glimmer_cape",
 }
-M.RemoveInvisibleItemPurchase = function(self, itemTable)
-    AbilityExtensions:ForEach(self.InvisibleItemList, function(t)
-        self:RemoveItemPurchase(itemTable, t)
+M.RemoveInvisibleItemPurchase = function(itemTable)
+    AbilityExtensions:ForEach(InvisibleItemList, function(t)
+        M.RemoveItemPurchase(itemTable, t)
     end)
 end
 return M
