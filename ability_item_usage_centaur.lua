@@ -29,19 +29,19 @@ local AbilityToLevelUp =
 	Abilities[3],
 	Abilities[2],
 	Abilities[2],
-	Abilities[5],
+	Abilities[6],
 	Abilities[2],
 	Abilities[2],
 	Abilities[1],
 	"talent",
 	Abilities[1],
-	Abilities[5],
+	Abilities[6],
 	Abilities[1],
 	Abilities[3],
 	"talent",
 	Abilities[3],
 	"nil",
-	Abilities[5],
+	Abilities[6],
 	"nil",
 	"talent",
 	"nil",
@@ -388,9 +388,9 @@ end
 -- 	return BOT_ACTION_DESIRE_NONE;
 -- end
 
-Consider[5] = function()
+Consider[6] = function()
 
-	local abilityNumber = 5
+	local abilityNumber = 6
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
