@@ -32,19 +32,19 @@ local AbilityToLevelUp =
 	Abilities[1],
 	Abilities[2],
 	Abilities[1],
-	Abilities[6],
+	Abilities[5],
 	Abilities[1],
 	Abilities[2],
 	Abilities[2],
 	"talent",
 	Abilities[3],
-	Abilities[6],
+	Abilities[5],
 	Abilities[3],
 	Abilities[3],
 	"talent",
 	Abilities[3],
 	"nil",
-	Abilities[6],
+	Abilities[5],
 	"nil",
 	"talent",
 	"nil",
@@ -455,9 +455,9 @@ Consider[3] = function()
 	return BOT_ACTION_DESIRE_NONE, 0
 end
 
-Consider[6] = function()
+Consider[5] = function()
 
-	local abilityNumber = 6
+	local abilityNumber = 5
 	--------------------------------------
 	-- Generic Variable Setting
 	--------------------------------------
@@ -574,8 +574,8 @@ end
 
 RefreshSnowballTarget()
 
-Consider[7] = function()
-	local ability = AbilitiesReal[7]
+Consider[6] = function()
+	local ability = AbilitiesReal[6]
 	if not ability:IsFullyCastable() or ability:IsHidden() then
 		return 0
 	end
