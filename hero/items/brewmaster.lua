@@ -7,8 +7,9 @@ local X = {}
 X.ItemsToBuy =
 {
 	"item_tango",
-	"item_flask",
+	-- "item_flask",
 	"item_enchanted_mango",
+	"item_bracer",
 	"item_bracer",
 	"item_phase_boots", --相位7.21
 	"item_magic_wand",
