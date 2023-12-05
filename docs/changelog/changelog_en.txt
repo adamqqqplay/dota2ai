@@ -461,3 +461,9 @@ Update to 7.33e
 3. Fix runtime error in buyback.
 4. Fix minor issues in purchasing and courier.
 5. Improve the farming methods of some heroes.
+v1.7.16(2023.12.03)
+1. Update the builds of some heros to 7.34e.
+2. Fix casting issues of Centaur Warrunner and Tusk.
+3. Fix casting issues of Orge Magi.
+4. Improve items purchase behavior.
+5. Fix certain runtime errors. 
