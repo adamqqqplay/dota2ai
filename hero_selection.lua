@@ -481,6 +481,7 @@ local hero_pool_position_2 = {
 	"npc_dota_hero_obsidian_destroyer",
 	"npc_dota_hero_templar_assassin",
 	"npc_dota_hero_kunkka",
+	"npc_dota_hero_dazzle",
 }
 
 local hero_pool_position_3 = {
@@ -506,10 +507,8 @@ local hero_pool_position_3 = {
 	"npc_dota_hero_shredder",
 }
 local hero_pool_position_4 = {
-	--"npc_dota_hero_hoodwink",
 	"npc_dota_hero_skywrath_mage",
 	"npc_dota_hero_shadow_shaman",
-	-- "npc_dota_hero_abaddon",
 	"npc_dota_hero_venomancer",
 	"npc_dota_hero_slardar",
 	"npc_dota_hero_undying",
@@ -526,9 +525,8 @@ local hero_pool_position_4 = {
 	"npc_dota_hero_sand_king",
 	"npc_dota_hero_nyx_assassin",
 	"npc_dota_hero_tusk",
+	"npc_dota_hero_gyrocopter"
 
-	--"npc_dota_hero_elder_titan",
-	--"npc_dota_hero_spirit_breaker",
 }
 local hero_pool_position_5 = {
 	"npc_dota_hero_ogre_magi",

@@ -17,9 +17,6 @@ X.ItemsToBuy =
 	"item_black_king_bar",
 	"item_kaya",
 	"item_kaya_and_sange",
-	
-	-- "item_witch_blade",
-	-- "item_cyclone", --风杖
 	"item_ultimate_scepter", --蓝杖
 	-- "item_invis_sword",
 	"item_shivas_guard",
