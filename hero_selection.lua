@@ -46,7 +46,7 @@ local hero_pool = {
 	"npc_dota_hero_enigma",
 	"npc_dota_hero_faceless_void",
 	"npc_dota_hero_gyrocopter",
-	--"npc_dota_hero_hoodwink",
+	"npc_dota_hero_hoodwink",
 	"npc_dota_hero_huskar",
 	"npc_dota_hero_invoker",
 	"npc_dota_hero_wisp",
@@ -139,7 +139,7 @@ local hero_pool_default_bot = {
 	"npc_dota_hero_dragon_knight",
 	"npc_dota_hero_drow_ranger",
 	"npc_dota_hero_earthshaker",
-	--"npc_dota_hero_hoodwink",
+	"npc_dota_hero_hoodwink",
 	"npc_dota_hero_jakiro",
 	"npc_dota_hero_juggernaut",
 	"npc_dota_hero_kunkka",
@@ -170,6 +170,7 @@ local hero_pool_default_bot = {
 }
 --recoding implemented bots, using in test.
 local hero_pool_test = {
+	-- "npc_dota_hero_hoodwink",
 	-- "npc_dota_hero_zuus",
 	-- "npc_dota_hero_skywrath_mage",
 	-- "npc_dota_hero_ogre_magi",
@@ -356,7 +357,7 @@ local allBotHeroes = {
 	"npc_dota_hero_furion",
 
 	"npc_dota_hero_gyrocopter",
-	--"npc_dota_hero_hoodwink",
+	"npc_dota_hero_hoodwink",
 	"npc_dota_hero_huskar",
 
 	"npc_dota_hero_jakiro",
@@ -525,7 +526,8 @@ local hero_pool_position_4 = {
 	"npc_dota_hero_sand_king",
 	"npc_dota_hero_nyx_assassin",
 	"npc_dota_hero_tusk",
-	"npc_dota_hero_gyrocopter"
+	"npc_dota_hero_gyrocopter",
+	"npc_dota_hero_hoodwink"
 
 }
 local hero_pool_position_5 = {
