@@ -242,7 +242,7 @@ local dota2team = {
 			'y`'
 		};
 		['sponsorship'] = '';
-    },
+	},
 	-- Ti 11
 	[21] = {
 		['name'] = "Tundra Esports TI11";
@@ -268,6 +268,31 @@ local dota2team = {
 		};
 		['sponsorship'] = '';
 	},
+	-- TI12
+	[23] = {
+		['name'] = "Team Spirit TI12";
+		['alias'] = "TS";
+		['players'] = {
+			'Yatoro',
+			'Larl',
+			'Collapse',
+			'Mira',
+			'Miposhka'
+		};
+		['sponsorship'] = '';
+	},
+	[24] = {
+		['name'] = "Gaimin Gladiators TI12";
+		['alias'] = "GG";
+		['players'] = {
+			'dyrachyo',
+			'Quinn',
+			'Ace',
+			'tOfu',
+			'Seleri'
+		};
+		['sponsorship'] = '';
+	}
 }
 
 local sponsorship = { "RMMAI" };
