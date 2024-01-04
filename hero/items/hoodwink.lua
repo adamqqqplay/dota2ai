@@ -9,15 +9,15 @@ X.ItemsToBuy =
 	"item_tango",
 	"item_branches",
 	"item_branches",
-
-	"item_tranquil_boots",
+	-- "item_tranquil_boots",
+	"item_arcane_boots",
 	"item_magic_wand",
-	"item_aether_lens",
-	"item_cyclone",
-
-	"item_blink",
-	"item_octarine_core",
-	"item_wind_waker",
+	"item_maelstrom",
+	"item_rod_of_atos",
+	"item_gungir",
+	"item_desolator",
+	"item_greater_crit",
+	"item_guardian_greaves"
 
 }
 
