@@ -295,7 +295,7 @@ Consider[4] = function()
         return BOT_ACTION_DESIRE_NONE
     end
     local CastRange = ability:GetCastRange()
-    local Damage = ability:GetAbilityDamage()
+    local Damage = ability:GetSpecialValueInt("damage")
     local function IsWeak(t)
         return CanCast[4](t) and t:GetHealth() <= Damage
     end
