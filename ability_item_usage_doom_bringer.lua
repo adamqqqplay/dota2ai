@@ -121,7 +121,9 @@ local CanCast = {
     fun1.PhysicalCanCastFunction,
     fun1.NormalCanCastFunction,
     fun1.NormalCanCastFunction,
-    utility.UCanCast,
+    function(t)
+        return fun1:NormalCanCast(t, true, DAMAGE_TYPE_PURE, true, true, true)
+    end,
 }
 local enemyDisabled = utility.enemyDisabled
 local function GetComboMana()
@@ -572,7 +574,8 @@ Consider[6] = function()
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE, 0
     end
-    local Damage = ability:GetDuration() * ability:GetSpecialValueInt("damage_per_second")
+    --local Damage = ability:GetDuration() * ability:GetSpecialValueInt("damage")
+	local Damage = ability:GetSpecialValueFloat("duration") * ability:GetSpecialValueInt("damage")
     local CastRange = ability:GetCastRange()
     local allys = fun1:GetNearbyNonIllusionHeroes(npcBot, 1200, false)
     local enemys = fun1:GetNearbyNonIllusionHeroes(npcBot, CastRange + 300, true)
@@ -613,7 +616,7 @@ Consider[6] = function()
     if npcBot:GetActiveMode() ~= BOT_MODE_RETREAT then
         if WeakestEnemy ~= nil then
             if CanCast[abilityNumber](WeakestEnemy) then
-                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_MAGICAL) or
+                if HeroHealth <= WeakestEnemy:GetActualIncomingDamage(Damage, DAMAGE_TYPE_PURE) or
                     (
                     HeroHealth <= WeakestEnemy:GetActualIncomingDamage(GetComboDamage(), DAMAGE_TYPE_MAGICAL) and
                         npcBot:GetMana() > ComboMana) then

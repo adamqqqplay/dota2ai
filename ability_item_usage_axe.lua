@@ -9,7 +9,7 @@ local utility = require(GetScriptDirectory() .. "/utility")
 local ability_item_usage_generic = require(GetScriptDirectory() .. "/ability_item_usage_generic")
 local fun1 = require(GetScriptDirectory() .. "/util/AbilityAbstraction")
 local ItemUsage = require(GetScriptDirectory() .. "/util/ItemUsage-New")
-local debugmode = false
+local debugmode = true
 local npcBot = GetBot()
 if npcBot == nil or npcBot:IsIllusion() then
 	return
@@ -295,7 +295,7 @@ Consider[4] = function()
         return BOT_ACTION_DESIRE_NONE
     end
     local CastRange = ability:GetCastRange()
-    local Damage = ability:GetAbilityDamage()
+    local Damage = ability:GetSpecialValueInt("damage")
     local function IsWeak(t)
         return CanCast[4](t) and t:GetHealth() <= Damage
     end
