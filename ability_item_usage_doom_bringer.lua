@@ -574,7 +574,6 @@ Consider[6] = function()
     if not ability:IsFullyCastable() then
         return BOT_ACTION_DESIRE_NONE, 0
     end
-    --local Damage = ability:GetDuration() * ability:GetSpecialValueInt("damage")
 	local Damage = ability:GetSpecialValueFloat("duration") * ability:GetSpecialValueInt("damage")
     local CastRange = ability:GetCastRange()
     local allys = fun1:GetNearbyNonIllusionHeroes(npcBot, 1200, false)
